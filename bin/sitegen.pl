@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use Template;
 use Data::Dumper;
+use Text::MultiMarkdown 'markdown';
 
 use FindBin qw($Bin);
 use lib "$Bin/../lib";
@@ -218,6 +219,8 @@ sub load_data {
         }
     };
     close FILEIN;
+    my $content = $post{content};
+    $post{content} = markdown($content);
     return \%post;
 }
 
