@@ -13,9 +13,13 @@ use DateTime::Format::Strptime;
 our $data_path = "$Bin/../data/news";
 our $template = "$Bin/../TEMPLATE.txt";
 
-my $news_feed_hash = { 
+our $news_feed_hash = { 
                          'Open Source Hong Kong' => 'http://opensource.hk/rss.xml',
                      };
+
+our $new_feed_home_hash = {
+                             'Open Source Hong Kong' => 'http://opensource.hk',
+                         };
 
 sub get_feed {
     my ($feed_name, $feed_url) = @_;
@@ -44,6 +48,10 @@ sub create_post {
     
     my $content = 'News Feed - Source :  ' . "\n" . '[' . $feed_name . ' - ' . $title .'](' . $entry->{'link'} . ')' . "\n\n"; 
     $content .= $entry->{'description'};
+
+    my $url = $new_feed_home_hash->{$feed_name};
+    $content =~ s/\<img src=\"\//\<img src=\"$url\//g;
+    $content =~ s/href=\"\//href=\"$url\//g;
 
     my $dt = $parser->parse_datetime($entry->{'pubDate'});
 
