@@ -14,7 +14,7 @@ our $data_path = "$Bin/../data/news";
 our $template = "$Bin/../TEMPLATE.txt";
 
 our $news_feed_hash = { 
-                         'Open Source Hong Kong' => 'http://opensource.hk/rss.xml',
+                         'Open Source Hong Kong' => 'http://opensource.hk/feed/',
                      };
 
 our $new_feed_home_hash = {
