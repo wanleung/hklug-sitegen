@@ -3,7 +3,8 @@ use strict;
 use warnings;
 use Template;
 use Data::Dumper;
-use Text::MultiMarkdown 'markdown';
+use Text::Markdown::Discount qw(markdown);
+#use Text::MultiMarkdown 'markdown';
 
 use FindBin qw($Bin);
 use lib "$Bin/../lib";
@@ -18,7 +19,7 @@ our $archive_folder = "$site_folder/archive";
 sub main {
     my $tt = Template->new({
         INCLUDE_PATH => "$Bin/../template",
-        INTERPOLATE  => 1,
+        INTERPOLATE  => 0,
     }) || die "$Template::ERROR\n";
     
     gen_home($tt);
@@ -219,8 +220,8 @@ sub load_data {
         }
     };
     close FILEIN;
-    my $content = $post{content};
-    $post{content} = markdown($content);
+    my $org = $post{content};
+    $post{content} = markdown($org);
     return \%post;
 }
 
