@@ -15,10 +15,12 @@ our $template = "$Bin/../TEMPLATE.txt";
 
 our $news_feed_hash = { 
                          'Open Source Hong Kong' => 'https://opensource.hk/feed/',
+			 'Hong Kong Open Source Conference' => 'https://info.hkoscon.org/feed/',
                      };
 
 our $new_feed_home_hash = {
                              'Open Source Hong Kong' => 'https://opensource.hk',
+			     'Hong Kong Open Source Conference' => 'https://info.hkoscon.org',
                          };
 
 sub get_feed {
