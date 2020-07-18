@@ -1,12 +1,14 @@
 # HKLUG Site Generator
 
-This is a static html generator of the Hong Kong Linux User Group Main Site.
+This is a static html generator of the Hong Kong Linux User Group Main Site. 
+
+<http://www.linux.org.hk/>
 
 ## Concept
 
 No DB, No Dynamic Code, No BackEnd.
 
-Storing the Data in Text File, using Markdown Format.
+Storing the Data in Text Files, using Markdown Format.
 The members of the Community can add post using Github pull request, and re-generate the main site, to prevent the robot hacking of the CMS platforms.
 
 ## Structure
