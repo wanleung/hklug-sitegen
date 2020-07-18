@@ -14,11 +14,13 @@ our $data_path = "$Bin/../data/news";
 our $template = "$Bin/../TEMPLATE.txt";
 
 our $news_feed_hash = { 
-                         'Open Source Hong Kong' => 'http://opensource.hk/feed/',
+                         'Open Source Hong Kong' => 'https://opensource.hk/feed/',
+			 'Hong Kong Open Source Conference' => 'https://info.hkoscon.org/feed/',
                      };
 
 our $new_feed_home_hash = {
-                             'Open Source Hong Kong' => 'http://opensource.hk',
+                             'Open Source Hong Kong' => 'https://opensource.hk',
+			     'Hong Kong Open Source Conference' => 'https://info.hkoscon.org',
                          };
 
 sub get_feed {
@@ -88,7 +90,7 @@ sub create_post {
 }
 
 sub main {
-    for my $feed_key (keys $news_feed_hash) {
+    for my $feed_key (keys %$news_feed_hash) {
         get_feed($feed_key, $news_feed_hash->{$feed_key});
     }
 }
