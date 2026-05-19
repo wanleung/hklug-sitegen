@@ -31,7 +31,10 @@ sub save_cache {
     my $tmp = "$cache_file.tmp.$$";
     open(my $fh, '>', $tmp) or die "Cannot write cache $tmp: $!";
     print $fh JSON::PP->new->pretty->encode($cache);
-    close $fh;
+    close $fh or do {
+        unlink $tmp;
+        die "Write error flushing $tmp: $!";
+    };
     rename($tmp, $cache_file) or do {
         unlink $tmp;
         die "Cannot rename $tmp to $cache_file: $!";

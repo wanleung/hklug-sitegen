@@ -24,6 +24,7 @@ is($loaded->{'foo.txt'}, 'abc123', 'save and load round-trip');
 open(my $fh, '>', "$tmpdir/bad.json") or die $!;
 print $fh "NOT JSON {{{{";
 close $fh;
+local $SIG{__WARN__} = sub {};
 my $bad = load_cache("$tmpdir/bad.json");
 is(ref($bad), 'HASH', 'corrupt cache returns hashref');
 is(scalar keys %$bad, 0, 'corrupt cache is empty');
