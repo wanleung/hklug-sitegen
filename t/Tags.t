@@ -25,4 +25,13 @@ is(scalar @{$tags->{event}}, 2, 'event has 2 posts');
 is(scalar @{$tags->{'open-source'}}, 1, 'open-source has 1 post');
 ok(!exists $tags->{''}, 'empty tags not included');
 
+# Test: undef tag and missing tags key handled gracefully
+my @posts_with_undef = (
+    { title => 'Post X', tags => [undef, 'linux'] },
+    { title => 'Post Y' },
+);
+my $tags2 = collect_tags(@posts_with_undef);
+ok(!exists $tags2->{''}, 'undef tag skipped');
+is(scalar @{$tags2->{linux}}, 1, 'valid tag alongside undef still collected');
+
 done_testing();

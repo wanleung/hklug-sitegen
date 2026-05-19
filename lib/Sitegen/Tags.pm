@@ -28,7 +28,7 @@ sub collect_tags {
 sub gen_tag_pages {
     my ($tt, $tags, $site_folder, $config) = @_;
     my $tags_folder = "$site_folder/tags";
-    make_path($tags_folder) unless -d $tags_folder;
+    make_path($tags_folder);
 
     my @tag_list = map {
         { name => $_, slug => tag_slug($_), count => scalar @{$tags->{$_}} }
@@ -42,7 +42,7 @@ sub gen_tag_pages {
     for my $tag (keys %$tags) {
         my $slug    = tag_slug($tag);
         my $tag_dir = "$tags_folder/$slug";
-        make_path($tag_dir) unless -d $tag_dir;
+        make_path($tag_dir);
         $tt->process('tag_page.html',
             {
                 title => $config->{site_name} . " > Tag: $tag",
