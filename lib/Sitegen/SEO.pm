@@ -22,7 +22,7 @@ sub seo_meta {
 
     return {
         description    => $description,
-        og_title       => $post->{title} // $config->{site_name} // '',
+        og_title       => ($post->{title} || $config->{site_name} || ''),
         og_description => $description,
         og_url         => "$base$url_path",
     };

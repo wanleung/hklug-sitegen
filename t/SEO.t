@@ -40,4 +40,12 @@ my $cfg2 = { %$config, site_url => 'https://hklug.org/' };
 my $seo4 = seo_meta($post, $cfg2, '/archive/x.html');
 is($seo4->{og_url}, 'https://hklug.org/archive/x.html', 'trailing slash stripped from site_url');
 
+# Test 8: og_title falls back to site_name when title absent
+my $seo5 = seo_meta({ content => '' }, $config, '/');
+is($seo5->{og_title}, 'HKLUG', 'og_title falls back to site_name');
+
+# Test 9: whitespace-only content falls back to site_description
+my $seo6 = seo_meta({ title => 'T', content => '<p>   </p>' }, $config, '/');
+is($seo6->{description}, 'Linux users in HK.', 'whitespace-only content uses site_description');
+
 done_testing();
