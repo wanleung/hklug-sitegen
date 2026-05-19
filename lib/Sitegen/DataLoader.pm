@@ -53,16 +53,40 @@ sub load_data {
 }
 
 sub load_announce {
-    my ($top_dir) = @_;
-    my @filelist;
-    opendir(my $dh, $top_dir) or die "Cannot open $top_dir: $!";
-    while (my $file = readdir($dh)) {
-        push @filelist, $file if $file =~ m/\.txt$/;
+    my ($top_dir, $config) = @_;
+    $config //= {};
+    my $flags = $config->{announcements} // {};
+
+    my @announces;
+
+    # HKLUG: latest lexicographic dated .txt file (anything not matching a source key)
+    if ($flags->{hklug} // 1) {
+        my @dated;
+        opendir(my $dh, $top_dir) or die "Cannot open $top_dir: $!";
+        while (my $f = readdir($dh)) {
+            push @dated, $f
+                if $f =~ m/\.txt$/ && $f !~ m/^(oshk|hkoscon)-latest\.txt$/;
+        }
+        closedir($dh);
+        if (@dated) {
+            my $latest = (sort @dated)[-1];
+            push @announces, load_data("$top_dir/$latest");
+        }
     }
-    closedir($dh);
-    die "No .txt files found in $top_dir\n" unless @filelist;
-    my $filename = (sort @filelist)[-1];
-    return load_data("$top_dir/$filename");
+
+    # Open Source Hong Kong
+    if ($flags->{oshk} // 1) {
+        my $f = "$top_dir/oshk-latest.txt";
+        push @announces, load_data($f) if -f $f;
+    }
+
+    # Hong Kong Open Source Conference
+    if ($flags->{hkoscon} // 1) {
+        my $f = "$top_dir/hkoscon-latest.txt";
+        push @announces, load_data($f) if -f $f;
+    }
+
+    return \@announces;
 }
 
 =head1 NAME
@@ -77,7 +101,11 @@ Sitegen::DataLoader - Parse hklug-sitegen .txt article files
   # Returns hashref with keys: date, author, title, tags (arrayref), content (HTML)
 
   my $latest = load_announce('/path/to/top/');
-  # Returns the lexicographically last .txt file parsed as a post
+  # Returns arrayref of post hashrefs for enabled sources.
+  # Respects config->{announcements}{hklug|oshk|hkoscon} flags (default: all true).
+  # HKLUG: lexicographically latest dated .txt file.
+  # OSHK:  oshk-latest.txt (written by ai-it-press workflow).
+  # HKOSCon: hkoscon-latest.txt (written by ai-it-press workflow).
 
 =head1 DESCRIPTION
 

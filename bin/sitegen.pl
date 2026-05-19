@@ -101,13 +101,13 @@ sub gen_home {
         push @news_posts, load_data("$news_dir/$sortlist[$total - $i]");
     }
 
-    my $announce = load_announce($top_dir);
+    my $announces = load_announce($top_dir, $config);
     my $seo_post = { title => $config->{site_name} . ' > News', content => '' };
     tt_process($tt, 'news.html', {
-        title    => $config->{site_name} . ' > News',
-        news     => \@news_posts,
-        announce => $announce,
-        seo      => seo_meta($seo_post, $config, '/'),
+        title     => $config->{site_name} . ' > News',
+        news      => \@news_posts,
+        announces => $announces,
+        seo       => seo_meta($seo_post, $config, '/'),
     }, "$site_folder/index.html");
 }
 
@@ -126,13 +126,13 @@ sub gen_pages {
 
     for my $file (@filelist) {
         my $post     = load_data("$data_dir/$file");
-        my $announce = load_announce($top_dir);
+        my $announces = load_announce($top_dir, $config);
         (my $newfile = $file) =~ s/\.txt$/.html/;
         tt_process($tt, 'page.html', {
-            title    => $config->{site_name} . ' > ' . $post->{title},
-            post     => $post,
-            announce => $announce,
-            seo      => seo_meta($post, $config, "/$newfile"),
+            title     => $config->{site_name} . ' > ' . $post->{title},
+            post      => $post,
+            announces => $announces,
+            seo       => seo_meta($post, $config, "/$newfile"),
         }, "$site_folder/$newfile");
     }
 }
@@ -201,13 +201,13 @@ sub gen_archive {
 
     # Archive list — always regenerate
     my @newest_first = reverse @allnews;
-    my $announce  = load_announce($top_dir);
+    my $announces = load_announce($top_dir, $config);
     my $seo_post  = { title => $config->{site_name} . ' > Archive', content => '' };
     tt_process($tt, 'archive_list.html', {
         title     => $config->{site_name} . ' > Archive',
         pagetitle => 'Archives',
         news      => \@newest_first,
-        announce  => $announce,
+        announces => $announces,
         seo       => seo_meta($seo_post, $config, '/archive/'),
     }, "$archive_folder/index.html");
 
@@ -223,9 +223,9 @@ C<site/tags/E<lt>slugE<gt>/index.html> for each tag.
 
 sub gen_tags {
     my ($tt, $config, $all_posts) = @_;
-    my $announce = load_announce($top_dir);
+    my $announces = load_announce($top_dir, $config);
     my $tags = collect_tags(@$all_posts);
-    gen_tag_pages($tt, $tags, $site_folder, $config, $announce);
+    gen_tag_pages($tt, $tags, $site_folder, $config, $announces);
 }
 
 main();
