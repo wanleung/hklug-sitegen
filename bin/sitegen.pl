@@ -1,270 +1,218 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use Getopt::Long;
 use Template;
-use Data::Dumper;
-use Text::Markdown::Discount qw(markdown);
-#use Text::MultiMarkdown 'markdown';
+use YAML::Tiny;
+use File::Path qw(make_path);
 
 use FindBin qw($Bin);
 use lib "$Bin/../lib";
 
-our $data_dir = "$Bin/../data";
-our $top_dir = "$data_dir/top";
-our $news_dir = "$data_dir/news";
-our $site_name = 'Hong Kong Linux User Group - 香港Linux用家協會(HKLUG)';
-our $site_folder = "$Bin/../site";
-our $archive_folder = "$site_folder/archive";
+use Sitegen::DataLoader qw(load_data load_announce);
+use Sitegen::Cache      qw(load_cache save_cache is_fresh update_cache);
+use Sitegen::SEO        qw(seo_meta);
+use Sitegen::Tags       qw(collect_tags gen_tag_pages);
 
-sub main {
-    my $tt = Template->new({
-        INCLUDE_PATH => "$Bin/../template",
-        INTERPOLATE  => 0,
-    }) || die "$Template::ERROR\n";
-    
-    gen_home($tt);
-    gen_pages($tt);
-    gen_archive($tt);
+my $force = 0;
+GetOptions('force' => \$force);
+
+our $base_dir       = "$Bin/..";
+our $data_dir       = "$base_dir/data";
+our $top_dir        = "$data_dir/top";
+our $news_dir       = "$data_dir/news";
+our $site_folder    = "$base_dir/site";
+our $archive_folder = "$site_folder/archive";
+our $cache_file     = "$data_dir/.sitegen-cache.json";
+our $config_file    = "$data_dir/sitegen.yaml";
+
+=head1 NAME
+
+sitegen.pl - Static site generator for HKLUG
+
+=head1 SYNOPSIS
+
+  perl bin/sitegen.pl [--force]
+
+=head1 DESCRIPTION
+
+Generates the HKLUG static site from .txt source files.  With C<--force> all
+pages are rebuilt regardless of cache; without it, archive posts whose source
+file has not changed are skipped.
+
+=cut
+
+sub load_config {
+    die "Missing config file: $config_file\n" unless -f $config_file;
+    my $yaml = YAML::Tiny->read($config_file)
+        or die "Cannot parse $config_file: " . YAML::Tiny->errstr . "\n";
+    return $yaml->[0];
 }
 
+sub main {
+    my $config = load_config();
+    my $cache  = $force ? {} : load_cache($cache_file);
+
+    my $tt = Template->new({
+        INCLUDE_PATH => "$base_dir/template",
+        INTERPOLATE  => 0,
+    }) || die "$Template::ERROR\n";
+
+    make_path($site_folder, $archive_folder);
+
+    gen_home($tt, $config);
+    gen_pages($tt, $config);
+    my $all_posts = gen_archive($tt, $config, $cache);
+    gen_tags($tt, $config, $all_posts);
+
+    save_cache($cache_file, $cache);
+}
+
+=head2 gen_home($tt, $config)
+
+Renders the site homepage (C<index.html>) from the five most recent news posts.
+
+=cut
+
 sub gen_home {
-    my ($tt) = @_;
+    my ($tt, $config) = @_;
     my @filelist;
-    opendir(DIRIN, $news_dir) or die $!;
-    while (my $file = readdir(DIRIN)) {
-        if ($file =~ m/\.txt$/) {
-            push @filelist, $file;
-        }
-    }
-    closedir(DIRIN);
+    opendir(my $dh, $news_dir) or die $!;
+    while (my $file = readdir($dh)) { push @filelist, $file if $file =~ m/\.txt$/ }
+    closedir($dh);
     my @sortlist = sort @filelist;
-    
-    my $total = @sortlist;
+    my $total    = scalar @sortlist;
 
     my @news_posts;
     for my $i (1..5) {
         last if ($total - $i < 0);
-        my $post = load_data("$news_dir/$sortlist[$total - $i]");
-        print Dumper($post);
-        push @news_posts, $post; 
-    } 
+        push @news_posts, load_data("$news_dir/$sortlist[$total - $i]");
+    }
 
-    my $announce = load_announce();
-
-    my $vars = {
-        title => "$site_name \&gt News",
-        news => \@news_posts,
+    my $announce = load_announce($top_dir);
+    my $seo_post = { title => $config->{site_name} . ' > News', content => '' };
+    $tt->process('news.html', {
+        title    => $config->{site_name} . ' > News',
+        news     => \@news_posts,
         announce => $announce,
-    };
-
-    print Dumper($vars);
-
-    $tt->process('news.html', $vars, "$site_folder/index.html")
-        || die $tt->error(), "\n";
+        seo      => seo_meta($seo_post, $config, '/'),
+    }, "$site_folder/index.html") || die $tt->error();
 }
+
+=head2 gen_pages($tt, $config)
+
+Renders static .txt pages in the data root directory into C<site/>.
+
+=cut
 
 sub gen_pages {
-    my ($tt) = @_;
+    my ($tt, $config) = @_;
     my @filelist;
-    opendir(DIRIN, $data_dir) or die $!;
-    while (my $file = readdir(DIRIN)) {
-        if ($file =~ m/\.txt$/) {
-            push @filelist, $file;
-        }
-    }
-    closedir(DIRIN);
+    opendir(my $dh, $data_dir) or die $!;
+    while (my $file = readdir($dh)) { push @filelist, $file if $file =~ m/\.txt$/ }
+    closedir($dh);
 
     for my $file (@filelist) {
-        my $post = load_data("$data_dir/$file");
-        print Dumper($post);
-
-        my $announce = load_announce();
-        my $vars = {
-            title => "$site_name \&gt ".$post->{title},
-            post => $post,
+        my $post     = load_data("$data_dir/$file");
+        my $announce = load_announce($top_dir);
+        (my $newfile = $file) =~ s/\.txt$/.html/;
+        $tt->process('page.html', {
+            title    => $config->{site_name} . ' > ' . $post->{title},
+            post     => $post,
             announce => $announce,
-        };
-
-        print Dumper($vars);
-
-        my $newfile = $file;
-        $newfile =~ s/\.txt/\.html/g;
-        print "$newfile \n";
-        $tt->process('page.html', $vars, "$site_folder/$newfile")
-            || die $tt->error(), "\n";
+            seo      => seo_meta($post, $config, "/$newfile"),
+        }, "$site_folder/$newfile") || die $tt->error();
     }
 }
 
+=head2 gen_archive($tt, $config, $cache)
+
+Renders individual archive post pages (with incremental cache) and the archive
+list page.  Returns an arrayref of all posts, newest-first, for use by
+C<gen_tags>.
+
+=cut
+
 sub gen_archive {
-    my ($tt) = @_;
+    my ($tt, $config, $cache) = @_;
     my @filelist;
-    opendir(DIRIN, $news_dir) or die $!;
-    while (my $file = readdir(DIRIN)) {
-        if ($file =~ m/\.txt$/) {
-            push @filelist, $file;
-        }
-    }
-    closedir(DIRIN);
+    opendir(my $dh, $news_dir) or die $!;
+    while (my $file = readdir($dh)) { push @filelist, $file if $file =~ m/\.txt$/ }
+    closedir($dh);
 
     my @sortlist = sort @filelist;
-    my $total = @sortlist;
-
-    my $count = 0;
-
-    my @allnews;
+    my $total    = scalar @sortlist;
+    my (@allnews, $count);
+    $count = 0;
 
     for my $file (@sortlist) {
-        my $post = load_data("$news_dir/$file");
-        print Dumper($post);
+        (my $newfile = $file) =~ s/\.txt$/.html/;
+        my $srcfile = "$news_dir/$file";
+        my $outfile = "$archive_folder/$newfile";
 
-        my $newfile = $file;
-        $newfile =~ s/\.txt/\.html/g;
-
-        my $startfile = $sortlist[$total-1];
-        my $endfile = $sortlist[0];
-
-        my $preindex = $count+1;
-        if ($count+1 >= $total) {
-            $preindex = $count;
-        } 
-
-        my $nextindex = $count-1;
-        if ($count-1 < 0) {
-            $nextindex = 0;
-        }
-
-        my $prevfile = $sortlist[$preindex];
-        my $nextfile = $sortlist[$nextindex];
-
-        $startfile =~ s/\.txt/\.html/g;
-        $endfile =~ s/\.txt/\.html/g;
-        $prevfile =~ s/\.txt/\.html/g;
-        $nextfile =~ s/\.txt/\.html/g;
-
-        my $vars = {
-            title => "$site_name \&gt Archive \&gt ".$post->{title},
-            post => $post,
-            url => { 
-                front => "/archive/$startfile",
-                end => "/archive/$endfile",
-                prev => "/archive/$prevfile",
-                next => "/archive/$nextfile",
-                home => "/archive/",
-                hometitle => "Archive",
-            },
-        };
-
+        my $post = load_data($srcfile);
         $post->{url} = "/archive/$newfile";
         push @allnews, $post;
 
-        print Dumper($vars);
-
-        print "$newfile \n";
-        $tt->process('archive.html', $vars, "$archive_folder/$newfile")
-            || die $tt->error(), "\n";
-
-        $count ++;
-    }
-
-    my @revesenews;
-    while (my $post = pop(@allnews) ) {
-        push @revesenews, $post;
-    }
-    print Dumper(\@revesenews);
-    my $announce = load_announce();
-    my $vars = {
-            title => "$site_name \&gt Archive",
-            pagetitle => "Archives",
-            news => \@revesenews,
-            announce => $announce,
-        };
-    print Dumper($vars);
-    $tt->process('archive_list.html', $vars, "$archive_folder/index.html")
-            || die $tt->error(), "\n";
-}
-
-sub load_data {
-    my ($filename) = @_;
-    print "$filename\n";
-    my %post;
-
-    my $iscontent = 0;
-
-    open (FILEIN, "<$filename");
-    while (<FILEIN>) {
-        my $line = $_;
-        if ($line =~m/^\/\//) {
+        if (!$force && is_fresh($cache, $srcfile, $outfile)) {
+            print "SKIP $file\n";
+            $count++;
             next;
         }
-        if ($iscontent == 0) {
-            chomp $line;
-            if ($line =~m/^Date:.*/) {
-                my ($key, $value) = split /:/, $line, 2;
-                $post{date} = trim($value); 
-            } 
-            if ($line =~m/^Author:.*/) {
-                my ($key, $value) = split /:/, $line, 2;
-                $post{author} = trim($value);
-            } 
-            if ($line =~m/^Title:.*/) {
-                my ($key, $value) = split /:/, $line, 2;
-                $post{title} = trim($value);
-            }
-            if ($line =~m/^Content:.*/) {
-                my ($key, $value) = split /:/, $line, 2;
-                $post{content} = $value;
-                $iscontent = 1;
-            }
-        } else {
-           $post{content} .= $line; 
-        }
-    };
-    close FILEIN;
-    my $org = $post{content};
-    $post{content} = markdown($org);
-    return \%post;
-}
 
-sub load_announce {
-    my @filelist;
-    opendir(DIRIN, $top_dir) or die $!;
-    while (my $file = readdir(DIRIN)) {
-        if ($file =~ m/\.txt$/) {
-            push @filelist, $file;
-        }
+        my $previndex = ($count - 1 < 0)        ? 0           : $count - 1;   # older post
+        my $nextindex = ($count + 1 >= $total)  ? $total - 1  : $count + 1;   # newer post
+
+        (my $prevfile = $sortlist[$previndex]) =~ s/\.txt$/.html/;
+        (my $nextfile = $sortlist[$nextindex]) =~ s/\.txt$/.html/;
+        (my $startfile = $sortlist[$total - 1]) =~ s/\.txt$/.html/;
+        (my $endfile   = $sortlist[0])          =~ s/\.txt$/.html/;
+
+        $tt->process('archive.html', {
+            title => $config->{site_name} . ' > Archive > ' . $post->{title},
+            post  => $post,
+            url   => {
+                front     => "/archive/$startfile",
+                end       => "/archive/$endfile",
+                prev      => "/archive/$prevfile",
+                next      => "/archive/$nextfile",
+                home      => "/archive/",
+                hometitle => "Archive",
+            },
+            seo => seo_meta($post, $config, "/archive/$newfile"),
+        }, $outfile) || die $tt->error();
+
+        update_cache($cache, $srcfile);
+        $count++;
     }
-    closedir(DIRIN);
-    my @sortlist = sort @filelist;
-    my $filename = pop @sortlist;
 
-    return load_data("$top_dir/$filename");
+    # Archive list — always regenerate
+    my @newest_first = reverse @allnews;
+    my $announce  = load_announce($top_dir);
+    my $seo_post  = { title => $config->{site_name} . ' > Archive', content => '' };
+    $tt->process('archive_list.html', {
+        title     => $config->{site_name} . ' > Archive',
+        pagetitle => 'Archives',
+        news      => \@newest_first,
+        announce  => $announce,
+        seo       => seo_meta($seo_post, $config, '/archive/'),
+    }, "$archive_folder/index.html") || die $tt->error();
+
+    return \@newest_first;  # newest-first for tags
 }
 
-sub trim {
-    my $string = shift;
-    $string =~ s/^\s+//;
-    $string =~ s/\s+$//;
-    return $string;
+=head2 gen_tags($tt, $config, $all_posts)
+
+Collects tags from all posts and renders C<site/tags/index.html> and
+C<site/tags/E<lt>slugE<gt>/index.html> for each tag.
+
+=cut
+
+sub gen_tags {
+    my ($tt, $config, $all_posts) = @_;
+    my $announce = load_announce($top_dir);
+    my $tags = collect_tags(@$all_posts);
+    gen_tag_pages($tt, $tags, $site_folder, $config, $announce);
 }
 
 main();
-
-__END__
-my $tt = Template->new({
-    INCLUDE_PATH => '../template',
-    INTERPOLATE  => 1,
-}) || die "$Template::ERROR\n";
-
-my $vars = {
-    title     => 'Count Edward van Halen',
-    debt     => '3 riffs and a solo',
-    deadline => 'the next chorus',
-    news => [{"title" => "aaa", content=>"ldsuifsd", "author" =>"bbb"} , {"title" =>"1111", content=>"87sdfsdfs", "author" =>"222"} ,
-
-    ],
-    post => {title=>'aaa', author=>'bbb'
-    },
-};
-
-$tt->process('news_section.html', $vars)
-    || die $tt->error(), "\n";
