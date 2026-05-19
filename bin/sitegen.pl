@@ -4,6 +4,7 @@ use warnings;
 use Getopt::Long;
 use Template;
 use YAML::Tiny;
+use File::Path qw(make_path);
 
 use FindBin qw($Bin);
 use lib "$Bin/../lib";
@@ -11,7 +12,7 @@ use lib "$Bin/../lib";
 use Sitegen::DataLoader qw(load_data load_announce);
 use Sitegen::Cache      qw(load_cache save_cache is_fresh update_cache);
 use Sitegen::SEO        qw(seo_meta);
-use Sitegen::Tags       qw(collect_tags tag_slug gen_tag_pages);
+use Sitegen::Tags       qw(collect_tags gen_tag_pages);
 
 my $force = 0;
 GetOptions('force' => \$force);
@@ -56,6 +57,8 @@ sub main {
         INCLUDE_PATH => "$base_dir/template",
         INTERPOLATE  => 0,
     }) || die "$Template::ERROR\n";
+
+    make_path($site_folder, $archive_folder);
 
     gen_home($tt, $config);
     gen_pages($tt, $config);
@@ -157,11 +160,11 @@ sub gen_archive {
             next;
         }
 
-        my $preindex  = ($count + 1 >= $total) ? $count     : $count + 1;
-        my $nextindex = ($count - 1 < 0)       ? 0          : $count - 1;
+        my $previndex = ($count - 1 < 0)        ? 0           : $count - 1;   # older post
+        my $nextindex = ($count + 1 >= $total)  ? $total - 1  : $count + 1;   # newer post
 
-        (my $prevfile  = $sortlist[$preindex])  =~ s/\.txt$/.html/;
-        (my $nextfile2 = $sortlist[$nextindex]) =~ s/\.txt$/.html/;
+        (my $prevfile = $sortlist[$previndex]) =~ s/\.txt$/.html/;
+        (my $nextfile = $sortlist[$nextindex]) =~ s/\.txt$/.html/;
         (my $startfile = $sortlist[$total - 1]) =~ s/\.txt$/.html/;
         (my $endfile   = $sortlist[0])          =~ s/\.txt$/.html/;
 
@@ -172,7 +175,7 @@ sub gen_archive {
                 front     => "/archive/$startfile",
                 end       => "/archive/$endfile",
                 prev      => "/archive/$prevfile",
-                next      => "/archive/$nextfile2",
+                next      => "/archive/$nextfile",
                 home      => "/archive/",
                 hometitle => "Archive",
             },
@@ -184,18 +187,18 @@ sub gen_archive {
     }
 
     # Archive list — always regenerate
-    my @reversed  = reverse @allnews;
+    my @newest_first = reverse @allnews;
     my $announce  = load_announce($top_dir);
     my $seo_post  = { title => $config->{site_name} . ' > Archive', content => '' };
     $tt->process('archive_list.html', {
         title     => $config->{site_name} . ' > Archive',
         pagetitle => 'Archives',
-        news      => \@reversed,
+        news      => \@newest_first,
         announce  => $announce,
         seo       => seo_meta($seo_post, $config, '/archive/'),
     }, "$archive_folder/index.html") || die $tt->error();
 
-    return [reverse @allnews];  # newest-first for tags
+    return \@newest_first;  # newest-first for tags
 }
 
 =head2 gen_tags($tt, $config, $all_posts)
