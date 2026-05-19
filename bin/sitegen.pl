@@ -210,8 +210,9 @@ C<site/tags/E<lt>slugE<gt>/index.html> for each tag.
 
 sub gen_tags {
     my ($tt, $config, $all_posts) = @_;
+    my $announce = load_announce($top_dir);
     my $tags = collect_tags(@$all_posts);
-    gen_tag_pages($tt, $tags, $site_folder, $config);
+    gen_tag_pages($tt, $tags, $site_folder, $config, $announce);
 }
 
 main();

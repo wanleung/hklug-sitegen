@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 use File::Path qw(make_path);
+use Sitegen::SEO qw(seo_meta);
 
 our @EXPORT_OK = qw(collect_tags tag_slug gen_tag_pages);
 
@@ -26,7 +27,7 @@ sub collect_tags {
 }
 
 sub gen_tag_pages {
-    my ($tt, $tags, $site_folder, $config) = @_;
+    my ($tt, $tags, $site_folder, $config, $announce) = @_;
     my $tags_folder = "$site_folder/tags";
     make_path($tags_folder);
 
@@ -35,7 +36,15 @@ sub gen_tag_pages {
     } sort keys %$tags;
 
     $tt->process('tag_list.html',
-        { title => $config->{site_name} . ' > Tags', tag_list => \@tag_list },
+        {
+            title    => $config->{site_name} . ' > Tags',
+            tag_list => \@tag_list,
+            announce => $announce,
+            seo      => seo_meta(
+                { title => $config->{site_name} . ' > Tags', content => '' },
+                $config, '/tags/'
+            ),
+        },
         "$tags_folder/index.html"
     ) || die $tt->error();
 
@@ -45,10 +54,15 @@ sub gen_tag_pages {
         make_path($tag_dir);
         $tt->process('tag_page.html',
             {
-                title => $config->{site_name} . " > Tag: $tag",
-                tag   => $tag,
-                slug  => $slug,
-                posts => $tags->{$tag},
+                title    => $config->{site_name} . " > Tag: $tag",
+                tag      => $tag,
+                slug     => $slug,
+                posts    => $tags->{$tag},
+                announce => $announce,
+                seo      => seo_meta(
+                    { title => $config->{site_name} . " > Tag: $tag", content => '' },
+                    $config, "/tags/$slug/"
+                ),
             },
             "$tag_dir/index.html"
         ) || die $tt->error();
