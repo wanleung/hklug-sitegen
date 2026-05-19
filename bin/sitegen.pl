@@ -42,6 +42,13 @@ file has not changed are skipped.
 
 =cut
 
+sub tt_process {
+    my ($tt, $template, $vars, $outfile) = @_;
+    open(my $fh, '>:encoding(UTF-8)', $outfile) or die "Cannot open $outfile: $!";
+    $tt->process($template, $vars, $fh) or die $tt->error();
+    close $fh or die "Cannot write $outfile: $!";
+}
+
 sub load_config {
     die "Missing config file: $config_file\n" unless -f $config_file;
     my $yaml = YAML::Tiny->read($config_file)
@@ -91,12 +98,12 @@ sub gen_home {
 
     my $announce = load_announce($top_dir);
     my $seo_post = { title => $config->{site_name} . ' > News', content => '' };
-    $tt->process('news.html', {
+    tt_process($tt, 'news.html', {
         title    => $config->{site_name} . ' > News',
         news     => \@news_posts,
         announce => $announce,
         seo      => seo_meta($seo_post, $config, '/'),
-    }, "$site_folder/index.html") || die $tt->error();
+    }, "$site_folder/index.html");
 }
 
 =head2 gen_pages($tt, $config)
@@ -116,12 +123,12 @@ sub gen_pages {
         my $post     = load_data("$data_dir/$file");
         my $announce = load_announce($top_dir);
         (my $newfile = $file) =~ s/\.txt$/.html/;
-        $tt->process('page.html', {
+        tt_process($tt, 'page.html', {
             title    => $config->{site_name} . ' > ' . $post->{title},
             post     => $post,
             announce => $announce,
             seo      => seo_meta($post, $config, "/$newfile"),
-        }, "$site_folder/$newfile") || die $tt->error();
+        }, "$site_folder/$newfile");
     }
 }
 
@@ -168,7 +175,7 @@ sub gen_archive {
         (my $startfile = $sortlist[$total - 1]) =~ s/\.txt$/.html/;
         (my $endfile   = $sortlist[0])          =~ s/\.txt$/.html/;
 
-        $tt->process('archive.html', {
+        tt_process($tt, 'archive.html', {
             title => $config->{site_name} . ' > Archive > ' . $post->{title},
             post  => $post,
             url   => {
@@ -180,7 +187,7 @@ sub gen_archive {
                 hometitle => "Archive",
             },
             seo => seo_meta($post, $config, "/archive/$newfile"),
-        }, $outfile) || die $tt->error();
+        }, $outfile);
 
         update_cache($cache, $srcfile);
         $count++;
@@ -190,13 +197,13 @@ sub gen_archive {
     my @newest_first = reverse @allnews;
     my $announce  = load_announce($top_dir);
     my $seo_post  = { title => $config->{site_name} . ' > Archive', content => '' };
-    $tt->process('archive_list.html', {
+    tt_process($tt, 'archive_list.html', {
         title     => $config->{site_name} . ' > Archive',
         pagetitle => 'Archives',
         news      => \@newest_first,
         announce  => $announce,
         seo       => seo_meta($seo_post, $config, '/archive/'),
-    }, "$archive_folder/index.html") || die $tt->error();
+    }, "$archive_folder/index.html");
 
     return \@newest_first;  # newest-first for tags
 }

@@ -8,6 +8,13 @@ use Sitegen::SEO qw(seo_meta);
 
 our @EXPORT_OK = qw(collect_tags tag_slug gen_tag_pages);
 
+sub _tt_process {
+    my ($tt, $template, $vars, $outfile) = @_;
+    open(my $fh, '>:encoding(UTF-8)', $outfile) or die "Cannot open $outfile: $!";
+    $tt->process($template, $vars, $fh) or die $tt->error();
+    close $fh or die "Cannot write $outfile: $!";
+}
+
 sub tag_slug {
     my ($tag) = @_;
     (my $slug = lc $tag) =~ s/\s+/-/g;
@@ -35,7 +42,7 @@ sub gen_tag_pages {
         { name => $_, slug => tag_slug($_), count => scalar @{$tags->{$_}} }
     } sort keys %$tags;
 
-    $tt->process('tag_list.html',
+    _tt_process($tt, 'tag_list.html',
         {
             title    => $config->{site_name} . ' > Tags',
             tag_list => \@tag_list,
@@ -46,13 +53,13 @@ sub gen_tag_pages {
             ),
         },
         "$tags_folder/index.html"
-    ) || die $tt->error();
+    );
 
     for my $tag (keys %$tags) {
         my $slug    = tag_slug($tag);
         my $tag_dir = "$tags_folder/$slug";
         make_path($tag_dir);
-        $tt->process('tag_page.html',
+        _tt_process($tt, 'tag_page.html',
             {
                 title    => $config->{site_name} . " > Tag: $tag",
                 tag      => $tag,
@@ -65,7 +72,7 @@ sub gen_tag_pages {
                 ),
             },
             "$tag_dir/index.html"
-        ) || die $tt->error();
+        );
     }
 }
 
