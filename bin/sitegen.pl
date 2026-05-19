@@ -73,6 +73,7 @@ sub main {
     gen_tags($tt, $config, $all_posts);
 
     save_cache($cache_file, $cache);
+    print "Done.\n";
 }
 
 =head2 gen_home($tt, $config)
@@ -188,6 +189,7 @@ sub gen_archive {
             },
             seo => seo_meta($post, $config, "/archive/$newfile"),
         }, $outfile);
+        print "GEN $file\n";
 
         update_cache($cache, $srcfile);
         $count++;
