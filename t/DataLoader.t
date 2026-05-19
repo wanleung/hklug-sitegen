@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 12;
+use Test::More tests => 13;
 use File::Temp qw(tempdir);
 use lib 'lib';
 
@@ -12,7 +12,7 @@ my $tmpdir = tempdir(CLEANUP => 1);
 # Helper: write a temp .txt file
 sub write_txt {
     my ($dir, $name, $content) = @_;
-    open(my $fh, '>', "$dir/$name") or die $!;
+    open(my $fh, '>:encoding(UTF-8)', "$dir/$name") or die $!;
     print $fh $content;
     close $fh;
     return "$dir/$name";
@@ -85,3 +85,8 @@ like($post4->{content}, qr/this should NOT be stripped/, '// lines in content bo
 my $f5 = write_txt($tmpdir, 'test5.txt', "Date: 2024-05-01\nAuthor: A\nTitle: T\nTags:\nContent:\nBody.\n");
 my $post5 = load_data($f5);
 is(scalar @{$post5->{tags}}, 0, 'Tags: with no value gives empty array');
+
+# Test 8: load_announce dies on empty dir
+my $emptydir = "$tmpdir/empty"; mkdir $emptydir;
+eval { load_announce($emptydir) };
+like($@, qr/No .txt files found/, 'load_announce dies on empty dir');

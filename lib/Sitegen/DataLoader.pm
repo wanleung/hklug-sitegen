@@ -82,7 +82,7 @@ Parses hklug-sitegen article files with the following format:
   Content:
   Article body in Markdown format.
 
-Comments prefixed with C<//>are stripped from the header section only.
+Comments prefixed with C<//> are stripped from the header section only.
 The content body is parsed as Markdown and returned as HTML.
 
 =cut
