@@ -51,7 +51,10 @@ sub tt_process {
 
 sub load_config {
     die "Missing config file: $config_file\n" unless -f $config_file;
-    my $yaml = YAML::Tiny->read($config_file)
+    open(my $fh, '<:encoding(UTF-8)', $config_file) or die "Cannot open $config_file: $!";
+    my $content = do { local $/; <$fh> };
+    close $fh;
+    my $yaml = YAML::Tiny->read_string($content)
         or die "Cannot parse $config_file: " . YAML::Tiny->errstr . "\n";
     return $yaml->[0];
 }
