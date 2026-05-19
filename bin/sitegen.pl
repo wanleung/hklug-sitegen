@@ -66,6 +66,7 @@ sub main {
     my $tt = Template->new({
         INCLUDE_PATH => "$base_dir/template",
         INTERPOLATE  => 0,
+        ENCODING     => 'utf8',
     }) || die "$Template::ERROR\n";
 
     make_path($site_folder, $archive_folder);
