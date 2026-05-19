@@ -56,6 +56,8 @@ sub load_announce {
     my ($top_dir, $config) = @_;
     $config //= {};
     my $flags = $config->{announcements} // {};
+    # YAML::Tiny parses `false` as the string "false" (truthy in Perl), so normalise
+    $flags = { map { $_ => ($flags->{$_} && $flags->{$_} ne 'false' ? 1 : 0) } keys %$flags };
 
     my @announces;
 
