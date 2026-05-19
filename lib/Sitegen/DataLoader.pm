@@ -23,11 +23,19 @@ sub load_data {
             elsif ($line =~ m/^Title:\s*(.+)$/)   { $post{title}  = $1 }
             elsif ($line =~ m/^Tags:\s*(.*)$/) {
                 my $raw = $1;
-                $post{tags} = [
+                my @raw_tags =
                     map  { my $t = $_; $t =~ s/^\s+|\s+$//g; lc $t }
                     grep { /\S/ }
-                    split(/,/, $raw)
-                ];
+                    split(/,/, $raw);
+                my @valid_tags;
+                for my $t (@raw_tags) {
+                    if ($t =~ m{[/\\]|\.\.}) {
+                        warn "Skipping unsafe tag '$t' in $filename\n";
+                    } else {
+                        push @valid_tags, $t;
+                    }
+                }
+                $post{tags} = \@valid_tags;
             }
             elsif ($line =~ m/^Content:(.*)$/) {
                 $post{content} = $1;

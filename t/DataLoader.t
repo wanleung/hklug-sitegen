@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 13;
+use Test::More tests => 15;
 use File::Temp qw(tempdir);
 use lib 'lib';
 
@@ -90,3 +90,11 @@ is(scalar @{$post5->{tags}}, 0, 'Tags: with no value gives empty array');
 my $emptydir = "$tmpdir/empty"; mkdir $emptydir;
 eval { load_announce($emptydir) };
 like($@, qr/No .txt files found/, 'load_announce dies on empty dir');
+
+# Test 9: unsafe tags (path traversal) are skipped with a warning
+my $f6 = write_txt($tmpdir, 'test6.txt', "Date: 2024-06-01\nAuthor: A\nTitle: T\nTags: linux, ../evil, good-tag, /etc/passwd\nContent:\nBody.\n");
+my @warnings;
+local $SIG{__WARN__} = sub { push @warnings, @_ };
+my $post6 = load_data($f6);
+is_deeply($post6->{tags}, ['linux', 'good-tag'], 'unsafe tags skipped');
+is(scalar @warnings, 2, 'two warnings emitted for two unsafe tags');
