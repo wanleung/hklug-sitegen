@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More;
 use File::Temp qw(tempdir tempfile);
 use lib 'lib';
 
@@ -30,12 +30,14 @@ is(scalar keys %$bad, 0, 'corrupt cache is empty');
 
 # Test 4: update_cache + is_fresh
 my $srcfile = "$tmpdir/article.txt";
-open($fh, '>', $srcfile) or die $!;
-print $fh "Date: 2024-01-01\nContent:\nHello.";
-close $fh;
+open(my $src_fh, '>', $srcfile) or die $!;
+print $src_fh "Date: 2024-01-01\nContent:\nHello.";
+close $src_fh;
 
 my $outfile = "$tmpdir/article.html";
-open($fh, '>', $outfile) or die $!; print $fh "<p>Hello.</p>"; close $fh;
+open(my $out_fh, '>', $outfile) or die $!;
+print $out_fh "<p>Hello.</p>";
+close $out_fh;
 
 my $c = {};
 is(is_fresh($c, $srcfile, $outfile), 0, 'not fresh before update_cache');
@@ -46,3 +48,18 @@ is(is_fresh($c, $srcfile, $outfile), 1, 'fresh after update_cache');
 # Test 5: is_fresh returns 0 when output file missing
 unlink $outfile;
 is(is_fresh($c, $srcfile, $outfile), 0, 'not fresh when output file missing');
+
+# Test 6: is_fresh returns 0 when source file missing
+is(is_fresh($c, "$tmpdir/nonexistent.txt", $outfile), 0, 'not fresh when source file missing');
+
+# Test 7: is_fresh returns 0 after source file content changes
+open(my $recreate_fh, '>', $outfile) or die $!;
+print $recreate_fh "<p>Hello.</p>";
+close $recreate_fh;
+
+open(my $mod_fh, '>', $srcfile) or die $!;
+print $mod_fh "Different content entirely.";
+close $mod_fh;
+is(is_fresh($c, $srcfile, $outfile), 0, 'not fresh after source content changes');
+
+done_testing();
