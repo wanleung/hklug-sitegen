@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 12;
 use File::Temp qw(tempdir);
 use lib 'lib';
 
@@ -67,3 +67,21 @@ Body.
 END
 my $post3 = load_data($f3);
 is($post3->{date}, '2024-03-01 09:00', 'comment lines skipped');
+
+# Test 6: // lines in content body are preserved
+my $f4 = write_txt($tmpdir, 'test4.txt', <<'END');
+Date: 2024-04-01
+Author: Bot
+Title: Code Post
+Content:
+Line one.
+// this should NOT be stripped from content
+Line two.
+END
+my $post4 = load_data($f4);
+like($post4->{content}, qr/this should NOT be stripped/, '// lines in content body are preserved');
+
+# Test 7: Tags: with no value gives empty array
+my $f5 = write_txt($tmpdir, 'test5.txt', "Date: 2024-05-01\nAuthor: A\nTitle: T\nTags:\nContent:\nBody.\n");
+my $post5 = load_data($f5);
+is(scalar @{$post5->{tags}}, 0, 'Tags: with no value gives empty array');
