@@ -2,9 +2,6 @@
 use strict;
 use warnings;
 use Test::More;
-use File::Temp qw(tempdir);
-use File::Path qw(make_path);
-use File::Spec;
 use lib 'lib';
 
 # Run sitegen to produce site/ output
