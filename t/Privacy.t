@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use utf8;
 use Test::More;
 use lib 'lib';
 
@@ -22,7 +23,7 @@ SKIP: {
     ok($content =~ /Privacy Policy/, 'privacy.html contains English title');
     ok($content =~ /私隱政策/, 'privacy.html contains Chinese title');
     ok($content =~ /Hong Kong Linux User Group/, 'privacy.html mentions HKLUG');
-    ok($content =~ /no personal data/i || $content =~ /不收集.*個人資料|個人資料.*不收集/,
+    ok($content =~ /do.*not.*collect.*personal data/i || $content =~ /不收集.*個人資料|不會.*收集.*個人資料/,
         'privacy.html states no personal data collected');
     ok($content =~ /info\@linux\.org\.hk/, 'privacy.html contains contact email');
     ok($content =~ /facebook\.com\/privacy/, 'privacy.html links to Meta privacy policy');
