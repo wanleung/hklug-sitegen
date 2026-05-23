@@ -1,0 +1,29 @@
+[% WRAPPER frame_noannounce.html
+   title = 'Community Announcements'
+   page_url = site_url _ '/announce/'
+%]
+
+<div class="row">
+  <div class="large-12 columns">
+    <h1>Community Announcements</h1>
+    
+    [% IF posts.size %]
+    <div class="announcements-list">
+      [% FOREACH post IN posts %]
+      <div class="announce-item" style="margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #ddd;">
+        <h3><a href="/announce/[% post.slug %].html">[% post.title %]</a></h3>
+        <p class="meta" style="color: #666; margin-bottom: 0.5rem;">[% post.date %]</p>
+        [% IF post.excerpt %]
+        <p>[% post.excerpt %]</p>
+        [% END %]
+        <a href="/announce/[% post.slug %].html" class="read-more">Read more &rarr;</a>
+      </div>
+      [% END %]
+    </div>
+    [% ELSE %]
+    <p>No announcements at this time.</p>
+    [% END %]
+  </div>
+</div>
+
+[% END %]
