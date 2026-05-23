@@ -7,8 +7,53 @@ use FindBin qw($Bin);
 use lib "$Bin/../lib";
 use XML::Feed;
 use Data::Dumper;
+use HTTP::Tiny;
+use File::Path qw(make_path);
 
 use DateTime::Format::Strptime;
+
+# Fetch the og:image from a URL and save it to static/images/<slug>.<ext>.
+# Returns the relative path "images/<slug>.<ext>" on success, or undef on failure.
+sub fetch_og_image {
+    my ($url, $slug) = @_;
+    my $ua = HTTP::Tiny->new(timeout => 10);
+
+    # Fetch the article page
+    my $resp = $ua->get($url);
+    return unless $resp->{success};
+
+    my $html = $resp->{content};
+
+    # Extract og:image — handle both attribute orderings
+    my ($og_url) = ($html =~ /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i);
+    unless ($og_url) {
+        ($og_url) = ($html =~ /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i);
+    }
+    return unless $og_url;
+
+    # Download the image
+    my $img_resp = $ua->get($og_url);
+    return unless $img_resp->{success};
+
+    my $ct = $img_resp->{headers}{'content-type'} // '';
+    return unless $ct =~ m{^image/};
+
+    my $ext = $ct =~ /jpeg|jpg/i ? 'jpg'
+            : $ct =~ /png/i      ? 'png'
+            : $ct =~ /gif/i      ? 'gif'
+            : $ct =~ /webp/i     ? 'webp'
+            :                      'jpg';
+
+    my $img_dir = "$Bin/../static/images";
+    make_path($img_dir);
+
+    my $img_file = "$img_dir/$slug.$ext";
+    open(my $fh, '>:raw', $img_file) or return;
+    print $fh $img_resp->{content};
+    close $fh;
+
+    return "images/$slug.$ext";
+}
 
 our $data_path = "$Bin/../data/top";
 our $template = "$Bin/../TEMPLATE.txt";
@@ -72,6 +117,13 @@ sub create_post {
 
     my $datefile = "$ymd2-$hms2";
     my $date = "$ymd1 $hms1";
+
+    # Try to fetch OG image from the article source URL
+    my $image_line = '';
+    if (my $img_rel = fetch_og_image($entry->{'link'}, $datefile)) {
+        $image_line = "Image: $img_rel";
+        print "  Fetched OG image: $img_rel\n";
+    }
     #copy("$template", "$data_path/$datefile.txt");
     #system('/usr/bin/perl', '-p', '-i', '-e', '"s/\[%DATE\]/'.$date.'/g"', "$data_path/$datefile.txt");
     open FILEIN, "<:utf8", $template;
@@ -81,6 +133,7 @@ sub create_post {
         $line =~ s/\[%DATE\]/$date/;
         $line =~ s/\[%AUTHOR\]/$author/;
         $line =~ s/\[%TITLE\]/$title/;
+        $line =~ s/\[%IMAGE\]/$image_line/;
         $line =~ s/\[%CONTENT\]/$content/; 
         print $line;
         print FILEOUT $line;
