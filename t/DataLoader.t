@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 30;
+use Test::More tests => 31;
 use File::Temp qw(tempdir);
 use lib 'lib';
 
@@ -57,25 +57,29 @@ my $announces = load_announce($topdir);
 is(ref($announces), 'ARRAY', 'load_announce returns arrayref');
 is($announces->[0]{title}, 'New', 'load_announce returns most recent HKLUG file');
 
-# Test 4b: oshk and hkoscon files included when present
+# Test 4b: with more than 3 files, returns exactly 3 most recent
 write_txt($topdir, 'oshk-latest.txt',   "Date: 2026-01-01\nAuthor: OSHK\nTitle: OSHK Post\nContent:\nBody.");
 write_txt($topdir, 'hkoscon-latest.txt',"Date: 2026-01-01\nAuthor: HKOSCon\nTitle: HKOSCon Post\nContent:\nBody.");
 my $announces2 = load_announce($topdir);
-is(scalar @$announces2, 3, 'load_announce returns 3 items when all sources present');
-is($announces2->[1]{title}, 'OSHK Post',    'oshk-latest.txt included as second item');
-is($announces2->[2]{title}, 'HKOSCon Post', 'hkoscon-latest.txt included as third item');
+is(scalar @$announces2, 3, 'load_announce returns max 3 items from 4 files');
+is($announces2->[0]{title}, 'OSHK Post',    'most recent file first (oshk-latest sorts last)');
+is($announces2->[1]{title}, 'HKOSCon Post', 'second most recent');
+is($announces2->[2]{title}, 'New',          'third most recent (002.txt)');
 
-# Test 4c: config flags disable sources
-my $announces3 = load_announce($topdir, { announcements => { hklug => 1, oshk => 0, hkoscon => 0 } });
-is(scalar @$announces3, 1, 'config flags disable oshk and hkoscon');
-is($announces3->[0]{title}, 'New', 'only HKLUG post returned when oshk/hkoscon disabled');
-
-# Test 4d: empty top dir with no dated files still returns oshk/hkoscon if present
+# Test 4c: fewer than 3 files returns all files
 my $topdir2 = "$tmpdir/top2"; mkdir $topdir2;
-write_txt($topdir2, 'oshk-latest.txt', "Date: 2026-01-01\nAuthor: OSHK\nTitle: Only OSHK\nContent:\nBody.");
-my $announces4 = load_announce($topdir2);
-is(scalar @$announces4, 1, 'no HKLUG file: only oshk returned');
-is($announces4->[0]{title}, 'Only OSHK', 'oshk post title correct when no HKLUG file');
+write_txt($topdir2, 'aaa.txt', "Date: 2026-01-01\nAuthor: A\nTitle: First\nContent:\nBody.");
+write_txt($topdir2, 'bbb.txt', "Date: 2026-02-01\nAuthor: B\nTitle: Second\nContent:\nBody.");
+my $announces3 = load_announce($topdir2);
+is(scalar @$announces3, 2, 'fewer than 3 files returns all files');
+is($announces3->[0]{title}, 'Second', 'most recent first when only 2 files');
+
+# Test 4d: single file returns 1 item
+my $topdir3 = "$tmpdir/top3"; mkdir $topdir3;
+write_txt($topdir3, 'single.txt', "Date: 2026-03-01\nAuthor: A\nTitle: Lone Post\nContent:\nBody.");
+my $announces4 = load_announce($topdir3);
+is(scalar @$announces4, 1, 'single file returns 1 item');
+is($announces4->[0]{title}, 'Lone Post', 'title correct for single file');
 
 # Test 5: comment lines skipped
 my $f3 = write_txt($tmpdir, 'test3.txt', <<'END');

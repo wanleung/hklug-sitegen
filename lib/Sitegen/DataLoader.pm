@@ -67,40 +67,16 @@ sub load_data {
 sub load_announce {
     my ($top_dir, $config) = @_;
     $config //= {};
-    my $flags = $config->{announcements} // {};
-    # YAML::Tiny parses `false` as the string "false" (truthy in Perl), so normalise
-    $flags = { map { $_ => ($flags->{$_} && $flags->{$_} ne 'false' ? 1 : 0) } keys %$flags };
+    my $max = $config->{max_announces} // 3;
 
-    my @announces;
+    opendir(my $dh, $top_dir) or die "Cannot open $top_dir: $!";
+    my @files = sort grep { /\.txt$/ } readdir($dh);
+    closedir($dh);
 
-    # HKLUG: latest lexicographic dated .txt file (anything not matching a source key)
-    if ($flags->{hklug} // 1) {
-        my @dated;
-        opendir(my $dh, $top_dir) or die "Cannot open $top_dir: $!";
-        while (my $f = readdir($dh)) {
-            push @dated, $f
-                if $f =~ m/\.txt$/ && $f !~ m/^(oshk|hkoscon)-latest\.txt$/;
-        }
-        closedir($dh);
-        if (@dated) {
-            my $latest = (sort @dated)[-1];
-            push @announces, load_data("$top_dir/$latest");
-        }
-    }
-
-    # Open Source Hong Kong
-    if ($flags->{oshk} // 1) {
-        my $f = "$top_dir/oshk-latest.txt";
-        push @announces, load_data($f) if -f $f;
-    }
-
-    # Hong Kong Open Source Conference
-    if ($flags->{hkoscon} // 1) {
-        my $f = "$top_dir/hkoscon-latest.txt";
-        push @announces, load_data($f) if -f $f;
-    }
-
-    return \@announces;
+    # Return the most recent $max announcements (files are date-named, sort desc)
+    my @recent = @files > $max ? @files[-$max .. -1] : @files;
+    my @latest = map { load_data("$top_dir/$_") } reverse @recent;
+    return \@latest;
 }
 
 =head1 NAME
