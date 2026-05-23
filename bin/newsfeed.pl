@@ -10,7 +10,7 @@ use Data::Dumper;
 
 use DateTime::Format::Strptime;
 
-our $data_path = "$Bin/../data/news";
+our $data_path = "$Bin/../data/top";
 our $template = "$Bin/../TEMPLATE.txt";
 
 our $news_feed_hash = { 
