@@ -23,6 +23,7 @@ our $top_dir        = "$data_dir/top";
 our $news_dir       = "$data_dir/news";
 our $site_folder    = "$base_dir/site";
 our $archive_folder = "$site_folder/archive";
+our $announce_folder = "$site_folder/announce";
 our $cache_file     = "$data_dir/.sitegen-cache.json";
 our $config_file    = "$data_dir/sitegen.yaml";
 
@@ -69,10 +70,11 @@ sub main {
         ENCODING     => 'utf8',
     }) || die "$Template::ERROR\n";
 
-    make_path($site_folder, $archive_folder);
+    make_path($site_folder, $archive_folder, $announce_folder);
 
     gen_home($tt, $config);
     gen_pages($tt, $config);
+    gen_announcements($tt, $config);
     my $all_posts = gen_archive($tt, $config, $cache);
     gen_tags($tt, $config, $all_posts);
 
@@ -82,7 +84,7 @@ sub main {
 
 =head2 gen_home($tt, $config)
 
-Renders the site homepage (C<index.html>) from the five most recent news posts.
+Renders the site homepage (C<index.html>) from the eight most recent news posts.
 
 =cut
 
@@ -96,12 +98,18 @@ sub gen_home {
     my $total    = scalar @sortlist;
 
     my @news_posts;
-    for my $i (1..5) {
+    for my $i (1..8) {
         last if ($total - $i < 0);
-        push @news_posts, load_data("$news_dir/$sortlist[$total - $i]");
+        my $post = load_data("$news_dir/$sortlist[$total - $i]");
+        $post->{url} = "/archive/$post->{slug}.html";
+        push @news_posts, $post;
     }
 
     my $announces = load_announce($top_dir, $config);
+    for my $post (@$announces) {
+        $post->{url} = "/announce/$post->{slug}.html";
+    }
+
     my $seo_post = { title => $config->{site_name} . ' > News', content => '' };
     tt_process($tt, 'news.html', {
         title     => $config->{site_name} . ' > News',
@@ -212,6 +220,52 @@ sub gen_archive {
     }, "$archive_folder/index.html");
 
     return \@newest_first;  # newest-first for tags
+}
+
+=head2 gen_announcements($tt, $config)
+
+Renders individual announcement pages and the announcement list page.
+Announcements are read from C<data/top/> and output to C<site/announce/>.
+
+=cut
+
+sub gen_announcements {
+    my ($tt, $config) = @_;
+    my @filelist;
+    opendir(my $dh, $top_dir) or die $!;
+    while (my $file = readdir($dh)) { push @filelist, $file if $file =~ m/\.txt$/ }
+    closedir($dh);
+
+    my @sortlist = sort @filelist;
+    my $total    = scalar @sortlist;
+    my @all_announces;
+
+    for my $file (@sortlist) {
+        my $srcfile = "$top_dir/$file";
+        my $post = load_data($srcfile);
+        $post->{url} = "/announce/$post->{slug}.html";
+        push @all_announces, $post;
+
+        my $outfile = "$announce_folder/$post->{slug}.html";
+        tt_process($tt, 'announce_page.html', {
+            title => $config->{site_name} . ' > Announcements > ' . $post->{title},
+            post  => $post,
+            seo   => seo_meta($post, $config, "/announce/$post->{slug}.html"),
+        }, $outfile);
+        print "GEN announce $file\n";
+    }
+
+    # Announcement list — always regenerate
+    my @newest_first = reverse @all_announces;
+    my $announces = load_announce($top_dir, $config);
+    my $seo_post  = { title => $config->{site_name} . ' > Announcements', content => '' };
+    tt_process($tt, 'announce_list.html', {
+        title     => $config->{site_name} . ' > Announcements',
+        pagetitle => 'Announcements',
+        posts     => \@newest_first,
+        announces => $announces,
+        seo       => seo_meta($seo_post, $config, '/announce/'),
+    }, "$announce_folder/index.html");
 }
 
 =head2 gen_tags($tt, $config, $all_posts)
