@@ -17,4 +17,4 @@ Content:
 <p>轉向 BPF 驅動的 eviction 代表了從靜態 <code>sysctl</code> 調節邁向軟件定義、感知工作負載的記憶體管理的策略性演進。傳統的 page cache heuristics 無法有效應對異質、containerized 環境的需求，而 BPF sandboxing 提供了一個動態替代方案，無需 kernel patches 或重啟即可運作。然而，效能提升必須與 hot path 延遲風險作權衡：自訂 eviction 邏輯可顯著減少 I/O 瓶頸，但將可執行程式碼注入關鍵內核路徑，在 production 部署前需要嚴謹的優化。</p>
 <p>在該功能可合併至 mainline 之前，仍有數個待解決的問題。開發人員必須定義穩定的 API 以進行策略附加和生命週期管理，建立解決衝突的機制（當多個策略針對重疊的文件類型時），並在自訂策略失效或超出資源限制時實現自動回退至預設 heuristics。社群預計還將提供參考策略模板和 user-space 工具，以降低採用門檻。廣泛的企業採用將取決於這些抽象化和安全網——operations 團隊需要實用的工具來彌補內核開發與日常基礎設施管理之間的差距。</p>
 <p>如提案按計劃推進，Linux 發行版或可在接下來兩個內核發布週期內開始提供支援 BPF 的 page cache 調節功能。對於在 Linux 上運行 PostgreSQL、MongoDB 或自訂 caching layers 的企業而言，能夠以編程方式控制哪些數據保留在記憶體中、哪些被 eviction，將直接轉化為降低基礎設施成本和更可預測的應用延遲。追蹤三個待完成的工程里程碑——穩定 API、衝突解決和自動回退——將是衡量邁向 production readiness 和 mainline inclusion 進度的關鍵。</p>
-<p><a href="https://lwn.net/Articles/1073103/" target="_blank" rel="noopener">原文連結 / Original Article</a></p>
+<p><a href="https://lwn.net/Articles/1073103/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
