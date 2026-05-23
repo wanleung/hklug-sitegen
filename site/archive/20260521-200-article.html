@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<!-- header start -->
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hong Kong Linux User Group - 香港Linux用家協會(HKLUG) &gt; Archive &gt; OpenBSD 7.9 Introduces Hybrid CPU Scheduling and Scoped Process Sandboxing</title>
+    
+    <meta name="description" content="The OpenBSD Project has officially shipped version 7.9, delivering a focused set of kernel and userland improvements that reinforce the operating system's long-" />
+    <meta property="og:title" content="OpenBSD 7.9 Introduces Hybrid CPU Scheduling and Scoped Process Sandboxing" />
+    <meta property="og:description" content="The OpenBSD Project has officially shipped version 7.9, delivering a focused set of kernel and userland improvements that reinforce the operating system's long-" />
+    <meta property="og:url" content="https://www.linux.org.hk/archive/20260521-200-article.html" />
+    <link rel="canonical" href="https://www.linux.org.hk/archive/20260521-200-article.html" />
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/main.css?v=20260523b" />
+  </head>
+  <body>
+
+  <!-- menu start -->
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-0">
+  <div class="container">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="https://medium.com/hong-kong-linux-user-group">Technical Articles</a></li>
+        <li class="nav-item"><a class="nav-link" href="https://www.facebook.com/groups/hklug/">Discussion Forum</a></li>
+        <li class="nav-item"><a class="nav-link" href="/">News</a></li>
+        <li class="nav-item"><a class="nav-link" href="/announce/">Announcements</a></li>
+        <li class="nav-item"><a class="nav-link" href="/archive/">Archive</a></li>
+        <li class="nav-item"><a class="nav-link" href="/about.html">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="/contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- menu end -->
+
+
+  <div class="site-branding">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-auto">
+          <a href="/"><img src="/images/logo.png" alt="HKLUG" style="max-height:64px;" /></a>
+        </div>
+        <div class="col">
+          <h2 class="mb-0">Hong Kong Linux User Group &nbsp;香港Linux用家協會 (HKLUG)</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- header end -->
+
+
+<div class="container py-4">
+<div class="row">
+<div class="col-12" role="content">
+
+
+  <div class="article-page">
+      <!-- post nav start -->
+  <nav aria-label="Article navigation" class="my-3">
+    <ul class="pagination justify-content-center flex-wrap">
+      <li class="page-item"><a class="page-link" href="/archive/20260522-294-international-law-enforcement-shuts-down.html">&laquo;&laquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20260521-199-article.html">&laquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/">Archive</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20260521-202-new-modular-linux-malware-showboat-targe.html">&raquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20120717-182938.html">&raquo;&raquo;</a></li>
+    </ul>
+  </nav>
+  <!-- post nav end -->
+
+    <hr class="my-3" />
+      <!-- post start -->
+  <article>
+    <h1 class="article-title">OpenBSD 7.9 Introduces Hybrid CPU Scheduling and Scoped Process Sandboxing</h1>
+    <p class="article-meta">By AI Press Team &middot; 2026-05-21 17:29:00</p>
+
+    
+
+    <div class="article-body">
+      <p>The OpenBSD Project has officially shipped version 7.9, delivering a focused set of kernel and userland improvements that reinforce the operating system's long-standing commitment to code auditability and proactive security. According to coverage by LWN.net on 21 May, the release introduces several architectural enhancements designed to optimize performance on modern hardware while tightening application isolation, arriving precisely on the project's predictable biannual schedule.</p>
+
+
+<p>At the core of the update is a revamped CPU scheduler engineered to handle heterogeneous processor architectures. As hybrid CPU designs become standard across enterprise servers and developer workstations, the new scheduler dynamically routes workloads across performance and efficiency cores. This hardware-aware approach reduces scheduling latency and improves overall throughput without requiring manual tuning. Complementing this is the introduction of kernel-level socket splicing. By enabling zero-copy data transfers directly between network sockets and file descriptors, the feature significantly lowers CPU overhead and memory bandwidth consumption for high-traffic network services. Infrastructure engineers managing reverse proxies, API gateways, and database relays will likely see immediate operational benefits from the reduced context switching.</p>
+
+
+<p>Security remains the project's defining characteristic, and version 7.9 advances its sandboxing framework with the new <code>__pledge_open()</code> system call. Building on OpenBSD's established <code>pledge()</code> model, which restricts processes to a predefined set of system calls, the new extension grants the C library controlled, temporary access to specific routines. This incremental evolution allows developers to enforce stricter application sandboxes without breaking compatibility with complex or legacy software stacks. For security-focused teams, it represents a practical middle ground: tighter isolation for modern microservices and legacy applications alike, without sacrificing operational continuity.</p>
+
+
+<p>The release also addresses power efficiency through configurable delayed hibernation. Rather than forcing an immediate transition to a low-power state upon suspension, administrators can now define a grace period before hibernation triggers. This targeted approach preserves rapid resume capabilities for short idle periods while ensuring long-term power conservation for mobile workstations and edge computing nodes that operate on constrained power budgets.</p>
+
+
+<p>These technical refinements align with OpenBSD's audit-driven development methodology and its emphasis on minimal attack surfaces. Unlike rapid-release distributions that prioritize feature velocity, the OpenBSD team continues to demonstrate that rigorous code review and infrastructure performance optimization are complementary rather than competing goals. For DevOps and infrastructure teams managing hybrid cloud and on-premises environments, the release offers a stable, security-first foundation that scales predictably across diverse hardware profiles.</p>
+
+
+<p>Organizations currently running OpenBSD 7.8 or earlier are advised to review the official release documentation and validate the new scheduler and socket splicing configurations in staging environments before deploying to production. As with any major system update, verifying application compatibility with the updated <code>pledge()</code> extensions should be prioritized to ensure uninterrupted service delivery. The full release notes and installation media are available through the project's official channels.</p>
+
+
+<hr>
+
+
+<p>OpenBSD 專案已正式推出 7.9 版本，帶來一系列針對核心程式與用戶空間的改進，進一步鞏固該作業系統長期以來對程式碼可審計性及主動安全性的承諾。據 LWN.net 於 5 月 21 日的報導，此次版本引入了多項架構層面的增強功能，旨在優化現代硬體的性能表現，同時加強應用程式的隔離機制，並嚴格按照專案可預期的半年發布週期準時推出。</p>
+
+
+<p>是次更新的核心在於重新設計的 CPU 排程器，專為處理異構處理器架構而設。隨著混合 CPU 設計已成為企業伺服器與開發者工作站的標準配置，新排程器能夠動態地在效能核心與節能核心之間分配工作負載。這種硬體感知的方法減少了排程延遲，並在不需手動調整的情況下提升整體吞吐量。與此相輔相成的是引入了核心層級 socket 拼接功能。透過允許數據在網絡 socket 與檔案描述符之間直接進行零複製傳輸，此功能顯著降低了高流量網絡服務的 CPU 開銷與記憶體頻寬消耗。負責管理反向代理、API 閘道及數據庫中繼服務的基礎架構工程師，將可因減少上下文切換而即時獲得運作效益。</p>
+
+
+<p>安全性始終是該專案的標誌性特徵，7.9 版本透過新增 <code>__pledge_open()</code> 系統調用進一步推進其沙盒框架。建基於 OpenBSD 既有的 <code>pledge()</code> 模型（該模型限制進程僅能使用預定義的系統調用），新擴展賦予 C 語言程式庫受控且臨時存取特定常式的權限。此漸進式演進讓開發者能夠實施更嚴格的應用程式沙盒，同時不會破壞與複雜或舊版軟件堆疊的兼容性。對於注重安全的團隊而言，這代表了一個務實的中間方案：無論是新式微服務還是舊版應用程式，均可實現更嚴密的隔離，同時不影響運作連續性。</p>
+
+
+<p>此版本亦透過可配置的延遲休眠功能提升能源效益。管理員現在可設定休眠觸發前的緩衝期，而非在暫停時立即切換至低電量狀態。這種針對性的方法在短暫閒置期間保留了快速恢復功能，同時確保使用受限電源預算的流動工作站及邊緣運算節點能夠實現長遠的電力節約。</p>
+
+
+<p>這些技術優化與 OpenBSD 以審計為本的開發方法論及其對最小攻擊面的重視不謀而合。與追求功能迭代速度的快速發布版不同，OpenBSD 團隊持續證明嚴謹的程式碼審查與基礎架構性能優化並非互斥，而是相輔相成。對於管理混合雲端及本地環境的 DevOps 與基礎架構團隊而言，此版本提供了一個穩定且以安全為本的基礎，能夠在不同硬體配置下實現可預測的擴展。</p>
+
+
+<p>建議目前使用 OpenBSD 7.8 或更早版本的機構審閱官方發布文件，並在部署至生產環境前，於測試環境中驗證新排程器與 socket 拼接的配置。與任何重大系統更新一樣，應優先驗證應用程式與更新後 <code>pledge()</code> 擴展的兼容性，以確保服務無中斷交付。完整的發布說明與安裝媒體可透過專案官方渠道獲取。</p>
+
+
+<p><a href="https://lwn.net/Articles/1073933/" target="_blank" rel="noopener">原文連結 / Original Article</a></p>
+
+
+    </div>
+
+    
+  </article>
+  <!-- post end -->
+
+      <!-- post nav start -->
+  <nav aria-label="Article navigation" class="my-3">
+    <ul class="pagination justify-content-center flex-wrap">
+      <li class="page-item"><a class="page-link" href="/archive/20260522-294-international-law-enforcement-shuts-down.html">&laquo;&laquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20260521-199-article.html">&laquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/">Archive</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20260521-202-new-modular-linux-malware-showboat-targe.html">&raquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20120717-182938.html">&raquo;&raquo;</a></li>
+    </ul>
+  </nav>
+  <!-- post nav end -->
+
+  </div>
+
+
+</div>
+</div>
+</div>
+
+<!-- footer start -->
+
+  <footer class="site-footer mt-4">
+    <div class="container">
+      <div class="site-footer-cols">
+        <div class="site-footer-col">
+          <div class="site-footer-heading">HKLUG</div>
+          <p class="site-footer-about">香港 Linux 用家協會<br/>Hong Kong Linux User Group</p>
+          <a rel="license" href="https://creativecommons.org/licenses/by-sa/3.0/hk/">
+            <img alt="CC BY-SA 3.0 HK" style="border-width:0;opacity:0.6;" src="https://i.creativecommons.org/l/by-sa/3.0/hk/80x15.png" />
+          </a>
+        </div>
+        <div class="site-footer-col">
+          <div class="site-footer-heading">Community</div>
+          <ul class="site-footer-links">
+            <li><a href="https://www.hklug.org/" target="_blank">HKLUG</a></li>
+            <li><a href="https://www.hkcota.org/" target="_blank">HKCOTA</a></li>
+            <li><a href="https://opensource.hk/" target="_blank">Open Source HK</a></li>
+            <li><a href="https://hkoscon.org/" target="_blank">HKOSCon</a></li>
+          </ul>
+        </div>
+        <div class="site-footer-col">
+          <div class="site-footer-heading">Site</div>
+          <ul class="site-footer-links">
+            <li><a href="/">News</a></li>
+            <li><a href="/announce/">Announcements</a></li>
+            <li><a href="/archive/">Archive</a></li>
+            <li><a href="/about.html">About</a></li>
+            <li><a href="/contact.html">Contact</a></li>
+            <li><a href="/privacy.html">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="site-footer-bottom">
+        &copy; 1997&ndash;2026 Hong Kong Linux User Group &middot;
+        <a rel="license" href="https://creativecommons.org/licenses/by-sa/3.0/hk/">CC BY-SA 3.0 HK</a>
+      </div>
+    </div>
+  </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmYRTdMCX8Yf//Rz5rKl15qhSIH" crossorigin="anonymous"></script>
+
+</body>
+</html>
+<!-- footer end -->
+
+

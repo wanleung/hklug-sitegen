@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+
+<!-- header start -->
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hong Kong Linux User Group - 香港Linux用家協會(HKLUG) &gt; Archive &gt; Megalodon Campaign Weaponizes GitHub Actions to Compromise 5,500+ Repos</title>
+    
+    <meta name="description" content="A highly automated cyberattack campaign dubbed &quot;Megalodon&quot; has compromised thousands of software repositories by injecting malicious code directly into developm" />
+    <meta property="og:title" content="Megalodon Campaign Weaponizes GitHub Actions to Compromise 5,500+ Repos" />
+    <meta property="og:description" content="A highly automated cyberattack campaign dubbed &quot;Megalodon&quot; has compromised thousands of software repositories by injecting malicious code directly into developm" />
+    <meta property="og:url" content="https://www.linux.org.hk/archive/20260522-261-megalodon-campaign-weaponizes-github-act.html" />
+    <link rel="canonical" href="https://www.linux.org.hk/archive/20260522-261-megalodon-campaign-weaponizes-github-act.html" />
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/main.css?v=20260523b" />
+  </head>
+  <body>
+
+  <!-- menu start -->
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-0">
+  <div class="container">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="https://medium.com/hong-kong-linux-user-group">Technical Articles</a></li>
+        <li class="nav-item"><a class="nav-link" href="https://www.facebook.com/groups/hklug/">Discussion Forum</a></li>
+        <li class="nav-item"><a class="nav-link" href="/">News</a></li>
+        <li class="nav-item"><a class="nav-link" href="/announce/">Announcements</a></li>
+        <li class="nav-item"><a class="nav-link" href="/archive/">Archive</a></li>
+        <li class="nav-item"><a class="nav-link" href="/about.html">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="/contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- menu end -->
+
+
+  <div class="site-branding">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-auto">
+          <a href="/"><img src="/images/logo.png" alt="HKLUG" style="max-height:64px;" /></a>
+        </div>
+        <div class="col">
+          <h2 class="mb-0">Hong Kong Linux User Group &nbsp;香港Linux用家協會 (HKLUG)</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- header end -->
+
+
+<div class="container py-4">
+<div class="row">
+<div class="col-12" role="content">
+
+
+  <div class="article-page">
+      <!-- post nav start -->
+  <nav aria-label="Article navigation" class="my-3">
+    <ul class="pagination justify-content-center flex-wrap">
+      <li class="page-item"><a class="page-link" href="/archive/20260522-294-international-law-enforcement-shuts-down.html">&laquo;&laquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20260522-258-ubiquiti-issues-critical-firmware-update.html">&laquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/">Archive</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20260522-262-hardware-no-longer-a-security-boundary-n.html">&raquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20120717-182938.html">&raquo;&raquo;</a></li>
+    </ul>
+  </nav>
+  <!-- post nav end -->
+
+    <hr class="my-3" />
+      <!-- post start -->
+  <article>
+    <h1 class="article-title">Megalodon Campaign Weaponizes GitHub Actions to Compromise 5,500+ Repos</h1>
+    <p class="article-meta">By AI Press Team &middot; 2026-05-22 14:06:00</p>
+
+    
+
+    <div class="article-body">
+      <p>A highly automated cyberattack campaign dubbed "Megalodon" has compromised thousands of software repositories by injecting malicious code directly into development pipelines. Security researchers disclosed that threat actors pushed 5,718 malicious commits across 5,561 GitHub repositories within a single six-hour window in May 2026.</p>
+
+
+<p>The campaign marks a significant escalation in supply chain security threats, shifting focus from application code to the orchestration layer of DevOps environments. Instead of targeting vulnerabilities in the software itself, the attackers exploited the implicit trust granted to Continuous Integration/Continuous Deployment (CI/CD) workflows, treating pipeline configurations as primary attack vectors.</p>
+
+
+<p>According to the disclosure, the threat actors utilized throwaway accounts with forged author identities to blend into routine development activity. Common handle names such as <code>build-bot</code>, <code>auto-ci</code>, <code>ci-bot</code>, and <code>pipeline-bot</code> were used to disguise the malicious commits as automated maintenance tasks. Once access was gained, the attackers injected GitHub Actions workflows containing base64-encoded bash payloads designed to exfiltrate environment variables and secrets.</p>
+
+
+<p>This technique highlights a growing detection gap in modern software engineering. Traditional perimeter defenses and static code scanning often fail to identify runtime threats embedded within pipeline configurations. The velocity of the attack—averaging nearly 900 repositories per hour—suggests the use of sophisticated automation frameworks capable of bypassing standard security checks.</p>
+
+
+<p>In light of the incident, security analysts recommend treating pipeline configurations as critical security boundaries rather than auxiliary tooling. Engineering teams are advised to implement a zero-trust DevSecOps framework immediately. Recommended mitigation steps include:</p>
+
+
+<ul>
+<li><strong>Enforce Least-Privilege Execution:</strong> Restrict workflow permissions to the minimum required for task completion.</li>
+<li><strong>Mandate Peer Reviews:</strong> Require manual approval for all changes to <code>.github/workflows</code> files.</li>
+<li><strong>Audit Commit Histories:</strong> Scan recent logs for unauthorized bot accounts or unfamiliar contributors.</li>
+<li><strong>Rotate Credentials:</strong> Invalidate all secrets and deployment tokens active during the attack window.</li>
+<li><strong>Deploy Continuous Monitoring:</strong> Implement secret-scanning and behavioral monitoring for anomalous environment variable access.</li>
+</ul>
+
+
+<p>The full scope of the damage remains under investigation. Researchers have not yet confirmed whether the campaign was directed by a state-sponsored group, an organized cybercriminal syndicate, or an automated exploit-as-a-service platform. Furthermore, the exact volume of successfully exfiltrated secrets and whether lateral movement has occurred across affected organizations requires further forensic analysis.</p>
+
+
+<p>Platform-level safeguards remain a key open question. It is currently unclear what specific GitHub-native controls or policy changes will be implemented to prevent large-scale, bot-driven workflow injections in the future. Until such mechanisms are deployed, the responsibility falls on repository owners to secure their orchestration layers against similar high-velocity threats.</p>
+
+
+<p>The Megalodon campaign serves as a stark reminder that automated pipelines are now prime real estate for adversaries. As software delivery becomes increasingly automated, securing the build process is as vital as securing the final product.</p>
+
+
+<hr>
+
+
+<p>一個名為「Megalodon」的高度自動化網絡攻擊行動，透過直接向開發流程注入惡意代碼，已攻陷數千個軟件倉庫。安全研究人員披露，威脅行為者於 2026 年 5 月單個六小時窗口期內，在 5,561 個 GitHub 倉庫中推送了 5,718 個惡意提交。</p>
+
+
+<p>此次行動標誌著供應鏈安全威脅顯著升級，焦點從應用代碼轉向 DevOps 環境的編排層。攻擊者並非針對軟件本身的漏洞，而是利用授予持續集成/持續部署 (CI/CD) 工作流的隱式信任，將流程配置視為主要攻擊向量。</p>
+
+
+<p>根據披露，威脅行為者利用具有偽造作者身份的即棄帳戶，混入常規開發活動中。常見的用戶名如 <code>build-bot</code>、<code>auto-ci</code>、<code>ci-bot</code> 和 <code>pipeline-bot</code> 被用於將惡意提交偽裝成自動化維護任務。一旦獲得訪問權限，攻擊者便注入包含 base64 編碼 bash payload 的 GitHub Actions 工作流，旨在外洩環境變數及機密資訊。</p>
+
+
+<p>此技術突顯了現代軟件工程中日益擴大的檢測缺口。傳統邊界防禦和靜態代碼掃描往往無法識別嵌入在流程配置中的運行時威脅。攻擊速度平均每小時近 900 個倉庫，表明使用了能夠繞過標準安全檢查的複雜自動化框架。</p>
+
+
+<p>鑑於此次事件，安全分析師建議將流程配置視為關鍵安全邊界，而非輔助工具。建議工程團隊立即實施零信任 DevSecOps 框架。建議的緩解步驟包括：</p>
+
+
+<ul>
+<li><strong>強制最小權限執行：</strong> 將工作流權限限制為完成任務所需的最低權限。</li>
+<li><strong>強制同儕審查：</strong> 要求對 <code>.github/workflows</code> 文件的所有變更進行人手審批。</li>
+<li><strong>審查提交歷史：</strong> 掃描近期日誌，查找未經授權的機械人帳戶或陌生的貢獻者。</li>
+<li><strong>輪換憑據：</strong> 使攻擊窗口期內活躍的所有機密資訊及部署令牌無效。</li>
+<li><strong>部署持續監控：</strong> 實施機密掃描及行為監控，以檢測異常的環境變數訪問。</li>
+</ul>
+
+
+<p>損害的全部範圍仍在調查中。研究人員尚未確認此次行動是由國家支持團體、有組織網絡犯罪集團，還是自動化漏洞利用即服務平台主導。此外，成功外洩機密資訊的確切數量，以及受影響組織之間是否發生橫向移動，需要進一步取證分析。</p>
+
+
+<p>平台層面防護措施仍是一個關鍵未決問題。目前尚不清楚將實施哪些具體的 GitHub 原生控制或政策變更，以防止未來大規模、機械人驅動的工作流注入。在此類機制部署之前，責任落在倉庫擁有者身上，需保護其編排層免受類似高速威脅。</p>
+
+
+<p>「Megalodon」行動嚴峻提醒，自動化流程現已成為攻擊者的首選目標。隨著軟件交付日益自動化，保護構建流程與保護最終產品同樣至關重要。</p>
+
+
+<p><a href="https://thehackernews.com/2026/05/megalodon-github-attack-targets-5561.html" target="_blank" rel="noopener">原文連結 / Original Article</a></p>
+
+
+    </div>
+
+    
+  </article>
+  <!-- post end -->
+
+      <!-- post nav start -->
+  <nav aria-label="Article navigation" class="my-3">
+    <ul class="pagination justify-content-center flex-wrap">
+      <li class="page-item"><a class="page-link" href="/archive/20260522-294-international-law-enforcement-shuts-down.html">&laquo;&laquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20260522-258-ubiquiti-issues-critical-firmware-update.html">&laquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/">Archive</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20260522-262-hardware-no-longer-a-security-boundary-n.html">&raquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20120717-182938.html">&raquo;&raquo;</a></li>
+    </ul>
+  </nav>
+  <!-- post nav end -->
+
+  </div>
+
+
+</div>
+</div>
+</div>
+
+<!-- footer start -->
+
+  <footer class="site-footer mt-4">
+    <div class="container">
+      <div class="site-footer-cols">
+        <div class="site-footer-col">
+          <div class="site-footer-heading">HKLUG</div>
+          <p class="site-footer-about">香港 Linux 用家協會<br/>Hong Kong Linux User Group</p>
+          <a rel="license" href="https://creativecommons.org/licenses/by-sa/3.0/hk/">
+            <img alt="CC BY-SA 3.0 HK" style="border-width:0;opacity:0.6;" src="https://i.creativecommons.org/l/by-sa/3.0/hk/80x15.png" />
+          </a>
+        </div>
+        <div class="site-footer-col">
+          <div class="site-footer-heading">Community</div>
+          <ul class="site-footer-links">
+            <li><a href="https://www.hklug.org/" target="_blank">HKLUG</a></li>
+            <li><a href="https://www.hkcota.org/" target="_blank">HKCOTA</a></li>
+            <li><a href="https://opensource.hk/" target="_blank">Open Source HK</a></li>
+            <li><a href="https://hkoscon.org/" target="_blank">HKOSCon</a></li>
+          </ul>
+        </div>
+        <div class="site-footer-col">
+          <div class="site-footer-heading">Site</div>
+          <ul class="site-footer-links">
+            <li><a href="/">News</a></li>
+            <li><a href="/announce/">Announcements</a></li>
+            <li><a href="/archive/">Archive</a></li>
+            <li><a href="/about.html">About</a></li>
+            <li><a href="/contact.html">Contact</a></li>
+            <li><a href="/privacy.html">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="site-footer-bottom">
+        &copy; 1997&ndash;2026 Hong Kong Linux User Group &middot;
+        <a rel="license" href="https://creativecommons.org/licenses/by-sa/3.0/hk/">CC BY-SA 3.0 HK</a>
+      </div>
+    </div>
+  </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmYRTdMCX8Yf//Rz5rKl15qhSIH" crossorigin="anonymous"></script>
+
+</body>
+</html>
+<!-- footer end -->
+
+

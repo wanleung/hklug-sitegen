@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<!-- header start -->
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hong Kong Linux User Group - 香港Linux用家協會(HKLUG) &gt; Archive &gt; AMDXDNA Driver Gains Dynamic Memory Allocation for Ryzen AI NPUs</title>
+    
+    <meta name="description" content="AMD is advancing its Linux NPU support with a significant patch to the AMDXDNA accelerator driver that introduces expandable heap memory management for Ryzen AI" />
+    <meta property="og:title" content="AMDXDNA Driver Gains Dynamic Memory Allocation for Ryzen AI NPUs" />
+    <meta property="og:description" content="AMD is advancing its Linux NPU support with a significant patch to the AMDXDNA accelerator driver that introduces expandable heap memory management for Ryzen AI" />
+    <meta property="og:url" content="https://www.linux.org.hk/archive/20260522-190-amdxdna-driver-gains-dynamic-memory-allo.html" />
+    <link rel="canonical" href="https://www.linux.org.hk/archive/20260522-190-amdxdna-driver-gains-dynamic-memory-allo.html" />
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/main.css?v=20260523b" />
+  </head>
+  <body>
+
+  <!-- menu start -->
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-0">
+  <div class="container">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="https://medium.com/hong-kong-linux-user-group">Technical Articles</a></li>
+        <li class="nav-item"><a class="nav-link" href="https://www.facebook.com/groups/hklug/">Discussion Forum</a></li>
+        <li class="nav-item"><a class="nav-link" href="/">News</a></li>
+        <li class="nav-item"><a class="nav-link" href="/announce/">Announcements</a></li>
+        <li class="nav-item"><a class="nav-link" href="/archive/">Archive</a></li>
+        <li class="nav-item"><a class="nav-link" href="/about.html">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="/contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- menu end -->
+
+
+  <div class="site-branding">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-auto">
+          <a href="/"><img src="/images/logo.png" alt="HKLUG" style="max-height:64px;" /></a>
+        </div>
+        <div class="col">
+          <h2 class="mb-0">Hong Kong Linux User Group &nbsp;香港Linux用家協會 (HKLUG)</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- header end -->
+
+
+<div class="container py-4">
+<div class="row">
+<div class="col-12" role="content">
+
+
+  <div class="article-page">
+      <!-- post nav start -->
+  <nav aria-label="Article navigation" class="my-3">
+    <ul class="pagination justify-content-center flex-wrap">
+      <li class="page-item"><a class="page-link" href="/archive/20260522-294-international-law-enforcement-shuts-down.html">&laquo;&laquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20260522-189-microsoft-patches-two-defender-flaws-und.html">&laquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/">Archive</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20260522-191-global-police-operation-seizes-first-vpn.html">&raquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20120717-182938.html">&raquo;&raquo;</a></li>
+    </ul>
+  </nav>
+  <!-- post nav end -->
+
+    <hr class="my-3" />
+      <!-- post start -->
+  <article>
+    <h1 class="article-title">AMDXDNA Driver Gains Dynamic Memory Allocation for Ryzen AI NPUs</h1>
+    <p class="article-meta">By AI Press Team &middot; 2026-05-22 10:04:00</p>
+
+    
+
+    <div class="article-body">
+      <p>AMD is advancing its Linux NPU support with a significant patch to the AMDXDNA accelerator driver that introduces expandable heap memory management for Ryzen AI processors. Reported by Phoronix on 22 May, the development removes fixed-buffer limitations that have previously constrained how AI workloads utilize NPU memory on Linux systems.</p>
+
+
+<p>The patch, currently under review for inclusion in an upcoming kernel merge window, implements a dynamic memory allocation architecture that allows Ryzen AI NPUs to scale memory usage on demand. Rather than requiring developers to pre-allocate static buffers or manually optimize model sizes to fit within rigid memory boundaries, the new expandable heap lets the driver allocate and release memory as inference tasks require it. This eliminates out-of-memory failures that have historically plagued variable-sized model deployments on AMD's neural processing units.</p>
+
+
+<p>AMD's approach follows an upstream-first development strategy, meaning the changes are being submitted directly to the mainline kernel rather than maintained as out-of-tree patches. This methodology aligns NPU memory management with established GPU driver standards in the kernel tree, reducing long-term maintenance burden for distributions and ensuring cross-distribution compatibility once the patch lands.</p>
+
+
+<h4>Performance Implications</h4>
+
+
+<p>The expandable heap design targets memory-intensive inference workloads that previously struggled with the fixed-buffer implementation. By reducing memory fragmentation and eliminating the manual buffer management overhead that required application-level workarounds, the patch aims to make Ryzen AI hardware more practical for edge deployments.</p>
+
+
+<p>For organizations running mid-range AI accelerators, the improvement simplifies deployment pipelines by allowing variable-sized models to be processed without manual reconfiguration. This reduces the engineering effort required to optimize models for specific NPU memory constraints.</p>
+
+
+<h4>What Remains Unclear</h4>
+
+
+<p>Several questions will likely be resolved as the patch progresses through kernel review. The exact timeline for final inclusion remains subject to the merge window schedule and reviewer feedback. Additionally, the impact of dynamic memory allocation on sustained power consumption and thermal behavior under production workloads has not yet been formally characterized—a consideration for deployments running continuous inference at the edge.</p>
+
+
+<p>Framework-level compatibility also warrants attention. While the driver-level changes should be transparent to higher-level AI frameworks, formal validation with ONNX Runtime, TensorFlow Lite, and PyTorch has not been publicly documented. Teams planning production deployments may want to conduct their own compatibility testing once the patch reaches a stable kernel release.</p>
+
+
+<p>The AMDXDNA driver development reflects a broader industry trend toward treating NPUs as first-class accelerators within the Linux kernel, with memory management maturing to match the flexibility that GPU drivers have offered for years.</p>
+
+
+<hr>
+
+
+<p>AMD 正推進其 Linux NPU 支援，為 AMDXDNA accelerator driver 引入重大 patch，為 Ryzen AI 處理器加入 expandable heap 記憶體管理功能。Phoronix 於 5 月 22 日報道，此項發展消除了 fixed-buffer 的限制，以往該限制一直制約 AI workload 在 Linux 系統上運用 NPU 記憶體的方式。</p>
+
+
+<p>該 patch 目前正接受審閱，以期納入即將到來的 kernel merge window，實現了動態記憶體分配架構，讓 Ryzen AI NPU 能夠按需擴展記憶體使用量。開發者毋須再預先分配靜態 buffer 或手動優化模型大小以適應嚴格的記憶體界限，新的 expandable heap 讓 driver 可按 inference 任務的需要分配和釋放記憶體。這消除了以往在 AMD 神經處理單元上部署可變大小模型時經常出現的 out-of-memory 問題。</p>
+
+
+<p>AMD 的做法遵循 upstream-first 的開發策略，意味著相關改動直接提交至 mainline kernel，而非作為 out-of-tree patch 另行維護。此方法使 NPU 記憶體管理與 kernel tree 內既有的 GPU driver 標準看齊，減低發行版的長期維護負擔，並在 patch 正式合併後確保跨發行版兼容性。</p>
+
+
+<h4>效能影響</h4>
+
+
+<p>expandable heap 設計針對以往在 fixed-buffer 實現下面臨困難的 memory-intensive inference workload。透過減少記憶體碎片和消除需要 application-level workaround 的手動 buffer 管理 overhead，該 patch 旨在使 Ryzen AI 硬件更適合 edge deployment。</p>
+
+
+<p>對於運行中階 AI accelerator 的機構而言，此項改進簡化了 deployment pipeline，讓可變大小的模型毋須手動重新配置即可處理。這減少了為特定 NPU 記憶體限制優化模型所需的工程投入。</p>
+
+
+<h4>仍未明朗之處</h4>
+
+
+<p>隨著 patch 通過 kernel 審閱程序，若干問題有望逐步釐清。最終納入的確切時間表仍取決於 merge window 時間表和審閱者的反饋。此外，動態記憶體分配在 production workload 下對持續功耗和散熱表現的影響，尚未有正式的評估——對於在 edge 持續運行 inference 的 deployment 而言，此點值得關注。</p>
+
+
+<p>Framework 層面的兼容性亦值得關注。雖然 driver 層的改動理應對高階 AI framework 透明，但與 ONNX Runtime、TensorFlow Lite 和 PyTorch 的正式驗證尚未有公開文檔記錄。計劃進行 production deployment 的團隊或應在 patch 進入穩定 kernel 版本後，自行進行兼容性測試。</p>
+
+
+<p>AMDXDNA driver 的發展反映了業界更廣泛的趨勢，即將 NPU 視為 Linux kernel 內的一級 accelerator，其記憶體管理正逐步成熟，以媲美 GPU driver 多年來所提供的靈活性。</p>
+
+
+<p><a href="https://www.phoronix.com/news/AMDXDNA-Expandable-Heap" target="_blank" rel="noopener">原文連結 / Original Article</a></p>
+
+
+    </div>
+
+    
+  </article>
+  <!-- post end -->
+
+      <!-- post nav start -->
+  <nav aria-label="Article navigation" class="my-3">
+    <ul class="pagination justify-content-center flex-wrap">
+      <li class="page-item"><a class="page-link" href="/archive/20260522-294-international-law-enforcement-shuts-down.html">&laquo;&laquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20260522-189-microsoft-patches-two-defender-flaws-und.html">&laquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/">Archive</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20260522-191-global-police-operation-seizes-first-vpn.html">&raquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20120717-182938.html">&raquo;&raquo;</a></li>
+    </ul>
+  </nav>
+  <!-- post nav end -->
+
+  </div>
+
+
+</div>
+</div>
+</div>
+
+<!-- footer start -->
+
+  <footer class="site-footer mt-4">
+    <div class="container">
+      <div class="site-footer-cols">
+        <div class="site-footer-col">
+          <div class="site-footer-heading">HKLUG</div>
+          <p class="site-footer-about">香港 Linux 用家協會<br/>Hong Kong Linux User Group</p>
+          <a rel="license" href="https://creativecommons.org/licenses/by-sa/3.0/hk/">
+            <img alt="CC BY-SA 3.0 HK" style="border-width:0;opacity:0.6;" src="https://i.creativecommons.org/l/by-sa/3.0/hk/80x15.png" />
+          </a>
+        </div>
+        <div class="site-footer-col">
+          <div class="site-footer-heading">Community</div>
+          <ul class="site-footer-links">
+            <li><a href="https://www.hklug.org/" target="_blank">HKLUG</a></li>
+            <li><a href="https://www.hkcota.org/" target="_blank">HKCOTA</a></li>
+            <li><a href="https://opensource.hk/" target="_blank">Open Source HK</a></li>
+            <li><a href="https://hkoscon.org/" target="_blank">HKOSCon</a></li>
+          </ul>
+        </div>
+        <div class="site-footer-col">
+          <div class="site-footer-heading">Site</div>
+          <ul class="site-footer-links">
+            <li><a href="/">News</a></li>
+            <li><a href="/announce/">Announcements</a></li>
+            <li><a href="/archive/">Archive</a></li>
+            <li><a href="/about.html">About</a></li>
+            <li><a href="/contact.html">Contact</a></li>
+            <li><a href="/privacy.html">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="site-footer-bottom">
+        &copy; 1997&ndash;2026 Hong Kong Linux User Group &middot;
+        <a rel="license" href="https://creativecommons.org/licenses/by-sa/3.0/hk/">CC BY-SA 3.0 HK</a>
+      </div>
+    </div>
+  </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmYRTdMCX8Yf//Rz5rKl15qhSIH" crossorigin="anonymous"></script>
+
+</body>
+</html>
+<!-- footer end -->
+
+

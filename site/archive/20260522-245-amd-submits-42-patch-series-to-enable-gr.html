@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+
+<!-- header start -->
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hong Kong Linux User Group - 香港Linux用家協會(HKLUG) &gt; Archive &gt; AMD Submits 42-Patch Series to Enable Granular GPU Pipe Resets for Linux Compute Workloads</title>
+    
+    <meta name="description" content="AMD engineers have submitted a 42-patch series to the Linux kernel introducing pipe-level reset capabilities for AMDGPU compute workloads, a significant departu" />
+    <meta property="og:title" content="AMD Submits 42-Patch Series to Enable Granular GPU Pipe Resets for Linux Compute Workloads" />
+    <meta property="og:description" content="AMD engineers have submitted a 42-patch series to the Linux kernel introducing pipe-level reset capabilities for AMDGPU compute workloads, a significant departu" />
+    <meta property="og:url" content="https://www.linux.org.hk/archive/20260522-245-amd-submits-42-patch-series-to-enable-gr.html" />
+    <link rel="canonical" href="https://www.linux.org.hk/archive/20260522-245-amd-submits-42-patch-series-to-enable-gr.html" />
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/main.css?v=20260523b" />
+  </head>
+  <body>
+
+  <!-- menu start -->
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-0">
+  <div class="container">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="https://medium.com/hong-kong-linux-user-group">Technical Articles</a></li>
+        <li class="nav-item"><a class="nav-link" href="https://www.facebook.com/groups/hklug/">Discussion Forum</a></li>
+        <li class="nav-item"><a class="nav-link" href="/">News</a></li>
+        <li class="nav-item"><a class="nav-link" href="/announce/">Announcements</a></li>
+        <li class="nav-item"><a class="nav-link" href="/archive/">Archive</a></li>
+        <li class="nav-item"><a class="nav-link" href="/about.html">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="/contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- menu end -->
+
+
+  <div class="site-branding">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-auto">
+          <a href="/"><img src="/images/logo.png" alt="HKLUG" style="max-height:64px;" /></a>
+        </div>
+        <div class="col">
+          <h2 class="mb-0">Hong Kong Linux User Group &nbsp;香港Linux用家協會 (HKLUG)</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- header end -->
+
+
+<div class="container py-4">
+<div class="row">
+<div class="col-12" role="content">
+
+
+  <div class="article-page">
+      <!-- post nav start -->
+  <nav aria-label="Article navigation" class="my-3">
+    <ul class="pagination justify-content-center flex-wrap">
+      <li class="page-item"><a class="page-link" href="/archive/20260522-294-international-law-enforcement-shuts-down.html">&laquo;&laquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20260522-239-canadian-arrested-as-kimwolf-ddos-for-hi.html">&laquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/">Archive</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20260522-248-cisa-flags-actively-exploited-flaws-in-t.html">&raquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20120717-182938.html">&raquo;&raquo;</a></li>
+    </ul>
+  </nav>
+  <!-- post nav end -->
+
+    <hr class="my-3" />
+      <!-- post start -->
+  <article>
+    <h1 class="article-title">AMD Submits 42-Patch Series to Enable Granular GPU Pipe Resets for Linux Compute Workloads</h1>
+    <p class="article-meta">By AI Press Team &middot; 2026-05-22 12:27:00</p>
+
+    
+
+    <div class="article-body">
+      <p>AMD engineers have submitted a 42-patch series to the Linux kernel introducing pipe-level reset capabilities for AMDGPU compute workloads, a significant departure from the current all-or-nothing approach to GPU fault recovery. The patchset, posted Thursday and reported by Phoronix, targets both the core AMDGPU driver and the AMDKFD compute module, isolating stalled compute queues without disrupting unrelated processes or active display sessions.</p>
+
+
+<p>Under the existing driver architecture, a hung compute task triggers a full GPU reset — tearing down all active contexts, killing concurrent workloads, and forcing every dependent process to restart. The proposed implementation replaces this with targeted pipe resets, allowing individual compute queues to recover independently. For teams running mixed workloads on shared AMD hardware, the operational difference is clear: a single misbehaving machine learning job no longer needs to take down an entire node's compute capacity.</p>
+
+
+<p>The implementation spans two kernel modules — AMDGPU for general graphics functionality and AMDKFD for heterogeneous compute workloads. This architectural split treats compute reliability as a foundational concern rather than a patch layered onto graphics code. Developing the capability directly in the mainline kernel tree means the patches undergo open peer review and iterate alongside broader kernel development cycles, contrasting with proprietary driver models that operate on separate timelines.</p>
+
+
+<p>For organizations running AMD-based Linux compute clusters — whether supporting AI training, high-performance computing, or academic research — granular fault isolation translates into measurable uptime gains. Platform teams managing shared GPU infrastructure should see fewer cascading failures when individual jobs encounter instability, since a single pipe reset preserves neighboring workloads. The approach brings GPU driver behavior closer to CPU process-level reliability standards that enterprises have long expected.</p>
+
+
+<p>The patchset marks a maturity point for open-source GPU driver development. Linux GPU drivers have historically lagged behind proprietary alternatives in fault tolerance, forcing administrators to choose between open-source flexibility and operational resilience. Upstreaming these improvements through the kernel ensures they reach a wider range of distributions without requiring vendor-specific out-of-tree patches.</p>
+
+
+<p>Several questions remain as the patchset moves through kernel review. The target merge window and specific kernel version for inclusion have not been confirmed. Validation across AMD's GPU architecture lineup — spanning RDNA consumer silicon and CDNA datacenter accelerators — will be critical before mainline acceptance, since reset behavior can vary between generations. Whether older GPUs will receive backported support or the feature will be limited to newer hardware is also unresolved.</p>
+
+
+<p>IT teams evaluating AMD hardware for production compute deployments should track this patchset through staging validation. If accepted, pipe-level reset support will become a differentiating factor in GPU reliability comparisons and could influence procurement decisions for organizations prioritizing workload continuity.</p>
+
+
+<hr>
+
+
+<p>AMD 工程師已向 Linux kernel 提交一系列 42 個 patch，為 AMDGPU 運算工作負載引入 pipe 級別的重置功能。此舉與現時 GPU 故障恢復時「全有或全無」的做法大相逕庭。該 patch 系列於週四發布，並由 Phoronix 報導，同時針對核心 AMDGPU 驅動程式及 AMDKFD 運算模組，能夠隔離停滯的運算隊列，而不會干擾其他無關的程序或活躍的顯示會話。</p>
+
+
+<p>在現有的驅動程式架構下，當運算任務卡死時會觸發完整的 GPU 重置——摧毀所有活躍的上下文、終止並行的工作負載，並迫使所有依賴的程序重新啟動。擬議的實現方案以 targeted pipe 重置取而代之，讓各個運算隊列能夠獨立恢復。對於在共用 AMD 硬件上運行混合工作負載的團隊而言，操作上的區別十分明確：單一出現問題的機器學習任務不再需要令整個節點的運算能力癱瘓。</p>
+
+
+<p>此實現涵蓋兩個 kernel 模組——負責一般圖形功能的 AMDGPU，以及處理異構運算工作負載的 AMDKFD。這種架構上的劃分將運算可靠性視為基礎性關注點，而非疊加於圖形代碼之上的 patch。直接在 mainline kernel 樹中開發此功能，意味著 patch 將接受公開的同儕審查，並與更廣泛的 kernel 開發週期同步迭代，這與按獨立時間表運作的專有驅動程式模式形成對比。</p>
+
+
+<p>對於運行基於 AMD 的 Linux 運算叢集的機構——不論是支援 AI 訓練、高性能運算還是學術研究——細粒度的故障隔離轉化為可量度的 uptime 提升。管理共用 GPU 基礎架構的平台團隊應該會看到更少的連鎖故障，因為單一 pipe 重置能夠保留鄰近的工作負載。這種做法使 GPU 驅動程式行為更接近企業長期期望的 CPU 程序級別可靠性標準。</p>
+
+
+<p>該 patch 系列標誌着開源 GPU 驅動程式發展的一個成熟里程碑。Linux GPU 驅動程式在故障容忍度方面歷來落後於專有替代品，迫使管理人員在開源靈活性與操作韌性之間作出取捨。透過 kernel 將這些改進 upstream，確保它們能夠覆蓋更廣泛的發行版，而無需依賴供應商特定的 out-of-tree patch。</p>
+
+
+<p>隨著 patch 系列進入 kernel 審查階段，仍有若干問題待解。目標 merge window 及具體納入的 kernel 版本尚未確認。在獲得 mainline 接納之前，於 AMD 整個 GPU 架構系列（涵蓋 RDNA 消費級晶片及 CDNA 數據中心加速器）進行驗證至關重要，因為重置行為可能因世代而異。舊款 GPU 能否獲得 backported 支援，抑或此功能僅限於較新硬件，目前亦未明朗。</p>
+
+
+<p>評估 AMD 硬件用於生產環境運算部署的 IT 團隊，應在 staging 驗證階段追蹤此 patch 系列的進展。若獲接納，pipe 級別重置支援將成為 GPU 可靠性比較中的差異化因素，並可能影響優先考慮工作負載連續性的機構的採購決定。</p>
+
+
+<p><a href="https://www.phoronix.com/news/AMDGPU-Pipe-Reset-Support" target="_blank" rel="noopener">原文連結 / Original Article</a></p>
+
+
+    </div>
+
+    
+  </article>
+  <!-- post end -->
+
+      <!-- post nav start -->
+  <nav aria-label="Article navigation" class="my-3">
+    <ul class="pagination justify-content-center flex-wrap">
+      <li class="page-item"><a class="page-link" href="/archive/20260522-294-international-law-enforcement-shuts-down.html">&laquo;&laquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20260522-239-canadian-arrested-as-kimwolf-ddos-for-hi.html">&laquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/">Archive</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20260522-248-cisa-flags-actively-exploited-flaws-in-t.html">&raquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20120717-182938.html">&raquo;&raquo;</a></li>
+    </ul>
+  </nav>
+  <!-- post nav end -->
+
+  </div>
+
+
+</div>
+</div>
+</div>
+
+<!-- footer start -->
+
+  <footer class="site-footer mt-4">
+    <div class="container">
+      <div class="site-footer-cols">
+        <div class="site-footer-col">
+          <div class="site-footer-heading">HKLUG</div>
+          <p class="site-footer-about">香港 Linux 用家協會<br/>Hong Kong Linux User Group</p>
+          <a rel="license" href="https://creativecommons.org/licenses/by-sa/3.0/hk/">
+            <img alt="CC BY-SA 3.0 HK" style="border-width:0;opacity:0.6;" src="https://i.creativecommons.org/l/by-sa/3.0/hk/80x15.png" />
+          </a>
+        </div>
+        <div class="site-footer-col">
+          <div class="site-footer-heading">Community</div>
+          <ul class="site-footer-links">
+            <li><a href="https://www.hklug.org/" target="_blank">HKLUG</a></li>
+            <li><a href="https://www.hkcota.org/" target="_blank">HKCOTA</a></li>
+            <li><a href="https://opensource.hk/" target="_blank">Open Source HK</a></li>
+            <li><a href="https://hkoscon.org/" target="_blank">HKOSCon</a></li>
+          </ul>
+        </div>
+        <div class="site-footer-col">
+          <div class="site-footer-heading">Site</div>
+          <ul class="site-footer-links">
+            <li><a href="/">News</a></li>
+            <li><a href="/announce/">Announcements</a></li>
+            <li><a href="/archive/">Archive</a></li>
+            <li><a href="/about.html">About</a></li>
+            <li><a href="/contact.html">Contact</a></li>
+            <li><a href="/privacy.html">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="site-footer-bottom">
+        &copy; 1997&ndash;2026 Hong Kong Linux User Group &middot;
+        <a rel="license" href="https://creativecommons.org/licenses/by-sa/3.0/hk/">CC BY-SA 3.0 HK</a>
+      </div>
+    </div>
+  </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmYRTdMCX8Yf//Rz5rKl15qhSIH" crossorigin="anonymous"></script>
+
+</body>
+</html>
+<!-- footer end -->
+
+

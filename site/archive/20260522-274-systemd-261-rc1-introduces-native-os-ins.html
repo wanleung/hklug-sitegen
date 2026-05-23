@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<!-- header start -->
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hong Kong Linux User Group - 香港Linux用家協會(HKLUG) &gt; Archive &gt; systemd 261-rc1 Introduces Native OS Installer, Cloud Metadata Service and Unified Storage Tool</title>
+    
+    <meta name="description" content="The systemd project has published the first release candidate of version 261, delivering a substantial set of new capabilities that extend the init system and s" />
+    <meta property="og:title" content="systemd 261-rc1 Introduces Native OS Installer, Cloud Metadata Service and Unified Storage Tool" />
+    <meta property="og:description" content="The systemd project has published the first release candidate of version 261, delivering a substantial set of new capabilities that extend the init system and s" />
+    <meta property="og:url" content="https://www.linux.org.hk/archive/20260522-274-systemd-261-rc1-introduces-native-os-ins.html" />
+    <link rel="canonical" href="https://www.linux.org.hk/archive/20260522-274-systemd-261-rc1-introduces-native-os-ins.html" />
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/main.css?v=20260523b" />
+  </head>
+  <body>
+
+  <!-- menu start -->
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-0">
+  <div class="container">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="https://medium.com/hong-kong-linux-user-group">Technical Articles</a></li>
+        <li class="nav-item"><a class="nav-link" href="https://www.facebook.com/groups/hklug/">Discussion Forum</a></li>
+        <li class="nav-item"><a class="nav-link" href="/">News</a></li>
+        <li class="nav-item"><a class="nav-link" href="/announce/">Announcements</a></li>
+        <li class="nav-item"><a class="nav-link" href="/archive/">Archive</a></li>
+        <li class="nav-item"><a class="nav-link" href="/about.html">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="/contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- menu end -->
+
+
+  <div class="site-branding">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-auto">
+          <a href="/"><img src="/images/logo.png" alt="HKLUG" style="max-height:64px;" /></a>
+        </div>
+        <div class="col">
+          <h2 class="mb-0">Hong Kong Linux User Group &nbsp;香港Linux用家協會 (HKLUG)</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- header end -->
+
+
+<div class="container py-4">
+<div class="row">
+<div class="col-12" role="content">
+
+
+  <div class="article-page">
+      <!-- post nav start -->
+  <nav aria-label="Article navigation" class="my-3">
+    <ul class="pagination justify-content-center flex-wrap">
+      <li class="page-item"><a class="page-link" href="/archive/20260522-294-international-law-enforcement-shuts-down.html">&laquo;&laquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20260522-273-kimwolf-botnet-operator-arrested-in-otta.html">&laquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/">Archive</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20260522-276-linux-kernel-moves-toward-programmable-p.html">&raquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20120717-182938.html">&raquo;&raquo;</a></li>
+    </ul>
+  </nav>
+  <!-- post nav end -->
+
+    <hr class="my-3" />
+      <!-- post start -->
+  <article>
+    <h1 class="article-title">systemd 261-rc1 Introduces Native OS Installer, Cloud Metadata Service and Unified Storage Tool</h1>
+    <p class="article-meta">By AI Press Team &middot; 2026-05-22 17:05:00</p>
+
+    
+
+    <div class="article-body">
+      <p>The systemd project has published the first release candidate of version 261, delivering a substantial set of new capabilities that extend the init system and service manager into OS provisioning, cloud metadata handling, and storage lifecycle management. The release, reported by Phoronix on 22 May, marks one of the more expansive feature additions to systemd in recent cycles.</p>
+
+
+<p>At the centre of this release is <code>systemd-sysinstall</code>, a modern textual installer that wraps systemd's partitioning logic, credential management, and system configuration tools into a single workflow. The installer operates from a temporary boot medium such as a USB drive and copies the target OS onto the destination system, aiming to simplify deployment pipelines that previously relied on distribution-specific installers or custom scripting.</p>
+
+
+<p>The release also introduces <code>systemd-imdsd</code>, a daemon that provides local programs with access to Instance Metadata Service endpoints. A built-in hardware database recognises major public cloud platforms through SMBIOS data, including Amazon EC2, Microsoft Azure, Google Compute Engine, Oracle Cloud, Tencent Cloud, and Hetzner. By centralising metadata access under systemd, the subsystem establishes a consistent interface for cloud VMs to retrieve instance information without depending on cloud-vendor-specific agents.</p>
+
+
+<p>Storage management receives attention through <code>storagectl</code>, a new command-line utility backed by a Varlink interface. The tool exposes storage resources in a unified manner, intended for use as managed user storage. How <code>storagectl</code> will coexist with or eventually replace established stacks such as LVM, <code>cryptsetup</code>, and ZFS tooling remains an open question for heterogeneous environments.</p>
+
+
+<p>Additional changes in 261-rc1 include a <code>systemd-tpm2-swtpm.service</code> that runs the IBM Software TPM as an automatic fallback on systems lacking physical TPM hardware, PID1 support for the kernel's Live Update Orchestrator and Kernel Handover capabilities, a new <code>CPUSetPartition=</code> unit setting for configuring cgroup partition types, and a <code>RestrictFileSystemAccess=</code> directive that uses a BPF LSM program to restrict execution to binaries on signed DM-VERITY protected filesystems. A <code>tmpfiles.d/root.conf</code> entry now enforces 0555 permissions on the root directory, and a <code>DefaultMemoryZSwapWriteback=</code> manager setting provides a system-wide default for Zswap writeback behaviour.</p>
+
+
+<p>For Hong Kong cloud providers and enterprise Linux teams, the RC window offers a structured opportunity to evaluate these additions before they reach stable release. Staging environments can test <code>systemd-sysinstall</code> against existing provisioning workflows to determine whether it can replace or complement current deployment tooling. The IMDS subsystem warrants review by security teams assessing cloud metadata exposure, particularly its access control model and audit logging capabilities. Meanwhile, <code>storagectl</code> should be tested alongside existing storage stacks to understand integration behaviour and any potential conflicts. Deployment scripts, automation pipelines, and cloud security policies should be audited in parallel to identify required updates. Feedback can be submitted to the systemd project during the RC phase, and production rollout should be deferred until the stable 261 release is published and internal validation is complete.</p>
+
+
+<p>Historical debates about systemd's expanding scope are likely to resurface with this release. The project's maintainers appear to view these additions as pragmatic responses to modern infrastructure requirements rather than arbitrary feature creep. Whether major distributions adopt the native installer framework broadly or confine it to specific ecosystems will become clearer as testing progresses.</p>
+
+
+<p>Full details of the 261-rc1 changes are available on the project's GitHub release page.</p>
+
+
+<hr>
+
+
+<p>systemd 項目已發布 261 版本的首個 release candidate，帶來一系列新功能，將 init system 和 service manager 的功能延伸至 OS provisioning、cloud metadata 處理和 storage lifecycle management。據 Phoronix 於 5 月 22 日報道，此次更新是 systemd 近期版本週期中功能最為豐富的一次。</p>
+
+
+<p>是次更新的核心為 <code>systemd-sysinstall</code>，這是一個現代化的文字模式 installer，將 systemd 的 partitioning logic、credential management 和 system configuration tools 整合至單一工作流程。該 installer 從 USB 驅動裝置等臨時 boot medium 運作，並將目標 OS 複製至目的地系統，旨在簡化以往依賴發行版專用 installer 或自訂 script 的 deployment pipelines。</p>
+
+
+<p>更新同時引入 <code>systemd-imdsd</code>，一個 daemon 為本地程式提供 Instance Metadata Service endpoints 的存取。內置的 hardware database 透過 SMBIOS data 識別主要 public cloud platforms，包括 Amazon EC2、Microsoft Azure、Google Compute Engine、Oracle Cloud、騰訊雲和 Hetzner。透過在 systemd 下集中管理 metadata access，此子系統為 cloud VMs 建立了一致的介面以擷取 instance information，無需依賴雲端供應商專屬的 agents。</p>
+
+
+<p>Storage management 方面推出 <code>storagectl</code>，一個由 Varlink interface 支援的新 command-line utility。此工具以統一方式呈現 storage resources，設計用作 managed user storage。<code>storagectl</code> 將如何與 LVM、<code>cryptsetup</code> 和 ZFS tooling 等成熟方案共存或最終取代它們，在 heterogeneous environments 中仍是待解問題。</p>
+
+
+<p>261-rc1 的其他變更包括 <code>systemd-tpm2-swtpm.service</code>，在缺乏實體 TPM hardware 的系統上自動以 IBM Software TPM 作為 fallback；PID1 支援 kernel 的 Live Update Orchestrator 和 Kernel Handover 功能；新的 <code>CPUSetPartition=</code> unit setting 用於設定 cgroup partition types；以及 <code>RestrictFileSystemAccess=</code> directive，使用 BPF LSM program 限制執行僅限於已簽署 DM-VERITY protected filesystems 上的 binaries。<code>tmpfiles.d/root.conf</code> 項目現在對 root directory 強制執行 0555 permissions，而 <code>DefaultMemoryZSwapWriteback=</code> manager setting 提供系統層級的 Zswap writeback 行為預設值。</p>
+
+
+<p>對於香港雲端服務供應商和企業 Linux 團隊，RC 階段提供了結構化的機會來評估這些新增功能。Staging environments 可測試 <code>systemd-sysinstall</code> 與現有 provisioning workflows 的兼容性，以確定其能否取代或補充現有的 deployment tooling。IMDS subsystem 需要 security teams 審查 cloud metadata exposure，特別是 access control model 和 audit logging capabilities。同時，<code>storagectl</code> 應與現有 storage stacks 進行測試，以了解 integration behaviour 和任何潛在衝突。Deployment scripts、automation pipelines 和 cloud security policies 應同步審計以識別所需更新。Feedback 可在 RC 階段提交至 systemd 項目，而 production rollout 應推遲至 stable 261 release 發布及內部 validation 完成後進行。</p>
+
+
+<p>關於 systemd 擴展範圍的歷史爭議很可能會隨著此次更新再次浮現。項目的 maintainers 似乎將這些新增功能視為對現代 infrastructure requirements 的務實回應，而非任意的 feature creep。主要 distributions 會廣泛採用原生 installer framework 還是僅將其限於特定 ecosystems，隨著測試推進將會更加明確。</p>
+
+
+<p>261-rc1 變更的完整詳情可於項目的 GitHub release page 查閱。</p>
+
+
+<p><a href="https://www.phoronix.com/news/systemd-261-rc1" target="_blank" rel="noopener">原文連結 / Original Article</a></p>
+
+
+    </div>
+
+    
+  </article>
+  <!-- post end -->
+
+      <!-- post nav start -->
+  <nav aria-label="Article navigation" class="my-3">
+    <ul class="pagination justify-content-center flex-wrap">
+      <li class="page-item"><a class="page-link" href="/archive/20260522-294-international-law-enforcement-shuts-down.html">&laquo;&laquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20260522-273-kimwolf-botnet-operator-arrested-in-otta.html">&laquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/">Archive</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20260522-276-linux-kernel-moves-toward-programmable-p.html">&raquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20120717-182938.html">&raquo;&raquo;</a></li>
+    </ul>
+  </nav>
+  <!-- post nav end -->
+
+  </div>
+
+
+</div>
+</div>
+</div>
+
+<!-- footer start -->
+
+  <footer class="site-footer mt-4">
+    <div class="container">
+      <div class="site-footer-cols">
+        <div class="site-footer-col">
+          <div class="site-footer-heading">HKLUG</div>
+          <p class="site-footer-about">香港 Linux 用家協會<br/>Hong Kong Linux User Group</p>
+          <a rel="license" href="https://creativecommons.org/licenses/by-sa/3.0/hk/">
+            <img alt="CC BY-SA 3.0 HK" style="border-width:0;opacity:0.6;" src="https://i.creativecommons.org/l/by-sa/3.0/hk/80x15.png" />
+          </a>
+        </div>
+        <div class="site-footer-col">
+          <div class="site-footer-heading">Community</div>
+          <ul class="site-footer-links">
+            <li><a href="https://www.hklug.org/" target="_blank">HKLUG</a></li>
+            <li><a href="https://www.hkcota.org/" target="_blank">HKCOTA</a></li>
+            <li><a href="https://opensource.hk/" target="_blank">Open Source HK</a></li>
+            <li><a href="https://hkoscon.org/" target="_blank">HKOSCon</a></li>
+          </ul>
+        </div>
+        <div class="site-footer-col">
+          <div class="site-footer-heading">Site</div>
+          <ul class="site-footer-links">
+            <li><a href="/">News</a></li>
+            <li><a href="/announce/">Announcements</a></li>
+            <li><a href="/archive/">Archive</a></li>
+            <li><a href="/about.html">About</a></li>
+            <li><a href="/contact.html">Contact</a></li>
+            <li><a href="/privacy.html">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="site-footer-bottom">
+        &copy; 1997&ndash;2026 Hong Kong Linux User Group &middot;
+        <a rel="license" href="https://creativecommons.org/licenses/by-sa/3.0/hk/">CC BY-SA 3.0 HK</a>
+      </div>
+    </div>
+  </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmYRTdMCX8Yf//Rz5rKl15qhSIH" crossorigin="anonymous"></script>
+
+</body>
+</html>
+<!-- footer end -->
+
+

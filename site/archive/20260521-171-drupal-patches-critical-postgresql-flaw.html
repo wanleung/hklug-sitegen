@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+
+<!-- header start -->
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hong Kong Linux User Group - 香港Linux用家協會(HKLUG) &gt; Archive &gt; Drupal Patches Critical PostgreSQL Flaw Enabling Remote Code Execution</title>
+    
+    <meta name="description" content="Drupal maintainers have issued urgent security updates addressing a severe vulnerability in Drupal Core that could allow attackers to achieve remote code execut" />
+    <meta property="og:title" content="Drupal Patches Critical PostgreSQL Flaw Enabling Remote Code Execution" />
+    <meta property="og:description" content="Drupal maintainers have issued urgent security updates addressing a severe vulnerability in Drupal Core that could allow attackers to achieve remote code execut" />
+    <meta property="og:url" content="https://www.linux.org.hk/archive/20260521-171-drupal-patches-critical-postgresql-flaw.html" />
+    <link rel="canonical" href="https://www.linux.org.hk/archive/20260521-171-drupal-patches-critical-postgresql-flaw.html" />
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/main.css?v=20260523b" />
+  </head>
+  <body>
+
+  <!-- menu start -->
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-0">
+  <div class="container">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="https://medium.com/hong-kong-linux-user-group">Technical Articles</a></li>
+        <li class="nav-item"><a class="nav-link" href="https://www.facebook.com/groups/hklug/">Discussion Forum</a></li>
+        <li class="nav-item"><a class="nav-link" href="/">News</a></li>
+        <li class="nav-item"><a class="nav-link" href="/announce/">Announcements</a></li>
+        <li class="nav-item"><a class="nav-link" href="/archive/">Archive</a></li>
+        <li class="nav-item"><a class="nav-link" href="/about.html">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="/contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- menu end -->
+
+
+  <div class="site-branding">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-auto">
+          <a href="/"><img src="/images/logo.png" alt="HKLUG" style="max-height:64px;" /></a>
+        </div>
+        <div class="col">
+          <h2 class="mb-0">Hong Kong Linux User Group &nbsp;香港Linux用家協會 (HKLUG)</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- header end -->
+
+
+<div class="container py-4">
+<div class="row">
+<div class="col-12" role="content">
+
+
+  <div class="article-page">
+      <!-- post nav start -->
+  <nav aria-label="Article navigation" class="my-3">
+    <ul class="pagination justify-content-center flex-wrap">
+      <li class="page-item"><a class="page-link" href="/archive/20260522-294-international-law-enforcement-shuts-down.html">&laquo;&laquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20260521-159-article.html">&laquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/">Archive</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20260521-175-microsoft-deploys-emergency-patches-for.html">&raquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20120717-182938.html">&raquo;&raquo;</a></li>
+    </ul>
+  </nav>
+  <!-- post nav end -->
+
+    <hr class="my-3" />
+      <!-- post start -->
+  <article>
+    <h1 class="article-title">Drupal Patches Critical PostgreSQL Flaw Enabling Remote Code Execution</h1>
+    <p class="article-meta">By AI Press Team &middot; 2026-05-21 22:15:00</p>
+
+    
+
+    <div class="article-body">
+      <p>Drupal maintainers have issued urgent security updates addressing a severe vulnerability in Drupal Core that could allow attackers to achieve remote code execution (RCE) on servers utilizing PostgreSQL databases. The flaw, tracked as CVE-2026-9082, resides within the content management system's database abstraction API and poses a significant risk to enterprise web infrastructure.</p>
+
+
+<p>Drupal's security team has classified the issue as "highly critical," urging administrators to prioritize remediation despite a assigned CVSS base score of 6.5. While a score of 6.5 typically indicates medium severity, security analysts warn that the potential for remote code execution and privilege escalation warrants treating this incident as a critical priority. The vulnerability specifically impacts environments where Drupal Core interacts with PostgreSQL backends, potentially allowing malicious actors to escalate privileges or disclose sensitive information through crafted database queries.</p>
+
+
+<p>The root cause lies in the database abstraction layer, which is designed to ensure compatibility across different database engines. In this instance, the abstraction layer failed to rigorously enforce input sanitization specific to PostgreSQL, inadvertently creating an attack surface that bypasses standard perimeter defenses. This highlights a systemic risk in cross-platform compatibility layers, where security controls valid for one database engine may not translate effectively to another.</p>
+
+
+<p>For IT teams managing Drupal installations, immediate patching is the primary recommendation. Administrators should verify their current version and apply the latest security release via Composer. A standard verification command involves running <code>composer update drupal/core --with-all-dependencies</code> followed by database updates via Drush or the update script. Organizations relying on change management processes that prevent immediate deployment should implement compensating controls without delay. These include restricting database network access to authorized application servers only, enforcing strict least-privilege principles for database accounts, and actively monitoring query logs for anomalous execution patterns.</p>
+
+
+<p>From a DevOps perspective, this incident underscores the necessity of integrating software composition analysis (SCA) into CI/CD pipelines. Automated scanning tools should be configured to flag CVE-2026-9082 specifically, ensuring that builds containing vulnerable versions of Drupal Core are blocked before reaching production. Continuous auditing of open-source dependencies remains essential, as backend data-access layers are frequently deprioritized in traditional security testing despite their ability to neutralize perimeter security.</p>
+
+
+<p>While the specific authentication requirements for exploitation are still being clarified against official advisories, the operational severity suggests that waiting for full verification is too risky. Enterprises in highly regulated markets should note that CMS integrity is vital for compliance and operational continuity. However, regardless of jurisdiction, the consensus among security researchers is that the potential for RCE overrides the numerical CVSS rating.</p>
+
+
+<p>Drupal users are advised to consult the official security advisory for precise version numbers affected across the 10.x branches, as minor discrepancies may exist in third-party reporting. Given the foundational nature of Drupal Core in many web architectures, prompt remediation is necessary to prevent potential compromise of server integrity and data confidentiality.</p>
+
+
+<hr>
+
+
+<p>Drupal 維護人員已發布緊急安全更新，修補 Drupal Core 中的一個嚴重漏洞，該漏洞可讓攻擊者在使用 PostgreSQL 資料庫的伺服器上實現遠程代碼執行（RCE）。此漏洞編號為 CVE-2026-9082，存在於該內容管理系統的資料庫抽象 API 中，對企業網絡基礎設施構成重大風險。</p>
+
+
+<p>Drupal 安全團隊將此問題列為「極度嚴重」，敦促管理員優先處理修補工作，儘管其 CVSS 基本評分僅為 6.5。雖然 6.5 分通常表示中度嚴重性，但安全分析員警告，遠程代碼執行和權限提升的潛在風險，令此事件必須視為最高優先級處理。該漏洞專門影響 Drupal Core 與 PostgreSQL 後端交互的環境，可能允許攻擊者透過精心構造的資料庫查詢提升權限或洩露敏感資料。</p>
+
+
+<p>根本原因在於資料庫抽象層，該層旨在確保跨不同資料庫引擎的兼容性。在此情況下，抽象層未能嚴格執行針對 PostgreSQL 的輸入消毒，無意中創建了繞過標準周邊防禦的攻擊面。這突顯了跨平台兼容性層中的系統性風險：對一個資料庫引擎有效的安全控制，可能無法有效轉移至另一個引擎。</p>
+
+
+<p>對於管理 Drupal 安裝的 IT 團隊，首要建議是立即進行修補。管理員應驗證當前版本，並透過 Composer 應用最新安全發布。標準驗證命令包括執行 <code>composer update drupal/core --with-all-dependencies</code>，然後透過 Drush 或更新腳本進行資料庫更新。依賴變更管理流程而無法立即部署的機構，應立即實施替代控制措施，包括僅限制資料庫網絡訪問至授權應用伺服器、對資料庫賬戶實施嚴格的最低權限原則，以及主動監控查詢日誌中的異常執行模式。</p>
+
+
+<p>從 DevOps 角度而言，此事件突顯了將軟件組成分析（SCA）整合至 CI/CD pipeline 的必要性。應配置自動掃描工具以專門標記 CVE-2026-9082，確保包含漏洞版本 Drupal Core 的構建在到達生產環境前被阻擋。持續審計開源依賴項仍然至關重要，因為傳統安全測試中經常忽視後端資料訪問層，儘管它們有能力使周邊安全失效。</p>
+
+
+<p>雖然利用漏洞的具體身份驗證要求仍在與官方安全通告核對中，但操作的嚴重性表明，等待完全驗證的風險太高。處於高度監管市場的企業應注意，CMS 完整性對合規性和運營連續性至關重要。然而，無論管轄區如何，安全研究人員的共識是，RCE 的潛在風險超越了數值 CVSS 評分。</p>
+
+
+<p>建議 Drupal 用戶查閱官方安全通告，以獲取 10.x 分支中受影響的確切版本號，因為第三方報告可能存在細微差異。鑑於 Drupal Core 在許多網絡架構中的基礎地位，必須立即補救，以防止伺服器完整性和資料機密性遭受潛在破壞。</p>
+
+
+<p><a href="https://thehackernews.com/2026/05/highly-critical-drupal-core-flaw.html" target="_blank" rel="noopener">原文連結 / Original Article</a></p>
+
+
+    </div>
+
+    
+  </article>
+  <!-- post end -->
+
+      <!-- post nav start -->
+  <nav aria-label="Article navigation" class="my-3">
+    <ul class="pagination justify-content-center flex-wrap">
+      <li class="page-item"><a class="page-link" href="/archive/20260522-294-international-law-enforcement-shuts-down.html">&laquo;&laquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20260521-159-article.html">&laquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/">Archive</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20260521-175-microsoft-deploys-emergency-patches-for.html">&raquo;</a></li>
+      <li class="page-item"><a class="page-link" href="/archive/20120717-182938.html">&raquo;&raquo;</a></li>
+    </ul>
+  </nav>
+  <!-- post nav end -->
+
+  </div>
+
+
+</div>
+</div>
+</div>
+
+<!-- footer start -->
+
+  <footer class="site-footer mt-4">
+    <div class="container">
+      <div class="site-footer-cols">
+        <div class="site-footer-col">
+          <div class="site-footer-heading">HKLUG</div>
+          <p class="site-footer-about">香港 Linux 用家協會<br/>Hong Kong Linux User Group</p>
+          <a rel="license" href="https://creativecommons.org/licenses/by-sa/3.0/hk/">
+            <img alt="CC BY-SA 3.0 HK" style="border-width:0;opacity:0.6;" src="https://i.creativecommons.org/l/by-sa/3.0/hk/80x15.png" />
+          </a>
+        </div>
+        <div class="site-footer-col">
+          <div class="site-footer-heading">Community</div>
+          <ul class="site-footer-links">
+            <li><a href="https://www.hklug.org/" target="_blank">HKLUG</a></li>
+            <li><a href="https://www.hkcota.org/" target="_blank">HKCOTA</a></li>
+            <li><a href="https://opensource.hk/" target="_blank">Open Source HK</a></li>
+            <li><a href="https://hkoscon.org/" target="_blank">HKOSCon</a></li>
+          </ul>
+        </div>
+        <div class="site-footer-col">
+          <div class="site-footer-heading">Site</div>
+          <ul class="site-footer-links">
+            <li><a href="/">News</a></li>
+            <li><a href="/announce/">Announcements</a></li>
+            <li><a href="/archive/">Archive</a></li>
+            <li><a href="/about.html">About</a></li>
+            <li><a href="/contact.html">Contact</a></li>
+            <li><a href="/privacy.html">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="site-footer-bottom">
+        &copy; 1997&ndash;2026 Hong Kong Linux User Group &middot;
+        <a rel="license" href="https://creativecommons.org/licenses/by-sa/3.0/hk/">CC BY-SA 3.0 HK</a>
+      </div>
+    </div>
+  </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmYRTdMCX8Yf//Rz5rKl15qhSIH" crossorigin="anonymous"></script>
+
+</body>
+</html>
+<!-- footer end -->
+
+
