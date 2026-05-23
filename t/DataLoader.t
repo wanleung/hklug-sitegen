@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 31;
+use Test::More tests => 36;
 use File::Temp qw(tempdir);
 use lib 'lib';
 
@@ -142,4 +142,53 @@ my $shortfile = write_txt($tmpdir, 'short.txt', "Date: 2026-01-01\nAuthor: A\nTi
 my $shortpost = load_data($shortfile);
 unlike($shortpost->{excerpt}, qr/\.\.\.$/, 'short excerpt has no ...');
 is($shortpost->{excerpt}, 'Short content.', 'short excerpt matches plain text');
+
+# Test 5: Image: field parsed
+my $fi5 = write_txt($tmpdir, 'test_img5.txt', <<'END');
+Date: 2025-01-01
+Author: Bot
+Title: Image Test
+Image: images/test5.jpg
+Content:
+Body text.
+END
+my $pi5 = load_data($fi5);
+is($pi5->{image}, 'images/test5.jpg', 'Image: field parsed correctly');
+
+# Test 6: no Image: field → extract first <img src> from content
+my $fi6 = write_txt($tmpdir, 'test_img6.txt', <<'END');
+Date: 2025-01-02
+Author: Bot
+Title: Img Extraction Test
+Content:
+Some text. <img src="https://example.com/photo.jpg" alt=""> More text.
+END
+my $pi6 = load_data($fi6);
+is($pi6->{image}, 'https://example.com/photo.jpg', '<img src> extracted as fallback image');
+
+# Test 7: Image: field takes priority over <img> in content
+my $fi7 = write_txt($tmpdir, 'test_img7.txt', <<'END');
+Date: 2025-01-03
+Author: Bot
+Title: Priority Test
+Image: images/manual.jpg
+Content:
+Text. <img src="https://example.com/other.jpg" alt="">
+END
+my $pi7 = load_data($fi7);
+is($pi7->{image}, 'images/manual.jpg', 'Manual Image: field takes priority over <img> in content');
+
+# Test 8: no Image: and no <img> → image is undef
+my $fi8 = write_txt($tmpdir, 'test_img8.txt', <<'END');
+Date: 2025-01-04
+Author: Bot
+Title: No Image Test
+Content:
+No images here.
+END
+my $pi8 = load_data($fi8);
+is($pi8->{image}, undef, 'no image source → image field is undef');
+
+# Test 9: slug derived from filename
+is($pi5->{slug}, 'test_img5', 'slug derived from filename for image test file');
 

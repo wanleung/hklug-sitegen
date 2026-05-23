@@ -22,6 +22,7 @@ sub load_data {
             if    ($line =~ m/^Date:\s*(.+)$/)   { $post{date}   = $1 }
             elsif ($line =~ m/^Author:\s*(.+)$/)  { $post{author} = $1 }
             elsif ($line =~ m/^Title:\s*(.+)$/)   { $post{title}  = $1 }
+            elsif ($line =~ m/^Image:\s*(.+)$/)   { $post{image}  = $1 }
             elsif ($line =~ m/^Tags:\s*(.*)$/) {
                 my $raw = $1;
                 my @raw_tags =
@@ -60,6 +61,13 @@ sub load_data {
     $plain =~ s/\s+/ /g;
     $plain =~ s/^\s+|\s+$//g;
     $post{excerpt} = length($plain) > 180 ? substr($plain, 0, 180) . '...' : $plain;
+
+    # image fallback: extract first <img src> from rendered HTML if no manual Image: field
+    unless ($post{image}) {
+        if ($post{content} =~ /<img[^>]+src="([^"]+)"/i) {
+            $post{image} = $1;
+        }
+    }
 
     return \%post;
 }
