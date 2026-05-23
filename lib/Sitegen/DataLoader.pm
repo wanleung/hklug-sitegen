@@ -5,6 +5,7 @@ use warnings;
 use utf8;
 use Exporter 'import';
 use Text::Markdown::Discount qw(markdown);
+use File::Basename qw(basename);
 
 our @EXPORT_OK = qw(load_data load_announce);
 
@@ -49,6 +50,17 @@ sub load_data {
 
     $post{tags}    //= [];
     $post{content}   = markdown($post{content} // '');
+
+    # slug: filename stem without extension
+    (my $slug = basename($filename)) =~ s/\.txt$//;
+    $post{slug} = $slug;
+
+    # excerpt: strip HTML tags, collapse whitespace, truncate to 180 chars
+    (my $plain = $post{content}) =~ s/<[^>]+>//g;
+    $plain =~ s/\s+/ /g;
+    $plain =~ s/^\s+|\s+$//g;
+    $post{excerpt} = length($plain) > 180 ? substr($plain, 0, 180) . '...' : $plain;
+
     return \%post;
 }
 

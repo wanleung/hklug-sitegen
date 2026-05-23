@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 24;
+use Test::More tests => 30;
 use File::Temp qw(tempdir);
 use lib 'lib';
 
@@ -120,3 +120,22 @@ local $SIG{__WARN__} = sub { push @warnings, @_ };
 my $post6 = load_data($f6);
 is_deeply($post6->{tags}, ['linux', 'good-tag'], 'unsafe tags skipped');
 is(scalar @warnings, 2, 'two warnings emitted for two unsafe tags');
+
+# Test 10: slug is set from filename
+my $slugfile = write_txt($tmpdir, '20260101-slug-test.txt', "Date: 2026-01-01\nAuthor: A\nTitle: Slug\nContent:\nBody.\n");
+my $slugpost = load_data($slugfile);
+is($slugpost->{slug}, '20260101-slug-test', 'slug is basename without .txt');
+
+# Test 11: excerpt strips HTML tags and truncates to 180 chars
+my $longfile = write_txt($tmpdir, 'long.txt', "Date: 2026-01-01\nAuthor: A\nTitle: Long\nContent:\n" . ("word " x 60) . "\n");
+my $longpost = load_data($longfile);
+ok(defined $longpost->{excerpt}, 'excerpt is set');
+ok(length($longpost->{excerpt}) <= 183, 'excerpt is max 180 chars plus ...');  # 180 + "..."
+like($longpost->{excerpt}, qr/\.\.\.$/, 'long excerpt ends with ...');
+
+# Test 12: short content excerpt has no trailing ellipsis
+my $shortfile = write_txt($tmpdir, 'short.txt', "Date: 2026-01-01\nAuthor: A\nTitle: Short\nContent:\nShort content.\n");
+my $shortpost = load_data($shortfile);
+unlike($shortpost->{excerpt}, qr/\.\.\.$/, 'short excerpt has no ...');
+is($shortpost->{excerpt}, 'Short content.', 'short excerpt matches plain text');
+
