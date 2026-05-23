@@ -1,19 +1,26 @@
 [% WRAPPER frame.html %]
 
 [% IF news.size %]
-<div class="row">
-  <div class="large-12 columns">
+<div class="row mb-2">
+  <div class="col-12">
     <h2 class="section-header it-news-header">IT News</h2>
   </div>
 </div>
-<div class="row" id="it-news">
+<div class="row g-3 mb-4" id="it-news">
   [% FOREACH post IN news %]
-  <div class="large-3 columns">
+  <div class="col-md-3">
     <div class="news-card">
-      <h3><a href="[% post.url %]">[% post.title %]</a></h3>
-      <p class="meta">[% post.date %]</p>
-      <p>[% post.excerpt %]</p>
-      <a href="[% post.url %]" class="it-news-more">Read more &rarr;</a>
+      [% IF post.image %]
+      <img class="card-cover" src="[% post.image.match('^https?://') ? post.image : '/' _ post.image %]" alt="">
+      [% ELSE %]
+      <div class="card-cover-placeholder">No image</div>
+      [% END %]
+      <div class="card-body-inner">
+        <h3><a href="[% post.url %]">[% post.title %]</a></h3>
+        <p class="meta">[% post.date %]</p>
+        <p>[% post.excerpt %]</p>
+        <a href="[% post.url %]" class="it-news-more">Read more &rarr;</a>
+      </div>
     </div>
   </div>
   [% END %]

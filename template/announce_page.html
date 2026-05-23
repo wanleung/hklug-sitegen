@@ -2,17 +2,22 @@
    title = post.title
    page_url = site_url _ '/announce/' _ post.slug _ '.html'
 %]
-  <div class="row">
-    <div class="large-12 columns">
+  <div class="row mb-2">
+    <div class="col-12">
       <p><a href="/announce/">&larr; All Announcements</a></p>
     </div>
   </div>
 
   <article>
     <div class="row">
-      <div class="large-12 columns">
+      <div class="col-12">
         <h1>[% post.title %]</h1>
         <p class="meta">[% post.date %][% IF post.author %] | [% post.author %][% END %]</p>
+
+        [% IF post.image %]
+        <img class="article-hero" src="[% post.image.match('^https?://') ? post.image : '/' _ post.image %]" alt="">
+        [% END %]
+
         <div class="content">
           [% post.content %]
         </div>
@@ -26,8 +31,8 @@
     </div>
   </article>
 
-  <div class="row">
-    <div class="large-12 columns">
+  <div class="row mt-3">
+    <div class="col-12">
       <p><a href="/announce/">&larr; All Announcements</a></p>
     </div>
   </div>

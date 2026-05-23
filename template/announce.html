@@ -1,17 +1,24 @@
 [% IF announces.size %]
-<div class="row">
-  <div class="large-12 columns">
+<div class="row mb-2">
+  <div class="col-12">
     <h2 class="section-header community-header">HK Open Source Community</h2>
   </div>
 </div>
-<div class="row" id="community-announcements">
+<div class="row g-3 mb-4" id="community-announcements">
   [% FOREACH post IN announces %]
-  <div class="large-4 columns">
+  <div class="col-md-4">
     <div class="announce-card">
-      <h3><a href="[% post.url %]">[% post.title %]</a></h3>
-      <p class="meta">[% post.date %]</p>
-      <p>[% post.excerpt %]</p>
-      <a href="[% post.url %]" class="read-more">Read more &rarr;</a>
+      [% IF post.image %]
+      <img class="card-cover" src="[% post.image.match('^https?://') ? post.image : '/' _ post.image %]" alt="">
+      [% ELSE %]
+      <div class="card-cover-placeholder">No image</div>
+      [% END %]
+      <div class="card-body-inner">
+        <h3><a href="[% post.url %]">[% post.title %]</a></h3>
+        <p class="meta">[% post.date %]</p>
+        <p>[% post.excerpt %]</p>
+        <a href="[% post.url %]" class="read-more">Read more &rarr;</a>
+      </div>
     </div>
   </div>
   [% END %]
