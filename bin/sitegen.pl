@@ -80,6 +80,7 @@ sub main {
     gen_announcements($tt, $config);
     my $all_posts = gen_archive($tt, $config, $cache);
     gen_tags($tt, $config, $all_posts);
+    gen_sitemap($config, $all_posts);
 
     save_cache($cache_file, $cache);
     print "Done.\n";
@@ -93,19 +94,31 @@ Images in C<static/images/> are tracked by git; C<site/images/> is gitignored.
 =cut
 
 sub copy_static {
+    # Copy static/images/ → site/images/
     my $src = "$base_dir/static/images";
     my $dst = "$base_dir/site/images";
-    return unless -d $src;
-    make_path($dst);
-    find(sub {
-        return if -d $_;
-        (my $rel = $File::Find::name) =~ s{^\Q$src/}{};
-        my $target = "$dst/$rel";
-        my $target_dir = $target;
-        $target_dir =~ s{/[^/]+$}{};
-        make_path($target_dir);
-        copy($File::Find::name, $target) or warn "copy_static: cannot copy $File::Find::name: $!";
-    }, $src);
+    if (-d $src) {
+        make_path($dst);
+        find(sub {
+            return if -d $_;
+            (my $rel = $File::Find::name) =~ s{^\Q$src/}{};
+            my $target = "$dst/$rel";
+            my $target_dir = $target;
+            $target_dir =~ s{/[^/]+$}{};
+            make_path($target_dir);
+            copy($File::Find::name, $target) or warn "copy_static: cannot copy $File::Find::name: $!";
+        }, $src);
+    }
+
+    # Copy root-level static files (robots.txt, etc.) → site/
+    opendir(my $dh, "$base_dir/static") or return;
+    while (my $f = readdir($dh)) {
+        next if $f =~ /^\./;
+        my $srcfile = "$base_dir/static/$f";
+        next unless -f $srcfile;
+        copy($srcfile, "$site_folder/$f") or warn "copy_static: cannot copy $srcfile: $!";
+    }
+    closedir($dh);
 }
 
 =head2 gen_home($tt, $config)
@@ -306,6 +319,84 @@ sub gen_tags {
     my $announces = load_announce($top_dir, $config);
     my $tags = collect_tags(@$all_posts);
     gen_tag_pages($tt, $tags, $site_folder, $config, $announces);
+}
+
+=head2 gen_sitemap($config, $all_posts)
+
+Writes C<site/sitemap.xml> covering the homepage, archive posts, announcements,
+and static pages.  Uses C<lastmod> from post dates where available.
+
+=cut
+
+sub gen_sitemap {
+    my ($config, $all_posts) = @_;
+    my $base_url = $config->{site_url} // 'https://www.linux.org.hk';
+    $base_url =~ s{/$}{};  # strip trailing slash
+
+    my @urls;
+
+    # Static priority pages
+    push @urls, { loc => "$base_url/",          priority => '1.0', changefreq => 'daily'   };
+    push @urls, { loc => "$base_url/archive/",  priority => '0.8', changefreq => 'daily'   };
+    push @urls, { loc => "$base_url/announce/", priority => '0.8', changefreq => 'weekly'  };
+
+    # Archive posts (newest-first already)
+    for my $post (@$all_posts) {
+        my $lastmod = '';
+        if ($post->{date} && $post->{date} =~ /^(\d{4})(\d{2})(\d{2})/) {
+            $lastmod = "$1-$2-$3";
+        }
+        push @urls, {
+            loc        => "$base_url$post->{url}",
+            priority   => '0.6',
+            changefreq => 'never',
+            lastmod    => $lastmod,
+        };
+    }
+
+    # Announcements
+    opendir(my $dh, $top_dir) or die $!;
+    my @ann_files = sort grep { /\.txt$/ } readdir($dh);
+    closedir($dh);
+    for my $file (@ann_files) {
+        my $post = load_data("$top_dir/$file");
+        my $lastmod = '';
+        if ($post->{date} && $post->{date} =~ /^(\d{4})(\d{2})(\d{2})/) {
+            $lastmod = "$1-$2-$3";
+        }
+        push @urls, {
+            loc        => "$base_url/announce/$post->{slug}.html",
+            priority   => '0.5',
+            changefreq => 'never',
+            lastmod    => $lastmod,
+        };
+    }
+
+    # Static pages
+    opendir(my $dh2, $data_dir) or die $!;
+    my @pages = sort grep { /\.txt$/ } readdir($dh2);
+    closedir($dh2);
+    for my $file (@pages) {
+        (my $html = $file) =~ s/\.txt$/.html/;
+        push @urls, { loc => "$base_url/$html", priority => '0.4', changefreq => 'monthly' };
+    }
+
+    # Write sitemap.xml
+    my $out = "$site_folder/sitemap.xml";
+    open(my $fh, '>:encoding(UTF-8)', $out) or die "Cannot write $out: $!";
+    print $fh qq{<?xml version="1.0" encoding="UTF-8"?>\n};
+    print $fh qq{<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n};
+    for my $u (@urls) {
+        print $fh "  <url>\n";
+        print $fh "    <loc>$u->{loc}</loc>\n";
+        print $fh "    <lastmod>$u->{lastmod}</lastmod>\n" if $u->{lastmod};
+        print $fh "    <changefreq>$u->{changefreq}</changefreq>\n";
+        print $fh "    <priority>$u->{priority}</priority>\n";
+        print $fh "  </url>\n";
+    }
+    print $fh "</urlset>\n";
+    close $fh;
+    print "GEN sitemap.xml (" . scalar(@urls) . " URLs)\n";
 }
 
 main();
