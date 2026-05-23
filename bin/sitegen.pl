@@ -5,6 +5,8 @@ use Getopt::Long;
 use Template;
 use YAML::Tiny;
 use File::Path qw(make_path);
+use File::Find  qw(find);
+use File::Copy  qw(copy);
 
 use FindBin qw($Bin);
 use lib "$Bin/../lib";
@@ -62,6 +64,7 @@ sub load_config {
 
 sub main {
     my $config = load_config();
+    copy_static();   # copy static/images/ → site/images/
     my $cache  = $force ? {} : load_cache($cache_file);
 
     my $tt = Template->new({
@@ -80,6 +83,29 @@ sub main {
 
     save_cache($cache_file, $cache);
     print "Done.\n";
+}
+
+=head2 copy_static()
+
+Copies C<static/images/> to C<site/images/> before page generation.
+Images in C<static/images/> are tracked by git; C<site/images/> is gitignored.
+
+=cut
+
+sub copy_static {
+    my $src = "$base_dir/static/images";
+    my $dst = "$base_dir/site/images";
+    return unless -d $src;
+    make_path($dst);
+    find(sub {
+        return if -d $_;
+        (my $rel = $File::Find::name) =~ s{^\Q$src/}{};
+        my $target = "$dst/$rel";
+        my $target_dir = $target;
+        $target_dir =~ s{/[^/]+$}{};
+        make_path($target_dir);
+        copy($File::Find::name, $target) or warn "copy_static: cannot copy $File::Find::name: $!";
+    }, $src);
 }
 
 =head2 gen_home($tt, $config)
