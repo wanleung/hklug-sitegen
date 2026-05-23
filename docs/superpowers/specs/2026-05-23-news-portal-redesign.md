@@ -39,13 +39,12 @@ Full-width, no right sidebar. Foundation CSS grid retained for responsive behavi
 
 - **Data source:** `data/top/` (existing `announces` variable from `load_announce()`)
 - **Display:** 3 most recent announcements as horizontal cards
-- **Card content:** Title, date, author, full content (announcements are short by nature)
-- **Card link:** None — `data/top/` entries have no individual pages; content is displayed inline in the card
+- **Card content:** Title, date, author, short excerpt
+- **Card link:** `/announce/<slug>.html` — each announcement gets its own individual page (new)
 - **Section colour:** Blue (`#1a6fa8`) header bar, light blue card background
 
 ### Section 2 — IT News
 
-- **Data source:** `data/news/` (existing `news` variable)
 - **Display:** 8 most recent articles in a 2-column grid
 - **Card content:** Title, date, short excerpt (first 150–200 characters of content, stripped of HTML tags)
 - **Card link:** `/archive/<slug>.html` (existing archive pages, unchanged)
@@ -65,10 +64,13 @@ Full-width, no right sidebar. Foundation CSS grid retained for responsive behavi
 | File | Change |
 |------|--------|
 | `template/frame.html` | Remove 9-col/3-col grid split. Replace with full-width layout. Remove sidebar `<aside>`. |
-| `template/announce.html` | Redesign from `alert-box` list to horizontal 3-card strip with blue accent. |
+| `template/announce.html` | Redesign from `alert-box` list to horizontal 3-card strip with blue accent, cards link to `/announce/<slug>.html`. |
+| `template/announce_page.html` | **New** — individual announcement page (mirrors `archive.html` but blue-accented). |
+| `template/announce_list.html` | **New** — listing page at `/announce/` showing all announcements newest-first. |
 | `template/news.html` | Redesign from `[% WRAPPER frame.html %]` post list to green 2×4 card grid with excerpt. |
 | `template/footer.html` | Add Facebook community links block (moved from sidebar). |
 | `template/frame_noannounce.html` | Update to match new full-width frame (used for archive/tag pages). |
+| `template/menu.html` | Add `Announcements` link pointing to `/announce/`. |
 
 ### Excerpt generation
 
@@ -78,11 +80,26 @@ Full-width, no right sidebar. Foundation CSS grid retained for responsive behavi
 
 ---
 
-## Data flow (unchanged)
+## sitegen.pl changes
+
+| Function | Change |
+|----------|--------|
+| `gen_home()` | Pass `announces` with `url` set to `/announce/<slug>.html` for each item. |
+| `gen_announcements()` | **New** — reads all `data/top/*.txt`, generates `/announce/<slug>.html` per file and `/announce/index.html` listing. Mirrors `gen_archive()`. |
+| `main()` | Call `gen_announcements()` after `gen_home()`. |
+
+Slug for announcement pages: filename with `.txt` → `.html`, same pattern as archive.
+
+---
+
+## Data flow (updated)
 
 ```
-data/top/*.txt  ──► load_announce() ──► $announces ──► announce.html (Section 1)
-data/news/*.txt ──► load_data()     ──► $news       ──► news.html     (Section 2)
+data/top/*.txt  ──► load_announce()      ──► $announces (with url) ──► announce.html (Section 1, front page)
+                ──► gen_announcements()  ──► /announce/<slug>.html  (individual pages)
+                                         ──► /announce/index.html   (listing)
+data/news/*.txt ──► load_data()          ──► $news (with excerpt)  ──► news.html     (Section 2, front page)
+                ──► gen_archive()        ──► /archive/<slug>.html   (individual pages, unchanged)
 ```
 
 `sitegen.pl` `gen_home()` already passes both `announces` and `news` to `news.html` via the TT vars. No changes needed to the Perl scripts except adding `excerpt` in `DataLoader.pm`.
@@ -91,12 +108,11 @@ data/news/*.txt ──► load_data()     ──► $news       ──► news.h
 
 ## What does NOT change
 
-- `bin/sitegen.pl` generation logic
-- Individual archive pages (`template/archive.html`, `/archive/*.html`)
+- Individual IT news archive pages (`template/archive.html`, `/archive/*.html`)
 - Archive list page (`template/archive_list.html`)
 - Tag pages
 - About / Contact / Privacy pages
-- URL structure — all `/archive/<slug>.html` links remain identical
+- URL structure for IT news — all `/archive/<slug>.html` links remain identical
 - `data/top/` and `data/news/` directory names and file formats
 
 ---
@@ -104,10 +120,12 @@ data/news/*.txt ──► load_data()     ──► $news       ──► news.h
 ## Acceptance criteria
 
 1. Front page has two visually distinct sections: blue (community) and green (IT news).
-2. Community section shows exactly 3 announcements as horizontal cards.
-3. IT news section shows exactly 8 articles as a 2-column grid with excerpt.
-4. All cards link correctly to their individual article pages.
-5. No right sidebar on any page.
-6. Facebook community links appear in the footer.
-7. Site passes `perl bin/sitegen.pl --force` without errors.
-8. `site/index.html` is valid HTML with both sections present.
+2. Community section shows exactly 3 most recent announcements as horizontal cards, each linking to `/announce/<slug>.html`.
+3. IT news section shows exactly 8 most recent articles as a 2-column grid with excerpt, each linking to `/archive/<slug>.html`.
+4. `/announce/<slug>.html` exists for every file in `data/top/`.
+5. `/announce/index.html` lists all announcements newest-first.
+6. Navigation bar includes `Announcements` link to `/announce/`.
+7. No right sidebar on any page.
+8. Facebook community links appear in the footer.
+9. Site passes `perl bin/sitegen.pl --force` without errors.
+10. `site/index.html` is valid HTML with both sections present.
