@@ -1,0 +1,34 @@
+[% WRAPPER frame_noannounce.html
+   title = post.title
+   page_url = site_url _ '/announce/' _ post.slug _ '.html'
+%]
+  <div class="row">
+    <div class="large-12 columns">
+      <p><a href="/announce/">&larr; All Announcements</a></p>
+    </div>
+  </div>
+
+  <article>
+    <div class="row">
+      <div class="large-12 columns">
+        <h1>[% post.title %]</h1>
+        <p class="meta">[% post.date %][% IF post.author %] | [% post.author %][% END %]</p>
+        <div class="content">
+          [% post.content %]
+        </div>
+
+        [% IF post.tags.size %]
+        <p class="post-tags">Tags:
+          [% FOREACH tag = post.tags %]<a href="/tags/[% tag.replace('\s+', '-') | uri %]/">[% tag | html %]</a>[% UNLESS loop.last %], [% END %][% END %]
+        </p>
+        [% END %]
+      </div>
+    </div>
+  </article>
+
+  <div class="row">
+    <div class="large-12 columns">
+      <p><a href="/announce/">&larr; All Announcements</a></p>
+    </div>
+  </div>
+[% END %]
