@@ -1,20 +1,20 @@
   <!-- post start -->
-      <article>
+  <article>
+    <h1 class="article-title">[%- post.title -%]</h1>
+    <p class="article-meta">By [% post.author %] &middot; [% post.date %]</p>
 
-        <h3>[%- post.title -%]</h3>
-        <h6>Written by [% post.author %] on [% post.date %].</h6>
-        <p><time pubdate datetime="[% post.date %]"></time></p>
+    [% IF post.image %]
+    <img class="article-hero" src="[% post.image.match('^https?://') ? post.image : '/' _ post.image %]" alt="">
+    [% END %]
 
-        <p>
-          [% post.content %]
-        </p>
+    <div class="article-body">
+      [% post.content %]
+    </div>
 
-      [% IF post.tags.size %]
-      <p class="post-tags">Tags:
-        [% FOREACH tag = post.tags %]<a href="/tags/[% tag.replace('\s+', '-') | uri %]/">[% tag | html %]</a>[% UNLESS loop.last %], [% END %][% END %]
-      </p>
-      [% END %]
-      </article>
-      <hr />
-
+    [% IF post.tags.size %]
+    <p class="post-tags mt-3" style="font-size:0.85rem;">Tags:
+      [% FOREACH tag = post.tags %]<a href="/tags/[% tag.replace('\s+', '-') | uri %]/">[% tag | html %]</a>[% UNLESS loop.last %], [% END %][% END %]
+    </p>
+    [% END %]
+  </article>
   <!-- post end -->
