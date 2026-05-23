@@ -54,7 +54,7 @@ Content:
 - **Facebook Platform / Facebook 平台**: Users who interact with the HKLUG Facebook Page are subject to Meta's own Privacy Policy (link: https://www.facebook.com/privacy/policy/). HKLUG has no control over Meta's data practices.
 - **How We Use Your Information / 資料使用方式**: Not applicable — no information is collected.
 - **Data Sharing / 資料分享**: No data is shared with third parties because no data is collected.
-- **Contact Us / 聯絡我們**: For any privacy-related questions, contact info@linux.org.hk.
+- **Contact Us / 聯絡我們**: For any privacy-related questions, contact infohklug@gmail.com.
 - **Effective Date / 生效日期**: 2026-05-23.
 
 ---
