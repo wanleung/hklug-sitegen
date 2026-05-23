@@ -39,8 +39,8 @@ Full-width, no right sidebar. Foundation CSS grid retained for responsive behavi
 
 - **Data source:** `data/top/` (existing `announces` variable from `load_announce()`)
 - **Display:** 3 most recent announcements as horizontal cards
-- **Card content:** Title, date, author, short content excerpt
-- **Card link:** Each card links to its individual page (currently in `data/top/`, path TBD by sitegen)
+- **Card content:** Title, date, author, full content (announcements are short by nature)
+- **Card link:** None — `data/top/` entries have no individual pages; content is displayed inline in the card
 - **Section colour:** Blue (`#1a6fa8`) header bar, light blue card background
 
 ### Section 2 — IT News
