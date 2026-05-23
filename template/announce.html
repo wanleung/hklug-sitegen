@@ -1,15 +1,19 @@
-
-      [% FOREACH announce IN announces %]
-<article class="alert-box secondary radius" >
-
-        <h3>[%- announce.title -%]</h3>
-        <h6>Written by [% announce.author %] on [% announce.date %].</h6>
-        <p><time pubdate datetime="[% announce.date %]"></time></p>
-
-        <p>
-          [% announce.content %]
-        </p>
-
-      </article>
-      <hr />
+[% IF announces.size %]
+<div class="row">
+  <div class="large-12 columns">
+    <h2 class="section-header community-header">HK Open Source Community</h2>
+  </div>
+</div>
+<div class="row" id="community-announcements">
+  [% FOREACH post IN announces %]
+  <div class="large-4 columns">
+    <div class="announce-card">
+      <h3><a href="[% post.url %]">[% post.title %]</a></h3>
+      <p class="meta">[% post.date %]</p>
+      <p>[% post.excerpt %]</p>
+      <a href="[% post.url %]" class="read-more">Read more &rarr;</a>
+    </div>
+  </div>
+  [% END %]
+</div>
 [% END %]
