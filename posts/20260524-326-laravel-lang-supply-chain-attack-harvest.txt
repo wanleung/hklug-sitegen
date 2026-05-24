@@ -1,0 +1,74 @@
+Date: 2026-05-24 03:46:00
+Author: AI Press Team
+Title: Laravel Lang Supply Chain Attack Harvests Developer Credentials Via Rewritten Git Tags
+Content:
+<p>A supply chain attack against the Laravel Lang localization packages has exposed developers to a broad credential-stealing campaign after an attacker rewrote hundreds of GitHub version tags to point to malicious commits, security firms StepSecurity, Aikido Security, and Socket reported on Friday.</p>
+<p>The compromise affected four repositories under the Laravel Lang organization: <code>laravel-lang/lang</code>, <code>laravel-lang/http-statuses</code>, <code>laravel-lang/attributes</code>, and possibly <code>laravel-lang/actions</code>. These third-party translation packages are not part of the official Laravel project. Aikido counted 233 compromised versions across three repositories, while Socket estimated roughly 700 historical versions may have been impacted.</p>
+<p>Rather than injecting malicious code into the project's source repository, the attacker used a GitHub feature that allows tags to reference commits in forks of the same repository. Every existing git tag was rewritten to point at a new malicious commit, starting at 22:32 UTC against <code>laravel-lang/lang</code> (which carries 502 tags) and finishing by 00:00 UTC against <code>laravel-lang/actions</code>. All four repositories shared the same fake author identity, modified files, and payload behavior, suggesting a single actor with organization-wide push access carried out the operation.</p>
+<p>When developers installed or updated these packages through Composer, the package manager resolved the rewritten tags and downloaded code from the attacker-controlled fork, treating the malicious releases as legitimate.</p>
+<h4>Malicious Payload and Credential Harvesting</h4>
+<p>The compromised releases introduced a file named <code>src/helpers.php</code> that was automatically loaded by Composer. This file acted as a dropper, downloading a second-stage PHP payload from a command-and-control server at <code>flipboxstudio[.]info</code>.</p>
+<p>The downloaded payload is a cross-platform credential stealer targeting Linux, macOS, and Windows systems. It harvests cloud credentials, Kubernetes secrets, Vault tokens, Git credentials, CI/CD secrets, SSH keys, browser data, cryptocurrency wallets, password manager stores, VPN configurations, and local <code>.env</code> files. The malware includes regular expression patterns designed to extract AWS keys, GitHub tokens, Slack tokens, Stripe secrets, database credentials, JWTs, SSH private keys, and cryptocurrency recovery phrases from files and environment variables.</p>
+<p>On Windows systems, the PHP payload extracts a base64-encoded executable written to the <code>%TEMP%</code> folder under a random <code>.exe</code> filename. BleepingComputer's analysis identified this binary as <code>DebugElevator</code>, an infostealer targeting Chrome, Brave, and Edge browsers by extracting App-Bound Encryption keys needed to decrypt stored credentials. An embedded PDB path references the Windows account name <code>Mero</code> and contains the string <code>claude</code>, suggesting AI assistance in the malware's development.</p>
+<p>Once collected, the stolen data is encrypted and transmitted back to the attacker's C2 server.</p>
+<h4>Response and Remediation</h4>
+<p>Packagist responded to the incident by removing the malicious versions and temporarily unlisting the affected packages to prevent further installations.</p>
+<p>Development teams using Laravel Lang packages should take immediate action:</p>
+<ol>
+<li>
+<p><strong>Audit <code>composer.lock</code></strong> for any <code>laravel-lang</code> packages installed during the attack window and compare installed versions against the official package registry to identify revoked or flagged releases.</p>
+</li>
+<li>
+<p><strong>Run <code>composer audit</code></strong> in your project directory to check installed packages against the Packagist security advisory database, which will flag known compromised versions.</p>
+</li>
+<li>
+<p><strong>Remove tainted packages</strong> by deleting affected entries from <code>composer.lock</code>, purging the <code>vendor/laravel-lang</code> directory, and running <code>composer install</code> to fetch clean versions from verified tags.</p>
+</li>
+<li>
+<p><strong>Rotate all credentials</strong> stored in <code>.env</code> files on any system where the compromised packages were installed. Treat database passwords, API tokens, and service keys as exposed and regenerate them immediately.</p>
+</li>
+<li>
+<p><strong>Review infrastructure access logs</strong> for cloud services, databases, and third-party integrations to identify any unauthorized access during the exposure window. Check for historical outbound connections to <code>flipboxstudio[.]info</code>.</p>
+</li>
+</ol>
+<h4>Broader Implications for Open Source Security</h4>
+<p>This incident highlights a structural blind spot in how package managers handle version resolution. Automated dependency scanners typically analyze repository default branches or published tarballs for known vulnerability signatures. By manipulating version tags instead of modifying source code directly, the attacker created releases that appeared legitimate from a metadata perspective while delivering malicious payloads during installation.</p>
+<p>Semantic versioning conventions assume that a tagged release represents a verified, intentional snapshot of code. When that assumption is violated, automated tools that rely on tag integrity as a signal of authenticity have no built-in mechanism to detect the compromise.</p>
+<p>Security researchers recommend pinning all third-party dependencies to exact, verified versions rather than allowing automatic minor or patch updates, implementing cryptographic package signature verification where supported, integrating Software Composition Analysis tools into CI/CD pipelines to monitor for anomalous releases, and enforcing strict repository access controls including multi-factor authentication and protected branch and tag policies for all package maintainers.</p>
+<p>The open-source ecosystem continues to grapple with standardizing cryptographic signing and tag protection across decentralized repositories without introducing friction that discourages community contributions. Until such mechanisms become universal, development teams must treat automated dependency resolution as an untrusted surface and implement their own verification layers.</p>
+<hr>
+<p>安全公司 StepSecurity、Aikido Security 和 Socket 於周五報告，針對 Laravel Lang 本地化套件的供應鏈攻擊使開發者面臨大規模憑證盜竊活動。攻擊者改寫了數百個 GitHub 版本 tags，將其指向惡意 commits。</p>
+<p>此次安全事件影響了 Laravel Lang 組織下的四個 repositories：<code>laravel-lang/lang</code>、<code>laravel-lang/http-statuses</code>、<code>laravel-lang/attributes</code>，以及可能的 <code>laravel-lang/actions</code>。這些第三方翻譯套件並非官方 Laravel 計劃的一部分。Aikido 統計三個 repositories 中有 233 個受影響版本，而 Socket 估計約有 700 個歷史版本可能受到波及。</p>
+<p>攻擊者並未將惡意代碼注入計劃的 source repository，而是利用了 GitHub 的一項功能，該功能允許 tags 引用同一 repository 的 forks 中的 commits。從 22:32 UTC 開始針對 <code>laravel-lang/lang</code>（包含 502 個 tags），到 00:00 UTC 完成對 <code>laravel-lang/actions</code> 的操作，所有現有的 git tags 都被改寫指向新的惡意 commit。四個 repositories 均使用了相同的虛假作者身份、修改檔案和 payload 行為，表明單一行為者擁有組織範圍的 push access 執行了此次操作。</p>
+<p>當開發者透過 Composer 安裝或更新這些套件時，package manager 會解析被改寫的 tags，並從攻擊者控制的 fork 下載代碼，將惡意 releases 視為合法。</p>
+<h4>惡意 Payload 與憑證收集</h4>
+<p>受影響的 releases 引入了一個名為 <code>src/helpers.php</code> 的檔案，該檔案由 Composer 自動載入。此檔案作為 dropper，從位於 <code>flipboxstudio[.]info</code> 的 command-and-control server 下載第二階段 PHP payload。</p>
+<p>下載的 payload 是一個跨平台憑證 stealer，針對 Linux、macOS 和 Windows 系統。它收集雲端憑證、Kubernetes secrets、Vault tokens、Git credentials、CI/CD secrets、SSH keys、瀏覽器數據、加密貨幣錢包、密碼管理器儲存、VPN 設定和本地 <code>.env</code> 檔案。該 malware 包含正則表達式模式，旨在從檔案和環境變量中提取 AWS keys、GitHub tokens、Slack tokens、Stripe secrets、數據庫憑證、JWTs、SSH private keys 和加密貨幣恢復短語。</p>
+<p>在 Windows 系統上，PHP payload 提取一個 base64-encoded executable，寫入 <code>%TEMP%</code> 文件夾下隨機 <code>.exe</code> 文件名。BleepingComputer 的分析識別此 binary 為 <code>DebugElevator</code>，一種 infostealer，透過提取解密儲存憑證所需的 App-Bound Encryption keys 來針對 Chrome、Brave 和 Edge 瀏覽器。嵌入的 PDB 路徑引用了 Windows 帳戶名稱 <code>Mero</code>，並包含字符串 <code>claude</code>，表明 malware 的開發中使用了 AI 輔助。</p>
+<p>收集後，被盜數據會被加密並傳輸回攻擊者的 C2 server。</p>
+<h4>回應與修復</h4>
+<p>Packagist 對此事件作出回應，移除了惡意版本並暫時下架受影響的套件以防止進一步安裝。</p>
+<p>使用 Laravel Lang 套件的開發團隊應採取即時行動：</p>
+<ol>
+<li>
+<p><strong>審計 <code>composer.lock</code></strong> 檢查攻擊期間安裝的任何 <code>laravel-lang</code> 套件，並將已安裝版本與官方套件註冊表進行比較，以識別被撤銷或標記的 releases。</p>
+</li>
+<li>
+<p><strong>在計劃目錄中運行 <code>composer audit</code></strong> 以檢查已安裝的套件是否與 Packagist 安全諮詢數據庫中的已知受影響版本相符。</p>
+</li>
+<li>
+<p><strong>移除受污染的套件</strong> 透過從 <code>composer.lock</code> 中刪除受影響的條目，清除 <code>vendor/laravel-lang</code> 目錄，並運行 <code>composer install</code> 以獲取經過驗證 tags 的乾淨版本。</p>
+</li>
+<li>
+<p><strong>輪換所有憑證</strong> 在任何安裝了受影響套件的系統上，輪換儲存在 <code>.env</code> 檔案中的所有憑證。將數據庫密碼、API tokens 和 service keys 視為已洩露並立即重新生成。</p>
+</li>
+<li>
+<p><strong>審查基礎設施訪問日誌</strong> 檢查雲端服務、數據庫和第三方集成的訪問日誌，以識別暴露窗口期間的任何未經授權訪問。檢查是否有歷史出站連接到 <code>flipboxstudio[.]info</code>。</p>
+</li>
+</ol>
+<h4>對開源安全的更廣泛影響</h4>
+<p>此次事件突顯了 package manager 處理版本解析時的一個結構性盲點。自動化的 dependency scanners 通常分析 repository 的 default branches 或已發布的 tarballs 以尋找已知漏洞特徵。透過操縱版本 tags 而非直接修改源代碼，攻擊者創建了從 metadata 角度看似合法的 releases，同時在安裝過程中傳遞惡意 payloads。</p>
+<p>語義版本控制慣例假設 tagged release 代表經過驗證的、有意圖的代碼快照。當該假設被違反時，依賴 tag 完整性作為真實性信號的自動化工具沒有內置機制來檢測 compromise。</p>
+<p>安全研究人員建議將所有第三方 dependencies 固定到經過驗證的精確版本，而非允許自動 minor 或 patch 更新；在支持的情況下實施加密套件簽名驗證；將 Software Composition Analysis 工具集成到 CI/CD pipelines 中以監控異常 releases；以及對所有套件維護者實施嚴格的 repository 訪問控制，包括 multi-factor authentication 和受保護的 branch 及 tag 政策。</p>
+<p>開源生態系統繼續努力在去中心化 repositories 中標準化加密簽名和 tag 保護，同時不引入阻礙社群貢獻的摩擦。在此類機制普及之前，開發團隊必須將自動化依賴解析視為不受信任的表面，並實施自己的驗證層。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/laravel-lang-packages-hijacked-to-deploy-credential-stealing-malware/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
