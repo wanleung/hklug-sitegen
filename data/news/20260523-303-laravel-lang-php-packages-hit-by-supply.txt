@@ -1,0 +1,46 @@
+Date: 2026-05-23 20:39:00
+Author: AI Press Team
+Title: Laravel-Lang PHP Packages Hit by Supply Chain Attack Distributing Credential Stealer
+Content:
+<p>A software supply chain compromise has struck the Laravel-Lang project, with attackers injecting malicious code into multiple widely used PHP language packages to distribute a cross-platform credential-stealing framework.</p>
+<p>According to a report published by The Hacker News on 23 May, the affected packages include <code>laravel-lang/lang</code>, <code>laravel-lang/http-statuses</code>, <code>laravel-lang/attributes</code>, and <code>laravel-lang/actions</code> — all maintained under the Laravel-Lang umbrella that provides localization files and translation resources for Laravel applications worldwide.</p>
+<p>The attack leveraged deceptive version tags designed to mimic legitimate semantic versioning conventions, allowing the malicious releases to blend in with routine package updates. Developers running <code>composer update</code> without strict version pinning would have automatically pulled the compromised versions into their projects, enabling the payload to execute silently across Windows, macOS, and Linux environments.</p>
+<h4>How the Attack Works</h4>
+<p>The injected code functions as a credential-stealing framework capable of harvesting API keys, database passwords, authentication tokens, and other sensitive configuration data stored in Laravel environment files and application caches. By targeting localization packages — which developers rarely audit closely compared to core application dependencies — the attackers exploited a blind spot in typical dependency review practices.</p>
+<p>Automated dependency managers like Composer amplify this risk by design. When a new tag appears on a trusted repository, the package manager treats it as a legitimate update unless developers have explicitly pinned versions or implemented checksum verification. This implicit trust model allowed the malicious payload to establish persistence and begin exfiltrating data without triggering standard security controls.</p>
+<h4>What Affected Teams Should Do Now</h4>
+<p>Security researchers recommend that any organization using Laravel-Lang packages take immediate action:</p>
+<ul>
+<li><strong>Audit <code>composer.lock</code> files</strong> to identify whether any of the four compromised packages were installed during the compromise window. Check installed version tags against the official verified releases published on the project's repository.</li>
+<li><strong>Rotate all credentials</strong> that may have been exposed, including API keys, database passwords, OAuth tokens, and any secrets stored in <code>.env</code> files or configuration caches accessible to the affected applications.</li>
+<li><strong>Enable strict version pinning</strong> in <code>composer.json</code> to prevent automatic resolution to unvetted tags. Use exact version constraints rather than caret or tilde ranges for critical dependencies.</li>
+<li><strong>Integrate Software Composition Analysis (SCA) tools</strong> into CI/CD pipelines to continuously monitor for anomalous package updates, unexpected dependency changes, and known malicious indicators.</li>
+</ul>
+<h4>Broader Implications for Open-Source Security</h4>
+<p>This incident underscores a growing trend: attackers are increasingly targeting foundational open-source packages that enjoy broad adoption but receive limited security scrutiny. Laravel-Lang's translation packages are installed across thousands of Laravel projects globally, making them an attractive vector for credential harvesting at scale.</p>
+<p>The compromise serves as a reminder that third-party dependencies should be treated with the same security rigor as internal code. Supply chain attacks of this nature do not respect organizational boundaries; any team pulling packages from public registries is exposed.</p>
+<p>The precise initial compromise vector — whether through social engineering of maintainers or exploitation of a repository access vulnerability — remains under active investigation. The full downstream impact is also not yet known, as broader community telemetry is needed to determine how many production environments cached or deployed the tainted versions before they were revoked.</p>
+<p>What is clear is that reputation-based trust in open-source ecosystems is no longer sufficient. The collective response from the security community points toward a zero-trust dependency model: enforce cryptographic verification for all third-party updates, require multi-factor authentication at the registry level, and implement automated anomaly detection for publication patterns that deviate from established maintainer behavior.</p>
+<p>Until such controls become standard, developers must assume that any package update could be compromised — and verify accordingly.</p>
+<hr>
+<p>軟件供應鏈安全事件波及 Laravel-Lang 項目，攻擊者在多個廣泛使用的 PHP 語言套件中注入惡意代碼，以散佈跨平台憑證竊取框架。</p>
+<p>根據 The Hacker News 於 5 月 23 日發表的報告，受影響的套件包括 <code>laravel-lang/lang</code>、<code>laravel-lang/http-statuses</code>、<code>laravel-lang/attributes</code> 及 <code>laravel-lang/actions</code>，全部隸屬 Laravel-Lang 旗下，為全球 Laravel 應用程式提供本地化檔案及翻譯資源。</p>
+<p>攻擊者利用偽裝的版本標籤，模仿正常的 semantic versioning 慣例，使惡意版本混入常規套件更新之中。開發人員若執行 <code>composer update</code> 而沒有嚴格鎖定版本，便會自動將受污染版本拉入項目，令 payload 得以在 Windows、macOS 及 Linux 環境中靜默執行。</p>
+<h4>攻擊運作方式</h4>
+<p>注入的代碼作為憑證竊取框架，能夠採集 API keys、database passwords、authentication tokens，以及儲存在 Laravel environment files 及 application caches 中的其他敏感設定資料。攻擊者針對 localization packages 下手——開發人員對此類套件的審查力度通常遠低於核心應用程式依賴——從而利用了一般 dependency review 慣例中的盲點。</p>
+<p>Composer 等自動化 dependency managers 的設計本身放大了此風險。當受信任的 repository 出現新標籤時，package manager 會視之為合法更新，除非開發人員已明確鎖定版本或實施 checksum verification。此隱式信任模型令惡意 payload 得以建立 persistence 並開始 exfiltrating data，而不會觸發標準 security controls。</p>
+<h4>受影響團隊應採取的措施</h4>
+<p>安全研究人員建議，任何使用 Laravel-Lang 套件的機構應立即採取以下行動：</p>
+<ul>
+<li><strong>審查 <code>composer.lock</code> 檔案</strong>，以確認在受攻擊期間是否曾安裝四個受影響套件中的任何一個。將已安裝的版本標籤與項目 repository 上發佈的官方已驗證版本進行比對。</li>
+<li><strong>輪換所有可能外洩的憑證</strong>，包括 API keys、database passwords、OAuth tokens，以及任何儲存在 <code>.env</code> 檔案或受影響應用程式可存取之設定快取中的 secrets。</li>
+<li><strong>在 <code>composer.json</code> 中啟用嚴格版本鎖定</strong>，防止自動解析至未經審核的標籤。對於關鍵依賴，應使用精確版本約束，而非 caret 或 tilde 範圍。</li>
+<li><strong>在 CI/CD pipelines 中整合 Software Composition Analysis (SCA) tools</strong>，以持續監控異常套件更新、非預期的依賴變更及已知的惡意指標。</li>
+</ul>
+<h4>對開源安全的廣泛影響</h4>
+<p>此事件突顯了一個日益明顯的趨勢：攻擊者正越來越多地針對基礎 open-source packages，這些套件擁有廣泛採用，但獲得的安全審查卻相對有限。Laravel-Lang 的翻譯套件在全球數以千計的 Laravel 項目中安裝，使其成為大規模憑證採集的具吸引力途徑。</p>
+<p>此次安全事件提醒我們，第三方依賴應受到與內部代碼同等嚴格的安全把關。此類供應鏈攻擊不區分機構界限；任何從 public registries 拉取套件的團隊均面臨風險。</p>
+<p>確切的初始入侵途徑——究竟是透過 social engineering 影響維護人員，還是利用 repository access vulnerability——仍在積極調查中。全面的 downstream impact 亦尚未明朗，因為需要更廣泛的 community telemetry 來確定有多少 production environments 在受污染版本被撤銷前已快取或部署了它們。</p>
+<p>可以肯定的是，open-source ecosystems 中基於聲譽的信任已不再足夠。安全社群的集體回應正朝向 zero-trust dependency model 發展：對所有第三方更新實施 cryptographic verification、在 registry 層面要求 multi-factor authentication，以及針對偏離既定維護者行為模式的發佈模式實施 automated anomaly detection。</p>
+<p>在這些控制措施成為標準之前，開發人員必須假設任何套件更新都可能遭到入侵——並相應地進行驗證。</p>
+<p><a href="https://thehackernews.com/2026/05/laravel-lang-php-packages-compromised.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
