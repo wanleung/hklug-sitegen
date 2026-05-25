@@ -1,0 +1,48 @@
+Date: 2026-05-25 12:46:00
+Author: AI Press Team
+Title: Ghost CMS SQL Injection Flaw Actively Exploited to Hijack 700+ Sites
+Content:
+<p>Administrators running self-hosted Ghost CMS instances should upgrade to version 6.8.3 immediately. A critical SQL injection vulnerability in the platform's Content API is being actively exploited to compromise websites and inject malicious JavaScript payloads, with over 700 sites already affected in a coordinated ClickFix fraud campaign.</p>
+<p>Tracked as CVE-2026-26980 with a CVSS score of 9.4, the flaw stems from insufficient input sanitization in Ghost's Content API. Security firm QiAnXin XLab confirmed that unauthenticated attackers can exploit the vulnerability to extract arbitrary data from the underlying database, harvest authentication credentials, and inject persistent client-side scripts into compromised pages.</p>
+<h4>Immediate Remediation Checklist</h4>
+<p>Ghost v6.8.3 patches the vulnerability with proper input validation. Beyond upgrading, administrators should:</p>
+<ul>
+<li><strong>Upgrade to Ghost v6.8.3</strong> without delay</li>
+<li><strong>Audit theme files and templates</strong> for injected JavaScript, focusing on recently modified files and scripts rendering external prompts or forms</li>
+<li><strong>Review Content API access logs</strong> for anomalous patterns, including unusually large result sets, enumeration-style requests, or traffic from unexpected IPs</li>
+<li><strong>Deploy or tune WAF rules</strong> with SQL injection signatures targeting the Content API endpoint</li>
+<li><strong>Rotate exposed credentials</strong> and enforce least-privilege configurations on all API keys and tokens</li>
+</ul>
+<h4>How the Attack Works</h4>
+<p>The exploitation chain begins with crafted SQL injection queries against the Content API endpoint. The lack of proper input validation allows attackers to bypass authentication entirely and enumerate sensitive database contents. Once credentials are harvested, threat actors modify theme files and admin templates to embed JavaScript that serves fraudulent click prompts and credential-harvesting forms to legitimate visitors.</p>
+<p>This ClickFix approach abuses the inherent trust users place in legitimate websites. Rather than redirecting victims to external phishing domains, the campaign serves prompts that appear to originate from the compromised site itself, significantly increasing interaction rates.</p>
+<h4>The Self-Hosted Security Gap</h4>
+<p>The scale of exploitation highlights a persistent challenge in the self-hosted software ecosystem: the window between vulnerability disclosure and patch deployment. Ghost CMS is widely used by independent publishers and small organizations without dedicated security monitoring. Automated scanning tools can identify unpatched instances within hours of CVE publication, leaving administrators a narrow response window.</p>
+<p>API-first architectures also expand the attack surface beyond traditional CMS security models. Where legacy practices focused on protecting admin portals and upload vectors, modern headless systems require input validation, rate limiting, and continuous log monitoring across every exposed endpoint.</p>
+<h4>Unanswered Questions</h4>
+<p>The incident raises questions about how decentralized platforms can strengthen their security posture. Unlike SaaS offerings where vendors control patch deployment, Ghost administrators bear full responsibility for update timelines. The community may benefit from exploring automated vulnerability notification systems or optional telemetry that alerts operators when their instance falls behind known-security releases.</p>
+<p>Verifying complete remediation also remains difficult. Injected payloads can persist across multiple database tables and theme files, and no standardized verification tool currently exists to confirm full cleanup.</p>
+<p>Ghost has not issued a public advisory beyond the v6.8.3 release notes. Administrators should monitor the official Ghost GitHub repository for updates and report indicators of compromise to relevant security teams.</p>
+<hr>
+<p>使用自建 Ghost CMS 的管理員應立即升級至 6.8.3 版本。該平台 Content API 存在一個嚴重的 SQL injection 漏洞，正遭積極利用以入侵網站並注入惡意 JavaScript payload，超過 700 個網站已在一場協調的 ClickFix 詐騙活動中受影響。</p>
+<p>該漏洞編號為 CVE-2026-26980，CVSS 評分達 9.4，問題源於 Ghost Content API 的輸入過濾不足。安全公司奇安信 XLab 確認，未經認證的攻擊者可利用此漏洞從底層 database 擷取任意資料、竊取認證憑據，並向受入侵頁面注入持久的 client-side 腳本。</p>
+<h4>即時修復清單</h4>
+<p>Ghost v6.8.3 已透過適當的輸入驗證修補此漏洞。除升級外，管理員應：</p>
+<ul>
+<li><strong>立即升級至 Ghost v6.8.3</strong></li>
+<li><strong>審計 theme 檔案和模板</strong>，查找注入的 JavaScript，重點檢查近期修改的檔案及渲染外部提示或表單的腳本</li>
+<li><strong>檢視 Content API access log</strong>，尋找異常模式，包括異常龐大的結果集、列舉式請求或來自非預期 IP 的流量</li>
+<li><strong>部署或調整 WAF rules</strong>，加入針對 Content API endpoint 的 SQL injection 特徵</li>
+<li><strong>輪換已洩露的憑據</strong>，並對所有 API keys 和 tokens 實施最小權限配置</li>
+</ul>
+<h4>攻擊運作方式</h4>
+<p>攻擊鏈始於針對 Content API endpoint 的精心構造 SQL injection 查詢。缺乏適當輸入驗證使攻擊者可完全繞過認證，並列舉敏感的 database 內容。一旦憑據被竊取，威脅行為者會修改 theme 檔案和管理模板，嵌入 JavaScript 以向正常訪客提供欺詐性點擊提示和憑據竊取表單。</p>
+<p>此 ClickFix 手法濫用了用戶對合法網站的固有信任。該活動並非將受害者重定向至外部 phishing 域名，而是提供看似源自受入侵網站本身的提示，大幅提高互動率。</p>
+<h4>自建軟件的安全缺口</h4>
+<p>大規模利用事件突顯了自建軟件生態系統中一個長期挑戰：漏洞披露與修補部署之間的時間窗口。Ghost CMS 獲獨立出版商和沒有專責安全監控的小型機構廣泛使用。自動化掃描工具可在 CVE 公佈後數小時內識別未修補的實例，令管理員的應對窗口極為狹窄。</p>
+<p>API-first 架構亦將攻擊面擴展至傳統 CMS 安全模型之外。過往做法集中保護管理入口和上傳途徑，而現代 headless 系統則要求對每個暴露的 endpoint 實施輸入驗證、rate limiting 和持續的 log 監控。</p>
+<h4>未解之問</h4>
+<p>事件引發去中心化平台如何加強安全防護的疑問。與由供應商控制修補部署的 SaaS 服務不同，Ghost 管理員須全權負責更新時間表。社群或可探索自動漏洞通知系統，或選用 telemetry 功能，在實例落後於已知安全版本時向營運者發出警報。</p>
+<p>驗證完整修復亦仍然困難。注入的 payload 可存留於多個 database 表格和 theme 檔案中，目前尚無標準化驗證工具可確認徹底清理。</p>
+<p>Ghost 除 v6.8.3 release notes 外並未發出公開通告。管理員應密切留意官方 Ghost GitHub 倉庫的更新，並向相關安全團隊報告入侵指標。</p>
+<p><a href="https://thehackernews.com/2026/05/ghost-cms-cve-2026-26980-exploited-to.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
