@@ -1,0 +1,33 @@
+Date: 2026-05-27 13:19:00
+Author: HKLUG Team
+Title: Intel TDX Runtime Patching Set to Eliminate Reboots for Confidential Computing Servers
+Content:
+<p>```</p>
+<p>Intel engineers are on the verge of landing a long-in-development feature in the Linux kernel that would allow runtime updates to the Trusted Domain Extensions (TDX) module without requiring a server reboot — a significant operational improvement for organisations running confidential virtual machines on modern Intel Xeon hardware.</p>
+<p>According to a Phoronix report published on 27 May 2026, the patches enabling hot-update support for the TDX module are progressing through kernel review and are expected to be finalised in time for an upcoming Linux kernel release cycle that the report references as version 7.2. <em>(Editor's note: the source URL slug "Intel-TDX-Runtime-Update-7.2" and the report's text both cite "Linux 7.2"; this number may refer to the TDX module version rather than the kernel version, and readers should treat the exact version target as unconfirmed until further sources clarify.)</em> If the code clears its remaining review hurdles, administrators managing TDX-enabled servers would gain the ability to roll out security fixes and module improvements to the host kernel's TDX component without interrupting workloads.</p>
+<h4>Why It Matters</h4>
+<p>Confidential computing technologies like Intel TDX isolate virtual machines in hardware-protected enclaves, shielding data and code from the host operating system, hypervisor, and even physical access. TDX is available on recent Intel Xeon Scalable processors (Sapphire Rapids and newer generations) and is increasingly relevant as cloud providers and enterprises adopt confidential VMs for sensitive workloads.</p>
+<p>Until now, updating the TDX module — the host-side software component that manages these secure enclaves — has typically demanded a full server reboot. In production environments where uptime is critical, that requirement creates friction: administrators must choose between promptly applying security patches or maintaining service continuity. The runtime update capability removes that trade-off on the host side, letting operators patch the TDX module while VMs continue running.</p>
+<p>It is worth noting that this feature applies to the TDX module loaded by the host kernel, not to code running inside the confidential VMs themselves. Guest-side updates within enclaves follow a separate lifecycle.</p>
+<h4>Development Background</h4>
+<p>Intel's Linux kernel engineers have been iterating on the runtime update patches for an extended period, refining the approach through multiple rounds of community review. The work involves careful handling of module state transitions to ensure that live patching does not introduce security gaps or destabilise running enclaves — a particularly high bar given TDX's security guarantees.</p>
+<p>The reported target version represents a concrete milestone after what has been a drawn-out upstream development process. Kernel developers reviewing the patches have scrutinised the security implications extensively, reflecting the sensitive nature of any feature that touches confidential computing infrastructure at the host level.</p>
+<h4>The Broader Picture</h4>
+<p>The feature arrives at a time when confidential computing is transitioning from niche research projects to mainstream enterprise adoption. Cloud hyperscalers including Microsoft Azure, Google Cloud, and others now offer TDX-based confidential VM instances. For these providers, the ability to patch host-side TDX components without scheduled maintenance windows represents a meaningful reduction in operational overhead and a stronger security posture.</p>
+<p>For IT professionals managing on-premises or hybrid deployments with Intel Xeon servers supporting TDX, the runtime update feature — once it lands — would similarly streamline patch management workflows. The change aligns with a broader industry push toward live patching and zero-downtime maintenance across the Linux ecosystem, building on capabilities already available for other kernel subsystems through technologies like kpatch and livepatch.</p>
+<p>If the patches merge as expected in an upcoming kernel release cycle, the capability should reach downstream distributions in subsequent cycles, giving the wider community access to more flexible confidential computing maintenance.</p>
+<hr>
+<p>Intel 工程師即將在 Linux kernel 中推出一項長期開發的功能，該功能將允許在無需伺服器重啟的情況下，對 Trusted Domain Extensions (TDX) module 進行 runtime 更新——這對於在現代 Intel Xeon 硬件上運行 confidential virtual machines 的組織而言，是一項重大的營運改進。</p>
+<p>根據 Phoronix 於 2026 年 5 月 27 日發佈的報導，實現 TDX module hot-update 支持的 patches 正在經歷 kernel 審查過程，並預計將在報告提及的一個即將到來的 Linux kernel release cycle 中完成，報導中指稱其為 7.2 版本。<em>（編者按：來源 URL 中的識別碼「Intel-TDX-Runtime-Update-7.2」以及報告正文均提及「Linux 7.2」；此版本號可能指的是 TDX module 版本而非 kernel 版本，讀者應將確切版本目標視為未經證實，待更多來源釐清。）</em> 如果這些 code 通過剩餘的審查關卡，管理啟用了 TDX 的伺服器的管理員將能夠為 host kernel 的 TDX 組件部署 security fixes 和 module 改進，而不會中斷 workloads。</p>
+<h4>為何這很重要</h4>
+<p>諸如 Intel TDX 之類的機密計算技術，將 virtual machines 隔離在受硬件保護的 enclaves 中，保護數據和程式碼免受 host operating system、hypervisor，乃至物理存取的影響。TDX 可在最新的 Intel Xeon Scalable 處理器（Sapphire Rapids 及更新代）上使用，隨著雲端供應商和企業為敏感 workloads 採用 confidential VMs，其重要性日益凸顯。</p>
+<p>直到現在，更新 TDX module——即管理這些 secure enclaves 的 host-side software component——通常需要完全重啟伺服器。在正常運行時間至關重要的生產環境中，這一要求造成了摩擦：管理員必須在及時應用 security patches 與維持服務連續性之間做出選擇。runtime 更新能力消除了 host-side 的這一權衡，使營運商能在 VMs 持續運行的同時修補 TDX module。</p>
+<p>值得注意的是，此功能適用於 host kernel 載入的 TDX module，而非在 confidential VMs 內部運行的 code。Guest-side 的 enclave 內更新遵循單獨的 lifecycle。</p>
+<h4>開發背景</h4>
+<p>Intel 的 Linux kernel 工程師已經就 runtime 更新 patches 進行了長時間的迭代開發，並通過多輪 community review 完善了方案。這項工作涉及謹慎處理 module state transitions，以確保 live patching 不會引入安全缺口或使正在運行的 enclaves 不穩定——鑑於 TDX 的安全保障，這是一個尤其高的標準。</p>
+<p>報導所指的目標版本標誌著一個具體的里程碑，此前已經歷了漫長的上游開發過程。審查這些 patches 的 kernel developers 已經廣泛審視了其安全影響，反映出任何觸及 host-level 機密計算基礎設施的功能都具有高度敏感性。</p>
+<h4>更廣泛的背景</h4>
+<p>此功能出現之際，機密計算正從小眾研究項目轉向主流企業採用。包括 Microsoft Azure、Google Cloud 和其他主要雲端 hyperscalers，現在都提供基於 TDX 的 confidential VM instances。對於這些供應商而言，能在不安排 maintenance windows 的情況下修補 host-side TDX components，代表著營運開銷的顯著降低和安全態勢的增強。</p>
+<p>對於在支持 TDX 的 Intel Xeon 伺服器上管理 on-premises 或 hybrid deployments 的 IT 專業人員而言，runtime 更新功能——一旦落地——同樣將簡化 patch management workflows。這一變化符合整個 Linux 生態系統推動 live patching 和 zero-downtime maintenance 的更廣泛趨勢，並建立在其他 kernel subsystems 已通過 kpatch 和 livepatch 等技術提供的能力之上。</p>
+<p>如果 patches 如預期在即將到來的 kernel release cycle 中合併，此功能應會在後續 cycles 中到達下游 distributions，讓更廣泛的社群能夠使用更靈活的機密計算維護方式。</p>
+<p><a href="https://www.phoronix.com/news/Intel-TDX-Runtime-Update-7.2" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
