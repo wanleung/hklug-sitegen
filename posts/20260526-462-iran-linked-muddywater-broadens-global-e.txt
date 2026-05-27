@@ -1,0 +1,42 @@
+Date: 2026-05-26 19:37:00
+Author: AI Press Team
+Title: Iran-Linked MuddyWater Broadens Global Espionage Campaign Using DLL Side-Loading
+Content:
+<h3>Iran-Linked MuddyWater Broadens Global Espionage Campaign Using DLL Side-Loading</h3>
+<p>A state-aligned hacking group known as MuddyWater has significantly expanded its operational reach, compromising at least nine organizations across nine countries on four continents during the first quarter of 2026, according to reporting by The Hacker News on 26 May.</p>
+<p>The campaign, attributed to the Iranian-linked threat actor by the Threat Hunter Team at Symantec and Carbon Black, marks a departure from the group's historically regional focus on Middle Eastern targets. Victims span industrial and electronics manufacturing, education, public-sector bodies, financial services, and professional services. Notable targets include a major South Korean electronics manufacturer — where attackers maintained access for a week in February 2026 — an international airport in the Middle East, Southeast Asian industrial manufacturers, and a Latin American financial-services provider.</p>
+<h4>DLL Side-Loading as Primary Infection Vector</h4>
+<p>The attackers relied on DLL side-loading, exploiting how Windows searches for and loads dynamic-link libraries. By placing a malicious DLL in a directory checked before the legitimate library location, the group forced trusted, signed applications to execute their code.</p>
+<p>Two file pairs were central to the operation. The first used <code>fmapp.exe</code>, a legitimately signed Fortemedia audio-driver utility, to load a malicious <code>fmapp.dll</code>. The second abused <code>sentinelmemoryscanner.exe</code>, a signed component of the SentinelOne endpoint security product, to sideload <code>sentinelagentcore.dll</code>. The deliberate use of a security-product binary was intended to defeat path- and signature-based detection while confusing incident responders during triage.</p>
+<p>Both malicious DLLs embed ChromElevator, an open-source post-exploitation tool that steals passwords, cookies, and payment card data from Chromium-based browsers, circumventing Google's App-Bound Encryption protections.</p>
+<h4>Node.js Orchestration and PowerShell Payloads</h4>
+<p>Rather than executing commands directly, the operators orchestrated their activity through Node.js scripts. The <code>node.exe</code> runtime appeared as the parent or grandparent process for the DLL side-loading pairs and multiple stages of follow-on activity, suggesting an implant-driven workflow rather than continuous hands-on-keyboard operation.</p>
+<p>Through this Node.js loader, the attackers pulled PowerShell scripts from staging servers to perform reconnaissance, capture screenshots, steal SAM registry hives, escalate privileges, and establish SOCKS5 reverse-proxy tunnels. In at least one intrusion, stolen data was exfiltrated via sendit.sh, a public file-transfer service — a tactic that blends malicious traffic with legitimate consumer cloud usage to evade network-based detection.</p>
+<h4>A Shift Toward Quieter Operations</h4>
+<p>Researchers note that MuddyWater — also tracked as Seedworm, Temp Zagros, Static Kitten, and linked to Iran's Ministry of Intelligence and Security — has matured its tradecraft considerably. The group's campaign history shows a clear move toward quieter, more disciplined operations: orchestration through Node.js rather than raw PowerShell, redundant credential-theft tooling deployed in case any single binary is blocked, and exfiltration through public services rather than dedicated infrastructure.</p>
+<p>"None of these techniques is individually novel, but in combination they provide more evidence of a significant step up in operational hygiene from the Seedworm that we knew of two or three years ago," the Symantec and Carbon Black researchers wrote.</p>
+<p>The geographic expansion also signals shifting intelligence priorities. While the group's traditional hunting ground has been the Middle East and South Asia, the targeting of a South Korean electronics manufacturer and Southeast Asian industrial manufacturers suggests Tehran's intelligence requirements have broadened to include high-tech manufacturing intellectual property and downstream access to global service providers.</p>
+<h4>Implications for Defenders</h4>
+<p>The campaign highlights the inadequacy of signature-based defenses against actors who routinely abuse legitimate system behaviors. Security teams are urged to adopt behavior-centric detection strategies that monitor for anomalous process execution patterns, unusual parent-child process relationships, and unexpected file writes to user profile directories.</p>
+<p>Application control policies enforcing strict directory-path allow-listing can mitigate DLL side-loading risks by preventing unauthorized libraries from loading into trusted application contexts. Organizations should also monitor for Node.js or Deno runtimes appearing as ancestors of system discovery commands — a pattern that should not occur in normal enterprise environments.</p>
+<p>The full technical indicators, including file hashes, command-and-control domains, and detection guidance from the Symantec and Carbon Black research team, are available in their <a href="https://www.security.com/threat-intelligence/iran-seedworm-electronics">published threat intelligence report</a>.</p>
+<hr>
+<h3>伊朗關連MuddyWater採用DLL Side-Loading擴展全球諜報行動</h3>
+<p>據The Hacker News 5月26日報道，被稱為MuddyWater的國家支持黑客組織大幅擴展其行動範圍，於2026年第一季入侵四大洲九個國家的至少九間機構。</p>
+<p>Symantec及Carbon Black的Threat Hunter Team將此行動歸因於與伊朗有關連的威脅組織，這標誌著該組織偏離了以往集中針對中東地區目標的歷史性區域_focus。受害者橫跨工業及電子產品製造、教育、公共部門機構、金融服務及專業服務行業。值得關注的目標包括一間韓國大型電子產品製造商——攻擊者於2026年2月維持存取達一星期——中東一間國際機場、東南亞工業製造商，以及一間拉丁美洲金融服務供應商。</p>
+<h4>DLL Side-Loading作為主要入侵途徑</h4>
+<p>攻擊者依賴DLL Side-Loading技術，利用Windows搜尋及載入動態連結庫的方式。透過將惡意DLL放置於操作系統會優先於原始程式庫位置檢查的目錄中，該組織迫使受信任的已簽署應用程式執行其代碼。</p>
+<p>兩對文件是此行動的核心。第一對使用<code>fmapp.exe</code>（一個合法簽署的Fortemedia音頻驅動程式工具）來載入惡意<code>fmapp.dll</code>。第二對濫用<code>sentinelmemoryscanner.exe</code>（SentinelOne端點安全產品的已簽署組件）來side-load <code>sentinelagentcore.dll</code>。刻意使用安全產品二進制文件旨在繞過基於路徑及簽章的偵測，同時在事故應變人員進行初步分析時造成混淆。</p>
+<p>兩個惡意DLL均嵌入ChromElevator，這是一個開源的post-exploitation工具，可從基於Chromium的瀏覽器竊取密碼、cookies及支付卡數據，繞過Google的App-Bound Encryption保護。</p>
+<h4>Node.js協調及PowerShell Payloads</h4>
+<p>操作者並非直接執行命令，而是透過Node.js腳本來協調其活動。<code>node.exe</code>運行時作為DLL side-loading配對及多個後續活動階段的父程序或祖父程序出現，顯示這是一個implant驅動的工作流程，而非持續的手動操作。</p>
+<p>透過此Node.js loader，攻擊者從staging伺服器提取PowerShell腳本，以執行偵察、截圖、竊取SAM registry hives、提升權限及建立SOCKS5反向代理隧道。在至少一次入侵中，被盜數據透過公共文件傳輸服務sendit.sh外洩——此手法將惡意流量與合法的消費者雲端使用混合，以逃避基於網絡的偵測。</p>
+<h4>轉向較低調行動</h4>
+<p>研究人員指出，MuddyWater（亦被追蹤為Seedworm、Temp Zagros、Static Kitten，並與伊朗情報及安全部有關連）已大幅成熟其作案手法。該組織的行動歷史顯示明顯轉向更低調、更有紀律的操作：透過Node.js而非原始PowerShell進行協調、部署冗餘的憑證竊取工具以防任何單一二進制文件被封鎖，以及透過公共服務而非專用基礎設施進行數據外洩。</p>
+<p>Symantec及Carbon Black研究人員寫道：「這些技術 individually 並非新穎，但結合起來提供了更多證據，顯示Seedworm的operational hygiene較兩三年前我們所知的有顯著提升。」</p>
+<p>地理擴展亦顯示情報優先事項的轉變。雖然該組織的傳統狩獵場是中東及南亞，但針對韓國電子產品製造商及東南亞工業製造商的行動，表明德黑蘭情報需求已擴展至包括高科技製造知識產權及對全球服務供應商的下游存取。</p>
+<h4>對防禦者的啟示</h4>
+<p>此行動突顯了基於簽章的防禦在面對慣常濫用合法系統行為的攻擊者時的不足。安全團隊被敦促採用以行為為中心的偵測策略，監控異常的process執行模式、不尋常的父子process關係，以及對user profile目錄的意外文件寫入。</p>
+<p>實施嚴格目錄路徑allow-listing的應用程式控制政策可透過防止未授權程式庫載入受信任應用程式上下文來降低DLL Side-Loading風險。組織亦應監控Node.js或Deno運行時作為系統探索命令的祖先程序出現——此模式不應該在正常企業環境中發生。</p>
+<p>完整的技術指標，包括文件雜湊、command-and-control域名及Symantec及Carbon Black研究團隊的偵測指引，可於其<a href="https://www.security.com/threat-intelligence/iran-seedworm-electronics">已發布的威脅情報報告</a>中獲取。</p>
+<p><a href="https://thehackernews.com/2026/05/muddywater-uses-dll-side-loading-in.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
