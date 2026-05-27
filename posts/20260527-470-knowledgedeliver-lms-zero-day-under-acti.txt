@@ -1,0 +1,38 @@
+Date: 2026-05-27 09:20:00
+Author: HKLUG Team
+Title: KnowledgeDeliver LMS Zero-Day Under Active Attack to Deploy Memory-Resident Web Shells
+Content:
+<h3>KnowledgeDeliver LMS Zero-Day Under Active Attack to Deploy Memory-Resident Web Shells</h3>
+<p>A critical unauthenticated remote code execution vulnerability in the KnowledgeDeliver learning management system is being actively exploited to deploy sophisticated in-memory web shells, according to reporting by BleepingComputer on 27 May. The flaw, tracked as CVE-2026-5426, allows attackers to execute arbitrary code on affected servers without authentication, posing a severe risk to educational institutions and enterprises running the platform.</p>
+<h4>Root Cause: Hardcoded Machine Keys</h4>
+<p>The vulnerability stems from a fundamental vendor misconfiguration. Identical ASP.NET machine keys were hardcoded into default <code>web.config</code> files shipped with KnowledgeDeliver installations prior to 24 February 2026. ASP.NET machine keys are cryptographic secrets used to sign and encrypt ViewState parameters — hidden form fields that maintain state between client and server in ASP.NET applications.</p>
+<p>Because the same key was distributed across all installations, any attacker in possession of the key can forge signed ViewState payloads that the server trusts as legitimate. This effectively bypasses authentication mechanisms and grants unauthenticated remote code execution.</p>
+<h4>Multi-Stage Attack Chain</h4>
+<p>Threat actors are executing a methodical, multi-stage compromise operation. Initial exploitation of the ViewState deserialization flaw delivers remote code execution, which attackers then use to deploy victim-tailored Cobalt Strike beacons for persistent command-and-control communications.</p>
+<p>The final stage involves installing the Godzilla web shell — an in-memory payload designed specifically to evade signature-based detection tools. Unlike traditional web shells that write files to disk, Godzilla operates entirely in memory, making it significantly harder for conventional endpoint detection and response solutions to identify and compounding forensic investigation efforts.</p>
+<h4>Who Is Affected</h4>
+<p>All KnowledgeDeliver installations distributed before 24 February 2026 are vulnerable and require immediate action. The learning management system is used by educational institutions and training organizations globally. Given the hardcoded nature of the machine keys, any unpatched deployment is effectively open to exploitation by anyone who has obtained the default key.</p>
+<h4>Remediation: Patching Alone Is Not Enough</h4>
+<p>Organizations operating KnowledgeDeliver must take immediate steps to assess their exposure. Applying the vendor patch is necessary but insufficient — organizations must also manually rotate all hardcoded machine keys found in <code>web.config</code> files across affected installations. Without key rotation, patched systems remain vulnerable to attacks leveraging the previously distributed default keys.</p>
+<p>Security teams should additionally deploy web application firewall rules to flag anomalous ViewState parameter lengths or structures, audit server logs for unauthorized modifications to JavaScript files or plugin directories, and enable runtime monitoring to detect in-memory web shell execution patterns.</p>
+<h4>Broader Implications</h4>
+<p>This incident reflects a recurring pattern in enterprise software security: shared cryptographic defaults distributed at scale create systemic risk that no single organization can defend against independently. ViewState deserialization attacks have targeted multiple specialized software platforms in recent years, underscoring the need for vendors to generate unique cryptographic material per installation and for organizations to maintain defense-in-depth controls that can detect compromise even when perimeter security fails.</p>
+<p>For education and corporate training sectors running the platform, this vulnerability reinforces the importance of auditing third-party software supply chains rigorously and assuming that perimeter defenses alone are insufficient.</p>
+<hr>
+<h3>KnowledgeDeliver LMS 零日漏洞遭積極攻擊以部署記憶體 Web Shell</h3>
+<p>BleepingComputer 於 5 月 27 日報道，KnowledgeDeliver 學習管理系統存在一個嚴重的未驗證遠程代碼執行漏洞，正遭積極利用以部署複雜的記憶體 web shell。該漏洞編號為 CVE-2026-5426，攻擊者可在無需驗證的情況下於受影響伺服器執行任意代碼，對使用該平台的教育機構和企業構成嚴重風險。</p>
+<h4>根源：硬編碼 Machine Key</h4>
+<p>該漏洞源於供應商一個基本配置錯誤。2026 年 2 月 24 日之前，KnowledgeDeliver 安裝包附帶的預設 <code>web.config</code> 檔案中硬編碼了相同的 ASP.NET machine key。ASP.NET machine key 是用於簽署和加密 ViewState 參數的加密密鑰——ViewState 參數是 ASP.NET 應用程式中用於維持客戶端與伺服器之間狀態的隱藏表單欄位。</p>
+<p>由於所有安裝版本均分發相同的密鑰，任何持有該密鑰的攻擊者均可偽造經簽署的 ViewState payload，而伺服器會將其視為合法。這實際上繞過了驗證機制，並授予未驗證的遠程代碼執行權限。</p>
+<h4>多階段攻擊鏈</h4>
+<p>威脅行為者正執行一個有條理的多階段入侵行動。初始利用 ViewState 反序列化漏洞實現遠程代碼執行後，攻擊者隨即部署針對受害者定制的 Cobalt Strike beacon，以維持持久的 command-and-control 通訊。</p>
+<p>最後階段涉及安裝 Godzilla web shell——一種專為逃避基於簽名的檢測工具而設計的記憶體 payload。與傳統將檔案寫入磁碟的 web shell 不同，Godzilla 完全於記憶體中運行，使傳統 endpoint detection and response 解決方案更難識別，並增加了取證調查的難度。</p>
+<h4>受影響範圍</h4>
+<p>所有於 2026 年 2 月 24 日前分發的 KnowledgeDeliver 安裝版本均存在漏洞，需要立即採取行動。該學習管理系統獲全球教育機構和培訓組織使用。由於 machine key 屬硬編碼性質，任何未修補的部署實際上對任何取得預設密鑰的人士敞開大門。</p>
+<h4>修復：僅套用更新並不足夠</h4>
+<p>運行 KnowledgeDeliver 的機構必須立即採取步驟評估其暴露情況。套用供應商更新是必要但不足的——機構還必須手動輪換所有受影響安裝中 <code>web.config</code> 檔案內的硬編碼 machine key。如不進行密鑰輪換，已套用更新的系統仍可能遭利用先前分發的預設密鑰進行攻擊。</p>
+<p>保安團隊還應部署 web application firewall 規則以標記異常的 ViewState 參數長度或結構、審核伺服器日誌以查找 JavaScript 檔案或 plugin 目錄的未授權修改，以及啟用運行時監控以偵測記憶體 web shell 執行模式。</p>
+<h4>更廣泛的影響</h4>
+<p>此事件反映了企業軟件保安中一個反覆出現的模式：大規模分發的共享加密預設值會造成系統性風險，任何單一組織均無法獨立防禦。ViewState 反序列化攻擊近年已針對多個專業軟件平台，凸顯供應商需要為每個安裝生成獨特的加密材料，而組織亦應維持 defense-in-depth 控制措施，以便在 perimeter security 失效時仍能偵測入侵。</p>
+<p>對運行該平台的教育和企業培訓行業而言，此漏洞提醒業界應嚴格審計第三方軟件供應鏈，並假設僅靠 perimeter defense 並不足夠。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/knowledgedeliver-flaw-exploited-as-a-zero-day-to-install-web-shells/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
