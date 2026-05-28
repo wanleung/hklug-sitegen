@@ -1,0 +1,49 @@
+Date: 2026-05-27 22:39:00
+Author: HKLUG Team
+Title: Researchers Dismantle Glassworm Botnet That Weaponised Solana and BitTorrent for C2
+Content:
+<p>```</p>
+<p>Researchers have dismantled a botnet that weaponised the software supply chain against developers, but not before it demonstrated an unusually resilient command-and-control architecture that blended Solana blockchain transactions with the BitTorrent DHT network — a combination that made the operation exceptionally difficult to disrupt.</p>
+<p>According to BleepingComputer, the Glassworm botnet was taken down after researchers successfully identified and neutralised its decentralised C2 infrastructure. The campaign had targeted developers through compromised dependencies, exploiting a threat vector that has become one of the most pressing concerns in open-source security.</p>
+<h4>How Glassworm Worked</h4>
+<p>Glassworm's technical architecture set it apart from typical supply-chain malware. Rather than relying on conventional C2 servers that can be seized or blocked, the botnet embedded its command-and-control instructions within Solana blockchain transactions. Because blockchain data is immutable and publicly accessible across a distributed ledger, defenders cannot simply take down a single server to cut off communication.</p>
+<p>The botnet layered a second decentralised channel on top of this by leveraging the BitTorrent DHT (Distributed Hash Table) network. BitTorrent DHT allows peers to locate each other without centralised trackers — a feature designed for legitimate file sharing that Glassworm repurposed to help compromised machines discover and contact their operators. This dual-channel approach meant that even if one communication path was disrupted, the other could sustain the botnet's operations.</p>
+<h4>Poisoned Dependencies as the Infection Vector</h4>
+<p>The infection vector was the supply chain itself. Glassworm propagated through tainted software packages, targeting developers who unknowingly pulled malicious code into their projects via standard dependency management workflows. Once installed, the malware could exfiltrate data, establish persistence, and relay commands from its decentralised C2 layer.</p>
+<p>This approach inverts the traditional attack model: rather than going after end-users or enterprise networks directly, threat actors compromise the tools developers trust most. A single malicious package in a popular repository can cascade across thousands of projects within hours, making supply-chain attacks disproportionately effective relative to the effort required.</p>
+<h4>Why This Matters for the Developer Community</h4>
+<p>Glassworm represents a real-world convergence of two trends that security researchers have long warned about: supply-chain compromises and blockchain-based C2. Both have existed in isolation — proof-of-concept research has demonstrated blockchain C2, and supply-chain attacks like SolarWinds and various npm ecosystem incidents have shown the damage possible through dependency poisoning. Glassworm combined them, and the addition of BitTorrent DHT as a secondary channel added another layer of resilience that pushed takedown efforts into new territory.</p>
+<p>The fact that researchers ultimately succeeded in disrupting the infrastructure is encouraging, but the playbook Glassworm used will not disappear. Other threat actors will study its architecture and iterate on it.</p>
+<h4>Practical Takeaways for Developers</h4>
+<p>The disruption of Glassworm does not eliminate the underlying risk. Developers should treat this as a prompt to harden their build and dependency workflows:</p>
+<ul>
+<li><strong>Audit dependencies regularly.</strong> Use software composition analysis (SCA) tools to maintain visibility into every package your project pulls in, including transitive dependencies.</li>
+<li><strong>Pin versions and review lock files.</strong> Avoid floating version ranges that could silently pull in a compromised release. Lock files (e.g., <code>package-lock.json</code>, <code>yarn.lock</code>, <code>pnpm-lock.yaml</code>) should be committed and reviewed for unexpected changes.</li>
+<li><strong>Monitor for anomalies in build environments.</strong> Unexpected network traffic — particularly connections to unusual protocols or decentralised networks — warrants investigation. Look for outbound traffic to Solana RPC endpoints or unexplained BitTorrent DHT activity.</li>
+<li><strong>Evaluate package provenance.</strong> Assess the maintenance activity, ownership history, and download patterns of dependencies before adopting them, especially in critical projects.</li>
+<li><strong>Run builds with minimal privileges.</strong> Scoped permissions limit what a compromised dependency can access, reducing blast radius.</li>
+</ul>
+<p>The open-source ecosystem's strength — its openness and collaborative nature — is also what makes it a high-value target. Glassworm is a reminder that defending the software supply chain is not solely a platform operator's responsibility; it falls on every developer who writes, imports, or publishes code.</p>
+<hr>
+<p>研究人員已成功瓦解一個將軟件供應鏈武器化以攻擊開發者的殭屍網絡，但在此之前，該網絡已展示了一種異常堅韌的指揮與控制（C2）架構，它將 Solana 區塊鏈交易與 BitTorrent DHT 網絡結合起來——這種組合使得打擊行動異常困難。</p>
+<p>據 BleepingComputer 報導，在研究人員成功識別並癱瘓其去中心化 C2 基礎設施後，Glassworm 殭屍網絡已被搗毀。該行動透過受感染的依賴項鎖定開發者，利用了一個已成為開源軟件安全領域最緊迫威脅的攻擊向量。</p>
+<h4>Glassworm 的運作方式</h4>
+<p>Glassworm 的技術架構使其有別於典型的供應鏈惡意軟件。該殭屍網絡並非依賴可能被查獲或封鎖的傳統 C2 伺服器，而是將其指揮與控制指令嵌入 Solana 區塊鏈交易中。由於區塊鏈數據是不可變的，並且可透過分佈式賬本公開存取，防禦者無法僅僅通過關閉單一伺服器來切斷通信。</p>
+<p>該殭屍網絡在此之上疊加了第二層去中心化通道，利用了 BitTorrent DHT（分佈式雜湊表）網絡。BitTorrent DHT 允許對等節點在沒有中心化追蹤器的情況下相互定位——這項為合法文件共享設計的功能，被 Glassworm 改用來幫助受感染的機器發現並聯繫其操作者。這種雙通道方法意味著，即使一條通信路徑被中斷，另一條仍能維持殭屍網絡的運作。</p>
+<h4>感染途徑：受污染的依賴項</h4>
+<p>感染途徑就是供應鏈本身。Glassworm 透過受污染的軟件包傳播，針對那些透過標準依賴項管理工作流程，無意中將惡意代碼引入其項目的開發者。一旦安裝，該惡意軟件便可外洩數據、建立持久性，並從其去中心化 C2 層傳遞指令。</p>
+<p>這種方式顛覆了傳統的攻擊模式：威脅行為者並非直接攻擊終端用戶或企業網絡，而是破壞開發者最信任的工具。一個熱門代碼庫中的單一惡意軟件包，可以在數小時內波及數千個項目，這使得供應鏈攻擊相對於所需付出的努力而言，效果極其顯著。</p>
+<h4>對開發者社區的重要性</h4>
+<p>Glassworm 代表了安全研究人員長期警告的兩大趨勢在現實世界的結合：供應鏈破壞與基於區塊鏈的 C2。兩者過去獨立存在——概念驗證研究已展示過區塊鏈 C2，而像 SolarWinds 以及各種 npm 生態系統事件這樣的供應鏈攻擊，也已顯示出透過依賴項投毒所能造成的損害。Glassworm 將它們結合起來，並加入 BitTorrent DHT 作為輔助通道，增添了另一層韌性，將搗毀工作推向了新的領域。</p>
+<p>研究人員最終成功瓦解其基礎設施的事實令人鼓舞，但 Glassworm 使用的攻擊手冊不會消失。其他威脅行為者將研究其架構並加以迭代。</p>
+<h4>給開發者的實用建議</h4>
+<p>Glassworm 的瓦解並未消除根本風險。開發者應將此視為加固其構建和依賴項工作流程的契機：</p>
+<ul>
+<li><strong>定期審計依賴項。</strong> 使用軟件成分分析（SCA）工具，持續掌握項目引入的每個軟件包的情況，包括傳遞依賴項。</li>
+<li><strong>固定版本並審查鎖定文件。</strong> 避免使用浮動版本範圍，以免靜默引入受感染的發行版。鎖定文件（例如 <code>package-lock.json</code>、<code>yarn.lock</code>、<code>pnpm-lock.yaml</code>）應被提交到版本控制，並檢查是否有意外更改。</li>
+<li><strong>監控構建環境中的異常情況。</strong> 對異常的網絡流量，特別是連接到不尋常協議或去中心化網絡的流量，應進行調查。留意連接至 Solana RPC 端點的出站流量或無法解釋的 BitTorrent DHT 活動。</li>
+<li><strong>評估軟件包來源。</strong> 在採用依賴項（尤其是在關鍵項目中）之前，評估其維護活動、所有權歷史和下載模式。</li>
+<li><strong>以最小權限運行構建。</strong> 受限的權限可限制受感染依賴項所能存取的範圍，從而減小爆炸半徑。</li>
+</ul>
+<p>開源生態系統的優勢——其開放性與協作性——也正是使其成為高價值目標的原因。Glassworm 提醒我們，捍衛軟件供應鏈不僅是平台運營商的責任；它落在每位編寫、導入或發佈代碼的開發者身上。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/glassworm-botnet-disrupted-after-resilient-c2-infrastructure-takedown/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
