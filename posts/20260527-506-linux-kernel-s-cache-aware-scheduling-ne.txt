@@ -1,0 +1,58 @@
+Date: 2026-05-27 22:35:00
+Author: HKLUG Team
+Title: Linux Kernel's Cache Aware Scheduling Nears Merge With Strong PostgreSQL and Valkey Gains on Zen 5
+Content:
+<p>A long-gestating Linux kernel feature that aims to keep related tasks on the same CPU cache domain is inching toward mainline inclusion, with fresh benchmarks suggesting meaningful performance gains for database and network workloads on AMD's latest Zen 5 processors.</p>
+<p>Cache Aware Scheduling, which has been in development for several years, is now expected to land in an upcoming kernel release. Ahead of the merge window, Phoronix published new benchmark results on 27 May testing the feature across a range of production-relevant workloads — and the results point to tangible improvements for infrastructure teams running high-throughput services.</p>
+<h4>What Cache Aware Scheduling Does</h4>
+<p>Modern processors — particularly those built on chiplet architectures like AMD's Zen 5 — distribute cores across multiple cache domains, each with its own L3 cache. The default Linux scheduler, designed for maximum CPU utilisation, can freely migrate tasks between cores on different cache domains. While this keeps workloads balanced, it causes "cache thrashing": a task moved to a new core loses the data it had loaded in the previous core's cache, forcing expensive fetches from main memory or other caches.</p>
+<p>Cache Aware Scheduling modifies the kernel's scheduling decisions to prefer keeping tasks within the same cache domain when possible. The feature doesn't lock tasks to specific cores — it simply nudges the scheduler to treat cache locality as a factor alongside load balancing, reducing unnecessary migrations that degrade performance.</p>
+<p>For workloads that repeatedly access the same datasets — relational databases, in-memory key-value stores, network packet processing — this can translate directly into lower latency and higher throughput.</p>
+<h4>Benchmark Results: Where It Helps</h4>
+<p>The Phoronix testing on AMD Zen 5 hardware highlighted several areas where Cache Aware Scheduling delivered notable gains:</p>
+<ul>
+<li>
+<p><strong>PostgreSQL</strong>: The widely deployed relational database showed significant throughput improvements under the patched kernel. Database workloads are particularly sensitive to cache locality because query execution repeatedly accesses index structures and buffer pool pages that benefit from staying in L3 cache.</p>
+</li>
+<li>
+<p><strong>Valkey</strong>: The community-maintained open-source fork that emerged after Redis switched to a more restrictive licence in 2024 also posted measurable gains. Valkey retains the single-threaded event loop model that characterises Redis, meaning cache residency directly affects how quickly the process can handle incoming requests.</p>
+</li>
+<li>
+<p><strong>Networking throughput</strong>: Network-intensive workloads benefited as well, with packet processing paths showing improved performance when scheduler decisions kept networking stacks pinned to their original cache domains.</p>
+</li>
+</ul>
+<p>These aren't synthetic microbenchmarks — they represent the kind of workloads that production Linux servers handle every day.</p>
+<h4>Important Caveats</h4>
+<p>While the results are promising, infrastructure teams should temper expectations. The benchmarks were conducted by a developer on controlled Zen 5 hardware, which means the numbers reflect best-case scenarios under specific configurations. Broader production validation across different CPU generations, mixed workloads, and multi-tenant environments will be needed before anyone can confidently predict real-world gains.</p>
+<p>The feature primarily targets processors with non-uniform cache architectures — AMD's chiplet-based designs being the most prominent example. Intel's hybrid architectures with their mix of performance and efficiency cores may also see benefits, as could multi-socket server platforms where cache domains span physical processors.</p>
+<h4>What Comes Next</h4>
+<p>With the next merge window approaching, Cache Aware Scheduling appears close to landing in mainline. For teams running latency-sensitive database or caching infrastructure on AMD Zen 5 platforms — or similar cache-heterogeneous hardware — this will be a kernel release worth watching closely.</p>
+<p>Once merged, the feature can be expected to improve with broader real-world testing and tuning. As always with kernel scheduler changes, the proof will come from diverse production environments, not just developer benchmarks.</p>
+<hr>
+<p>一個醞釀已久的 Linux 內核功能，旨在將相關任務保持在同一 CPU 快取區域，正逐漸接近併入主線，最新的基準測試表明，它能為運行在 AMD 最新 Zen 5 處理器上的數據庫和網絡工作負載帶來可觀的效能提升。</p>
+<p>已開發多年的 Cache Aware Scheduling，預計將在即將發布的某個內核版本中併入。在合併窗口開啟前，Phoronix 於 5 月 27 日發布了新的基準測試結果，在多種與生產環境相關的工作負載上測試了此功能——結果顯示，對於運行高吞吐量服務的基礎設施團隊而言，這能帶來切實的效能改善。</p>
+<h4>Cache Aware Scheduling 的運作原理</h4>
+<p>現代處理器——特別是像 AMD Zen 5 這類基於小晶片架構的處理器——將核心分佈在多個快取區域中，每個區域擁有自己的 L3 快取。預設的 Linux 排程器以最大化 CPU 使用率為設計目標，可以在不同快取區域的核心之間自由遷移任務。雖然這能保持工作負載平衡，但會導致「快取抖動」：被遷移到新核心的任務會丟失它在之前核心快取中已載入的數據，迫使它必須耗費成本從主記憶體或其他快取中重新獲取。</p>
+<p>Cache Aware Scheduling 修改了內核的排程決策，優先在可能的情況下將任務保持在同一快取區域內。此功能並非將任務鎖定在特定核心——它只是引導排程器將快取局部性作為與負載平衡並列的一個考量因素，從而減少那些會降低效能的非必要遷移。</p>
+<p>對於那些反覆存取相同數據集的工作負載——例如關聯式數據庫、記憶體內鍵值儲存、網絡封包處理——這可以直接轉化為更低的延遲和更高的吞吐量。</p>
+<h4>基準測試結果：受益之處</h4>
+<p>Phoronix 在 AMD Zen 5 硬件上的測試突顯了幾個 Cache Aware Scheduling 帶來顯著提升的領域：</p>
+<ul>
+<li>
+<p><strong>PostgreSQL</strong>：這款廣泛部署的關聯式數據庫在應用修補程式的內核上，展現出顯著的吞吐量提升。數據庫工作負載對快取局部性尤為敏感，因為查詢執行過程會反覆存取索引結構和緩衝池頁面，而這些數據若能保留在 L3 快取中將大有裨益。</p>
+</li>
+<li>
+<p><strong>Valkey</strong>：這個在 Redis 於 2024 年轉向更嚴格的授權條款後出現的、由社群維護的開源分支，也取得了可量化的效能提升。Valkey 保留了 Redis 那種以單線程事件循環為特徵的模型，這意味著快取駐留情況直接影響進程處理傳入請求的速度。</p>
+</li>
+<li>
+<p><strong>網絡吞吐量</strong>：網絡密集型工作負載同樣受益，當排程器決策將網絡協議棧固定在其原始快取區域時，封包處理路徑展現出更好的效能。</p>
+</li>
+</ul>
+<p>這些並非合成的微基準測試——它們代表了生產環境中的 Linux 伺服器日常處理的那種工作負載。</p>
+<h4>重要的注意事項</h4>
+<p>儘管結果令人鼓舞，基礎設施團隊應調整預期。這些基準測試是由一位開發者在受控的 Zen 5 硬件上進行的，這意味著這些數字反映的是特定配置下的最佳情境。在任何人能夠自信地預測實際收益之前，需要在不同 CPU 代次、混合工作負載以及多租戶環境中進行更廣泛的生產驗證。</p>
+<p>此功能主要針對具有非統一快取架構的處理器——AMD 基於小晶片的設計是最突出的例子。Intel 混合架構中效能核心與效率核心的組合也可能受益，跨物理處理器的快取區域跨越的多插槽伺服器平台亦然。</p>
+<h4>後續發展</h4>
+<p>隨著下一個合併窗口臨近，Cache Aware Scheduling 看起來即將併入主線。對於在 AMD Zen 5 平台——或類似的快取異質性硬件——上運行對延遲敏感的數據庫或快取基礎設施的團隊來說，這將是一個值得密切關注的內核版本。</p>
+<p>一旦併入主線，可以預期此功能將在更廣泛的實際測試和調優中得到改進。與所有內核排程器變更一樣，驗證將來自多樣化的生產環境，而非僅僅是開發者的基準測試。</p>
+<p><a href="https://www.phoronix.com/review/cache-aware-scheduling-hedt" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
