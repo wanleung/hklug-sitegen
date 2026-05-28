@@ -1,0 +1,60 @@
+Date: 2026-05-27 22:26:00
+Author: HKLUG Team
+Title: Malicious npm Package Caught Exfiltrating Files From Claude AI Directory
+Content:
+<p>A malicious package discovered on the npm registry has been quietly stealing files from a directory associated with Anthropic's Claude AI assistant, in what security researchers describe as an emerging tactic that targets the AI development ecosystem through software supply chains.</p>
+<h4>What Was Found</h4>
+<p>Cybersecurity firm OX Security identified a package called "mouse5212-super-formatter" on npm that contains information-stealing capabilities. Unlike typical data exfiltration tools that broadly harvest credentials or browser data, this package was engineered with a specific focus: it uploads files from <code>/mnt/user-data</code>, a directory used internally by Claude to handle user uploads and background outputs.</p>
+<p>The stolen data was reportedly relayed through GitHub, using the platform as a channel to move files out of compromised environments.</p>
+<h4>Why This Matters</h4>
+<p>The discovery signals a shift in how threat actors approach supply-chain attacks. Rather than casting a wide net to grab anything of value, this package demonstrates a more targeted philosophy — aiming squarely at developers and organisations that rely on AI assistants as part of their workflows.</p>
+<p>Several details elevate the concern beyond a typical npm malware incident.</p>
+<p><strong>Deliberate reconnaissance on AI infrastructure.</strong> The specific targeting of Claude's <code>/mnt/user-data</code> path is telling. This is not a common directory that appears in standard system configurations — the attacker likely studied Claude's internal architecture through documentation, leaked configurations, or reverse-engineering. That level of specificity points to purposeful reconnaissance, shifting the threat model from generic supply-chain risk to something closer to targeted threat intelligence.</p>
+<p><strong>Not a typosquat — a different distribution strategy.</strong> The package name "mouse5212-super-formatter" does not closely mimic any well-known library, meaning the attacker did not rely on the typosquatting approach that dominates current supply-chain awareness campaigns. Instead, the distribution likely depended on social engineering, curiosity-driven installs, or promotion within developer communities and AI-generated code suggestions. This represents a distinct and under-addressed threat vector that existing defences against name-confusion attacks do not cover.</p>
+<p><strong>Trusted platforms as stealth exfiltration channels.</strong> Using GitHub as a relay is a particularly resilient technique. Exfiltrated data can be pushed to a private repository accessed only via authentication tokens, making it invisible even to GitHub's own abuse detection systems. Compared to exfiltration to a throwaway domain — which might get flagged by network monitoring or sinkholed by security vendors — a GitHub relay blends into normal developer traffic and is far harder to block without disrupting legitimate workflows.</p>
+<p>Files stored in Claude's working directory can include source code, documents, configuration data, and other sensitive materials that users upload or receive during AI-assisted tasks. For development teams that use AI tools to review code or process internal documents, the potential exposure is significant.</p>
+<h4>A Growing Pattern</h4>
+<p>This incident fits into a broader trend of attackers infiltrating open-source package ecosystems. npm, PyPI, and other registries have repeatedly been used as distribution vectors for malicious code, often through typosquatting or social engineering to get developers to install fraudulent packages.</p>
+<p>What makes the "mouse5212-super-formatter" case stand out is its deliberate targeting of AI infrastructure. As AI assistants become standard tooling in software development, the directories, configuration files, and data pipelines they touch become attractive targets for espionage and data theft.</p>
+<h4>Actionable Advice for Developers</h4>
+<p>The incident underscores the importance of rigorous dependency hygiene:</p>
+<ul>
+<li><strong>Audit before you install.</strong> Before adding any npm package, check its download history, publisher reputation, and source code repository. Packages with very few downloads or a short publishing history warrant extra scrutiny — even when the name does not obviously resemble an existing library.</li>
+<li><strong>Inspect what runs on your machine.</strong> Tools like <code>npm audit</code>, Socket, and OX Security's own offerings can flag known malicious packages and suspicious behaviours during installation.</li>
+<li><strong>Monitor filesystem access at the OS level.</strong> Runtime file-access auditing tools — such as <code>auditd</code> on Linux — can be configured to flag unexpected read access to sensitive paths like <code>/mnt/user-data</code>. This catches threats at the filesystem level before data leaves the machine, complementing network-level monitoring.</li>
+<li><strong>Limit directory access.</strong> Be mindful of which directories AI tools and third-party packages can read from. Containerisation and filesystem permissions can reduce the blast radius if a package turns hostile.</li>
+<li><strong>Monitor outbound traffic.</strong> Unexpected connections to unfamiliar endpoints — or unusual use of platforms like GitHub for data transfers — should trigger alerts. Pay particular attention to outbound GitHub pushes from processes that have no reason to interact with the platform.</li>
+<li><strong>Pin your dependencies.</strong> Use lockfiles and exact version pinning to prevent unexpected updates from introducing malicious code into your build pipeline.</li>
+</ul>
+<h4>The Takeaway</h4>
+<p>The open-source ecosystem remains one of the most powerful accelerators in software development, but it also demands vigilance. As attackers begin to specialise — targeting not just credentials and crypto wallets but the AI tools developers increasingly depend on — the bar for package scrutiny needs to rise accordingly.</p>
+<p>Developers who treat every new dependency as a potential risk vector, rather than a convenience, will be best positioned to avoid becoming the next cautionary tale.</p>
+<hr>
+<p>一個在 npm 註冊表中發現的惡意套件，一直在悄悄地從一個與 Anthropic 的 Claude AI 助理相關的目錄中竊取檔案。安全研究人員將此描述為一種新興策略，透過軟件供應鏈來攻擊 AI 開發生態系統。</p>
+<h4>發現了什麼</h4>
+<p>網絡安全公司 OX Security 在 npm 上識別出一個名為 "mouse5212-super-formatter" 的套件，該套件包含資訊竊取功能。與通常廣泛收集憑證或瀏覽器數據的典型數據外洩工具不同，這個套件的設計有特定重點：它上傳來自 <code>/mnt/user-data</code> 的檔案，這是 Claude 內部用來處理用戶上傳內容和後台輸出的目錄。</p>
+<p>據報導，被盜數據透過 GitHub 轉發，利用該平台作為通道將檔案移出受感染的環境。</p>
+<h4>為何重要</h4>
+<p>這項發現標誌著威脅行為者處理供應鏈攻擊方式的轉變。與其廣撒網捕獲任何有價值的東西，這個套件展示了一種更具針對性的理念——直接瞄準依賴 AI 助理作為工作流程一部分的開發人員和組織。</p>
+<p>幾個細節將擔憂提升至超越典型 npm 惡意軟件事件的層面。</p>
+<p><strong>對 AI 基礎設施的蓄意偵察。</strong> 針對 Claude 的 <code>/mnt/user-data</code> 路徑具有重要意義。這不是標準系統配置中常見的目錄——攻擊者很可能透過文檔、洩露的配置或逆向工程研究了 Claude 的內部架構。這種特定程度表明是蓄意偵察，將威脅模型從通用供應鏈風險轉向更接近定向威脅情報的範疇。</p>
+<p><strong>非「拼寫錯誤仿冒」——不同的分發策略。</strong> 套件名稱 "mouse5212-super-formatter" 並未明顯模仿任何知名庫，這意味著攻擊者並未依賴當前供應鏈安全宣傳活動中主導的「拼寫錯誤仿冒」方法。相反，其分發可能依賴社會工程、好奇心驅動的安裝，或在開發者社群和 AI 生成代碼建議中的推廣。這代表了一種獨特且未被充分應對的威脅向量，現有針對名稱混淆攻擊的防禦措施無法涵蓋。</p>
+<p><strong>利用受信任平台作為隱蔽外洩通道。</strong> 使用 GitHub 作為中繼是一種特別具有韌性的技術。外洩的數據可以推送到一個僅能透過身份驗證令牌存取的私有倉庫，使其對 GitHub 自身的濫用檢測系統也不可見。相比外洩到一次性域名——這可能被網絡監控標記或被安全供應商設為陷阱——GitHub 中繼與正常的開發者流量混為一體，在不中斷合法工作流程的情況下更難被封鎖。</p>
+<p>存儲在 Claude 工作目錄中的檔案可能包括原始碼、文檔、配置數據以及用戶在 AI 輔助任務中上傳或接收的其他敏感材料。對於使用 AI 工具審查代碼或處理內部文檔的開發團隊而言，潛在的暴露風險巨大。</p>
+<h4>趨勢漸成模式</h4>
+<p>此事件符合攻擊者滲透開源套件生態系統的更廣泛趨勢。npm、PyPI 和其他註冊表已多次被用作惡意代碼的分發渠道，通常透過拼寫錯誤仿冒或社會工程來誘使開發者安裝欺詐性套件。</p>
+<p>"mouse5212-super-formatter" 案例之所以突出，在於它蓄意針對 AI 基礎設施。隨著 AI 助理成為軟件開發中的標準工具，它們所涉及的目錄、配置文件和數據管道，正成為間諜活動和數據竊取的誘人目標。</p>
+<h4>給開發者的實用建議</h4>
+<p>此事件強調了嚴格依賴管理的重要性：</p>
+<ul>
+<li><strong>安裝前進行審計。</strong> 在新增任何 npm 套件之前，檢查其下載歷史、發佈者信譽和原始碼倉庫。對於下載次數極少或發佈歷史很短的套件，即使其名稱沒有明顯類似現有庫，也需要格外謹慎審查。</li>
+<li><strong>檢查在機器上運行的內容。</strong> 像 <code>npm audit</code>、Socket 和 OX Security 自己的產品等工具，可以在安裝期間標記已知的惡意套件和可疑行為。</li>
+<li><strong>在操作系統層級監控檔案系統存取。</strong> 運行時檔案存取審計工具——例如 Linux 上的 <code>auditd</code>——可以配置為標記對 <code>/mnt/user-data</code> 等敏感路徑的意外讀取存取。這能在數據離開機器之前於檔案系統層級捕獲威脅，補充網絡層級監控。</li>
+<li><strong>限制目錄存取。</strong> 留意 AI 工具和第三方套件可以讀取哪些目錄。容器化和檔案系統權限可以在套件變惡意時，減少其影響範圍。</li>
+<li><strong>監控出站流量。</strong> 對陌生端點的意外連接——或異常使用 GitHub 等平台進行數據傳輸——應觸發警報。特別留意來自沒有理由與 GitHub 互動的進程的出站推送。</li>
+<li><strong>固定您的依賴項。</strong> 使用鎖定文件和精確版本固定，以防止意外更新將惡意代碼引入您的 build pipeline。</li>
+</ul>
+<h4>核心要點</h4>
+<p>開源生態系統仍然是軟件開發中最強大的加速器之一，但它也需要保持警惕。隨著攻擊者開始專業化——不僅針對憑證和加密貨幣錢包，還針對開發者日益依賴的 AI 工具——對套件審查的標準也需要相應提高。</p>
+<p>將每個新依賴項視為潛在風險向量，而非單純便利的開發者，將最有能力避免成為下一個警示故事。</p>
+<p><a href="https://thehackernews.com/2026/05/malicious-npm-package-stole-files-from.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
