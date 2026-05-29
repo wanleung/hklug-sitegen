@@ -1,0 +1,34 @@
+Date: 2026-05-29 08:50:00
+Author: HKLUG Team
+Title: Nouveau Driver Set to Gain NVIDIA GA100 Support in Linux 7.2 — But Don't Expect A100 Performance
+Content:
+<p>The open-source Nouveau graphics driver is poised to finally support NVIDIA's GA100 GPU, with the change queued as part of the final drm-misc-next pull request ahead of the Linux 7.2 merge window opening in June.</p>
+<p>The GA100 silicon is the foundation of NVIDIA's A100 data center accelerator — one of the most widely deployed GPUs in AI training and high-performance computing clusters worldwide. Its addition to Nouveau marks a notable symbolic milestone for the open-source graphics ecosystem, though the practical implications for organisations running A100 hardware are considerably more modest than the headline might suggest.</p>
+<h4>What "Support" Actually Means</h4>
+<p>For modern NVIDIA architectures, support in the Nouveau driver is understood to mean basic hardware initialisation and display modesetting — the ability to bring the GPU up and interact with it at a fundamental level. It does not extend to the capabilities that matter most in a data center context: competitive compute throughput, optimised power management, or any of the CUDA and tensor-core acceleration that makes the A100 valuable in production AI workloads.</p>
+<p>Users requiring full performance from their A100 hardware will still need NVIDIA's proprietary driver stack. That dynamic has not changed with this patch.</p>
+<h4>The GSP Firmware Factor</h4>
+<p>The progress behind this merge is inseparable from NVIDIA's strategic shift beginning in 2022, when the company started releasing open-source kernel modules and signed GPU System Processor (GSP) firmware for its newer GPU architectures. Before that change, the Nouveau project faced a near-insurmountable barrier: modern NVIDIA GPUs required signed firmware to initialise properly, and that firmware was not publicly available.</p>
+<p>With GSP firmware now accessible, community developers can write the code needed to interact with architectures like GA100 at a basic level. This is the technical scaffolding that made the Linux 7.2 patch possible — and it represents the more consequential long-term development. Each new hardware generation that enters Nouveau's supported roster builds on this foundation, gradually narrowing the gap between what the open-source driver can do and what proprietary alternatives offer.</p>
+<h4>A Symbolic Step on a Long Road</h4>
+<p>The Nouveau project has historically struggled to keep pace with NVIDIA's rapid hardware cadence, and the addition of a flagship data center GPU is a meaningful statement about the project's trajectory. For the broader Linux and open-source community — including infrastructure teams in data-center-heavy markets such as Hong Kong, where investment in AI accelerators continues to grow — the news reinforces that open-source GPU support, while still limited, is moving in the right direction.</p>
+<p>That said, the gap between "basic support" and "production-ready" remains wide. Organisations making procurement decisions around A100-class hardware should not interpret this development as evidence that Nouveau is approaching viability for compute-heavy workloads. The proprietary driver remains the only practical option for anyone running these GPUs at scale.</p>
+<h4>What Comes Next</h4>
+<p>The drm-misc-next pull request was submitted ahead of the Linux 7.2 merge window, which is expected to open in June. If the patch is accepted without issue, GA100 support will ship as part of the Linux 7.2 kernel release cycle.</p>
+<p>For the open-source graphics community, the value of this work lies less in immediate utility and more in the groundwork it lays. As NVIDIA continues to release GSP firmware for new architectures, each kernel cycle brings the possibility of faster, more complete support for hardware that currently demands proprietary software. The GA100 patch is one step along that path — significant in context, but not yet transformative in practice.</p>
+<hr>
+<p>開源圖形驅動程式 Nouveau 終於即將支援 NVIDIA 的 GA100 GPU。相關變更已佇列於 Linux 7.2 merge window 於六月開放前的最終 drm-misc-next pull request 中。</p>
+<p>GA100 晶片是 NVIDIA A100 數據中心加速卡的基礎——這是全球人工智能訓練及高效能運算叢集中部署最廣泛的 GPU 之一。將其納入 Nouveau 支援，對開源圖形生態系統而言是個值得注意的象徵性里程碑，然而，對於運行 A100 硬件的機構而言，其實際影響遠比標題所暗示的要有限。</p>
+<h4>「支援」的實際含義</h4>
+<p>對於現代 NVIDIA 架構，Nouveau 驅動程式的支援通常意味著基礎的硬件初始化與顯示模式設定——即能夠啟動 GPU 並在基礎層級與其互動。它並不延伸至在數據中心環境中最為關鍵的能力：具競爭力的運算吞吐量、優化的電源管理，或任何使 A100 在生產環境人工智能工作負載中發揮價值的 CUDA 與 tensor core 加速功能。</p>
+<p>需要從其 A100 硬件獲得完整效能的用戶，仍然需要使用 NVIDIA 的專有驅動程式堆疊。此動態格局並未因是次 patch 而改變。</p>
+<h4>GSP 韌體的因素</h4>
+<p>此合併背後的進展，與 NVIDIA 自 2022 年開始的戰略轉變密不可分。該公司開始為其較新的 GPU 架構發布開源 kernel module 及簽署的 GPU System Processor (GSP) 韌體。在該項變更之前，Nouveau 項目面臨幾乎無法逾越的障礙：現代 NVIDIA GPU 需要簽署的韌體才能正確初始化，而該韌體並非公開可用。</p>
+<p>隨著 GSP 韌體現已可取得，社群開發人員得以編寫在基礎層級與 GA100 等架構互動所需的程式碼。這是令 Linux 7.2 patch 得以實現的技術基礎架構——它也代表了更具長期影響力的發展。每一款進入 Nouveau 支援列表的新硬件世代，都建立在此基礎之上，逐步縮小開源驅動程式能力與專有替代方案之間的差距。</p>
+<h4>漫長道路上的象徵性一步</h4>
+<p>Nouveau 項目歷史上一直難以跟上 NVIDIA 快速的硬件迭代節奏，而納入旗艦級數據中心 GPU 的支援，對項目的發展軌跡而言是一個有意義的聲明。對於更廣泛的 Linux 及開源社群——包括香港等數據中心密集、對 AI 加速卡投資持續增長的市場中的基礎架構團隊——此消息強化了一點：開源 GPU 支援雖然仍然有限，但正朝正確方向前進。</p>
+<p>話雖如此，「基礎支援」與「可用於生產環境」之間的差距仍然巨大。圍繞 A100 級別硬件進行採購決策的機構，不應將此發展解讀為 Nouveau 即將適用於運算密集型工作負載的證據。對於任何需要大規模運行這些 GPU 的用戶而言，專有驅動程式仍然是唯一實際的選擇。</p>
+<h4>下一步</h4>
+<p>drm-misc-next pull request 已於 Linux 7.2 merge window 預計於六月開放前提前提交。若 patch 順利獲接納，GA100 支援將隨 Linux 7.2 kernel 發行週期一併推出。</p>
+<p>對於開源圖形社群而言，此工作的價值較少在於即時實用性，而在於其奠定的基礎。隨著 NVIDIA 繼續為新架構發布 GSP 韌體，每個 kernel 週期都帶來可能性，為目前仍需專有軟件的硬件，提供更快速、更完善的支援。GA100 patch 是這條道路上的一步——在上下文中有其重要性，但在實踐中尚未帶來變革。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.2-Nouveau-GA100" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
