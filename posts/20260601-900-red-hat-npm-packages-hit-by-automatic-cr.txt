@@ -1,0 +1,42 @@
+Date: 2026-06-01 15:26:00
+Author: HKLUG Team
+Title: Red Hat npm Packages Hit by Automatic Credential-Harvesting Malware
+Content:
+<p>Several npm packages published under the <code>@redhat-cloud-services</code> scope have been found to contain malware that activates silently during a routine <code>npm install</code>, harvesting credentials from eight major cloud and CI/CD platforms. The discovery, reported by security firm StepSecurity and covered by LWN.net, represents a significant supply-chain attack that exploited the trust developers place in organisation-scoped packages from a well-known enterprise vendor.</p>
+<h4>What Happened</h4>
+<p>The compromised packages contained a multi-stage credential harvester embedded in lifecycle scripts. Because npm executes these scripts automatically when a developer runs <code>npm install</code>, no additional user interaction was needed to trigger the payload. Once activated, the malware systematically swept environment variables and local files for secrets belonging to GitHub Actions, Amazon Web Services, Google Cloud Platform, Microsoft Azure, Kubernetes, HashiCorp Vault, npm, and CircleCI.</p>
+<p>Red Hat, a subsidiary of IBM, is one of the most prominent names in enterprise open-source software. The <code>@redhat-cloud-services</code> namespace is used for packages supporting Red Hat's cloud management tools. That trusted provenance made the compromise particularly effective — developers and automated tooling rarely perform deep integrity checks on packages carrying a reputable organisation's scope.</p>
+<h4>Why It Matters</h4>
+<p>The attack highlights an enduring structural weakness in the npm ecosystem: the default permission model allows arbitrary code execution at install time. Lifecycle scripts such as <code>preinstall</code> and <code>postinstall</code> are powerful by design, intended to compile native modules or configure environments. In the hands of an attacker, however, they become a silent launchpad for data exfiltration.</p>
+<p>For build and CI/CD environments — where secrets for multiple cloud platforms are routinely stored as environment variables — the impact of such an attack can be severe and far-reaching. A single compromised dependency can cascade across an organisation's entire software delivery pipeline.</p>
+<p>This incident also underscores the broader challenge of namespace trust in open-source registries. A scoped package under a corporate namespace inherits an implicit reputation that may not always be deserved, especially when account credentials are compromised upstream.</p>
+<h4>Recommended Response</h4>
+<p>Organisations that may have installed the affected packages should take the following steps immediately:</p>
+<ol>
+<li><strong>Inspect dependency trees.</strong> Run <code>npm ls @redhat-cloud-services</code> or review lock files to determine whether any compromised versions were pulled into projects.</li>
+<li><strong>Rotate all potentially exposed secrets.</strong> This includes GitHub Actions tokens, cloud provider keys, Kubernetes service account credentials, Vault tokens, npm publish tokens, and CircleCI secrets.</li>
+<li><strong>Review CI/CD audit logs.</strong> Look for unusual access patterns, unexpected IP addresses, or token usage that occurred during or after the period the compromised packages were in use.</li>
+<li><strong>Consider lifecycle script sandboxing.</strong> Tools such as <code>npm --ignore-scripts</code> or dedicated sandboxes like StepSecurity's own runtime can limit what code runs during package installation.</li>
+</ol>
+<h4>A Broader Pattern</h4>
+<p>This compromise adds to a growing catalogue of npm supply-chain incidents in recent years, from <code>ua-parser-js</code> and <code>colors</code> to the <code>xz-utils</code> backdoor discovered in 2024. For teams working in regulated industries or managing sensitive infrastructure, the incident reinforces the need for dependency pinning, automated vulnerability scanning, and a zero-trust approach to third-party code — even when it comes from ostensibly trusted sources.</p>
+<hr>
+<p>多個發佈於 <code>@redhat-cloud-services</code> 命名空間下的 npm 套件被發現含有惡意軟件，該軟件會在常規的 <code>npm install</code> 過程中靜默啟動，從八個主要的雲端及 CI/CD 平台竊取憑證。此發現由安全公司 StepSecurity 報告並經 LWN.net 報導，這是一次重大的供應鏈攻擊事件，利用了開發者對來自知名企業供應商之組織級套件的信任。</p>
+<h4>事件經過</h4>
+<p>受感染的套件內含一個多階段的憑證竊取器，嵌入在生命週期腳本中。由於 npm 在開發者執行 <code>npm install</code> 時會自動執行這些腳本，無需額外的用戶互動即可觸發惡意負載。一旦啟動，該惡意軟件便系統性地掃描環境變數與本地檔案，竊取屬於 GitHub Actions、Amazon Web Services、Google Cloud Platform、Microsoft Azure、Kubernetes、HashiCorp Vault、npm 以及 CircleCI 的金鑰。</p>
+<p>作為 IBM 的子公司，Red Hat 是企業級開源軟件領域最負盛名的品牌之一。<code>@redhat-cloud-services</code> 命名空間用於支持 Red Hat 雲端管理工具的套件。這種可信的來源使得此次入侵尤為有效——開發者與自動化工具鮮少會對帶有知名組織命名空間的套件進行深入的完整性檢查。</p>
+<h4>重要性分析</h4>
+<p>此次攻擊凸顯了 npm 生態系統中一個長期存在的結構性弱點：其預設權限模型允許在安裝期間執行任意程式碼。如 <code>preinstall</code> 和 <code>postinstall</code> 這類生命週期腳本在設計上功能強大，旨在編譯原生模組或配置環境。然而，在攻擊者手中，它們成為了靜默進行數據竊取的平台。</p>
+<p>對於構建及 CI/CD 環境——多個雲端平台的金鑰通常作為環境變數儲存——此類攻擊的影響可能非常嚴重且深遠。一個被入侵的依賴項即可在整個組織的軟件交付流程中引發連鎖反應。</p>
+<p>此事件亦突顯了開源程式碼儲存庫中命名空間信任的更廣泛挑戰。企業命名空間下的套件繼承了一種隱含的信譽，但這種信譽並非總是理所當然，尤其是在上游帳戶憑證被入侵的情況下。</p>
+<h4>建議應對措施</h4>
+<p>可能已安裝受影響套件的組織應立即採取以下步驟：</p>
+<ol>
+<li><strong>檢查依賴樹。</strong> 執行 <code>npm ls @redhat-cloud-services</code> 或檢視鎖定文件，以確定項目中是否引入了任何受入侵的版本。</li>
+<li><strong>輪換所有潛在外洩的金鑰。</strong> 這包括 GitHub Actions token、雲端供應商金鑰、Kubernetes 服務帳戶憑證、Vault token、npm 發佈 token 以及 CircleCI 金鑰。</li>
+<li><strong>審閱 CI/CD 審計日誌。</strong> 查找異常的存取模式、非預期的 IP 位址，或在受感染套件使用期間前後發生的 token 使用情況。</li>
+<li><strong>考慮為生命週期腳本建立沙盒。</strong> 例如 <code>npm --ignore-scripts</code> 或如 StepSecurity 自有運行時等專用沙盒工具，可限制套件安裝期間執行的程式碼範圍。</li>
+</ol>
+<h4>更廣泛的模式</h4>
+<p>此次入侵為近年來持續增長的 npm 供應鏈事件目錄再添一例，從 <code>ua-parser-js</code> 和 <code>colors</code> 到 2024 年發現的 <code>xz-utils</code> 後門。對於在受監管行業工作或管理敏感基礎設施的團隊而言，此事件再次強調了依賴版本鎖定、自動化漏洞掃描，以及對第三方程式碼採取零信任方法的必要性——即使它來自表面上可信的來源。</p>
+<p><a href="https://lwn.net/Articles/1075742/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
