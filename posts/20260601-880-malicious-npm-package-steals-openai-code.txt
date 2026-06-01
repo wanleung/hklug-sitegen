@@ -1,0 +1,44 @@
+Date: 2026-06-01 12:23:00
+Author: HKLUG Team
+Title: Malicious npm Package Steals OpenAI Codex Credentials via Fake Remote UI Tool
+Content:
+<p>A malicious npm package masquerading as a remote web interface for OpenAI Codex has been stealing developers' authentication tokens, cybersecurity researchers have disclosed. The package, called <strong>codexui-android</strong>, presents itself as a convenient way to access OpenAI Codex from a mobile device or browser, but in reality it harvests credentials and transmits them to an attacker-controlled server.</p>
+<p>According to The Hacker News, which reported the campaign on 1 June 2026, the tool had accumulated over 29,000 weekly downloads on the npm registry. At the time of reporting, the package remained available for download — a detail that underscores ongoing concerns about the speed at which malicious packages are remediated on open-source registries.</p>
+<h4>How the Attack Works</h4>
+<p>The campaign exploits a genuine gap in the developer workflow around OpenAI Codex. While Codex is widely used for AI-assisted coding, there is no official first-party mobile interface. The codexui-android package positioned itself to fill that need, advertising itself on both GitHub and npm as a lightweight remote web UI.</p>
+<p>Once installed, the package silently locates and exfiltrates developers' Codex authentication tokens, sending them to a remote command-and-control endpoint. These tokens can grant an attacker access to a developer's Codex session, which in many enterprise environments extends beyond personal use into shared codebases, CI/CD pipelines, and internal repositories.</p>
+<p>The "android" suffix in the package name appears deliberately chosen to suggest mobile compatibility — a social engineering tactic that exploits a specific, underserved use case within the AI developer ecosystem.</p>
+<h4>Why This Matters</h4>
+<p>This incident marks a notable escalation in supply chain targeting. Rather than casting a wide net with generic typosquatting, the attackers behind codexui-android crafted a tool aimed squarely at the AI-assisted development niche. Compromising an OpenAI Codex token offers a different and potentially more damaging threat profile than typical npm credential theft.</p>
+<p>A stolen Codex token could give an attacker not only access to a user's AI coding sessions but also visibility into proprietary code prompts, repository structures, and internal development practices. For organisations integrating AI coding assistants into their workflows, this represents a non-trivial supply chain risk that extends well beyond the compromised package itself.</p>
+<p>The social engineering element is also worth noting. By advertising a mobile UI wrapper — something that doesn't officially exist from OpenAI — the attackers filled a legitimate developer need with a weaponised tool. It is a reminder that the most effective supply chain attacks often target tooling gaps that developers are actively searching for.</p>
+<h4>Recommendations for Developers</h4>
+<p>Developers and security teams should take the following steps:</p>
+<ul>
+<li><strong>Audit dependencies immediately.</strong> Check whether codexui-android or similar packages exist in any project dependency trees.</li>
+<li><strong>Rotate Codex tokens.</strong> If there is any suspicion of exposure, revoke and regenerate authentication tokens through OpenAI's dashboard.</li>
+<li><strong>Scrutinise community tooling.</strong> Packages that wrap or extend first-party AI platforms deserve heightened due diligence, particularly those from unknown publishers with no established track record.</li>
+<li><strong>Monitor registry advisories.</strong> The fact that this package was still live on npm at time of disclosure highlights the need for organisations to maintain their own dependency review processes rather than relying solely on platform-level takedowns.</li>
+</ul>
+<p>The incident is a reminder that as AI development tools become more embedded in professional workflows, they also become more attractive targets for supply chain attackers. Credential theft in this context is not just a personal security issue — it can be an entry point into enterprise infrastructure.</p>
+<hr>
+<p>網絡安全研究人員披露，一個偽裝成 OpenAI Codex 遠端網頁介面的惡意 npm 套件，正在盜竊開發者的身份驗證權杖。這個名為 <strong>codexui-android</strong> 的套件，表面上宣稱是讓用戶透過流動裝置或瀏覽器便捷存取 OpenAI Codex 的工具，但實際上卻會收集憑證並將其傳送到攻擊者控制的伺服器。</p>
+<p>據於 2026 年 6 月 1 日報導此攻擊活動的 The Hacker News 指出，該工具在 npm 註冊表上已累積超過 29,000 次的每週下載量。報導時，該套件仍可下載——這一細節突顯了外界對開源註冊表中惡意套件修復速度持續存在的擔憂。</p>
+<h4>攻擊如何運作</h4>
+<p>此攻擊活動利用了開發者在 OpenAI Codex 工作流程中一個真實存在的缺口。雖然 Codex 被廣泛用於 AI 輔助編程，但官方並未提供第一方流動應用介面。codexui-android 套件將自身定位為填補此需求的工具，並在 GitHub 和 npm 上宣傳為一個輕量級的遠端網頁 UI。</p>
+<p>一旦安裝，該套件便會在背景靜默搜尋並外傳開發者的 Codex 身份驗證權杖，將其發送到一個遠端的命令與控制端點。這些權杖可能使攻擊者得以存取開發者的 Codex 工作階段，而在許多企業環境中，這不僅限於個人使用，還可能延伸至共享的程式碼庫、CI/CD pipeline 及內部儲存庫。</p>
+<p>套件名稱中的「android」後綴似乎是刻意選取，以暗示其流動裝置相容性——這是一種社會工程技巧，利用了 AI 開發者生態系統中一個特定且未被滿足的需求場景。</p>
+<h4>為何事關重大</h4>
+<p>此事件標誌著供應鏈針對性攻擊的顯著升級。攻擊者並非廣泛地使用通用的 typosquatting 策略，而是精心打造了一個專門針對 AI 輔助開發這一利基領域的工具。入侵一個 OpenAI Codex 權杖所帶來的威脅態勢，與典型的 npm 憑證盜竊不同，且潛在危害可能更大。</p>
+<p>被盜的 Codex 權杖不僅可能讓攻擊者存取用戶的 AI 編程工作階段，還可能使其窺探到專有的程式碼提示、儲存庫結構及內部開發實踐。對於將 AI 編程助手整合到工作流程中的企業組織而言，這代表了一種不可忽視的供應鏈風險，其影響遠超出受入侵套件本身。</p>
+<p>其社會工程元素亦值得關注。透過宣傳一個 OpenAI 官方並不存在的流動 UI 包裝器，攻擊者以一個武器化的工具，填補了一個合法的開發者需求缺口。這提醒我們，最有效的供應鏈攻擊往往瞄準開發者正在積極尋找的工具缺口。</p>
+<h4>給開發者的建議</h4>
+<p>開發者與安全團隊應採取以下步驟：</p>
+<ul>
+<li><strong>立即審查相依套件。</strong> 檢查任何專案的相依關係樹中是否存在 codexui-android 或類似套件。</li>
+<li><strong>更換 Codex 權杖。</strong> 若有任何曝露疑慮，應透過 OpenAI 的控制面板撤銷並重新生成身份驗證權杖。</li>
+<li><strong>仔細審視社群工具。</strong> 對於包裝或擴展第一方 AI 平台的套件，應進行更嚴格的盡職調查，尤其是那些來自未知發行者且無可靠記錄的套件。</li>
+<li><strong>監控註冊表公告。</strong> 此套件在披露時仍能在 npm 上存取，這突顯了企業組織需要維持自身相依套件審查流程，而非單純依賴平台層級的下架處置。</li>
+</ul>
+<p>此事件提醒我們，隨著 AI 開發工具更深入地嵌入專業工作流程，它們也成為供應鏈攻擊者更具吸引力的目標。在此背景下，憑證盜竊不僅是個人安全問題——它更可能成為進入企業基礎設施的入口。</p>
+<p><a href="https://thehackernews.com/2026/06/openai-codex-authentication-tokens.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
