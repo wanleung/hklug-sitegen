@@ -1,0 +1,34 @@
+Date: 2026-06-02 15:23:00
+Author: HKLUG Team
+Title: Linux Kernel Drops Legacy Fallback, Makes TSC Mandatory for All x86 CPUs
+Content:
+<p>The Linux kernel is preparing to make the Time Stamp Counter (TSC) an unconditional requirement for all x86 processors, marking another step in the project's ongoing effort to retire support for decades-old hardware.</p>
+<p>The change, reported by Phoronix, involves stripping out fallback timekeeping paths in the kernel that previously existed for CPUs lacking TSC support. The Intel 486, which predates TSC, has already been dropped from the kernel. Meanwhile, the removal of support for other vintage processors — including the AMD K5 and AMD Elan — as part of broader legacy cleanup has further reduced the range of configurations the timekeeping subsystem must accommodate, making the fallback paths unnecessary.</p>
+<h4>What Is TSC and Why Does It Matter?</h4>
+<p>The TSC is a per-CPU register available on modern x86 processors that counts the number of CPU cycles since reset. The Linux kernel uses it as a high-resolution, low-overhead time source for scheduling, performance measurement, and other critical timing operations. Every x86 processor since the original Intel Pentium has included TSC support, meaning the feature has been ubiquitous in the x86 ecosystem for roughly three decades.</p>
+<p>Historically, the kernel retained compatibility code to handle the edge case of processors without TSC. Those fallback paths allowed the system to resort to alternative, slower timekeeping mechanisms when TSC was unavailable.</p>
+<h4>Simplifying a Complex Subsystem</h4>
+<p>By making TSC unconditional, kernel developers can eliminate branching logic and dead code from the timekeeping subsystem. Timekeeping is one of the most performance-sensitive areas of any operating system kernel — it underpins task scheduling, timer interrupts, and nanosecond-precision timestamps used across the entire software stack.</p>
+<p>The decision also reflects years of work to address historical TSC reliability concerns, including frequency-scaling inconsistencies under CPU power management, cross-core synchronization issues on multi-socket systems, and suspend/resume counter resets — problems that were once a significant obstacle to relying on TSC unconditionally.</p>
+<p>Removing the fallback paths reduces maintenance burden, makes the code easier to audit, and simplifies future development. The practical impact on end users is negligible: virtually every x86 machine in operation today — whether running as a desktop, server, laptop, or embedded system — has long supported TSC.</p>
+<h4>Part of a Broader Pattern</h4>
+<p>This move fits into a wider, deliberate trend across major open-source projects. The Linux kernel has been progressively shedding support for obsolete hardware that carries disproportionate maintenance costs relative to its user base. In recent kernel development cycles, maintainers have removed support for Intel 486 processors and several vintage AMD chips, including the K5 and the embedded Elan series.</p>
+<p>These decisions are rarely made hastily. They typically follow lengthy discussion periods on kernel mailing lists, where developers weigh the cost of maintaining legacy code paths against the practical reality that essentially no production systems still depend on the hardware in question.</p>
+<p>For the open-source community, such cleanups represent responsible stewardship of a codebase with thousands of contributors. Every line of code carries a long-term maintenance cost — testing, regression analysis, and cognitive load for developers working in related subsystems. Sunsetting support for hardware that exited the mainstream market in the 1990s frees those resources for work that benefits current users.</p>
+<p>The change is expected to land in an upcoming kernel release. For the overwhelming majority of Linux users — from enterprise data centers to personal workstations — the transition will be entirely transparent.</p>
+<hr>
+<p>Linux 核心正準備將時間戳計數器（TSC）設為對所有 x86 處理器的無條件要求，這標誌著該專案持續淘汰數十年舊硬體支援的又一進展。</p>
+<p>根據 Phoronix 報導，此變更涉及移除核心中先前為缺乏 TSC 支援的處理器所保留的後備時間記錄路徑。早於 TSC 時代的 Intel 486 已從核心中移除。與此同時，在更廣泛的傳統清理工作中移除對其他舊式處理器（包括 AMD K5 及 AMD Elan 系列）的支援，進一步縮減了時間記錄子系統需應對的配置範圍，令後備路徑變得不再必要。</p>
+<h4>何為 TSC？為何重要？</h4>
+<p>TSC 是現代 x86 處理器上的一個每處理器暫存器，用於計算自重置以來的 CPU 週期數。Linux 核心將其用作排程、效能測量及其他關鍵計時操作的高解像度、低開銷時間來源。自首代 Intel Pentium 處理器以來，所有 x86 處理器均包含 TSC 支援，意味著此功能在 x86 生態系統中已普及約三十年。</p>
+<p>歷史上，核心保留了相容性代碼以處理無 TSC 處理器的邊緣情況。這些後備路徑允許系統在 TSC 不可用時，改用其他較慢的時間記錄機制。</p>
+<h4>簡化複雜子系統</h4>
+<p>通過將 TSC 設為無條件要求，核心開發者可消除時間記錄子系統中的分支邏輯與閒置代碼。時間記錄是任何作業系統核心中最效能敏感的領域之一——它支撐著任務排程、計時器中斷，以及整個軟件堆棧使用的納秒精度時間戳。</p>
+<p>此決定也反映了多年來解決歷史 TSC 可靠性問題的努力，包括 CPU 電源管理下的頻率縮放不一致、多插座系統的跨核心同步問題，以及休眠/恢復計數器重置——這些問題曾是全面依賴 TSC 的重大障礙。</p>
+<p>移除後備路徑可減輕維護負擔、使代碼更易審核，並簡化未來開發。對終端用戶的實際影響微乎其微：當前運行的幾乎每台 x86 機器——無論是桌面電腦、伺服器、筆記型電腦還是嵌入式系統——早已支援 TSC。</p>
+<h4>廣泛模式的一部分</h4>
+<p>此舉契合主要開源專案中更廣泛且審慎的趨勢。Linux 核心正逐步淘汰對過時硬體的支援，這些硬體相對其用戶群而言承擔了過高的維護成本。在近期核心開發週期中，維護者已移除對 Intel 486 處理器及多款傳統 AMD 晶片（包括 K5 和嵌入式 Elan 系列）的支援。</p>
+<p>這些決定鮮少倉促作出。它們通常遵循核心郵件列表上的冗長討論期，開發者在其中權衡維護傳統代碼路徑的成本與現實情況——即幾乎沒有生產系統仍依賴相關硬體。</p>
+<p>對開源社群而言，此類清理工作體現了對擁有數千貢獻者的代碼庫的負責任管理。每一行代碼都承擔長期維護成本——測試、回歸分析，以及相關子系統開發者的認知負荷。淘汰在 1990 年代已退出主流市場的硬體支援，可釋放資源用於造福當前用戶的工作。</p>
+<p>此變更預計將在即將發佈的核心版本中落實。對絕大多數 Linux 用戶——從企業數據中心到個人工作站——而言，此過渡將完全透明。</p>
+<p><a href="https://www.phoronix.com/news/Linux-Kernel-TSC-Unconditional" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
