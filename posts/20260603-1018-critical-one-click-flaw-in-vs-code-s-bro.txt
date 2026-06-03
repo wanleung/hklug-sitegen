@@ -1,0 +1,58 @@
+Date: 2026-06-03 15:25:00
+Author: HKLUG Team
+Title: Critical One-Click Flaw in VS Code's Browser-Based Editor Exposes Full GitHub Access Tokens
+Content:
+<p>A serious security flaw in Microsoft Visual Studio Code's browser-based editing environment can hand attackers full read-write access to a victim's GitHub repositories — and all it takes is a single click.</p>
+<h4>A Link Is All It Takes</h4>
+<p>Security researcher Ammar Askar has demonstrated that a specially crafted link targeting VS Code's GitHub.dev web interface can be used to extract a victim's GitHub OAuth token. Once stolen, the token grants an attacker the ability to both read from and write to the victim's repositories, including private ones.</p>
+<p>"Just by clicking a link, it's possible for an attacker to steal a GitHub token that can read and write to your repos, including private ones," Askar stated in the vulnerability disclosure.</p>
+<p>GitHub.dev is a lightweight, browser-hosted iteration of VS Code that lets developers browse, edit, and commit code directly to GitHub without installing anything locally. The tool has seen widespread adoption for quick code reviews and minor edits.</p>
+<h4>Why This Vulnerability Raises the Stakes</h4>
+<p>Unlike token theft that might expose only limited, read-only data, the compromised credential in this case reportedly carries broad permissions. An attacker exploiting this flaw could:</p>
+<ul>
+<li>Read and exfiltrate private source code from all of a victim's repositories</li>
+<li>Alter or delete existing code</li>
+<li>Push malicious commits that could ripple through CI/CD pipelines and downstream projects</li>
+<li>Potentially pivot into other services linked to the same GitHub account</li>
+</ul>
+<p>For organisations that store proprietary code, intellectual property, or deployment configurations in GitHub, a single compromised developer account could become a launchpad for wide-ranging supply-chain attacks.</p>
+<h4>The Broader Risk of Browser-Based Development</h4>
+<p>This disclosure underscores a growing security challenge as the development ecosystem shifts toward web-hosted tools. Platforms like GitHub.dev, StackBlitz, and Gitpod offer clear productivity benefits, but they also introduce attack surfaces rooted in browser-level mechanisms — OAuth flows, URL parameters, and inter-process communication — that differ fundamentally from those in traditional desktop IDEs.</p>
+<p>Security experts have long warned that OAuth tokens, while streamlining authentication, consolidate powerful privileges into single bearer credentials. Unlike session cookies bound to a specific browser context, stolen OAuth tokens can often be replayed from a completely different environment without triggering additional verification.</p>
+<h4>What Developers Should Do Now</h4>
+<p>No definitive fix has been publicly announced yet. In the meantime, developers and security teams should consider the following steps:</p>
+<ul>
+<li><strong>Audit GitHub token permissions</strong> to ensure the principle of least privilege is being followed. Tokens with excessive scope amplify the impact of any theft.</li>
+<li><strong>Enable token expiration</strong> where available to limit the window of exposure.</li>
+<li><strong>Exercise caution</strong> with unfamiliar links that target GitHub.dev URLs, particularly those received through email, messaging platforms, or social media.</li>
+<li><strong>Review organisation audit logs</strong> for anomalous activity that could indicate prior exploitation of this or similar token-theft vectors.</li>
+</ul>
+<p>As browser-based development tools continue their rapid adoption, this incident serves as a reminder that convenience and security are not always aligned. Even well-established platforms from major vendors can harbour overlooked weaknesses in their authentication flows — and the consequences of a single compromised token can extend far beyond one developer's machine.</p>
+<hr>
+<p>微軟 Visual Studio Code 的網頁版編輯環境存在一個嚴重安全漏洞，可讓攻擊者取得受害者的 GitHub 儲存庫的完整讀寫權限——而攻擊者只需點擊一下即可實現。</p>
+<h4>一鍵即中</h4>
+<p>安全研究員 Ammar Askar 證明，一個特製的、針對 VS Code 的 GitHub.dev 網頁介面的連結，可用於竊取受害者的 GitHub OAuth Token。一旦被盜，該 Token 將賦予攻擊者讀寫受害者（包括私有）儲存庫的能力。</p>
+<p>Askar 在漏洞披露中表示：「攻擊者只需點擊一個連結，就可能盜取一個可以讀寫你所有儲存庫（包括私有儲存庫）的 GitHub Token。」</p>
+<p>GitHub.dev 是 VS Code 的輕量級、託管於瀏覽器的版本，開發者無需在本地安裝任何軟件，即可直接瀏覽、編輯並提交程式碼到 GitHub。此工具因便於快速審閱程式碼和進行小修改而廣泛採用。</p>
+<h4>為何此漏洞風險升高</h4>
+<p>與僅可能暴露有限唯讀數據的 Token 盜竊不同，此漏洞中被盜的憑證據報擁有廣泛權限。利用此漏洞的攻擊者可以：</p>
+<ul>
+<li>讀取並外洩受害者所有儲存庫中的私有原始碼</li>
+<li>修改或刪除現有程式碼</li>
+<li>推送惡意提交，這可能連鎖影響 CI/CD pipeline 及下游項目</li>
+<li>有機會利用同一 GitHub 帳戶關聯的其他服務進行橫向移動</li>
+</ul>
+<p>對於將專有程式碼、知識產權或部署配置存放在 GitHub 的組織而言，單一開發者帳戶被入侵，可能成為發動大規模供應鏈攻擊的跳板。</p>
+<h4>網頁版開發工具的更廣泛風險</h4>
+<p>此次披露凸顯了隨著開發生態系統轉向網頁託管工具而日益增長的安全挑戰。GitHub.dev、StackBlitz 和 Gitpod 等平台帶來了顯著的效率優勢，但也引入了基於瀏覽器機制的攻擊面——OAuth 流程、URL 參數和進程間通信——這些機制與傳統桌面 IDE 中的機制有本質不同。</p>
+<p>安全專家早已警告，OAuth Token 雖然簡化了身份驗證，但將強大的權限集中於單一的承載者憑證中。與特定瀏覽器上下文綁定的 session cookie 不同，被盜的 OAuth Token 通常可以在完全不同的環境中被重播，而不會觸發額外的驗證。</p>
+<h4>開發者當前應採取的措施</h4>
+<p>目前尚未有官方公佈的確定性修補方案。在此期間，開發者及安全團隊應考慮以下步驟：</p>
+<ul>
+<li><strong>審計 GitHub Token 權限</strong>，確保遵循最小權限原則。權限過大的 Token 會加劇任何盜竊事件的影響。</li>
+<li>在可行的情況下<strong>啟用 Token 過期設定</strong>，以限制暴露時間窗口。</li>
+<li>對於針對 GitHub.dev URL 的陌生連結（尤其是通過電郵、即時通訊平台或社群媒體收到的連結）<strong>保持警惕</strong>。</li>
+<li><strong>檢視組織審計日誌</strong>，尋找可能表示此前已遭此類或類似 Token 盜竊手法利用的異常活動。</li>
+</ul>
+<p>隨著網頁版開發工具的快速普及，此事件提醒我們，便利性與安全性並非總能兼顧。即使是主要廠商的知名平台，也可能在其身份驗證流程中存在被忽略的弱點——而單一 Token 被盜的後果，可能遠超一台開發者電腦的範圍。</p>
+<p><a href="https://thehackernews.com/2026/06/one-click-github-dev-attack-lets.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
