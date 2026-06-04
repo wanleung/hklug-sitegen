@@ -1,0 +1,46 @@
+Date: 2026-06-04 12:23:00
+Author: HKLUG Team
+Title: Anthropic's Security Guide Spotlights EPSS as the Smarter Way to Triage Vulnerabilities
+Content:
+<p>When Anthropic published its security-operations guide in April 2026, most readers would have expected the usual catalogue of hardening steps: patch CISA's Known Exploited Vulnerabilities list, automate deployments, lock down access controls. All of that was there. But buried inside the document was a brief recommendation with outsized implications for how organisations triage the relentless flood of software flaws: use the Exploit Prediction Scoring System — EPSS — to prioritise everything else.</p>
+<p>The suggestion, highlighted in a recent O'Reilly Radar analysis, may look like a minor footnote in a practical guide. But it reflects a meaningful shift in how the industry thinks about vulnerability management — away from cataloguing every flaw and toward predicting which ones actually matter.</p>
+<h4>The scale of the problem</h4>
+<p>For anyone who has maintained a vulnerability backlog, the challenge is painfully familiar. Thousands of new CVEs are disclosed each year, yet only a tiny fraction are ever exploited in the wild. Traditional scoring systems such as the Common Vulnerability Scoring System (CVSS) rate severity based on a flaw's intrinsic characteristics — how easy it is to exploit, what it can access, whether user interaction is required. What CVSS does not tell you is whether an attacker is likely to actually weaponise it.</p>
+<p>The result is a prioritisation model that treats a theoretical remote-code-execution bug in an obscure library with the same urgency as a flaw being actively chained into ransomware campaigns. Security teams end up chasing high CVSS scores rather than high-risk threats, burning patching capacity on vulnerabilities that may never matter while real dangers languish lower in the queue.</p>
+<h4>Enter EPSS</h4>
+<p>The Exploit Prediction Scoring System, maintained by the Forum of Incident Response and Security Teams (FIRST), takes a fundamentally different approach. Rather than scoring a vulnerability's theoretical severity, EPSS assigns a probability — the percentage likelihood that the flaw will be exploited in the wild within the next 30 days. The model draws on real-world threat intelligence, exploit availability, and historical attack patterns to generate its estimates.</p>
+<p>FIRST launched EPSS as a research project in 2019 and released a substantially updated model (version 2) in 2021. The numbers it produces are striking: according to FIRST's own analysis, patching just the top 10 percent of vulnerabilities ranked by EPSS score would cover roughly 80 percent of what actually gets exploited. That single statistic reframes the entire remediation calculus for resource-constrained teams.</p>
+<p>Crucially, the methodology is open. FIRST publishes the model's design, its data sources, and its accuracy metrics, allowing practitioners to evaluate its performance independently. For a community that increasingly demands transparency from the tools it relies on, that openness is a significant trust factor.</p>
+<p>The distinction matters in practice. A vulnerability with a CVSS score of 9.8 but an EPSS probability of 0.02 percent poses a very different operational risk than one scoring 7.5 on CVSS yet sitting at a 60 percent EPSS probability. The first may safely wait; the second demands immediate attention.</p>
+<h4>A broader industry current</h4>
+<p>Anthropic's endorsement is not the first signal that predictive models are gaining traction, but it is a notable one. As a major AI company with a substantial attack surface to manage, Anthropic's decision to weave EPSS into its operational guidance — rather than relying solely on CVSS or vendor-specific ratings — suggests the tool has crossed a threshold of mainstream credibility.</p>
+<p>The O'Reilly Radar piece frames this as part of a wider move away from what it calls enumerative vulnerability management — the exhaustive process of cataloguing, scoring, and sorting every disclosed flaw — toward a more pragmatic, risk-informed approach. The argument is straightforward: in an era where organisations cannot possibly remediate every vulnerability, the most valuable question is no longer "how severe is this flaw?" but "will anyone actually exploit it?"</p>
+<h4>Known limitations</h4>
+<p>EPSS is not a silver bullet. The model's predictions are probabilistic, not deterministic, and its accuracy depends on the quality and timeliness of the threat-intelligence feeds it ingests. For brand-new CVEs — those disclosed within the last few days — EPSS may lack sufficient signal to produce reliable scores, leaving teams without the predictive lift they need at the moment a vulnerability first appears.</p>
+<p>There is also the risk of a false sense of security. A low EPSS score does not guarantee a flaw will never be exploited; it means the model currently sees little evidence that it will be. Adversaries who become aware that defenders lean heavily on EPSS could theoretically adapt their behaviour to game the predictions, though there is no evidence of that happening at scale today.</p>
+<h4>What this means for practitioners</h4>
+<p>For IT and security teams looking to act on this shift, the practical path is clearer than it might seem. EPSS scores are freely accessible through the FIRST API and through commercial threat-intelligence platforms such as VulnCheck. Major vulnerability management vendors — including Tenable, Qualys, and Rapid7 — have already integrated EPSS data into their platforms, making adoption relatively frictionless for organisations already running those tools.</p>
+<p>A sensible starting workflow is to sort a vulnerability backlog by CVSS to establish a severity baseline, then re-rank by EPSS to surface the subset most likely to see real-world exploitation. That re-ranking often reveals that a large portion of the highest-severity backlog poses negligible near-term risk, freeing capacity to focus on the threats that matter now.</p>
+<p>The growing adoption of EPSS among both private-sector teams and influential technology companies signals that predictive scoring is moving from niche research to mainstream operations. For organisations still relying exclusively on static severity metrics, the message from Anthropic's guide — and the industry trajectory it represents — is clear: predicting risk is no longer optional.</p>
+<hr>
+<p>當Anthropic在2026年4月發佈其安全運營指南時，大多數讀者可能預期會看到常見的安全加固步驟列表：修補美國CISA已知被利用漏洞清單、自動化部署、鎖定存取控制。所有這些內容確實都在其中。但文件深處有一項簡短建議，對於組織如何為持續不斷的軟件漏洞進行分類優先級排序，具有深遠影響：使用漏洞利用預測評分系統——EPSS——來優先處理其他所有事項。</p>
+<p>這項建議在近期一篇O'Reilly Radar分析中被重點提及，看似一份實用指南中的小小附註。然而，它反映了業界對漏洞管理思維方式的重大轉變——從羅列每一個缺陷，轉向預測哪些缺陷真正重要。</p>
+<h4>問題的規模</h4>
+<p>對於任何曾維護漏洞待辦清單的人來說，這項挑戰都痛苦地熟悉。每年有數千個新CVE被公開，但其中只有極小一部分在現實世界中被利用。傳統評分系統如通用漏洞評分系統（CVSS），是根據漏洞的固有特性來評定嚴重程度——其被利用的難易程度、可存取的內容、是否需要用戶互動。CVSS無法告訴你的是，攻擊者是否真的可能將其武器化。</p>
+<p>其結果是，一個優先級模型將某個鮮為人知庫中理論上的遠端程式碼執行漏洞，與一個正被積極用於勒索軟件攻擊鏈中的漏洞，視為同等緊急。安全團隊最終追逐的是高CVSS分數而非高風險威脅，在可能永遠不會產生影響的漏洞上耗費修補能力，而真正的危險則在待辦清單中沉寂等待。</p>
+<h4>EPSS登場</h4>
+<p>漏洞利用預測評分系統（Exploit Prediction Scoring System, EPSS），由事件回應與安全團隊論壇（FIRST）維護，採取了一種根本不同的方法。EPSS並非評分漏洞的理論嚴重程度，而是賦予一個概率——即該漏洞在未來30天內於現實世界中被利用的可能性百分比。該模型利用現實世界的威脅情報、漏洞利用的可用性以及歷史攻擊模式來生成其預測。</p>
+<p>FIRST於2019年將EPSS作為研究項目啟動，並在2021年發佈了一個實質性更新的模型（第2版）。其產生的數字引人注目：根據FIRST自身的分析，僅修補按EPSS分數排名前10%的漏洞，就能覆蓋大約80%實際被利用的漏洞。這一統計數據為資源受限的團隊重新定義了整個修復決策框架。</p>
+<p>關鍵在於，該方法論是開源的。FIRST公佈了模型的設計、數據來源及其準確性指標，允許從業者獨立評估其性能。對於一個日益要求其依賴工具具備透明度的社群來說，這種開放性是一個重要的信任因素。</p>
+<p>這種區別在實踐中至關重要。一個CVSS評分為9.8但EPSS概率僅為0.02%的漏洞，與一個CVSS評分為7.5但EPSS概率高達60%的漏洞，所帶來的運營風險截然不同。前者可能可以安全地等待處理；後者則要求立即關注。</p>
+<h4>更廣泛的行業趨勢</h4>
+<p>Anthropic的背書並非預測模型獲得認可的第一個信號，但無疑是一個重要的信號。作為一家擁有龐大攻擊面需要管理的主要AI公司，Anthropic決定將EPSS融入其運營指南——而非僅僅依賴CVSS或供應商特定的評分——表明該工具已跨越了主流可信度的門檻。</p>
+<p>O'Reilly Radar的文章將此描述為一種更廣泛轉變的一部分，即從其所稱的「枚舉式漏洞管理」——對每個公開披露的漏洞進行詳盡的編目、評分和排序——轉向一種更為務實、基於風險的方法。其論點很直接：在組織不可能修復所有漏洞的時代，最有價值的問題不再是「這個漏洞有多嚴重？」而是「是否真的有人會利用它？」</p>
+<h4>已知的局限性</h4>
+<p>EPSS並非萬能靈藥。該模型的預測是概率性的，而非確定性的，其準確性取決於其汲取的威脅情報源的質量和時效性。對於全新的CVE——那些在過去幾天內才被披露的——EPSS可能缺乏足夠的信號來產生可靠的分數，導致團隊在漏洞首次出現時缺乏所需的預測支持。</p>
+<p>也存在產生虛假安全感的風險。低EPSS分數並不能保證一個漏洞永遠不會被利用；它僅意味著模型目前看到的證據表明其被利用的可能性較低。如果對手意識到防禦者過度依賴EPSS，理論上他們可以調整行為來操縱預測，儘管目前尚無大規模發生此類情況的證據。</p>
+<h4>對從業者意味著什麼</h4>
+<p>對於希望根據這一轉變採取行動的IT和安全團隊來說，實際路徑比看起來更為清晰。EPSS分數可通過FIRST API以及如VulnCheck之類的商業威脅情報平台免費獲取。主要的漏洞管理供應商——包括Tenable、Qualys和Rapid7——已將EPSS數據整合到其平台中，使得已經運行這些工具的組織採用起來相對順暢。</p>
+<p>一個合理的起始工作流程是：首先按CVSS對漏洞待辦清單進行排序以建立嚴重程度基線，然後按EPSS重新排名，以篩選出最有可能在現實世界中被利用的子集。這種重新排名通常會發現，待辦清單中很大一部分高嚴重性漏洞在近期風險微乎其微，從而釋放資源，用於應對當前真正重要的威脅。</p>
+<p>EPSS在私營企業團隊和有影響力的科技公司中日益普及，這表明預測性評分正從小眾研究轉向主流運營。對於仍完全依賴靜態嚴重性指標的組織，Anthropic指南所傳達的訊息——以及其所代表的行業趨勢——非常明確：預測風險已不再是可選項。</p>
+<p><a href="https://www.oreilly.com/radar/predict-dont-enumerate/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
