@@ -1,0 +1,44 @@
+Date: 2026-06-03 21:25:00
+Author: HKLUG Team
+Title: HTTP/2 Bomb Attack Can Down Web Servers in Seconds From a Single Machine
+Content:
+<p>A denial-of-service technique known as the "HTTP/2 Bomb" allows an attacker to crash web servers in under 60 seconds using a single machine — no botnet required. First publicly disclosed in October 2023 and tracked as CVE-2023-44487, the vulnerability exploits a fundamental design feature of the HTTP/2 protocol and continues to pose a real threat to organisations that have not yet patched or mitigated.</p>
+<p>According to BleepingComputer, the attack abuses HTTP/2 stream multiplexing — the mechanism that allows multiple data streams to share a single TCP connection. By sending a rapid flood of HTTP/2 requests and immediately resetting each stream via RST_STREAM frames, an attacker forces the server to expend significant resources opening and tearing down streams at a pace it was never designed to handle. The result is a denial of service that can be achieved in seconds from a modest connection.</p>
+<h4>How the Attack Works</h4>
+<p>HTTP/2 was built to improve performance by eliminating the one-request-per-connection bottleneck of HTTP/1.1. Stream multiplexing is central to that efficiency gain, but it also creates an asymmetric workload: a client can cheaply request the creation of new streams while the server bears the heavier cost of processing and then discarding them when a reset arrives.</p>
+<p>CVE-2023-44487 turns that asymmetry into a weapon. A single attacker opens as many concurrent streams as the server will allow, fires off rapid RST_STREAM frames, and repeats. The server's thread pool, memory, and connection management are overwhelmed in short order.</p>
+<h4>Affected Software and Real-World Impact</h4>
+<p>The vulnerability affected a wide range of HTTP/2 implementations when it was first disclosed, including widely deployed servers such as Apache HTTP Server (mod_http2), NGINX, Envoy, and Node.js. Major cloud providers and content delivery networks also scrambled to deploy mitigations in the weeks following the initial disclosure.</p>
+<p>The attack drew comparisons to the early days of HTTP/1.1 slowloris attacks, but with a critical difference: because HTTP/2 multiplexes many streams over one TCP connection, traditional rate-limiting and connection-counting defences are far less effective.</p>
+<h4>Mitigation Guidance</h4>
+<p>Security researchers and vendors have recommended several measures:</p>
+<ul>
+<li><strong>Patch aggressively.</strong> Most major HTTP/2 implementations have released updates that limit the rate of stream creation and reset processing. Running the latest stable version of your web server software is the most direct defence.</li>
+<li><strong>Use a reverse proxy or CDN.</strong> Placing a hardened reverse proxy or a CDN with HTTP/2 termination in front of origin servers absorbs much of the abuse before it reaches backend infrastructure.</li>
+<li><strong>Monitor for anomalous RST_STREAM activity.</strong> A sudden spike in stream resets from a single client is a strong indicator of this attack pattern. Logging and alerting on such anomalies can provide early warning.</li>
+<li><strong>Limit concurrent streams per connection.</strong> Tuning the <code>SETTINGS_MAX_CONCURRENT_STREAMS</code> parameter to a reasonable value reduces the blast radius of a single malicious connection.</li>
+</ul>
+<h4>A Cautionary Note on HTTP/3</h4>
+<p>The broader lesson extends beyond a single CVE. HTTP/2's stream multiplexing was designed as a performance enhancement, not a security feature — yet it introduced an entirely new class of attack surface. As the industry transitions toward HTTP/3, which runs over QUIC and UDP rather than TCP, the same pattern of protocol complexity creating unforeseen vulnerabilities is likely to repeat.</p>
+<p>IT teams responsible for web-facing infrastructure should treat CVE-2023-44487 not as a one-off patch event, but as a reminder that protocol upgrades demand concurrent security review. For organisations across Asia-Pacific — where cloud adoption and web service density continue to grow rapidly — keeping HTTP/2 server software current and layered behind protective edge infrastructure remains a practical and urgent priority. If you have not confirmed your HTTP/2 implementation is patched against CVE-2023-44487, now is the time to verify.</p>
+<hr>
+<p>一種名為「HTTP/2 炸彈」的阻斷服務技術，可讓攻擊者使用單一裝置在 60 秒內令網頁伺服器當機——無需殭屍網絡。此漏洞首次於 2023 年 10 月公開披露，並被追蹤為 CVE-2023-44487，它利用了 HTTP/2 協定的一個基本設計特性，並持續對尚未修補或採取緩解措施的組織構成真實威脅。</p>
+<p>據 BleepingComputer 報道，此攻擊濫用了 HTTP/2 的 stream multiplexing 技術——即允許多個數據 stream 共享單一 TCP 連接的機制。透過快速發送大量 HTTP/2 請求，並透過 RST_STREAM 幀立即重置每個 stream，攻擊者迫使伺服器以超出其設計處理能力的速度，消耗大量資源來開啟和拆除 stream。其結果是，只需一個普通連接，即可在數秒內實現阻斷服務。</p>
+<h4>攻擊如何運作</h4>
+<p>HTTP/2 的設計初衷是消除 HTTP/1.1 每連接僅能處理一個請求的瓶頸，從而提升效能。Stream multiplexing 是實現此效率提升的關鍵，但它也造成了一種不對稱的工作負載：客戶端可以輕易地請求建立新 stream，而伺服器則需承擔處理並在收到重置指令時丟棄這些 stream 的更重成本。</p>
+<p>CVE-2023-44487 將這種不對稱性轉化為武器。單一攻擊者開啟伺服器所允許的最大數量並行 stream，快速發送 RST_STREAM 幀，並重複此過程。伺服器的 thread pool、記憶體和連接管理很快便不堪重負。</p>
+<h4>受影響的軟件及現實世界影響</h4>
+<p>此漏洞在首次披露時影響了廣泛的 HTTP/2 implementation，包括 Apache HTTP Server (mod_http2)、NGINX、Envoy 和 Node.js 等廣泛部署的伺服器。主要雲端服務供應商及 CDN 亦在初始披露後數週內緊急部署緩解措施。</p>
+<p>此次攻擊被拿來與 HTTP/1.1 初期的 slowloris 攻擊相提並論，但存在一個關鍵區別：由於 HTTP/2 在單一 TCP 連接上 multiplexing 眾多 stream，傳統的速率限制和連接計數防禦措施效果大打折扣。</p>
+<h4>緩解指引</h4>
+<p>安全研究人員及供應商已建議採取以下多項措施：</p>
+<ul>
+<li><strong>積極修補。</strong> 大多數主要 HTTP/2 implementation 已發布更新，以限制 stream 建立和重置處理的速率。運行最新穩定版的網頁伺服器軟件是最直接的防禦手段。</li>
+<li><strong>使用 reverse proxy 或 CDN。</strong> 在原始伺服器前端部署經過強化、具備 HTTP/2 termination 功能的 reverse proxy 或 CDN，可以在惡意流量到達後端基礎設施前吸收大部分攻擊。</li>
+<li><strong>監測異常的 RST_STREAM 活動。</strong> 單一客戶端的 stream 重置次數突然激增，是此類攻擊模式的強力指標。對此類異常情況進行日誌記錄和警報，可提供預警。</li>
+<li><strong>限制每個連接的並行 stream 數。</strong> 將 <code>SETTINGS_MAX_CONCURRENT_STREAMS</code> 參數調整至合理值，可縮減單一惡意連接的影響範圍。</li>
+</ul>
+<h4>關於 HTTP/3 的警示</h4>
+<p>更廣泛的教訓超越了單一 CVE 的範疇。HTTP/2 的 stream multiplexing 是作為效能增強功能設計的，而非安全功能——然而它卻引入了一種全新的攻擊面。隨著業界向 HTTP/3 過渡（它基於 QUIC 和 UDP 運行，而非 TCP），同樣因協定複雜性而產生未預見漏洞的模式很可能重演。</p>
+<p>負責面向網絡基礎設施的資訊科技團隊，應將 CVE-2023-44487 視為一個持續提醒：協定升級必須伴隨著同步的安全審查，而非僅是一次性的修補事件。對於亞太地區的組織而言——當地雲端採用率和網絡服務密度持續快速增長——保持 HTTP/2 伺服器軟件更新並將其置於具保護性的 edge infrastructure 後方，仍然是一項實際且緊迫的首要任務。如果您尚未確認您的 HTTP/2 implementation 已針對 CVE-2023-44487 進行修補，那麼現在就是驗證的時候了。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/new-http-2-bomb-dos-attack-crashes-web-servers-in-under-a-minute/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
