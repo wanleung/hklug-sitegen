@@ -1,0 +1,36 @@
+Date: 2026-06-03 21:22:00
+Author: HKLUG Team
+Title: AI-Powered Code Auditor Finds Critical RCE Bug Hiding in Redis for Over Two Years
+Content:
+<p>A critical remote code execution vulnerability lurking in Redis for more than two years has been patched after being discovered not by human researchers, but by an autonomous AI-powered bug-hunting tool.</p>
+<p>The flaw, tracked as CVE-2026-23479, is a use-after-free bug in Redis's blocking-client code. When exploited by an authenticated user, it allows arbitrary operating system command execution on the host machine — placing it among the most dangerous categories of software vulnerability.</p>
+<p>According to The Hacker News, which reported the discovery on 2 June 2026, the vulnerability was introduced in Redis 7.2.0 and persisted across every stable release branch until fixes were deployed on 5 May. That means the bug went undetected through more than two years of active use in one of the world's most widely deployed open-source database systems.</p>
+<h4>How the Bug Works</h4>
+<p>Use-after-free vulnerabilities arise when a program continues to reference memory that has already been deallocated, opening an exploitable window for attackers to inject or execute malicious code. In this case, the flaw resides in how Redis handles blocking client operations — a mechanism that lets clients wait for data to become available on a given key. The intersection of memory management and client lifecycle handling in that code path proved to be the weak point.</p>
+<p>Redis confirmed the vulnerability has been addressed in its 5 May security patches, and users running affected versions are urged to update immediately.</p>
+<h4>AI as Vulnerability Hunter</h4>
+<p>Perhaps the most notable aspect of this disclosure is the method of discovery. The bug was surfaced by an autonomous AI tool designed specifically to analyse large codebases for security flaws. While the particular system and its methodology have not been publicly detailed, the finding serves as a concrete demonstration that AI-driven code auditing can identify complex, long-lived bugs that elude years of manual review and community scrutiny.</p>
+<p>This is not a theoretical proof of concept — it is a real-world, high-severity finding in production software deployed by millions worldwide. For the open-source security community, it raises a pressing question: if AI tools can uncover vulnerabilities that persisted for two years in a project as heavily examined as Redis, what does the backlog of undiscovered flaws look like across other critical infrastructure?</p>
+<h4>Authentication Is Not a Silver Bullet</h4>
+<p>On paper, the authentication requirement for exploiting CVE-2026-23479 might appear to limit its practical impact. In reality, the exposure is more significant than that framing suggests. Redis has historically faced scrutiny over its default security posture — older versions shipped bound to all network interfaces and without authentication enabled. While the project has made substantial improvements in recent releases, many production and development environments still run Redis with weak credentials, default passwords, or no authentication at all, particularly in cloud and containerised deployments.</p>
+<p>This means a considerable number of real-world Redis instances were likely vulnerable to authenticated exploitation simply because authentication was either absent or trivially bypassed.</p>
+<h4>The Memory-Safety Conversation Continues</h4>
+<p>The incident also adds momentum to a broader industry debate around memory safety in critical open-source projects. Redis is written in C, a language in which use-after-free bugs are a persistent and well-understood class of vulnerability. As the software industry increasingly embraces memory-safe languages like Rust for new systems-level code, findings like CVE-2026-23479 reinforce the argument that mature C and C++ codebases carry a compounding security debt.</p>
+<p>For IT professionals and system administrators running Redis, the immediate action is clear: apply the 5 May patches without delay. For the wider community, the discovery offers a compelling data point about the future of software security — one in which AI tools play an increasingly central role in finding flaws that humans have missed.</p>
+<hr>
+<p>一個潛伏在 Redis 中長達兩年多的關鍵遠端執行漏洞已被修補，發現者並非人類研究人員，而是一個由 AI 驅動的自主漏洞狩獵工具。</p>
+<p>此漏洞被追蹤為 CVE-2026-23479，是 Redis 客戶端阻塞代碼中的一個釋放後使用錯誤。當被已驗證身份的用戶利用時，它允許在主機上執行任意作業系統命令——這使其位列最危險的軟件漏洞類別之中。</p>
+<p>據報道此發現的 The Hacker News 稱，該漏洞於 2026 年 6 月 2 日被揭露，它於 Redis 7.2.0 版本中被引入，並在 5 月 5 日修補部署前，一直存在於所有穩定發行分支中。這意味著這個錯誤在世界上最廣泛部署的開源數據庫系統之一的活躍使用中，長達兩年多未被發現。</p>
+<h4>漏洞如何運作</h4>
+<p>釋放後使用漏洞源於程式持續引用已被釋放的記憶體，為攻擊者注入或執行惡意代碼打開了可利用的窗口。在本例中，缺陷存在於 Redis 處理客戶端阻塞操作的方式中——這是一種允許客戶端等待特定鍵上數據可用的機制。該代碼路徑中記憶體管理與客戶端生命週期處理的交匯處，被證明是薄弱點。</p>
+<p>Redis 已確認該漏洞已在 5 月 5 日的安全補丁中修復，並敦促運行受影響版本的用戶立即更新。</p>
+<h4>AI 作為漏洞獵手</h4>
+<p>或許此次披露最值得注意的方面是其發現方法。這個錯誤是由一個專門設計用於分析大型代碼庫以尋找安全漏洞的自主 AI 工具所揭露的。儘管該特定系統及其方法論尚未公開詳細說明，但這一發現具體證明了 AI 驅動的代碼審計能夠識別出那些逃過數年人工審查和社群監督的複雜、長期存在的錯誤。</p>
+<p>這並非理論上的概念驗證——這是一個在數百萬人使用的生產軟件中發現的現實世界高嚴重性漏洞。對於開源安全社群而言，它提出了一個緊迫的問題：如果 AI 工具能夠發現像 Redis 這樣被嚴格檢查的項目中存在了兩年的漏洞，那麼在其他關鍵基礎設施中，未被發現的漏洞積壓情況又會是怎樣呢？</p>
+<h4>身份驗證並非萬能藥</h4>
+<p>表面上看，利用 CVE-2026-23479 的身份驗證要求似乎限制其實際影響。但實際上，其曝露程度比這種說法所暗示的更為嚴重。Redis 歷來因其預設安全態勢而受到審視——舊版本在發佈時預設綁定至所有網絡介面，且未啟用身份驗證。儘管該項目在近期版本中做出了重大改進，但許多生產和開發環境仍然以弱憑證、預設密碼或完全無身份驗證的方式運行 Redis，尤其是在雲端和容器化部署中。</p>
+<p>這意味著相當數量的現實世界 Redis 實例可能僅僅因為身份驗證缺失或輕易被繞過，而面臨已驗證身份的利用風險。</p>
+<h4>記憶體安全討論持續進行</h4>
+<p>此事件也為業界圍繞關鍵開源項目中記憶體安全的更廣泛討論增添了動力。Redis 是用 C 語言編寫的，在該語言中，釋放後使用錯誤是一種持續存在且易於理解的漏洞類別。隨著軟件業界越來越採用 Rust 等記憶體安全語言來編寫新的系統級代碼，像 CVE-2026-23479 這樣的發現進一步強化了這樣的論點：成熟的 C 和 C++ 代碼庫承擔著累積的安全債務。</p>
+<p>對於運行 Redis 的 IT 專業人士和系統管理員而言，立即的行動非常明確：毫不拖延地應用 5 月 5 日的補丁。對於更廣泛的社群而言，這一發現提供了一個關於軟件安全未來的有說服力的數據點——在這個未來中，AI 工具在發現人類遺漏的缺陷方面，將扮演越來越核心的角色。</p>
+<p><a href="https://thehackernews.com/2026/06/autonomous-ai-tool-finds-2-year-old-rce.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
