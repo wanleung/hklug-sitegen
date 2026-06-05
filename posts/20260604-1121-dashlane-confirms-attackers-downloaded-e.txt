@@ -1,0 +1,36 @@
+Date: 2026-06-04 23:22:00
+Author: HKLUG Team
+Title: Dashlane Confirms Attackers Downloaded Encrypted Password Vaults
+Content:
+<p>Password management service Dashlane has confirmed that attackers were able to download encrypted password vaults belonging to some of its users, according to a June 2026 report by Ars Technica. The disclosure raises fresh questions about the real-world resilience of zero-knowledge security architectures and the limits of encryption when human behaviour is factored in.</p>
+<h4>What Happened</h4>
+<p>Dashlane disclosed that threat actors obtained copies of users' encrypted vaults — the databases that store saved passwords, notes, and other sensitive credentials. The company confirmed the breach but has not publicly specified whether the attack vector was credential stuffing, phishing, or another method. According to available reporting, the attackers cast a wide net across a large number of accounts, a strategy that statistically increases the chances of compromising at least some users.</p>
+<p>Because Dashlane operates on a zero-knowledge model, the downloaded vault files are encrypted and cannot be read without the user's master password. However, security researchers have long warned that possessing the encrypted file itself is the critical first step in an offline brute-force attack — effectively giving an attacker unlimited, uninterrupted attempts to crack the encryption without triggering any server-side lockout mechanisms.</p>
+<h4>Why It Matters</h4>
+<p>The incident underscores a fundamental tension in the password manager model. Zero-knowledge architecture means Dashlane itself cannot access a user's vault contents, which is a privacy advantage. But that same architecture means the company cannot intervene once an attacker has a copy of the encrypted data — the security of every stored credential collapses to the strength of a single master password.</p>
+<p>For users who chose weak, reused, or guessable master passwords, the downloaded vaults represent a ticking clock. Modern GPU-based cracking tools can test billions of password combinations per second, and while a truly strong, high-entropy master password remains computationally impractical to brute-force, many users do not meet that bar.</p>
+<p>The attack also highlights a broader pattern in credential management threats. Rather than targeting a single high-value individual, the attackers exploited the probability that a meaningful percentage of any large user base will have security gaps — whether in password strength, reused credentials, or susceptibility to social engineering.</p>
+<h4>The Offline Attack Problem</h4>
+<p>Once an encrypted vault leaves the provider's infrastructure, the attacker controls the environment entirely. There are no rate limits, no multi-factor authentication prompts, and no account lockouts to slow the process. Security professionals refer to this as an "offline attack," and it is widely considered the most dangerous scenario for any encrypted data store.</p>
+<p>The practical risk depends heavily on individual password hygiene. Users who employ long, randomly generated master passwords combined with additional factors — such as hardware security keys — remain well-protected. Those who opted for convenience over complexity face a materially different risk profile.</p>
+<p>In response to the growing sophistication of offline cracking techniques, password manager vendors have increasingly strengthened the key-derivation functions used to protect vaults — algorithms such as Argon2 and bcrypt that deliberately slow down each guess attempt, raising the computational cost of brute-forcing even moderately strong passwords. While these measures significantly raise the bar, they are a mitigation rather than a guarantee, and their effectiveness still depends on users choosing passwords with sufficient entropy.</p>
+<h4>Lessons for the Security Community</h4>
+<p>The Dashlane incident serves as a reminder that no security architecture eliminates the human factor. Encryption at rest and in transit, zero-knowledge proofs, and multi-factor authentication all raise the bar significantly, but they do not make a system invulnerable when an attacker gains the right foothold.</p>
+<p>For IT professionals and organisations advising on credential management, the practical takeaways are clear: master passwords must be genuinely strong and unique, multi-factor authentication should be mandatory rather than optional, and users should be educated about the specific risks that arise when encrypted data is exfiltrated. The convenience of a password manager remains a net security positive — but only when its limitations are understood and mitigated by the people who depend on it.</p>
+<hr>
+<p>據《Ars Technica》2026年6月報導，密碼管理服務 Dashlane 已證實，攻擊者成功下載了部分用戶的加密密碼庫。此事件的披露，重新引發了對零知識安全架構在現實世界中抵禦能力的質疑，以及當考慮人為因素時，加密技術的局限性。</p>
+<h4>事件經過</h4>
+<p>Dashlane 披露，威脅行為者獲得了用戶加密庫的副本——即儲存已保存密碼、筆記及其他敏感憑證的資料庫。該公司確認發生了資料外洩，但未公開說明攻擊途徑是憑證填充、釣魚還是其他方法。根據現有報導，攻擊者採取了廣撒網的策略，針對大量帳戶發動攻擊，這種策略在統計上增加了入侵至少部分用戶的可能性。</p>
+<p>由於 Dashlane 採用零知識模型，下載的密碼庫檔案是加密的，若無用戶的主密碼則無法讀取。然而，安全研究人員長期以來一直警告，獲得加密檔案本身是進行離線暴力破解攻擊的關鍵第一步——實際上賦予了攻擊者無限且不受干擾的嘗試機會來破解加密，而無需觸發任何伺服器端的鎖定機制。</p>
+<h4>為何事關重大</h4>
+<p>此事件凸顯了密碼管理模式的一個根本矛盾。零知識架構意味著 Dashlane 本身無法存取用戶密碼庫的內容，這在隱私方面是一項優勢。但同一架構也意味著，一旦攻擊者獲得加密數據的副本，該公司便無法介入——每項儲存憑證的安全性，最終都取決於單一主密碼的強度。</p>
+<p>對於選擇了弱、重複使用或易猜測主密碼的用戶而言，被下載的密碼庫如同一個倒數計時器。現代基於 GPU 的破解工具每秒可測試數十億個密碼組合。雖然對於真正強大、高熵值的主密碼，暴力破解在計算上仍然不可行，但許多用戶未能達到這一標準。</p>
+<p>此攻擊也突顯了憑證管理威脅中的一個更廣泛模式。攻擊者並非瞄準單一高價值個人，而是利用了任何龐大用戶群中，都將有一定比例用戶存在安全漏洞的概率——無論是密碼強度不足、憑證重複使用，還是容易受到社交工程攻擊。</p>
+<h4>離線攻擊的難題</h4>
+<p>一旦加密的密碼庫離開服務供應商的基礎設施，攻擊者便完全控制了環境。沒有速率限制、沒有多重驗證提示、也沒有帳戶鎖定來減緩過程。安全專業人員稱之為「離線攻擊」，這被普遍認為是任何加密資料儲存所面臨的最危險情境。</p>
+<p>實際風險在很大程度上取決於個人的密碼衛生狀況。採用長度足夠、隨機生成主密碼，並結合額外因素（如硬件安全密鑰）的用戶，仍然受到良好保護。而那些為求便利而犧牲複雜性的用戶，則面臨截然不同的風險狀況。</p>
+<p>為應對離線破解技術日益精密的趨勢，密碼管理工具供應商已逐步加強用於保護密碼庫的密鑰派生函數——例如 Argon2 和 bcrypt 等算法，它們有意減慢每次猜測嘗試的速度，從而提高暴力破解即使是中等強度密碼的計算成本。儘管這些措施顯著提高了門檻，但它們只是一種緩解手段，而非保證，其有效性仍取決於用戶選擇的密碼是否具有足夠的熵值。</p>
+<h4>對安全社群的啟示</h4>
+<p>Dashlane 事件提醒我們，沒有任何安全架構能完全消除人為因素。靜態與傳輸中的加密、零知識證明以及多重驗證都大幅提高了安全門檻，但當攻擊者獲得合適的立足點時，它們並不能使系統免受侵害。</p>
+<p>對於提供憑證管理建議的資訊科技專業人員和組織而言，實踐要點非常明確：主密碼必須真正強大且獨特；多重驗證應為強制而非可選項；應教育用戶了解當加密數據被外洩時所產生的具體風險。密碼管理工具帶來的便利性，在整體上仍對安全有正面作用——但前提是有賴使用它的人瞭解並透過措施來彌補其局限性。</p>
+<p><a href="https://arstechnica.com/security/2026/06/dashlane-explains-how-attackers-managed-to-download-encrypted-password-vaults/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
