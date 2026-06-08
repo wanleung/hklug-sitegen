@@ -1,0 +1,40 @@
+Date: 2024-06-08 13:23:00
+Author: HKLUG Team
+Title: Toshiba and Muji Alert Customers to Fake Login Pages Tied to Polyfill Attack
+Content:
+<p>Japanese electronics manufacturer Toshiba and retail chain Muji have issued warnings to website visitors after fraudulent login screens appeared on their online properties, part of the ongoing fallout from the compromised Polyfill.io JavaScript library.</p>
+<p>The rogue sign-in prompts, designed to harvest user credentials, were discovered embedded on the companies' websites as a direct consequence of the supply-chain attack that has rattled the web development community since the Polyfill.io domain changed hands in February 2024.</p>
+<h4>How the Attack Unfolded</h4>
+<p>Polyfill.io is a widely used service that delivers JavaScript polyfills — code snippets that add modern browser functionality to older browsers. The service was originally operated as an open-source project, but the domain and associated CDN were acquired by a Chinese company, Funnull, in February 2024. Following the acquisition, security researchers observed the service injecting malicious redirects and code into websites that still loaded scripts from the polyfill.io domain.</p>
+<p>According to BleepingComputer, the attack on Toshiba and Muji's sites involved injecting fake authentication dialogs into pages. Unsuspecting visitors who entered their usernames and passwords would have their credentials sent to attacker-controlled servers rather than the legitimate retailer or manufacturer.</p>
+<p>The scale of the broader Polyfill compromise is significant. Security researchers from Sansec and other firms estimated that more than 100,000 websites were still calling the polyfill.io domain at the time the malicious activity was discovered, making it one of the largest supply-chain incidents targeting the web ecosystem in recent years.</p>
+<h4>Consumer Brands Caught in the Crossfire</h4>
+<p>The involvement of household names like Toshiba and Muji underscores how supply-chain attacks differ from traditional breaches. Neither company was directly hacked. Instead, their websites became unwitting vehicles for credential theft simply because their codebases included a reference to a third-party script that turned hostile.</p>
+<p>For end users, the experience would have been bewildering: visiting a familiar brand's website only to be confronted with an unexpected login prompt. These prompts can be difficult to distinguish from legitimate authentication flows, particularly on mobile devices where browser chrome is minimal and users are accustomed to on-screen dialogs.</p>
+<p>Toshiba and Muji both moved to alert their customers and remediate the affected pages once the issue was identified. However, the incident highlights a persistent vulnerability in how modern websites are constructed — a reliance on external scripts loaded at runtime from third-party CDNs that site owners neither control nor closely monitor.</p>
+<h4>Lessons for Developers and IT Teams</h4>
+<p>The Polyfill.io incident has accelerated conversations in the web development community about supply-chain hygiene. Several practical measures have gained traction:</p>
+<p><strong>Subresource Integrity (SRI):</strong> Developers can pin cryptographic hashes to external script tags, ensuring browsers reject any file that has been tampered with after the hash was generated. Had SRI been widely implemented for polyfill.io references, the injected malicious code would have failed to execute.</p>
+<p><strong>Self-hosting critical dependencies:</strong> Rather than loading scripts from external CDNs at page load time, teams can vendor and host essential libraries on their own infrastructure, eliminating reliance on third-party domains that could change ownership or be compromised.</p>
+<p><strong>Software Bill of Materials (SBOM):</strong> Maintaining a clear inventory of all third-party components — including CDN-hosted scripts — allows security teams to respond quickly when a dependency is flagged as compromised.</p>
+<p>Google and Cloudflare moved swiftly after the Polyfill.io compromise to implement redirects and warnings, and the original community project has since migrated to a new domain. But the damage to sites still referencing the old domain continues to surface, as the Toshiba and Muji cases demonstrate.</p>
+<p>For IT professionals and web developers, the takeaway is clear: convenience in code sourcing comes with risk, and that risk grows with every third-party script left unexamined in a production codebase.</p>
+<hr>
+<p>日本電子製造商東芝（Toshiba）與零售連鎖店無印良品（Muji）在欺詐性登入畫面出現於其線上資產後，已向網站訪客發出警告。這是受損的 Polyfill.io JavaScript 庫所持續引發的連鎖反應的一部分。</p>
+<p>這些旨在竊取用戶憑證的惡意登入提示，被發現嵌入了兩家公司的網站，這直接源於自 2024 年 2 月 Polyfill.io 域名易手後，一直困擾網絡開發社群的供應鏈攻擊。</p>
+<h4>攻擊如何發生</h4>
+<p>Polyfill.io 是一個廣泛使用的服務，提供 JavaScript polyfills（填充程式碼）——即為舊版瀏覽器添加現代瀏覽器功能的程式碼片段。該服務最初作為一個開源項目運營，但其域名及相關 CDN 於 2024 年 2 月被一家中國公司 Funnull 收購。收購後，安全研究人員觀察到，該服務會向仍載入來自 polyfill.io 域名腳本的網站注入惡意重定向和程式碼。</p>
+<p>據 BleepingComputer 報道，針對東芝和無印良品網站的攻擊涉及將偽造的身份驗證對話框注入頁面。毫無戒心的訪客若輸入用戶名和密碼，其憑證將被發送到攻擊者控制的伺服器，而非合法的零售商或製造商。</p>
+<p>Polyfill 廣泛受損的規模十分驚人。來自 Sansec 及其他公司的安全研究人員估計，在發現惡意活動時，仍有超過 100,000 個網站在呼叫 polyfill.io 域名，這使其成為近年來針對網絡生態系統的最大規模供應鏈事件之一。</p>
+<h4>消費品牌捲入漩渦</h4>
+<p>像東芝和無印良品這樣家喻戶曉的品牌捲入其中，突顯了供應鏈攻擊與傳統安全漏洞的差異。兩家公司都沒有被直接入侵。相反，它們的網站僅僅因為程式碼庫包含了一個後來變成惡意的第三方腳本引用，便無意中成為了盜竊憑證的工具。</p>
+<p>對終端用戶而言，這種體驗會令人困惑：訪問一個熟悉品牌的網站，卻遭遇意想不到的登入提示。這些提示可能難以與合法的身份驗證流程區分開來，尤其是在流動裝置上，瀏覽器介面簡潔，用戶習慣了螢幕對話框。</p>
+<p>東芝和無印良品在問題被識別後，都迅速採取行動提醒客戶並修復受影響的頁面。然而，此事件突顯了現代網站建構方式中一個持續存在的弱點——依賴運行時從第三方 CDN 載入的外部腳本，而這些腳本既不受網站所有者控制，也未被密切監控。</p>
+<h4>對開發者和 IT 團隊的啟示</h4>
+<p>Polyfill.io 事件加速了網絡開發社群關於供應鏈衛生的討論。幾項實際措施已受到重視：</p>
+<p><strong>子資源完整性（SRI）：</strong> 開發人員可以將加密雜湊值固定在外部腳本標籤上，確保瀏覽器拒絕任何在雜湊值生成後被篡改的文件。如果 SRI 被廣泛應用於 polyfill.io 引用，注入的惡意程式碼本應無法執行。</p>
+<p><strong>自行託管關鍵依賴項：</strong> 團隊可以在自己的基礎設施上提供並託管必要的庫，而不是在頁面載入時從外部 CDN 載入腳本，從而消除對可能易手或被入侵的第三方域名的依賴。</p>
+<p><strong>軟件物料清單（SBOM）：</strong> 維護所有第三方元件（包括 CDN 託管的腳本）的清晰清單，使安全團隊能夠在某個依賴項被標記為受損時迅速作出反應。</p>
+<p>在 Polyfill.io 被入侵後，Google 和 Cloudflare 迅速採取行動實施重定向和警告，原始的社群項目也已遷移至新域名。然而，如東芝和無印良品案例所示，仍引用舊域名的網站所遭受的損害仍在不斷浮現。</p>
+<p>對於 IT 專業人士和網絡開發者而言，教訓顯而易見：程式碼來源的便利伴隨著風險，而隨著生產程式碼庫中留下未經審查的第三方腳本，這種風險會不斷增長。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/suspicious-polyfill-login-prompts-pop-up-on-toshiba-muji-websites/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
