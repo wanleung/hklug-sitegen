@@ -1,0 +1,36 @@
+Date: 2026-06-15 10:00:00
+Author: HKLUG Team
+Title: Nearly a Year After WinRAR Patch, Russian Hacking Groups Still Weaponizing Path Traversal Bug
+Content:
+<p>Russian state-sponsored hacking groups are continuing to exploit a patched vulnerability in WinRAR to deliver malware through weaponised archive files, underscoring the persistent danger that arises when software users fail to apply available security updates.</p>
+<p>The flaw, tracked as CVE-2025-8088, is a path traversal vulnerability in the popular file archiving utility. It allows an attacker to craft a specially designed archive that, when extracted, writes files to locations outside the intended extraction directory. WinRAR's developer, RARLAB, addressed the issue in version 7.13, released in July 2025. However, nearly twelve months on, threat intelligence from Trend Micro shows that Russian-linked advanced persistent threat (APT) groups are still actively leveraging the bug in real-world campaigns, as <a href="https://securityaffairs.com/193476/apt/russian-apts-still-exploiting-patched-winrar-flaw-cve-2025-8088.html">reported by Security Affairs</a>.</p>
+<h4>A Legitimate Windows Feature Turned Attack Vector</h4>
+<p>What makes CVE-2025-8088 particularly insidious is the exploitation technique at its core. The vulnerability takes advantage of a Windows NTFS feature known as Alternate Data Streams (ADS). ADS is a legitimate capability of the NTFS file system that allows data to be attached to a file in a secondary, hidden stream. These alternate streams are invisible in standard Windows directory listings and are frequently overlooked by security scanning tools.</p>
+<p>By abusing ADS in conjunction with the path traversal flaw, attackers can plant malicious payloads on a victim's system in a way that evades casual inspection and many automated defences. The technique effectively turns a fundamental file system feature into a built-in evasion mechanism.</p>
+<h4>Phishing Archives as Delivery Mechanism</h4>
+<p>According to Trend Micro's research, the attack chains observed in these campaigns follow a familiar pattern. Victims receive phishing emails containing malicious archive attachments — typically RAR files — that exploit CVE-2025-8088 upon extraction. Once the specially crafted archive is opened, the path traversal flaw silently writes malware to system locations outside the extraction folder, often using ADS to conceal its presence.</p>
+<p>The end goal for the Russian APT actors involved is espionage: gaining initial access to target environments for intelligence collection.</p>
+<h4>Why the Patch Gap Persists</h4>
+<p>The continued exploitation of a vulnerability that has been patched for close to a year highlights a well-known but stubbornly persistent problem in cybersecurity. Unlike many modern applications, WinRAR does not feature an automatic update mechanism. Users must manually download and install newer versions, and many simply do not — whether due to inertia, lack of awareness, or corporate environments where desktop software updates are not centrally managed.</p>
+<p>WinRAR's enormous installed base across industries and geographies compounds the issue. As a ubiquitous utility used for handling compressed files on Windows systems, it sits on millions of computers worldwide. For state-sponsored threat actors, that scale makes unpatched instances of commodity software a highly cost-effective vector for initial access, even months after a fix has been published.</p>
+<h4>A Broader Lesson for IT Teams</h4>
+<p>The persistence of this campaign carries a clear message for IT administrators and security professionals. Patching well-known software is only part of the equation; ensuring that updates are actually applied across an organisation's endpoints is equally critical. For utilities like WinRAR that lack built-in update functionality, organisations should consider deployment through managed software platforms or, at minimum, maintain an inventory of installed versions and push updates through existing management tooling.</p>
+<p>The exploitation of NTFS Alternate Data Streams as a stealth technique also merits attention. Security teams should ensure their endpoint detection and monitoring solutions are capable of identifying ADS-based activity, rather than relying solely on standard file system visibility.</p>
+<p>For the Russian APT groups involved, the calculus is straightforward: as long as a significant pool of unpatched WinRAR installations remains in the wild, there is little incentive to develop new exploitation techniques when an old one continues to work. A patch that sits unapplied is, from a practical security standpoint, no patch at all.</p>
+<hr>
+<p>俄羅斯國家支持的駭客組織，持續利用WinRAR中一個已修補的漏洞，透過武器化的壓縮檔傳播惡意軟件。這凸顯了當軟件用戶未能應用可用的安全更新時，所帶來的持續性危險。</p>
+<p>這個被追蹤為CVE-2025-8088的漏洞，是流行檔案壓縮工具中的一個路徑遍歷漏洞。它允許攻擊者精心製作一個特製的壓縮檔，當其被解壓縮時，會將檔案寫入預期解壓目錄之外的位置。WinRAR的開發商RARLAB已在2025年7月發佈的7.13版本中修復了此問題。然而，根據趨勢科技的威脅情報顯示，近一年後，與俄羅斯相關的進階持續性威脅組織仍在實際攻擊活動中積極利用此漏洞，正如<a href="https://securityaffairs.com/193476/apt/russian-apts-still-exploiting-patched-winrar-flaw-cve-2025-8088.html">安全事務所報導</a>所述。</p>
+<h4>合法的Windows功能淪為攻擊載體</h4>
+<p>CVE-2025-8088特別陰險之處在於其核心利用技術。此漏洞利用了Windows NTFS的一項名為「替代數據流」的功能。ADS是NTFS檔案系統的一項合法功能，允許將數據附加到檔案的次要隱藏流中。這些替代數據流在標準的Windows目錄列表中不可見，並且經常被安全掃描工具所忽略。</p>
+<p>透過濫用ADS並結合路徑遍歷漏洞，攻擊者可以在受害者系統上植入惡意payload，同時避開隨意的檢查和許多自動化防禦。此技術有效地將一個基本的檔案系統功能，轉變為內置的規避機制。</p>
+<h4>以壓縮檔作為傳遞載體</h4>
+<p>根據趨勢科技的研究，在這些活動中觀察到的攻擊鏈遵循一個熟悉的模式。受害者收到含有惡意壓縮檔附件的釣魚郵件——通常是RAR檔案——這些檔案在解壓時利用CVE-2025-8088漏洞。一旦特製的壓縮檔被打開，路徑遍歷漏洞便會將惡意軟件靜默寫入解壓資料夾之外的系統位置，並經常使用ADS來隱藏其存在。</p>
+<p>涉及此攻擊的俄羅斯APT行為者的最終目標是間諜活動：獲取進入目標環境的初始訪問權限以進行情報收集。</p>
+<h4>為何補丁落差持續存在</h4>
+<p>一個已被修補近一年的漏洞仍持續被利用，凸顯了網絡安全領域一個眾所周知但頑固存在的問題。與許多現代應用軟件不同，WinRAR不具備自動更新機制。用戶必須手動下載並安裝較新版本，而許多人並沒有這樣做——無論是由於惰性、缺乏意識，還是在企業環境中，桌面軟件更新並未集中管理。</p>
+<p>WinRAR在各行各業和不同地區龐大的安裝基礎加劇了這個問題。作為Windows系統上處理壓縮檔案的通用工具，它安裝在全球數百萬台桌面電腦上。對於國家支持的威脅行為者而言，這種規模使得未修補的通用軟件實例，即使在修補程式發佈數月後，仍成為一種極具成本效益的初始訪問載體。</p>
+<h4>對IT團隊的更廣泛啟示</h4>
+<p>此攻擊活動的持續性為IT管理員和安全專業人員傳遞了一個明確的資訊：修補知名軟件只是等式的一部分；確保更新實際應用到組織內所有端點同樣至關重要。對於像WinRAR這樣缺乏內置更新功能的工具，組織應考慮透過受管理的軟件平台進行部署，或至少維護已安裝版本的清單，並透過現有的管理工具推送更新。</p>
+<p>利用NTFS替代數據流作為隱蔽技術也值得關注。安全團隊應確保其端點檢測和監控解決方案能夠識別基於ADS的活動，而非僅依賴標準的檔案系統可見性。</p>
+<p>對於涉及的俄羅斯APT組織而言，其計算很簡單：只要在野仍存在大量未修補的WinRAR安裝實例，當一個舊漏洞仍然有效時，就缺乏開發新漏洞利用技術的動機。一個未被應用的補丁，從實際安全角度來看，根本不算補丁。</p>
+<p><a href="https://securityaffairs.com/193476/apt/russian-apts-still-exploiting-patched-winrar-flaw-cve-2025-8088.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
