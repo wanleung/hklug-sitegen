@@ -1,0 +1,35 @@
+Date: 2026-06-10 22:24:00
+Author: HKLUG Team
+Title: npm v12 to Lock Down Install Scripts in Sweeping Supply-Chain Security Overhaul
+Content:
+<p>```</p>
+<p>GitHub has unveiled a set of significant security changes slated for npm v12, targeting what has long been one of the most exploited vectors in open-source supply-chain attacks: the automatic execution of scripts during package installation.</p>
+<p>The next major version of the Node.js package manager, expected to ship in July 2026, will introduce default restrictions on lifecycle scripts — the <code>preinstall</code>, <code>install</code>, and <code>postinstall</code> hooks that run automatically when developers execute <code>npm install</code>. These scripts have become a favoured tool for attackers, who embed malicious code in popular packages that executes silently on victims' machines during what appears to be a routine dependency install.</p>
+<h4>A Shift From Reaction to Prevention</h4>
+<p>The announcement, reported by BleepingComputer, signals a deliberate strategic pivot in how npm approaches security. Rather than relying primarily on post-incident response — removing malicious packages after they are discovered and reported — GitHub is now targeting the architectural attack surface itself.</p>
+<p>The approach is conceptually simple: if lifecycle scripts can no longer run unchecked by default, the primary mechanism through which supply-chain payloads are delivered becomes far harder to exploit. It represents a move toward the "secure by default" philosophy that has gained traction across critical open-source infrastructure in recent years.</p>
+<p>Supply-chain attacks through npm have been a persistent and growing concern for the developer ecosystem. High-profile incidents — from the <code>ua-parser-js</code> compromise in 2021 to the <code>colors</code> and <code>faker</code> sabotage episodes — have demonstrated that the trust model underpinning package management carries inherent risks. Each new incident has reinforced that the convenience of automatic script execution comes at a steep security cost.</p>
+<h4>What Developers Should Expect</h4>
+<p>While GitHub has not yet published the full technical specification for the changes, the expected direction is clear: packages that rely on running code at install time will need to be explicitly trusted or granted permission by the developer.</p>
+<p>This will inevitably create friction. A significant number of legitimate npm packages depend on post-install scripts for tasks like compiling native modules, downloading platform-specific binaries, or configuring environments. Development teams that rely on such packages should begin testing against npm pre-release builds as soon as they become available to identify potential breakage in their workflows.</p>
+<p>The migration path will be critical. Developers will need clear guidance on how to audit their dependency trees for packages using lifecycle scripts, how to grant permissions where needed, and how to handle packages that cannot immediately be updated by their maintainers. One open question is how the explicit permission model will function in non-interactive, automated environments — CI/CD pipelines, containerised builds, and other headless workflows may require new configuration patterns that GitHub has yet to detail.</p>
+<h4>Industry Context</h4>
+<p>GitHub's move is part of a broader industry reckoning with software supply-chain integrity. Package managers across ecosystems — including PyPI, RubyGems, and Maven Central — have been incrementally tightening security controls. The introduction of features like npm provenance attestations and lockfile enforcement in recent years laid the groundwork for this more aggressive stance.</p>
+<p>For IT teams and development organisations, the message is straightforward: begin auditing your npm dependencies now. Identify which packages in your projects use lifecycle scripts, evaluate whether those uses are legitimate, and prepare your pipelines for a world where install-time code execution is no longer the default.</p>
+<p>The changes in npm v12 will almost certainly cause short-term disruption. But in a threat landscape where a single compromised package can cascade through thousands of downstream projects, the trade-off between convenience and security has become impossible to ignore.</p>
+<hr>
+<p>GitHub 已公佈將於 npm v12 中實施的一系列重大安全變更，旨在針對開源供應鏈攻擊中一個長期被大量利用的漏洞：套件安裝期間自動執行的腳本。</p>
+<p>這個 Node.js 套件管理工具的下一個主要版本預計將於 2026 年 7 月推出，屆時將引入對生命週期腳本的預設限制——即當開發者執行 <code>npm install</code> 時會自動運行的 <code>preinstall</code>、<code>install</code> 和 <code>postinstall</code> 鉤子。這些腳本已成為攻擊者青睞的工具，他們將惡意程式碼嵌入熱門套件中，在受害者機器上看似例行的依賴項安裝過程中悄無聲息地執行。</p>
+<h4>從被動應對轉向主動防禦</h4>
+<p>據 BleepingComputer 報導，此公告標誌著 npm 在安全策略上的一次刻意轉向。GitHub 不再主要依賴事後回應——即在發現並舉報後才移除惡意套件——而是開始直接瞄準架構層面的攻擊面。</p>
+<p>其方法在概念上很簡單：如果生命週期腳本預設不再能不受檢查地運行，那麼用於傳遞供應鏈攻擊載荷的主要機制將變得更難利用。這代表了一種朝向「預設安全」理念的轉變，近年來，這一理念已在關鍵的開源基礎設施中獲得廣泛認同。</p>
+<p>透過 npm 進行的供應鏈攻擊一直持續存在，並已成為開發者生態系統日益增長的擔憂。從 2021 年 <code>ua-parser-js</code> 被入侵，到 <code>colors</code> 和 <code>faker</code> 被蓄意破壞的事件，這些高調事件表明，作為套件管理基石的信任模型內在帶有風險。每一起新事件都進一步證明，自動執行腳本的便利性是以高昂的安全代價換來的。</p>
+<h4>開發者應預期的變化</h4>
+<p>儘管 GitHub 尚未公佈這些變更的完整技術規範，但預期的方向很明確：依賴在安裝時運行程式碼的套件，將需要獲得開發者的明確信任或授予權限。</p>
+<p>這不可避免地會帶來一些阻力。大量合法的 npm 套件依賴安裝後腳本來執行諸如編譯原生模組、下載特定平台二進位檔或配置環境等任務。依賴此類套件的開發團隊應儘早針對 npm 的預發佈版本進行測試，以便在其工作流程中識別潛在的中斷問題。</p>
+<p>遷移路徑將至關重要。開發者需要清晰的指引，以了解如何審查其依賴樹中使用生命週期腳本的套件、如何在需要時授予權限，以及如何處理其維護者無法立即更新的套件。一個懸而未決的問題是，明確的權限模型將如何在非互動式的自動化環境中運作——CI/CD 流水線、容器化建構及其他無頭工作流程可能需要新的配置模式，而 GitHub 尚未對此進行詳細說明。</p>
+<h4>行業背景</h4>
+<p>GitHub 的舉措是整個行業對軟件供應鏈完整性進行更廣泛反思的一部分。包括 PyPI、RubyGems 和 Maven Central 在內的各生態系統套件管理器，一直在逐步收緊安全控制。近年來引入的 npm 來源證明和鎖定檔案強制執行等功能，為此次更強有力的立場奠定了基礎。</p>
+<p>對於 IT 團隊和開發組織而言，訊息很明確：現在就開始審查你的 npm 依賴項。識別你專案中哪些套件使用了生命週期腳本，評估這些使用是否合理，並讓你的流水線為一個安裝時不再預設執行程式碼的世界做好準備。</p>
+<p>npm v12 中的變更幾乎必然會在短期內造成干擾。但在一個單一受感染套件就可能波及數千個下游專案的威脅環境下，便利性與安全性之間的權衡已不容忽視。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/github-announces-npm-security-changes-to-tackle-supply-chain-attacks/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
