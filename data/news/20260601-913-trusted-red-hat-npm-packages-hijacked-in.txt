@@ -1,0 +1,30 @@
+Date: 2026-06-01 19:22:00
+Author: HKLUG Team
+Title: Trusted Red Hat npm Packages Hijacked in Self-Spreading Credential Theft Campaign
+Content:
+<p>A supply chain attack campaign dubbed "Miasma" has compromised packages under the <code>@redhat-cloud-services</code> namespace on npm, weaponising them to harvest credentials from developer workstations and propagate as a self-replicating worm, according to reporting by <em>The Hacker News</em>.</p>
+<p>The campaign has been characterised as a "Mini Shai-Hulud" operation — a reference to an earlier, larger-scale supply chain attack — sharing core tactics including install-time code execution, credential harvesting, CI/CD pipeline targeting, and encrypted exfiltration of stolen data.</p>
+<h4>Lifecycle Scripts as an Attack Surface</h4>
+<p>The mechanism exploits a fundamental feature of npm's package management model. When a developer runs <code>npm install</code>, packages can execute arbitrary code through lifecycle scripts such as <code>preinstall</code> and <code>postinstall</code>. In a legitimate context, these hooks handle tasks like compiling native modules or checking system dependencies. In the Miasma campaign, compromised packages use these hooks to silently deploy malware the moment a developer installs or updates a dependency.</p>
+<p>The use of the <code>@redhat-cloud-services</code> namespace is particularly significant. Vendor-scoped package namespaces carry an inherent trust signal — developers and automated CI/CD pipelines are far less likely to scrutinise updates from a recognised organisation than from an unknown publisher. In many enterprise environments, dependency updates from trusted vendors are auto-approved, giving attackers a direct path into production systems without triggering human review.</p>
+<h4>The Worm Component</h4>
+<p>What distinguishes Miasma from a conventional supply chain compromise is its self-propagating design. Once established on a developer's machine, the malware attempts to spread further — escalating a single point of initial access into a broader organisational breach. This worm behaviour mirrors tactics seen in the earlier Shai-Hulud campaign and transforms what might otherwise be an isolated credential theft into a persistent, multiplying threat across development teams and their connected infrastructure.</p>
+<p>The stolen credentials and secrets are exfiltrated using encrypted channels, making detection by network monitoring tools more difficult.</p>
+<h4>Why This Matters</h4>
+<p>Supply chain attacks targeting package registries have become one of the most effective vectors for compromising software organisations. The npm ecosystem, with its deep integration into JavaScript and Node.js workflows worldwide, remains a particularly attractive target. The Miasma campaign underscores that even packages associated with well-known vendors can be weaponised, whether through account compromise, typosquatting of scoped namespaces, or other means.</p>
+<p>The incident reinforces the importance of several defensive practices: pinning dependency versions rather than accepting automatic updates, auditing package contents before installation, and restricting lifecycle script execution in sensitive build environments. Organisations relying heavily on open-source JavaScript libraries should also consider using tools that analyse packages for suspicious behaviour before they reach production systems.</p>
+<p>The broader lesson is that trust in a package namespace — even one tied to a reputable vendor — should not substitute for active verification. As supply chain attacks grow in sophistication and self-propagation capability, the blast radius of a single compromised dependency can extend far beyond the machine where it was first installed.</p>
+<hr>
+<p>據《The Hacker News》報導，一場名為「Miasma」的供應鏈攻擊行動已入侵 npm 平台上 <code>@redhat-cloud-services</code> 命名空間下的套件，將其武器化，用於從開發者工作站竊取憑證，並像自我複製的蠕蟲一樣傳播。</p>
+<p>該行動被描述為「迷你沙蟲」操作——這是對先前一場規模更大的供應鏈攻擊的引用——兩者共享核心策略，包括安裝時程式碼執行、憑證收集、針對 CI/CD 管道，以及加密外洩竊取的數據。</p>
+<h4>生命週期腳本作為攻擊面</h4>
+<p>該機制利用了 npm 套件管理模型的一個基本特性。當開發者執行 <code>npm install</code> 時，套件可以透過 <code>preinstall</code> 和 <code>postinstall</code> 等生命週期腳本執行任意程式碼。在合法情境下，這些鉤子用於處理編譯原生模組或檢查系統依賴項等任務。在 Miasma 行動中，受感染的套件利用這些鉤子，在開發者安裝或更新依賴項的瞬間，悄無聲息地部署惡意軟件。</p>
+<p>使用 <code>@redhat-cloud-services</code> 命名空間尤為關鍵。供應商限定的套件命名空間帶有固有的信任信號——開發者和自動化 CI/CD 管道對來自已知組織的更新進行仔細審查的可能性，遠低於來自未知發行者的更新。在許多企業環境中，來自受信任供應商的依賴項更新會被自動批准，這給了攻擊者直接進入生產系統的途徑，而無需觸發人工審查。</p>
+<h4>蠕蟲組件</h4>
+<p>Miasma 區別於傳統供應鏈攻擊之處在於其自我傳播的設計。一旦在開發者的機器上立足，惡意軟件會嘗試進一步傳播——將單一的初始存取點升級為更廣泛的組織性入侵。這種蠕蟲行為與先前沙蟲行動中所見的策略如出一轍，並將原本可能只是孤立的憑證竊取，轉變為跨開發團隊及其連接基礎設施的持續性、倍增式威脅。</p>
+<p>竊取的憑證和機密透過加密通道外洩，這使得網絡監測工具更難偵測到。</p>
+<h4>為何此事重要</h4>
+<p>針對套件登錄檔的供應鏈攻擊，已成為入侵軟件組織最有效的途徑之一。npm 生態系統因其與全球 JavaScript 和 Node.js 工作流程的深度整合，仍然是一個特別有吸引力的目標。Miasma 行動強調，即使是與知名供應商關聯的套件也可能被武器化，無論是透過帳戶入侵、限定命名空間的 typosquatting（網域名稱搶註）攻擊，還是其他方式。</p>
+<p>此事件再次強調了數種防禦措施的重要性：固定依賴項版本而非接受自動更新、在安裝前審計套件內容，以及在敏感的 build 環境中限制生命週期腳本的執行。重度依賴開源 JavaScript 函式庫的組織，也應考慮使用能在套件進入生產系統前分析其可疑行為的工具。</p>
+<p>更廣泛的教訓是，對套件命名空間的信任——即使它與信譽良好的供應商相關——也不應取代主動驗證。隨著供應鏈攻擊的複雜性和自我傳播能力日益增強，單一受損依賴項的影響範圍可能遠遠超出其最初安裝的機器。</p>
+<p><a href="https://thehackernews.com/2026/06/miasma-supply-chain-attack-compromises.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>

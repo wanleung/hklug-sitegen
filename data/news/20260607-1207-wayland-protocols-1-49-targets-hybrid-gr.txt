@@ -1,0 +1,32 @@
+Date: 2026-06-07 16:23:00
+Author: HKLUG Team
+Title: Wayland Protocols 1.49 Targets Hybrid Graphics and HDR Gaps in Linux Display Stack
+Content:
+<p>Wayland Protocols 1.49 has been released, bringing two notable enhancements to the foundational specification that underpins the next-generation Linux display stack: improved multi-GPU buffer sharing and first-class support for BT.2100 HDR windows.</p>
+<p>The release was published by Simon Ser, a long-standing Wayland contributor and author of the Smithay Rust library, who maintains the core protocol definitions used by major compositors including GNOME's Mutter, KDE's KWin, Sway, and the wlroots library.</p>
+<h4>Bridging the Hybrid Graphics Gap</h4>
+<p>One of the two headline changes in version 1.49 addresses a practical pain point for users running hybrid graphics setups — configurations where, for example, an integrated Intel GPU drives the display while a discrete NVIDIA or AMD GPU handles rendering workloads. In such setups, buffers often need to move between GPU devices, and the protocol-level plumbing for that handoff has historically been fragile on Linux, even as Windows handles the same scenario more seamlessly.</p>
+<p>The updated protocol definitions refine how compositors and clients negotiate buffer sharing across multiple DRM (Direct Rendering Manager) devices. While the low-level details are aimed at compositor and toolkit developers rather than end users, the downstream effect should be smoother rendering and fewer visual glitches on laptops and workstations that rely on GPU offloading. Users of hybrid laptop configurations — which represent a significant share of Linux deployments — stand to benefit most directly once compositor implementations adopt the updated protocols.</p>
+<h4>A Standardised Path to HDR on Linux</h4>
+<p>The second major addition in 1.49 is explicit support for BT.2100 HDR content within individual windows. BT.2100 is the international standard that defines both the Perceptual Quantiser (PQ) and Hybrid Log-Gamma (HLG) electro-optical transfer functions used in modern HDR video and display pipelines.</p>
+<p>Until now, Linux compositors lacked a standardised protocol mechanism for marking a surface as carrying HDR content with specific transfer-function metadata. Without this, applications displaying HDR video or rendering HDR-aware content had no composable, interoperable way to signal their intent to the display server — leaving the Linux desktop trailing well behind Windows and macOS in HDR readiness. Version 1.49 introduces window-level protocol extensions that allow clients to communicate PQ or HLG characteristics, enabling compositors to handle tone mapping and colour management on a per-window basis.</p>
+<p>Protocol-level groundwork of this kind is a prerequisite for compositors to offer robust HDR experiences — from video playback in media applications to HDR-aware creative tools and games. Without a shared specification, each compositor would be left to invent its own approach, fragmenting the ecosystem further.</p>
+<h4>Infrastructure Work That Compounds</h4>
+<p>Wayland Protocols serves as the shared vocabulary between display servers and client applications on the Linux desktop. Each incremental release tightens the specification, giving compositor developers clearer contracts to implement against and reducing the fragmentation that can arise when each project solves the same problem independently.</p>
+<p>Version 1.49 is not a dramatic overhaul, but it targets two areas — multi-device GPU workflows and HDR display output — where the Linux desktop has meaningful ground to cover compared to proprietary alternatives. For the open-source display ecosystem, these protocol refinements represent the kind of unglamorous but essential infrastructure work that eventually translates into tangible user-facing improvements.</p>
+<p>The release is available now for compositor and toolkit developers to integrate. Downstream users should expect to see the benefits surface in future versions of GNOME, KDE Plasma, Sway, and other Wayland-based desktop environments as they ship updates built on the new protocol definitions.</p>
+<hr>
+<p>Wayland 協議 1.49 已經發布，為支撐下一代 Linux 顯示堆棧的基礎規範帶來兩項顯著增強：改進的多 GPU buffer 共享，以及對 BT.2100 HDR 視窗的首選支持。</p>
+<p>此版本由 Simon Ser 發布，他是 Wayland 的長期貢獻者，也是 Smithay Rust library 的作者，維護著包括 GNOME 的 Mutter、KDE 的 KWin、Sway 以及 wlroots library 在內的主要合成器所使用的核心協議定義。</p>
+<h4>橋接混合圖形缺口</h4>
+<p>1.49 版本的兩項首要變更之一，解決了運行混合圖形配置用戶的實際痛點——例如，在此類配置中，一塊內建 Intel GPU 驅動顯示輸出，而一塊獨立的 NVIDIA 或 AMD GPU 則處理渲染工作負載。在此類設置中，buffer 經常需要在不同 GPU 裝置之間移動，而處理此類移交的協議層管道在 Linux 上歷來不穩定，即使 Windows 能更順暢地處理相同的場景。</p>
+<p>更新的協議定義優化了合成器與客戶端如何跨多個 DRM（Direct Rendering Manager）裝置協商 buffer 共享。雖然底層細節針對的是合成器和工具包開發者，而非最終用戶，但其下游效應應是更流暢的渲染以及依賴 GPU 卸載的手提電腦和工作站上更少的視覺瑕疵。混合手提電腦配置的用戶——佔據了 Linux 部署的重要份額——將在合成器實現採用更新協議後直接受益。</p>
+<h4>Linux 上 HDR 的標準化路徑</h4>
+<p>1.49 版本的第二項重大新增內容，是對個別視窗內 BT.2100 HDR 內容的明確支持。BT.2100 是國際標準，定義了用於現代 HDR 影片和顯示 pipeline 的 Perceptual Quantiser（PQ）及 Hybrid Log-Gamma（HLG）電光轉換函數。</p>
+<p>在此之前，Linux 合成器缺乏標準化的協議機制來標記一個表面是否攜帶帶有特定轉換函數 metadata 的 HDR 內容。缺乏此功能，顯示 HDR 影片或渲染 HDR 感知內容的應用程式，無法以可組合、可互操作的方式向顯示伺服器表明其意圖——這使得 Linux 桌面在 HDR 就緒性方面遠落後於 Windows 和 macOS。1.49 版本引入了視窗級別的協議擴展，允許客戶端傳達 PQ 或 HLG 特性，使合成器能夠在每個視窗的基礎上進行色調映射和色彩管理。</p>
+<p>這類協議層面的基礎工作，是合成器提供穩健 HDR 體驗的先決條件——從媒體應用中的影片播放，到 HDR 感知的創意工具和遊戲。若沒有一個共享規範，每個合成器都將不得不自行發明其方法，進一步加劇生態系統的碎片化。</p>
+<h4>持續累積的基礎設施工作</h4>
+<p>Wayland 協議充當 Linux 桌面上顯示伺服器與客戶端應用之間的共享詞彙表。每次增量發布都細化規範，為合成器開發者提供更清晰的實現契約，並減少各項目獨立解決相同問題時可能產生的碎片化。</p>
+<p>1.49 版本並非戲劇性的革新，但它瞄準了兩個領域——多裝置 GPU 工作流和 HDR 顯示輸出——在這方面，相較於專有替代方案，Linux 桌面仍有重要的進步空間。對於開源顯示生態系統而言，這些協議優化代表了那種不張揚但至關重要的基礎設施工作，最終將轉化為實實在在、面向用戶的改進。</p>
+<p>此版本現已可供合成器和工具包開發者整合。下游用戶應當能在未來版本的 GNOME、KDE Plasma、Sway 及其他基於 Wayland 的桌面環境中，看到它們基於新協議定義發布更新後所帶來的好處。</p>
+<p><a href="https://www.phoronix.com/news/Wayland-Protocols-1.49" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>

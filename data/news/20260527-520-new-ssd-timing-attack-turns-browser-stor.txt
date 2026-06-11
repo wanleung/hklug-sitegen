@@ -1,0 +1,39 @@
+Date: 2026-05-27 22:11:00
+Author: HKLUG Team
+Title: New SSD Timing Attack Turns Browser Storage into a Tracking Mechanism
+Content:
+<p>```</p>
+<p>A newly revealed technique allows websites to identify and track visitors by measuring the unique timing characteristics of their solid-state drives—a method that uses nothing more than standard JavaScript and resiliently bypasses common privacy tools.</p>
+<h4>The Hardware Side-Channel in the Browser</h4>
+<p>The attack leverages minor, consistent variations in SSD performance that stem from each drive's unique combination of hardware design, firmware, controller logic, and even physical wear. A webpage can invoke ordinary browser storage APIs, such as IndexedDB or the Cache API, causing the underlying JavaScript engine to issue read and write operations to the visitor's local SSD. By carefully measuring the latency of these operations, a site can compile a distinctive timing profile that serves as a durable hardware fingerprint.</p>
+<p>The process is conceptually simple: a script writes and reads small data chunks through these web storage interfaces, recording microsecond-level delays. Because no two SSDs perform identically under these conditions—due to factors like NAND flash degradation, garbage collection routines, and controller scheduling—the collected timing patterns can form a signature unique enough to single out a particular drive, and by extension, a user.</p>
+<h4>Evasion of Standard Privacy Protections</h4>
+<p>This method is particularly difficult to defend against because it circumvents many standard privacy measures. Incognito modes, cookie blockers, anti-tracking extensions, and VPNs are ineffective because the technique does not rely on software cookies, network addresses, or traditional identifiers. Instead, it extracts a latent hardware characteristic that is exposed through legitimate, essential web platform APIs.</p>
+<p>This places SSD fingerprinting in a challenging category. While browser fingerprinting via GPU rendering or CPU timing has existed for years, partial mitigations—like WebGL parameter spoofing or timer precision reduction—have been developed. SSD timing analysis, however, is entangled with storage APIs critical for modern web application functionality. Disabling APIs like IndexedDB would break progressive web apps, offline capabilities, and countless interactive sites, making such a fix impractical.</p>
+<h4>A New Layer in the Fingerprinting Landscape</h4>
+<p>Traditional fingerprinting aggregates properties like installed fonts, screen resolution, and browser plugins. More advanced techniques exploit GPU rendering through canvas or WebGL, or measure CPU execution timing via Web Workers. Browsers have introduced countermeasures for these, such as adding canvas noise or reducing timer granularity.</p>
+<p>SSD timing analysis adds a fundamentally different layer. It reflects deep hardware behavior at the storage controller level, which is extremely difficult to simulate or mask. The resulting fingerprint is also highly stable across browsing sessions, changing only if the physical drive is replaced or receives a significant firmware update.</p>
+<h4>Constrained Paths to Mitigation</h4>
+<p>Browser vendors face a complex trade-off in responding to this threat. Researchers suggest several potential countermeasures, though each carries costs. One approach would involve introducing randomized delays or noise into the timing data returned by storage APIs, obscuring the hardware signal. Another could involve batching or queuing storage operations to obscure individual access latencies.</p>
+<p>Privacy-focused browsers may already offer limited protection. The Tor Browser, for example, restricts certain storage APIs and applies broad anti-fingerprinting measures. Firefox's <code>privacy.resistFingerprinting</code> mode reduces timer precision, but its effectiveness against this specific SSD-based technique requires further testing. Mainstream browsers like Chrome, Edge, and Safari currently lack targeted defenses.</p>
+<h4>The Enduring Privacy-Functionality Trade-off</h4>
+<p>This research highlights a persistent tension in web standards: the powerful APIs enabling rich, modern web applications also create new surveillance surfaces. IndexedDB and the Cache API were designed for developer utility and performance, not to expose low-level hardware characteristics. Yet the history of browser fingerprinting shows that any measurable side channel will inevitably be exploited.</p>
+<p>For the developer and security communities, this discovery is a reminder that browser privacy extends beyond managing cookies and tracker lists. As long as web standards expose hardware behavior through scriptable interfaces, novel fingerprinting vectors will emerge. Navigating this will require careful collaboration between browser vendors, standards bodies, and privacy advocates to balance functional capability against the ever-evolving risks of surveillance.</p>
+<hr>
+<p>一項新披露的技術，能透過測量固態硬碟（SSD）獨特的時序特徵來識別和追蹤網站訪客——此方法僅使用標準的 JavaScript，並能有效繞過常見的私隱工具。</p>
+<h4>瀏覽器中的硬件側信道</h4>
+<p>該攻擊利用了 SSD 性能中微小而一致的變化，這些變化源於每塊硬碟獨特的硬件設計、固件、控制器邏輯甚至物理磨損組合。網頁可以調用普通的瀏覽器儲存應用程式介面（API），例如 IndexedDB 或 Cache API，促使底層的 JavaScript 引擎向訪客的本地 SSD 發出讀取和寫入操作。透過仔細測量這些操作的延遲，網站可以編譯出一個獨特的時序配置文件，作為持久的硬件指紋。</p>
+<p>這個過程在概念上很簡單：腳本通過這些網絡儲存接口寫入和讀取小塊數據，記錄微秒級的延遲。由於沒有兩塊 SSD 在這些條件下表現完全相同——由於 NAND 閃存退化、垃圾回收例程和控制器調度等因素——收集到的時序模式可以形成一個足夠獨特的特徵，足以識別出特定的硬碟，進而識別用戶。</p>
+<h4>規避標準私隱保護</h4>
+<p>此方法尤其難以防禦，因為它繞過了許多標準的私隱措施。無痕模式、Cookie 攔截器、反追蹤擴展和 VPN 均無效，因為該技術不依賴軟件 Cookie、網絡地址或傳統標識符。相反，它提取了一種潛在的硬件特性，而此特性是通過合法且必要的網絡平台 API 暴露出來的。</p>
+<p>這使得 SSD 指紋識別處於一個具有挑戰性的類別。雖然透過 GPU 渲染或 CPU 時序進行瀏覽器指紋識別已存在多年，並且已開發出部分緩解措施——如 WebGL 參數偽造或降低計時器精度——但 SSD 時序分析與對現代網絡應用程式功能至關重要的儲存 API 緊密糾纏。禁用像 IndexedDB 這樣的 API 會破壞漸進式網絡應用（PWA）、離線功能以及無數的互動網站，使得此類修復措施不切實際。</p>
+<h4>指紋識別領域的新層面</h4>
+<p>傳統的指紋識別聚合了已安裝字體、螢幕解像度和瀏覽器插件等屬性。更高級的技術則利用 canvas 或 WebGL 進行 GPU 渲染，或透過 Web Workers 測量 CPU 執行時序。瀏覽器已為此引入了對策，例如添加 canvas 噪點或降低計時器粒度。</p>
+<p>SSD 時序分析則增加了一個根本不同的層面。它反映了儲存控制器層面的深層硬件行為，這極難模擬或偽裝。產生的指紋在不同瀏覽會話中也高度穩定，只有在物理硬碟更換或收到重大固件更新時才會改變。</p>
+<h4>有限的緩解路徑</h4>
+<p>瀏覽器開發商在應對此威脅時面臨複雜的權衡。研究人員提出了幾種潛在的對策，但每種都有其代價。一種方法是在儲存 API 返回的時序數據中引入隨機延遲或噪點，以模糊硬件信號。另一種方法可能是對儲存操作進行批量處理或排隊，以模糊單次存取延遲。</p>
+<p>注重私隱的瀏覽器可能已提供有限的保護。例如，Tor 瀏覽器限制了某些儲存 API，並應用廣泛的反指紋識別措施。Firefox 的 <code>privacy.resistFingerprinting</code> 模式降低了計時器精度，但其對抗這種特定 SSD 基礎技術的有效性仍需進一步測試。Chrome、Edge 和 Safari 等主流瀏覽器目前缺乏針對性的防禦措施。</p>
+<h4>持久存在的私隱與功能權衡</h4>
+<p>這項研究凸顯了網絡標準中一個持久的緊張關係：賦予現代網絡應用程式豐富功能的強大 API，同時也創造了新的監控攻擊面。IndexedDB 和 Cache API 的設計初衷是為了開發者的便利和性能，而非暴露低層次的硬件特性。然而，瀏覽器指紋識別的歷史表明，任何可測量的側信道最終都將被利用。</p>
+<p>對於開發者和安全社群而言，此發現是一個提醒：瀏覽器私隱管理遠不止於處理 Cookie 和追蹤器列表。只要網絡標準通過可編程的接口暴露硬件行為，新的指紋識別向量就會不斷出現。應對此問題需要瀏覽器開發商、標準機構和私隱倡導者之間仔細協作，以在功能能力與不斷演變的監控風險之間取得平衡。</p>
+<p><a href="https://arstechnica.com/security/2026/05/websites-have-a-new-way-to-spy-on-visitors-analyzing-their-ssd-activity/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>

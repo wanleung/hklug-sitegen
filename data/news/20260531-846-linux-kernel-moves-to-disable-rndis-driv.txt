@@ -1,0 +1,36 @@
+Date: 2026-05-31 16:23:00
+Author: HKLUG Team
+Title: Linux Kernel Moves to Disable RNDIS Drivers as Security Liability Outweighs Legacy Support
+Content:
+<p>The Linux kernel community is once again weighing a proposal to disable all drivers supporting Microsoft's Remote Network Driver Interface Specification (RNDIS), a protocol long used for USB tethering and networking that has increasingly drawn scrutiny over its security posture.</p>
+<p>According to a report by Phoronix, efforts to deprecate RNDIS support in the Linux kernel date back to early 2023. The latest patch effort, which could see the drivers disabled by default, reflects a growing consensus that the aging protocol represents an unnecessary attack surface — one that modern, standards-based alternatives have rendered largely obsolete.</p>
+<h4>What Is RNDIS and Why Does It Matter?</h4>
+<p>RNDIS is a Microsoft-designed protocol that allows devices such as smartphones and tablets to share their internet connections with a host computer over a USB cable. For years, it was the default mechanism used by many Android devices for USB tethering. However, the protocol has long been regarded as poorly specified and difficult to maintain within the Linux ecosystem.</p>
+<p>The security argument is straightforward: kernel code that is not well-maintained and lacks modern design principles becomes a liability. Vulnerabilities in USB-facing drivers can be exploited by malicious devices, making protocol-level security a serious concern for any operating system.</p>
+<h4>Superior Alternatives Already Exist</h4>
+<p>The case for disabling RNDIS is strengthened by the availability of mature, standards-compliant replacements. USB CDC NCM (Network Control Model) and USB CDC ECM (Ethernet Control Model) are open, well-documented protocols that provide the same tethering functionality with a far more robust security profile.</p>
+<p>Most modern Android devices have already transitioned to using CDC NCM for USB tethering, meaning the RNDIS code path is primarily relevant only for older hardware or niche devices. The Linux kernel community's position is that maintaining legacy drivers solely to support a shrinking pool of devices does not justify the ongoing security risk.</p>
+<h4>A Deliberate, Multi-Year Process</h4>
+<p>The fact that this conversation has been ongoing since 2023 underscores how carefully the kernel community approaches driver deprecation. Rather than pulling the plug abruptly, developers have given distributions and users ample time to audit their dependencies and prepare for the transition.</p>
+<p>The proposed approach is a "disable by default" model rather than outright removal. Distributions and advanced users could still re-enable RNDIS support if needed, but the drivers would no longer be compiled or loaded in standard kernel configurations. This middle ground acknowledges the real-world impact on users with older Android phones or specialized hardware while still addressing the security concern for the vast majority of users.</p>
+<h4>Broader Implications</h4>
+<p>The move fits neatly into the Linux kernel community's broader pattern of retiring legacy code that carries security risks or lacks active maintenance. In recent years, the kernel has shed other outdated subsystems and protocols in favor of open standards and cleaner implementations.</p>
+<p>For IT professionals and system administrators, the key takeaway is forward-looking: organizations that rely on USB tethering in Linux environments should verify that their hardware supports modern protocols like CDC NCM. While the disablement is unlikely to cause widespread disruption — most contemporary devices already use the newer standards — it serves as a reminder that security-driven deprecation is an ongoing reality in open-source software maintenance.</p>
+<p>The patch, if accepted, would likely target a kernel release in the 2026 timeframe, giving distributions time to adjust their default configurations and documentation accordingly.</p>
+<hr>
+<p>Linux 核心社群正再次審視一項提案，旨在禁用所有支援微軟 Remote Network Driver Interface Specification（RNDIS）的驅動程式。RNDIS 是一項長期用於 USB 網絡共享及連接的協定，但其安全性近年來受到越來越多的審視。</p>
+<p>根據 Phoronix 的報導，棄用 Linux 核心中 RNDIS 支援的努力可追溯至 2023 年初。最新的補丁工作可能令相關驅動程式預設停用，這反映了一種日益增長的共識：這個老舊的協定代表了一個不必要的攻擊面，而現代的、基於標準的替代方案已在很大程度上使其過時。</p>
+<h4>RNDIS 是什麼？為何重要？</h4>
+<p>RNDIS 是由微軟設計的一種協定，允許智能電話及平板電腦等裝置透過 USB 線纜與主機電腦共享網絡連接。多年來，它一直是許多 Android 裝置進行 USB 網絡共享的預設機制。然而，該協定一直被認為規範不清，且在 Linux 生態系統中難以維護。</p>
+<p>其安全論點十分直接：維護不善且缺乏現代設計原則的核心程式碼，將成為一種負擔。面向 USB 的驅動程式若存在漏洞，可能被惡意裝置利用，這使得協定層級的安全性成為任何作業系統必須嚴肅對待的問題。</p>
+<h4>更優越的替代方案已然存在</h4>
+<p>禁用 RNDIS 的理據，因其有成熟且符合標準的替代方案而得到加強。USB CDC NCM（Network Control Model）與 USB CDC ECM（Ethernet Control Model）是開放且文檔完善的協定，它們能提供相同的網絡共享功能，同時具備更為穩健的安全特性。</p>
+<p>大多數現代 Android 裝置已過渡至使用 CDC NCM 進行 USB 網絡共享，這意味著 RNDIS 的程式碼路徑現今主要僅與舊款硬件或特定裝置相關。Linux 核心社群的立場是，僅為了支援不斷縮減的裝置群而維護傳統驅動程式，無法為持續存在的安全風險提供充分理由。</p>
+<h4>一個審慎的、歷時多年的過程</h4>
+<p>這場討論自 2023 年持續至今的事實，凸顯了核心社群在驅動程式棄用問題上的謹慎態度。開發者並未突然中止支援，而是給予各發行版和使用者充裕的時間來審查其依賴項並為過渡做好準備。</p>
+<p>建議採取的方法是「預設停用」模式，而非徹底移除。各發行版和進階使用者若有需要，仍可重新啟用 RNDIS 支援，但相關驅動程式將不會在標準核心配置中編譯或載入。這種折衷方案既顧及了擁有舊款 Android 電話或特定硬件使用者的實際影響，同時亦為絕大多數使用者解決了安全顧慮。</p>
+<h4>更廣泛的影響</h4>
+<p>此舉完美契合 Linux 核心社群更廣泛的模式，即逐步淘汰那些帶來安全風險或缺乏積極維護的傳統程式碼。近年來，核心已捨棄了其他過時的子系統及協定，轉而採用開放標準與更潔淨的實作方式。</p>
+<p>對於資訊科技專業人員及系統管理員而言，關鍵啟示具有前瞻性：在 Linux 環境中依賴 USB 網絡共享的機構，應驗證其硬件是否支援如 CDC NCM 等現代協定。儘管此次停用不太可能造成大範圍的中斷——大多數當代裝置已使用較新的標準——但它提醒我們，出於安全考量的棄用，是開源軟件維護工作中一項持續存在的現實。</p>
+<p>該補丁若獲採納，預計將以 2026 年左右的核心版本為目標，給予各發行版相應調整其預設配置與文檔的時間。</p>
+<p><a href="https://www.phoronix.com/news/RNDIS-Disable-Linux-2026-Patch" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>

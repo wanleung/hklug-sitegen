@@ -1,0 +1,44 @@
+Date: 2026-05-25 13:04:00
+Author: HKLUG Team
+Title: Intel Proposes USB4STREAM Protocol for Zero-Configuration Host-to-Host Transfers Over Thunderbolt
+Content:
+<p>Intel has submitted a proposal for USB4STREAM, a new protocol targeting the Linux 7.2 kernel that enables raw packet transfers directly over USB4 and Thunderbolt connections. Developed by Intel Thunderbolt maintainer Mika Westerberg, the protocol creates a zero-configuration data pipe between two physically connected hosts without requiring IP assignment, routing tables, or firewall rules.</p>
+<p>USB4STREAM operates through a new <code>thunderbolt_stream</code> driver that exposes <code>/dev/tbstreamX</code> character devices on each end of a direct USB4/Thunderbolt cable. Data transfers use standard filesystem operations—commands like <code>dd</code> or <code>cat</code> work without modification, and any application supporting <code>read(2)</code> and <code>write(2)</code> can use the device without changes.</p>
+<h4>How USB4STREAM Differs from Traditional Networking</h4>
+<p>Conventional Linux networking introduces measurable overhead even on high-speed links. Every packet traverses multiple layers: the network interface driver, IP routing logic, netfilter hooks, and the TCP or UDP transport layer. Each layer adds processing latency, memory copies, and buffer management complexity.</p>
+<p>USB4STREAM operates beneath this entire stack. By establishing a direct tunnel through the Thunderbolt/USB4 fabric, data moves between hosts without IP address negotiation, ARP resolution, or connection state tracking. The result is a streamlined channel suited for environments where configuration simplicity matters more than protocol flexibility.</p>
+<h4>ConfigFS-Based Stream Management</h4>
+<p>Stream configuration is handled through a ConfigFS interface at <code>/sys/kernel/config/thunderbolt/stream/</code>. Multiple streams can operate simultaneously, limited only by available DMA rings and HopIDs. Each stream supports bidirectional traffic, enabling scenarios where one stream serves as a control channel while another handles data transfer.</p>
+<p>HopID allocation can be automatic—writing <code>-1</code> to the HopID fields triggers automatic assignment—or configured manually. Active streams are announced across the connection through XDomain properties, allowing the receiving host to discover stream names and corresponding HopIDs without manual coordination.</p>
+<h4>Targeted Use Cases</h4>
+<p>The protocol is optimized for scenarios where two systems are physically connected and need to exchange data rapidly without network infrastructure. Primary applications include:</p>
+<ul>
+<li><strong>Host-to-host system backups and migrations:</strong> Moving large datasets between machines without configuring temporary networking or embedding SSH and network tools into recovery initramfs environments.</li>
+<li><strong>Peripheral pooling:</strong> Sharing devices such as webcams or capture cards across multiple systems. A laptop camera can be "borrowed" by a desktop through GStreamer pipelines piping directly to and from the <code>/dev/tbstream</code> device.</li>
+<li><strong>Embedded and resource-constrained deployments:</strong> Environments where running a full networking stack is unnecessary, but high-bandwidth direct communication is required.</li>
+</ul>
+<h4>Open-Source Strategy and Timeline</h4>
+<p>Westerberg's patch series has landed in the <code>thunderbolt.git</code> "next" branch, positioning it for inclusion in the Linux 7.2 merge window in mid-June. Intel's decision to upstream USB4STREAM directly into the mainline kernel ensures cross-distribution compatibility without requiring proprietary drivers.</p>
+<p>The protocol relies on existing Thunderbolt authentication mechanisms for security. A documentation patch accompanying the driver submission provides detailed usage examples, including backup workflows and peripheral sharing configurations.</p>
+<p>Key questions that will be resolved during kernel review include the final ConfigFS API design, error handling behavior, and how access control will be enforced beyond baseline Thunderbolt hardware authentication. The review process will ultimately shape the protocol's feature scope and production readiness timeline.</p>
+<hr>
+<p>Intel 已提交 USB4STREAM 提案，這是一個針對 Linux 7.2 核心的新協定，可透過 USB4 和 Thunderbolt 連接直接進行原始數據包傳輸。該協定由 Intel Thunderbolt 維護者 Mika Westerberg 開發，能在兩台以實體線纜連接的主機之間建立零配置的數據通道，無需進行 IP 分配、路由表設置或防火牆規則配置。</p>
+<p>USB4STREAM 透過全新的 <code>thunderbolt_stream</code> 驅動程式運作，在直接連接的 USB4/Thunderbolt 線纜兩端各提供一個 <code>/dev/tbstreamX</code> 字元裝置。數據傳輸採用標準檔案系統操作——<code>dd</code> 或 <code>cat</code> 等指令無需修改即可使用，任何支援 <code>read(2)</code> 和 <code>write(2)</code> 的應用程式亦可直接使用該裝置。</p>
+<h4>USB4STREAM 與傳統網絡的分別</h4>
+<p>傳統 Linux 網絡即使在高頻寬鏈路上也會產生可測量的額外開銷。每個數據包需經過多層處理：網絡介面驅動程式、IP 路由邏輯、netfilter hooks，以及 TCP 或 UDP 傳輸層。每層都會增加處理延遲、記憶體複製和緩衝區管理的複雜性。</p>
+<p>USB4STREAM 在整個網絡堆疊之下運行。透過在 Thunderbolt/USB4 架構上建立直接通道，數據可在主機間傳輸，無需 IP 位址協商、ARP 解析或連線狀態追蹤。結果是一個精簡的傳輸通道，適合配置簡便性比協定靈活性更重要的環境。</p>
+<h4>基於 ConfigFS 的串流管理</h4>
+<p>串流配置透過位於 <code>/sys/kernel/config/thunderbolt/stream/</code> 的 ConfigFS 介面處理。多個串流可同時運作，僅受限於可用的 DMA rings 和 HopIDs。每個串流支援雙向傳輸，可實現一個串流作為控制通道、另一個處理數據傳輸的應用場景。</p>
+<p>HopID 分配可自動進行——將 <code>-1</code> 寫入 HopID 欄位即觸發自動分配——亦可手動配置。活躍的串流會透過 XDomain properties 在連接的兩端進行廣播，讓接收端主機無需手動協調即可發現串流名稱及對應的 HopIDs。</p>
+<h4>目標應用場景</h4>
+<p>該協定針對兩台系統以實體線纜連接、需要快速交換數據而無需網絡基礎設施的場景進行了優化。主要應用包括：</p>
+<ul>
+<li><strong>主機間系統備份和遷移：</strong> 在機器之間傳輸大型數據集，無需配置臨時網絡或在復原 initramfs 環境中嵌入 SSH 和網絡工具。</li>
+<li><strong>周邊設備共享：</strong> 在多個系統之間共享 webcam 或擷取卡等設備。手提電腦的鏡頭可透過 GStreamer pipeline 直接連接 <code>/dev/tbstream</code> 裝置，讓桌面電腦「借用」。</li>
+<li><strong>嵌入式及資源受限的部署：</strong> 無需運行完整網絡堆疊，但需要高頻寬直接通訊的環境。</li>
+</ul>
+<h4>開源策略和時間表</h4>
+<p>Westerberg 的 patch series 已進入 <code>thunderbolt.git</code> 的「next」分支，有望在六月中旬納入 Linux 7.2 的 merge window。Intel 決定將 USB4STREAM 直接 upstream 至 mainline kernel，確保跨發行版兼容性，無需專有驅動程式。</p>
+<p>該協定的安全性依賴現有的 Thunderbolt 認證機制。隨驅動程式提交附帶的文檔 patch 提供了詳細的使用範例，包括備份工作流程和周邊設備共享配置。</p>
+<p>在核心審閱過程中將解決的關鍵問題包括最終的 ConfigFS API 設計、錯誤處理行為，以及在基線 Thunderbolt 硬體認證之外如何執行存取控制。審閱過程最終將決定該協定的功能範圍和正式推出時間表。</p>
+<p><a href="https://www.phoronix.com/news/Intel-Linux-USB4STREAM" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>

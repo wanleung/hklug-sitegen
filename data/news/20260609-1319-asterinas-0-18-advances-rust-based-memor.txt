@@ -1,0 +1,36 @@
+Date: 2026-06-09 13:20:00
+Author: HKLUG Team
+Title: Asterinas 0.18 Advances Rust-Based, Memory-Safe OS With Linux Binary Compatibility
+Content:
+<p>Asterinas, a Rust-written operating system kernel designed to run unmodified Linux binaries while delivering stronger memory safety guarantees, has reached version 0.18. The release, covered by Phoronix on 9 June 2026, marks another incremental but meaningful step in the project's push toward a practical, drop-in alternative to the Linux kernel.</p>
+<h4>A Different Strategy From Other Rust OS Projects</h4>
+<p>Asterinas occupies a distinct niche in the growing landscape of Rust-based operating systems. Unlike Redox OS — perhaps the best-known Rust OS effort, which has built its own ecosystem of system libraries, file formats, and an original microkernel design — Asterinas takes a Linux-compatibility-first approach. Through its Framekernel architecture, the project implements the Linux system call interface, enabling standard Linux binaries to run without recompilation.</p>
+<p>This distinction carries strategic weight. While Redox offers a clean-slate design free to rethink OS architecture from the ground up, it demands that application developers port or rewrite software for its platform. Asterinas sidesteps that barrier entirely by targeting Linux ABI compatibility, potentially giving organisations a route to memory-safe infrastructure without the prohibitive cost of migrating their software stacks.</p>
+<h4>What's New in 0.18</h4>
+<p>The 0.18 release continues the project's methodical expansion of Linux syscall coverage and hardware support. According to the changelog, this version extends ext2 filesystem handling and broadens the set of supported Linux system calls, steadily narrowing the gap between Asterinas and the full breadth of the Linux kernel interface. Driver improvements, including refinements to virtio device support, also feature, boosting the OS's ability to run efficiently in virtualised environments — the setting where much early testing and development naturally takes place.</p>
+<p>None of these additions are headline-grabbing on their own, but they reflect the sustained, incremental engineering required to close a compatibility gap with a kernel that has been under active development for more than three decades.</p>
+<h4>The Memory-Safety Argument</h4>
+<p>The core premise behind Asterinas is that only a small portion of an OS kernel — the trusted computing base — needs to contain unsafe code. By leveraging Rust's ownership and type system and confining unsafe operations to a minimal Framekernel core, the project aims to shrink the attack surface dramatically compared with the Linux kernel, where memory safety bugs have historically been a major source of vulnerabilities.</p>
+<p>This is not a theoretical concern. Memory safety flaws account for a substantial proportion of critical CVEs in the Linux kernel each year. For organisations running security-sensitive infrastructure, the appeal of a kernel that structurally eliminates entire classes of bugs — use-after-free, buffer overflows, data races — is clear.</p>
+<h4>Competitive Landscape</h4>
+<p>Asterinas is not alone in pursuing memory-safe system software. Redox OS continues to mature as a full alternative ecosystem. Google's Android team has progressively introduced Rust components into the Linux kernel. Microsoft has explored Rust in Windows internals. Formally verified microkernels like seL4 target safety-critical deployments.</p>
+<p>Where Asterinas differentiates itself is in combining Rust's memory safety guarantees with Linux ABI compatibility — a pairing no other major project currently delivers. If the approach proves viable at scale, it could offer a pragmatic migration path for organisations unwilling or unable to rewrite their application ecosystems yet eager to benefit from stronger security foundations.</p>
+<h4>Outlook</h4>
+<p>Asterinas remains an early-stage project, but it carries a clear and pragmatic thesis: developers should not have to choose between the software ecosystem they already rely on and the memory safety guarantees they want. Version 0.18 is another measured step toward proving that thesis achievable. For developers and architects tracking the future of systems programming, it is a project worth watching closely.</p>
+<hr>
+<p>以 Rust 編寫的作業系統內核 Asterinas，旨在運行未經修改的 Linux 二進位檔，同時提供更強的記憶體安全保證，其版本已達到 0.18。此次發布於 2026 年 6 月 9 日由 Phoronix 報導，標誌著該專案朝著成為 Linux 內核的實用、直接替換方案邁出了又一個漸進但重要的步伐。</p>
+<h4>與其他 Rust 作業系統專案的不同策略</h4>
+<p>在日益擴大的基於 Rust 的作業系統領域中，Asterinas 佔據了一個獨特的位置。與 Redox OS——或許是最知名的 Rust 作業系統努力，其建立了自己的系統庫、檔案格式和原創微內核設計生態系統——不同，Asterinas 採取了 Linux 相容性優先的方法。透過其 Framekernel 架構，該專案實現了 Linux 系統呼叫介面，使得標準的 Linux 二進位檔無需重新編譯即可運行。</p>
+<p>這一區別具有戰略意義。雖然 Redox 提供了一種全新設計，可以自由地從頭重新思考作業系統架構，但它要求應用程式開發人員為其平台移植或重寫軟件。Asterinas 則透過瞄準 Linux ABI 相容性，完全繞過了這一障礙，為組織提供了一條通往記憶體安全基礎設施的途徑，而無需承擔遷移其軟件堆疊的高昂成本。</p>
+<h4>0.18 版本的新特性</h4>
+<p>0.18 版本繼續擴展專案對 Linux 系統呼叫覆蓋範圍和硬件支援的系統性推進。根據變更日誌，此版本擴展了 ext2 檔案系統處理，並擴大了支援的 Linux 系統呼叫集合，穩步縮小了 Asterinas 與完整 Linux 內核介面之間的差距。驅動程式的改進，包括對 virtio 裝置支援的優化也包含在內，提升了作業系統在虛擬化環境中高效運行的能力——這是許多早期測試和開發自然發生的場景。</p>
+<p>這些新增內容本身都不是引人注目的頭條新聞，但它們反映了為縮小與一個已活躍開發超過三十年的內核之間的相容性差距，所進行的持續、漸進的工程努力。</p>
+<h4>記憶體安全的論點</h4>
+<p>Asterinas 背後的核心前提是，作業系統內核中只有一小部分——可信賴運算基底——需要包含不安全的程式碼。透過利用 Rust 的所有權和類型系統，並將不安全操作限制在一個最小的 Framekernel 核心中，該專案旨在與 Linux 內核相比，急劇縮小攻擊面，因為記憶體安全漏洞歷來是 Linux 內核中漏洞的主要來源之一。</p>
+<p>這並非理論上的擔憂。記憶體安全缺陷每年佔據 Linux 內核中嚴重 CVE 的很大一部分。對於運行安全敏感基礎設施的組織而言，一個從結構上消除了整類漏洞——例如釋放後使用、緩衝區溢位、資料競爭——的內核，其吸引力是顯而易見的。</p>
+<h4>競爭格局</h4>
+<p>Asterinas 並非唯一追求記憶體安全系統軟件的專案。Redox OS 作為一個完整的替代生態系統持續成熟。Google 的 Android 團隊已逐步將 Rust 元件引入 Linux 內核。Microsoft 也已探索在 Windows 內部使用 Rust。像 seL4 這樣經過形式化驗證的微內核則針對安全關鍵型部署。</p>
+<p>Asterinas 的獨特之處在於，它將 Rust 的記憶體安全保證與 Linux ABI 相容性相結合——目前沒有其他主要專案能同時提供這兩者。如果這種方法在規模上被證明可行，它可以為那些不願或無法重寫其應用程式生態系統、但渴望獲得更強安全基礎的組織，提供一條務實的遷移路徑。</p>
+<h4>展望</h4>
+<p>Asterinas 仍然是一個早期階段的專案，但它承載了一個清晰而務實的論點：開發人員不應在他們已經依賴的軟件生態系統與他們想要的記憶體安全保證之間做選擇。0.18 版本是證明該論點可行的又一謹慎步伐。對於追蹤系統程式設計未來的開發人員和架構師來說，這是一個值得密切關注的專案。</p>
+<p><a href="https://www.phoronix.com/news/Asterinas-0.18" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>

@@ -1,0 +1,48 @@
+Date: 2026-05-28 13:21:00
+Author: HKLUG Team
+Title: Spark 4.0 Drops Scala 2.12 Support, Raising Migration Stakes for Data Teams
+Content:
+<p>Organizations running Apache Spark workloads face a significant upgrade challenge with the arrival of Spark 4.0, which introduces two mandatory baseline changes that will force widespread code updates across the data engineering ecosystem.</p>
+<p>The most impactful shift is the complete removal of Scala 2.12 support. Every Scala-based Spark application, library, and connector must be recompiled against Scala 2.13 before it can run on Spark 4.0. For teams with large Scala codebases — still a common choice in enterprise data pipelines — this effectively doubles the migration workload, since the Spark platform upgrade and the language version transition must happen in lockstep.</p>
+<h4>Java 17 becomes the new floor</h4>
+<p>Alongside the Scala change, Spark 4.0 mandates Java 17 as the minimum runtime version. Teams still operating on earlier Java releases will need to upgrade their JVM infrastructure as part of the transition. While Java 17 has been available since September 2021 and is widely adopted, some legacy production environments — particularly in financial services, where change control is rigorous — may not yet have completed that step.</p>
+<p>Ubuntu's official migration guide, published this month, walks through the key differences between Spark 3.x and Spark 4.0 and offers practical planning advice for teams beginning the transition.</p>
+<h4>PySpark and Java API users are not off the hook</h4>
+<p>For teams using PySpark or the Java API, the Scala removal is less directly disruptive. However, the risk is far from negligible. Many Spark deployments rely on third-party extensions, connectors, or performance-optimized libraries written in Scala. Even if an organization's primary application layer is in Python or Java, a single Scala 2.12 dependency — a custom connector to a data warehouse, for instance — can block the entire migration.</p>
+<p>The guide recommends that every team start by cataloguing all Spark applications, libraries, and connectors in their environment, paying particular attention to Scala 2.12 binary dependencies. Without a thorough inventory, unexpected compatibility failures are likely to surface late in the process.</p>
+<h4>Phased migration is critical</h4>
+<p>Given the compounded complexity of upgrading both the Spark version and the Scala runtime simultaneously, a phased approach is strongly advised. The recommended strategy involves four stages:</p>
+<ol>
+<li><strong>Inventory and assessment</strong> of all Spark-dependent workloads and their language-level dependencies.</li>
+<li><strong>Prioritization</strong>, starting with non-critical, lower-risk applications that can serve as pilot projects.</li>
+<li><strong>Staging and validation</strong> in a dedicated environment, where compatibility issues can surface without affecting production pipelines.</li>
+<li><strong>Controlled rollout</strong> with close monitoring of performance and stability at each stage.</li>
+</ol>
+<p>A reactive or rushed migration poses real risk to data pipeline reliability. For organizations processing financial transactions, regulatory reporting data, or time-sensitive analytics, pipeline downtime or subtle behavioral differences introduced by the version change could have outsized consequences.</p>
+<h4>Broader platform coordination required</h4>
+<p>The transition to Spark 4.0 will also need to align with broader infrastructure dependencies. Organizations running Spark on managed cloud services, container orchestration platforms, or integrated data lakehouse architectures will need to verify that their surrounding stack supports the new runtime requirements.</p>
+<p>Several open questions remain. The full scope of API changes and deprecations in Spark 4.0 beyond the Scala and Java version mandates has yet to be fully documented, leaving teams uncertain about the true breadth of the migration effort. The community is also watching for clarity on the official end-of-life timeline for Spark 3.x, which will define the hard deadline by which organizations must complete the move — and how long they can continue running older versions with security patch support.</p>
+<p>For data engineering teams, the message is clear: migration planning should begin now. Waiting until Spark 3.x support winds down will leave teams scrambling to manage a dual-version transition under time pressure — a scenario that rarely ends well in production environments.</p>
+<hr>
+<p>對於運行 Apache Spark 工作負載的企業而言，Spark 4.0 的來臨帶來了一項重大的升級挑戰。此版本引入了兩項強制性的基準變更，將迫使整個數據工程生態系統進行廣泛的程式碼更新。</p>
+<p>最具影響力的轉變是徹底移除對 Scala 2.12 的支援。所有基於 Scala 的 Spark 應用程式、library 和連接器都必須針對 Scala 2.13 重新編譯，方能在 Spark 4.0 上運行。對於擁有龐大 Scala 程式碼庫的團隊——這在企業數據 pipeline 中仍是常見選擇——這實質上使遷移工作量倍增，因為 Spark 平台升級與語言版本的過渡必須同步進行。</p>
+<h4>Java 17 成為新的最低要求</h4>
+<p>與 Scala 的變更同步，Spark 4.0 強制要求 Java 17 作為最低運行時版本。仍在使用較早 Java 版本的團隊需要將其 JVM 基礎設施升級，作為過渡的一部分。儘管 Java 17 自 2021 年 9 月起已可用並被廣泛採用，但一些傳統的生產環境——特別是變更控制嚴謹的金融服務業——可能尚未完成此步驟。</p>
+<p>Ubuntu 於本月發佈的官方遷移指南，詳細說明了 Spark 3.x 與 Spark 4.0 之間的主要差異，並為開始過渡的團隊提供了實用的規劃建議。</p>
+<h4>PySpark 和 Java API 用戶亦不能倖免</h4>
+<p>對於使用 PySpark 或 Java API 的團隊而言，Scala 的移除所帶來的直接干擾較小。然而，其風險絕非可忽略。許多 Spark 部署依賴於以 Scala 編寫的第三方擴展、連接器或經過效能優化的 library。即使一個組織的主要應用程式層是 Python 或 Java，單一的 Scala 2.12 依賴項——例如一個連接數據倉庫的自訂連接器——便可能阻礙整個遷移過程。</p>
+<p>該指南建議，每個團隊應從盤點其環境中的所有 Spark 應用程式、library 和連接器開始，尤其要關注 Scala 2.12 的 binary 依賴項。若未進行徹底的盤點，意想不到的相容性問題很可能在遷移過程後期才浮現。</p>
+<h4>分階段遷移至關重要</h4>
+<p>鑒於同時升級 Spark 版本和 Scala 運行時所帶來的複合複雜性，強烈建議採取分階段的方法。推薦的策略包含四個階段：</p>
+<ol>
+<li><strong>盤點與評估</strong>所有依賴 Spark 的工作負載及其語言級別的依賴項。</li>
+<li><strong>優先級排序</strong>，從非關鍵、風險較低、可作為試點項目的應用程式開始。</li>
+<li><strong>在專用環境中進行預備與驗證</strong>，在此環境下，相容性問題可以浮現而不影響生產 pipeline。</li>
+<li><strong>受控推出</strong>，並在每個階段密切監控效能與穩定性。</li>
+</ol>
+<p>被動或倉促的遷移會對數據 pipeline 的可靠性構成實實在在的風險。對於處理金融交易、監管報告數據或對時間敏感的分析工作的組織而言，由版本變更引起的 pipeline 停機或微妙行為差異，可能帶來嚴重的後果。</p>
+<h4>需要更廣泛的平台協調</h4>
+<p>向 Spark 4.0 的過渡還需與更廣泛的基礎設施依賴項保持一致。在託管雲端服務、容器編排平台或整合式數據湖倉架構上運行 Spark 的組織，需要驗證其周邊技術堆疊是否支援新的運行時要求。</p>
+<p>若干問題仍有待釐清。除了 Scala 和 Java 版本的要求外，Spark 4.0 中 API 變更和棄用的完整範圍尚未被完整記錄，這使得團隊對於遷移工作的實際廣度感到不確定。社群亦在關注 Spark 3.x 官方生命週期結束時間表的明確資訊，這將決定組織必須完成遷移的硬性截止日期，以及他們在安全 patch 支援下能繼續運行舊版本多長時間。</p>
+<p>對於數據工程團隊而言，資訊十分明確：遷移規劃應立即開始。等待至 Spark 3.x 支援結束時才行動，將使團隊在時間壓力下疲於應付雙版本過渡的管理——在生產環境中，這種情況極少會有好的結局。</p>
+<p><a href="https://ubuntu.com/blog/migrating-from-apache-spark-3-to-spark-4" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>

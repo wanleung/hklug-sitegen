@@ -1,0 +1,34 @@
+Date: 2026-05-27 22:47:00
+Author: HKLUG Team
+Title: Linux Developers Propose Removing Underused x32 ABI From the Kernel
+Content:
+<p>Linux kernel developers are evaluating the removal of the x32 ABI, a niche system interface for x86_64 processors that has seen negligible adoption since its introduction more than a decade ago. The proposal, reported by Phoronix, marks the latest chapter in an ongoing effort by the open-source community to weigh the costs of maintaining little-used features against the demands of kernel stewardship.</p>
+<h4>A Clever Idea That Arrived Too Late</h4>
+<p>The x32 ABI was merged into the Linux kernel in version 3.4, released in 2012. Its premise was technically sound: it allowed applications running on 64-bit x86 processors to use the full 64-bit register file and wide data paths while retaining 32-bit pointers. In theory, this combination offered the performance benefits of 64-bit computing with a smaller memory footprint — particularly attractive for workloads that did not require the vast address space that 64-bit pointers provide.</p>
+<p>The problem was timing. By 2012, the transition from 32-bit to 64-bit Linux distributions was already largely complete. Most developers and users had moved to full 64-bit environments, and the ecosystem — from package managers to upstream projects — had been optimized accordingly. There was little incentive to adopt an intermediate ABI that required explicit compiler support, dedicated libraries, and additional testing infrastructure.</p>
+<h4>Erosion of the Original Value Proposition</h4>
+<p>Even the technical rationale that once justified x32 has weakened over time. When the ABI was conceived, memory was a more constrained resource for many deployments, and the savings from 32-bit pointers could be meaningful. In the years since, hardware costs have fallen dramatically, and memory capacity has expanded across server, desktop, and embedded platforms alike. The marginal benefit of smaller pointers has shrunk, while the full 64-bit environment has become the unchallenged standard.</p>
+<p>With so few users and developers relying on x32, the feature imposes a maintenance burden that the kernel community increasingly views as unjustified. Every ABI supported by the kernel requires ongoing attention — from regression testing to compatibility checks when core subsystems change. For a feature that serves a vanishingly small audience, those costs add up.</p>
+<h4>The Broader Maintenance Equation</h4>
+<p>The x32 proposal is not an isolated case. The Linux kernel community has a track record of periodically pruning features that have outlived their usefulness. Previous removals have targeted obsolete hardware drivers, deprecated system calls, and legacy filesystem interfaces. Each such decision involves the same fundamental calculus: does the cost of continued maintenance outweigh the disruption to remaining users?</p>
+<p>In x32's case, the answer appears increasingly clear. The ABI's user base is believed to be extremely small, and migrating any remaining workloads to standard 64-bit binaries is straightforward in most scenarios. Unlike features tied to specific hardware that might still be running in production, a software ABI transition carries relatively low risk.</p>
+<p>The proposal will go through the standard kernel mailing list discussion and public review process before any final decision is made. Even features with minimal adoption receive a deliberation period, allowing affected parties to voice concerns or demonstrate active use.</p>
+<h4>A Lesson in Ecosystem Timing</h4>
+<p>For the broader open-source community, x32 serves as a useful case study in how ecosystem context shapes the fate of even technically well-designed features. A capability that might have been transformative had it arrived during the active 32-bit to 64-bit transition became a footnote because it landed after the window of relevance had closed.</p>
+<p>The kernel's willingness to revisit and retire such features reflects a mature development culture that prioritises long-term code health over backward compatibility for its own sake — a principle that keeps one of the world's most important software projects maintainable at scale.</p>
+<hr>
+<p>Linux 內核開發者正在評估移除 x32 ABI，這是一個針對 x86_64 處理器的利基系統介面，自十多年前推出以來採用率微乎其微。由 Phoronix 報導的這項提案，標誌著開源社群持續權衡維護使用率低功能與內核管理需求之間成本的最新篇章。</p>
+<h4>一個姍姍來遲的巧妙構思</h4>
+<p>x32 ABI 於 2012 年發布的 Linux 內核 3.4 版本中合併。其基本前提是技術上合理的：它允許在 64 位元 x86 處理器上運行的應用程式使用完整的 64 位元暫存器檔案和寬數據路徑，同時保留 32 位元指標。理論上，這種結合以較小的記憶體佔用空間，提供了 64 位元計算的效能優勢——這對不需要 64 位元指標所能提供的龐大地址空間的工作負載尤其有吸引力。</p>
+<p>問題在於時機。到了 2012 年，從 32 位元到 64 位元 Linux 發行版的過渡已基本完成。大多數開發者和用戶已遷移到完整的 64 位元環境，而生態系統——從套件管理器到上游項目——也已據此進行了優化。採用一個需要明確編譯器支援、專用函式庫和額外測試基礎設施的中間 ABI，幾乎沒有什麼動力。</p>
+<h4>原始價值主張的侵蝕</h4>
+<p>即使是曾經支持 x32 的技術理由，隨著時間推移也已減弱。當這個 ABI 被構想時，記憶體對許多部署而言是更受制約的資源，而 32 位元指標所帶來的節省可能是有意義的。自那以來的這些年，硬件成本急劇下降，記憶體容量在伺服器、桌上型和嵌入式平台都已擴展。較小指標的邊際效益已經縮小，而完整的 64 位元環境已成為無可爭議的標準。</p>
+<p>由於依賴 x32 的用戶和開發者如此之少，該功能帶來的維護負擔，被內核社群認為日益不合理。內核支援的每個 ABI 都需要持續關注——從回歸測試到核心子系統變更時的相容性檢查。對於服務於極少數受眾的功能，這些成本會不斷累積。</p>
+<h4>更廣泛的維護考量</h4>
+<p>x32 提案並非孤立事件。Linux 內核社群有定期淘汰已過時功能的記錄。先前的移除對象包括過時的硬件驅動程式、棄用的系統呼叫以及傳統的檔案系統介面。每個這樣的決定都涉及相同的根本權衡：持續維護的成本是否超過對剩餘用戶造成的干擾？</p>
+<p>就 x32 的情況而言，答案似乎越來越清晰。據信該 ABI 的用戶群非常小，在大多數情況下，將任何剩餘的工作負載遷移到標準的 64 位元二進制檔是簡單直接的。與可能仍在生產環境中運行的特定硬件功能不同，軟件 ABI 過渡帶來的風險相對較低。</p>
+<p>在做出任何最終決定之前，該提案將經過標準的內核郵件列表討論和公開審查過程。即使是採用率極低的功能也會有審議期，讓相關方表達擔憂或展示其活躍使用情況。</p>
+<h4>關於生態系統時機的啟示</h4>
+<p>對於更廣泛的開源社群，x32 提供了一個有用的案例研究，說明生態系統背景如何塑造即使是技術上設計良好的功能的命運。一個如果出現在 32 位元到 64 位元活躍過渡時期可能具有變革性的功能，卻因為在相關性窗口關閉後才出現而成為了註腳。</p>
+<p>內核願意重新審視並淘汰此類功能，反映了一種成熟的開發文化，優先考慮長期的程式碼健康，而非為了向後相容而向後相容——這一原則使得世界上最重要的軟件項目之一得以在規模上保持可維護性。</p>
+<p><a href="https://www.phoronix.com/news/Linux-x32-ABI-2026" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>

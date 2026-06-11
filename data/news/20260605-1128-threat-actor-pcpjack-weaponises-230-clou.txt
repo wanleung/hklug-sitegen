@@ -1,0 +1,44 @@
+Date: 2026-06-05 07:22:00
+Author: HKLUG Team
+Title: Threat Actor PCPJack Weaponises 230 Cloud Servers Across AWS, Google, and Azure for Industrial-Scale Email Abuse
+Content:
+<p>A threat actor tracked as PCPJack has compromised approximately 230 cloud servers spanning Amazon Web Services, Google Cloud, and Microsoft Azure, repurposing them as a covert SMTP relay network for industrial-scale email abuse, according to security firm Hunt.io.</p>
+<p>The campaign, disclosed by Hunt.io on 5 June, involved hijacking legitimate business servers across the United States, Europe, and Asia. Once co-opted, these workloads were silently converted into SMTP mail proxies, verified for relay capability, and synchronised to a downstream consumer at five-minute intervals — a cadence that points to a highly automated, factory-like operation.</p>
+<h4>Reputational Hijacking at Scale</h4>
+<p>The core strategy behind PCPJack's campaign is what security researchers describe as reputational hijacking. By routing malicious or deceptive email traffic through IP addresses belonging to trusted cloud providers — rather than through attacker-controlled infrastructure — the threat actor can effectively bypass conventional email security filters. Many mail systems inherently trust traffic originating from major cloud platforms, making this a potent evasion technique.</p>
+<p>The simultaneous use of all three leading cloud providers further complicates detection, as defenders cannot simply blocklist a single platform's IP ranges without disrupting legitimate cloud-hosted services.</p>
+<h4>The Shared Responsibility Problem</h4>
+<p>The incident underscores a recurring theme in cloud security: the weakness often lies not in the cloud provider's platform itself, but in how customers configure and secure their own workloads. Misconfigured or poorly secured servers — such as those running open mail transfer agents (MTAs) without proper access controls — are the primary entry point for campaigns of this nature.</p>
+<p>Under the shared responsibility model that governs cloud computing, providers secure the underlying infrastructure, while customers remain responsible for securing the applications and services they deploy on top of it. PCPJack's ability to compromise 230 servers across three providers suggests a widespread gap in tenant-level security hygiene.</p>
+<h4>What Security Teams Should Do</h4>
+<p>Hunt.io's findings point to several concrete defensive measures that organisations running workloads in public cloud environments should prioritise:</p>
+<ul>
+<li><strong>Audit outbound SMTP traffic.</strong> Organisations should review whether any cloud workloads are sending traffic on port 25 unexpectedly. Legitimate business servers rarely need to function as open mail relays.</li>
+<li><strong>Monitor for relay behaviour.</strong> Security teams should watch for signs that a workload is forwarding mail on behalf of external parties, which would indicate it has been co-opted into a relay network.</li>
+<li><strong>Harden mail transfer agents.</strong> Any MTA deployed in the cloud should be configured to reject unauthorised relay requests and should not be exposed to the public internet unless explicitly required.</li>
+<li><strong>Enforce network-level egress controls.</strong> Restricting outbound traffic to only necessary ports and destinations can prevent compromised workloads from reaching downstream consumers.</li>
+</ul>
+<h4>A Broader Trend</h4>
+<p>PCPJack's operation is emblematic of a broader shift in how threat actors approach cloud infrastructure. Rather than exploiting zero-day vulnerabilities in cloud platforms, attackers increasingly target the sprawling, often poorly monitored attack surface created by customers' own deployments. The combination of trusted IP reputation, automated synchronisation, and multi-provider targeting makes this class of attack both difficult to detect and attractive to a range of malicious actors — from spammers to more sophisticated adversaries seeking reliable delivery infrastructure for phishing and fraud campaigns.</p>
+<p>For IT and security professionals managing cloud environments, the takeaway is clear: the ease of deploying workloads in the cloud must be matched by equally rigorous monitoring and hardening, particularly for services like SMTP that can be silently weaponised if left exposed.</p>
+<hr>
+<p>據安全公司 Hunt.io 表示，一個被追蹤為 PCPJack 的威脅行為者已入侵約 230 個橫跨 Amazon Web Services、Google Cloud 和 Microsoft Azure 的雲端伺服器，並將其改造成用於工業級電郵濫用的隱蔽 SMTP 中繼網絡。</p>
+<p>此項活動於 6 月 5 日由 Hunt.io 揭露，涉及劫持美國、歐洲和亞洲的合法企業伺服器。一旦這些工作負載被利用，它們便被悄悄轉換為 SMTP 郵件代理，驗證其中繼能力，並以五分鐘的間隔同步至下游消費者——這種節奏顯示其運作具有高度自動化、工廠化的特點。</p>
+<h4>大規模的信譽劫持</h4>
+<p>PCPJack 活動的核心策略，被安全研究人員稱為「信譽劫持」。通過將惡意或欺騙性的電郵流量路由至屬於受信任雲端供應商的 IP 地址——而非攻擊者控制的基礎設施——威脅行為者可以有效繞過傳統的電郵安全過濾器。許多郵件系統本質上信任來自主要雲端平台的流量，這使得此手法成為一種強效的規避技術。</p>
+<p>同時使用三大領先的雲端供應商進一步增加了偵測難度，因為防禦者無法簡單地封鎖單一平台的 IP 範圍，而不干擾合法的雲端託管服務。</p>
+<h4>共同責任的問題</h4>
+<p>此事件突顯了雲端安全中一個反覆出現的主題：弱點通常不在於雲端供應商平台本身，而在於客戶如何配置和保障其自身工作負載的安全。配置錯誤或安全性不佳的伺服器——例如運行開放式郵件傳輸代理（MTA）且未設置適當存取控制的伺服器——是此類活動的主要切入點。</p>
+<p>在管理雲端運算的「共同責任模型」下，供應商負責保障底層基礎設施的安全，而客戶則對其在該基礎設施上部署的應用程式和服務的安全性負責。PCPJack 能夠入侵三個供應商的 230 個伺服器，表明租戶級別的安全衛生存在廣泛的缺口。</p>
+<h4>安全團隊應採取的措施</h4>
+<p>Hunt.io 的研究結果指出了在公有雲環境中運行工作負載的組織應優先採取的幾項具體防禦措施：</p>
+<ul>
+<li><strong>稽核出站 SMTP 流量。</strong> 組織應檢查是否有任何雲端工作負載意外地在 25 端口發送流量。合法的企業伺服器很少需要充當開放的郵件中繼。</li>
+<li><strong>監控中繼行為。</strong> 安全團隊應留意工作負載代表外部方轉發郵件的跡象，這表明它已被捲入中繼網絡。</li>
+<li><strong>強化郵件傳輸代理。</strong> 任何部署在雲端的 MTA 都應配置為拒絕未經授權的中繼請求，且除非明確需要，否則不應暴露於公共互聯網。</li>
+<li><strong>實施網絡層級的出口控制。</strong> 將出站流量限制為僅必要的端口和目的地，可以防止受入侵的工作負載聯繫到下游消費者。</li>
+</ul>
+<h4>更廣泛的趨勢</h4>
+<p>PCPJack 的行動象徵著威脅行為者處理雲端基礎設施方式的更廣泛轉變。攻擊者不再僅僅利用雲端平台的零日漏洞，而是越來越針對由客戶自身部署所造成的、龐大且往往監控不足的攻擊面。受信任的 IP 信譽、自動化同步以及多供應商針對的結合，使得這類攻擊既難以偵測，又對從垃圾郵件發送者到尋求可靠傳遞基礎設施進行網絡釣魚和詐騙活動的更複雜對手等各類惡意行為者都具有吸引力。</p>
+<p>對於管理雲端環境的 IT 和安全專業人員而言，教訓很明確：在雲端部署工作負載的便捷性，必須與同等嚴格的監控和強化措施相匹配，特別是對於像 SMTP 這樣，若暴露在外就可能被悄悄武器化的服務。</p>
+<p><a href="https://thehackernews.com/2026/06/pcpjack-hijacks-230-aws-google-cloud.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>

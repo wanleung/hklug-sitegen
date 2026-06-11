@@ -1,0 +1,74 @@
+Date: 2026-05-26 13:36:00
+Author: HKLUG Team
+Title: Microsoft Patches High-Severity Unauthenticated SharePoint Server Flaw
+Content:
+<p>Microsoft has released emergency security updates addressing a high-severity remote code execution vulnerability affecting SharePoint Server, warning administrators that the flaw can be exploited without authentication or user interaction.</p>
+<p>Tracked as CVE-2026-45659, the vulnerability carries a CVSS v3.1 score of 8.8 and impacts SharePoint Server 2016, 2019, and 2020 editions. The flaw stems from improper deserialization of untrusted data within Microsoft Office SharePoint, allowing attackers to inject malicious payloads and execute arbitrary code under the context of the SharePoint application pool.</p>
+<p>The vulnerability presents a particularly dangerous attack surface because it requires no credentials, specific configurations, or user interaction to exploit. This interaction-free exploitation path makes it highly susceptible to automated scanning tools and opportunistic wormable attacks, similar to previous SharePoint vulnerabilities that were rapidly weaponized in the wild.</p>
+<h4>Deserialization Attack Vector Explained</h4>
+<p>The root cause lies in how SharePoint processes serialized data objects. When an application deserializes data without proper validation, attackers can craft malicious serialized payloads that, when processed by the server, trigger arbitrary code execution. In this case, the vulnerability allows unauthenticated remote attackers to send specially crafted requests to vulnerable SharePoint endpoints, resulting in full server compromise.</p>
+<p>Successful exploitation grants attackers the same privileges as the SharePoint application pool identity, which typically runs with elevated permissions. This could enable lateral movement across enterprise networks, data exfiltration, or deployment of ransomware and other malicious payloads.</p>
+<h4>On-Premises Scope, Not SharePoint Online</h4>
+<p>Importantly, this vulnerability only affects on-premises SharePoint Server installations. Microsoft's cloud-based SharePoint Online service is not impacted by CVE-2026-45659, as the underlying infrastructure and update mechanisms differ significantly from self-hosted deployments. Organizations that have fully migrated to Microsoft 365 do not need to take action for this specific flaw.</p>
+<p>However, enterprises maintaining hybrid deployments or legacy on-premises SharePoint infrastructure remain at risk. Legacy deployments are particularly vulnerable due to historically slower patch adoption cycles and the tendency to deprioritize updates for systems perceived as "stable" or isolated.</p>
+<h4>Patching Checklist for Administrators</h4>
+<p>IT administrators managing SharePoint Server environments should take the following steps immediately:</p>
+<ol>
+<li>
+<p><strong>Inventory all SharePoint Server instances</strong> across 2016, 2019, and 2020 editions, including development, staging, and production environments.</p>
+</li>
+<li>
+<p><strong>Deploy Microsoft's May 2026 security patches</strong> for CVE-2026-45659 as soon as operationally feasible. Test patches in non-production environments first to verify compatibility with custom solutions and third-party integrations.</p>
+</li>
+<li>
+<p><strong>Implement compensating controls</strong> if immediate patching is not possible:</p>
+</li>
+<li>Restrict external access to SharePoint servers via firewall rules or VPN requirements</li>
+<li>Enable strict network segmentation to limit lateral movement potential</li>
+<li>
+<p>Deploy enhanced logging and monitoring to detect anomalous deserialization attempts or unusual process spawning</p>
+</li>
+<li>
+<p><strong>Verify application pool identities</strong> and ensure they follow the principle of least privilege, reducing the impact of potential exploitation.</p>
+</li>
+<li>
+<p><strong>Monitor threat intelligence feeds</strong> for indicators of compromise and evidence of active exploitation attempts targeting unpatched systems.</p>
+</li>
+</ol>
+<p>Microsoft has classified the vulnerability with "Important" severity, but the combination of a high CVSS score, unauthenticated exploitation, and broad version support warrants urgent attention from security teams. Organizations should treat patching as a priority, particularly for internet-facing SharePoint deployments that may be directly accessible to threat actors.</p>
+<hr>
+<p>Microsoft 已推出緊急安全更新，修補影響 SharePoint Server 的高嚴重性 remote code execution 漏洞，並警告管理員該漏洞可在未經認證及無需用戶互動的情況下遭利用。</p>
+<p>該漏洞編號為 CVE-2026-45659，CVSS v3.1 評分達 8.8，影響 SharePoint Server 2016、2019 及 2020 版本。漏洞源於 Microsoft Office SharePoint 對不受信任數據的 deserialization 處理不當，攻擊者可注入惡意 payload，並在 SharePoint application pool 的權限下執行任意代碼。</p>
+<p>此漏洞的攻擊面尤其危險，因為利用它無需憑證、特定配置或用戶互動。這種無需互動的 exploitation path 使其極易受到自動化掃描工具及機會性 wormable 攻擊，與以往在野外迅速被武器化的 SharePoint 漏洞類似。</p>
+<h4>Deserialization Attack Vector 解析</h4>
+<p>根本原因在於 SharePoint 處理 serialized data objects 的方式。當應用程式在沒有適當驗證的情況下 deserialize 數據時，攻擊者可精心設計惡意 serialized payload，當伺服器處理這些 payload 時，便會觸發 arbitrary code execution。在此情況下，漏洞允許未經認證的遠程攻擊者向易受攻擊的 SharePoint endpoint 發送特別設計的 request，從而完全控制伺服器。</p>
+<p>成功利用後，攻擊者將獲得與 SharePoint application pool identity 相同的權限，該身份通常以較高權限運行。這可能使攻擊者能夠在企業網絡中進行 lateral movement、data exfiltration，或部署 ransomware 及其他惡意 payload。</p>
+<h4>僅影響 On-Premises 部署，SharePoint Online 不受影響</h4>
+<p>值得注意的是，此漏洞僅影響 on-premises SharePoint Server 安裝。Microsoft 的雲端 SharePoint Online 服務不受 CVE-2026-45659 影響，因為其 underlying infrastructure 及 update mechanism 與 self-hosted deployment 有顯著差異。已完全遷移至 Microsoft 365 的機構無需就此特定漏洞採取行動。</p>
+<p>然而，維持 hybrid deployment 或傳統 on-premises SharePoint infrastructure 的企業仍面臨風險。Legacy deployment 尤其脆弱，因為歷史上 patch adoption cycle 較慢，且傾向於被視為「穩定」或隔離的系統而優先次序較低。</p>
+<h4>管理員修補檢查清單</h4>
+<p>管理 SharePoint Server 環境的 IT 管理員應立即採取以下步驟：</p>
+<ol>
+<li>
+<p><strong>清查所有 SharePoint Server instance</strong>，涵蓋 2016、2019 及 2020 版本，包括 development、staging 及 production 環境。</p>
+</li>
+<li>
+<p><strong>盡快部署 Microsoft 2026 年 5 月安全更新</strong>以修復 CVE-2026-45659。應先在 non-production 環境測試安全更新，以驗證與 custom solution 及 third-party integration 的兼容性。</p>
+</li>
+<li>
+<p><strong>如無法立即部署安全更新，實施補償性控制措施</strong>：</p>
+</li>
+<li>透過 firewall rule 或 VPN 要求限制外部訪問 SharePoint 伺服器</li>
+<li>實施嚴格的網絡分段以限制橫向移動</li>
+<li>
+<p>部署增強的 logging 及 monitoring，以偵測異常的 deserialization 嘗試或不尋常的程序生成</p>
+</li>
+<li>
+<p><strong>驗證 application pool identity</strong> 並確保遵循最少權限原則，以降低潛在利用的影響。</p>
+</li>
+<li>
+<p><strong>監控 threat intelligence feed</strong> 以尋找 compromise indicator 及針對未修補系統的活躍利用嘗試證據。</p>
+</li>
+</ol>
+<p>Microsoft 已將此漏洞評級為「Important」嚴重性，但鑑於高 CVSS 評分、未經認證利用及廣泛版本支持，安全團隊仍需緊急關注。機構應將修補列為優先事項，特別是面向互聯網的 SharePoint deployment，因為這些可能直接暴露於威脅參與者面前。</p>
+<p><a href="https://thehackernews.com/2026/05/microsoft-patches-sharepoint-rce-flaw.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>

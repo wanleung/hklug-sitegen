@@ -1,0 +1,36 @@
+Date: 2026-06-01 22:22:00
+Author: HKLUG Team
+Title: Red Hat npm Namespace Hit by Large-Scale Supply-Chain Attack Deploying Credential Stealer
+Content:
+<p>A significant supply-chain attack has compromised more than 30 packages within the official npm namespace for Red Hat, deploying malware designed to siphon developer credentials. The campaign, first reported by BleepingComputer this week, targeted the "@redhat-cloud-services" scope, distributing a new variant of the Shai-Hulud stealer dubbed "Miasma." As of publication, Red Hat has not issued a public security advisory or remediation guidance regarding the affected packages.</p>
+<h5>What Happened</h5>
+<p>The attack involved the malicious takeover of numerous npm packages published under Red Hat's authenticated namespace. The compromised packages were injected with "Miasma," an infostealing payload. Once installed by developers, the malware was designed to harvest sensitive data, including secrets from environment variables, configuration files, and potentially local development credentials. The breach underscores a persistent risk in software supply chains: even packages from a trusted, corporate-backed namespace can be weaponized if publisher accounts are compromised.</p>
+<h5>Why It Matters</h5>
+<p>This incident is particularly concerning due to the prestige of the implicated namespace. Red Hat is a cornerstone of enterprise open-source software, and developers often implicitly trust packages from its official repositories. The attack demonstrates that namespace trust is not an absolute guarantee of security. The use of "Miasma," described as a variant of a known threat, indicates attackers are refining and redeploying tooling specifically for credential harvesting from developer environments. Stolen credentials can serve as a launchpad for further attacks, including lateral movement within corporate networks and the compromise of additional software projects.</p>
+<h5>What Developers Should Do Now</h5>
+<p>The breach highlights critical security practices for the development community:</p>
+<ul>
+<li><strong>Audit your dependencies immediately.</strong> Check your project lockfiles for any packages in the <code>@redhat-cloud-services</code> scope and verify their versions against known clean releases.</li>
+<li><strong>Scrutinize package updates,</strong> even from reputable sources. Sudden version bumps or unusual changes to dependencies should be treated with caution.</li>
+<li><strong>Employ strict credential hygiene.</strong> Secrets should never be stored in environment variables or committed to code repositories. Dedicated secret management and vault-based tools are essential.</li>
+<li><strong>Run automated composition analysis.</strong> Tools such as Socket, Snyk, and npm audit can detect known malicious packages, flag suspicious dependency changes, and catch unexpected behavioural patterns before they reach production.</li>
+<li><strong>Pin dependency versions</strong> in your lockfiles to prevent silent updates from pulling in compromised releases.</li>
+</ul>
+<p>Credential-harvesting payloads are an increasingly common objective in package compromises. This event serves as a stark reminder that robust dependency management and a zero-trust approach to third-party code are fundamental components of modern development security. We will update readers should Red Hat issue official remediation guidance.</p>
+<hr>
+<p>一次重大的供應鏈攻擊已危及 Red Hat 官方 npm 命名空間下的 30 多個套件，並部署旨在竊取開發人員憑證的惡意軟件。此攻擊行動本週由 BleepingComputer 首先報導，目標針對 "@redhat-cloud-services" 範圍，並傳播一種名為「Miasma」的 Shai-Hulud 竊密程式變種。截至本文發稿時，Red Hat 尚未就受影響的套件發佈公開的安全公告或修復指引。</p>
+<h5>事件經過</h5>
+<p>此次攻擊涉及惡意接管了在 Red Hat 經過驗證的命名空間下發佈的眾多 npm 套件。這些受感染的套件被注入了「Miasma」這一竊密載荷。一旦開發人員安裝，該惡意軟件即會設計用來竊取敏感數據，包括來自環境變數、組態檔，以及潛在的本地開發憑證的密鑰。此安全漏洞凸顯了軟件供應鏈中一個持續存在的風險：即使是來自受信賴的、有企業支持的命名空間的套件，若發佈者帳號遭入侵，也可能被武器化。</p>
+<h5>事件重要性</h5>
+<p>此事件之所以特別令人擔憂，是因為涉事命名空間的聲望。Red Hat 是企業開源軟件的基石，開發人員通常對其官方代碼庫的套件有著不言而喻的信任。此次攻擊表明，命名空間的信任並非安全的絕對保證。使用被描述為已知威脅變種的「Miasma」，顯示攻擊者正在改良並重新部署工具，專門用於從開發環境中竊取憑證。被竊的憑證可作為發起進一步攻擊的跳板，包括在企業網絡內進行橫向移動以及危及其他軟件項目。</p>
+<h5>開發人員現時應採取的行動</h5>
+<p>此次漏洞凸顯了開發社群至關重要的安全實踐：</p>
+<ul>
+<li><strong>立即審核您的依賴項。</strong> 檢查您專案的套件鎖定檔，查找 <code>@redhat-cloud-services</code> 範圍內的任何套件，並根據已知的乾淨版本驗證其版本號。</li>
+<li><strong>仔細檢查套件更新，</strong> 即使來自信譽良好的來源。對突然的版本號跳升或依賴項的異常變更應保持謹慎。</li>
+<li><strong>實行嚴格的憑證管理。</strong> 密鑰絕不應儲存在環境變數或提交到程式碼儲存庫。專用的密鑰管理和基於保險庫的工具必不可少。</li>
+<li><strong>運行自動化組合分析。</strong> 如 Socket、Snyk 和 npm audit 等工具可以偵測已知的惡意套件、標記可疑的依賴項變更，並在進入生產環境前捕捉異常行為模式。</li>
+<li><strong>在套件鎖定檔中鎖定依賴項版本，</strong> 以防止靜默更新引入受感染的版本。</li>
+</ul>
+<p>竊取憑證的載荷在套件入侵中正變得越來越常見。此事件嚴峻地提醒我們，穩健的依賴項管理以及對第三方程式碼的零信任方法，是現代開發安全的基本要素。若 Red Hat 發佈官方修復指引，我們將向讀者更新。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/red-hat-npm-packages-compromised-to-steal-developer-credentials/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>

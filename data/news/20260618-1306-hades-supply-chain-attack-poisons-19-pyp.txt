@@ -1,0 +1,44 @@
+Date: 2026-06-18 00:43:00
+Author: HKLUG Team
+Title: Hades Supply Chain Attack Poisons 19 PyPI Packages With Bun-Based Credential Stealer
+Content:
+<p>A new supply chain attack campaign dubbed "Hades" has compromised 19 Python packages on the PyPI registry, distributing 37 malicious wheel artifacts designed to silently execute a credential stealer targeting the Bun JavaScript runtime, according to a report published by The Hacker News on 18 June 2026.</p>
+<p>The Hades campaign is described as a splinter evolution of the earlier Miasma supply chain operation, which itself drew inspiration from the Shai-Hulud-style package poisoning attacks observed in recent months. Researchers say the attackers are refining their techniques and fragmenting into smaller, ecosystem-specific waves that are harder to detect in aggregate.</p>
+<h4>How the Attack Works</h4>
+<p>The malicious packages deliver their payload through a mechanism that exploits Python's <code>.pth</code> file processing. When a developer installs a compromised wheel, a specially named <code>*-setup.pth</code> file is included in the distribution. These <code>.pth</code> files — normally used by Python to add directories to the module import path — can contain executable statements. Because Python processes them automatically during interpreter startup, the malicious code runs without requiring any explicit invocation by the developer.</p>
+<p>This auto-execution vector makes the attack particularly dangerous. A developer who simply runs <code>pip install</code> on one of the tainted packages may never see an obvious warning, yet the embedded payload launches in the background. The payload then downloads and executes a credential-harvesting script leveraging the Bun runtime — a relatively newer JavaScript and TypeScript runtime that has gained traction among developers but remains far less scrutinised than Node.js by most security monitoring tools.</p>
+<h4>Why Bun Is a Growing Target</h4>
+<p>The choice to weaponise Bun reflects a broader trend in supply chain attacks: adversaries are moving beyond the most heavily monitored ecosystems and targeting emerging runtimes that lack mature security tooling. Bun's rising adoption, particularly among developers working in fast-moving JavaScript and TypeScript environments, makes it an attractive vector. Because many endpoint detection and intrusion monitoring systems have not yet built robust signatures for Bun-based activity, malicious scripts running through the runtime can operate under the radar for longer.</p>
+<h4>Implications for Developer Communities</h4>
+<p>For teams working across distributed and international development environments — including developers in multilingual hubs where Python and JavaScript ecosystems frequently intersect — the Hades campaign underscores the importance of scrutinising package dependencies beyond familiar runtimes. Cross-border collaboration often means pulling in packages maintained by contributors across different registries and ecosystems, broadening the potential attack surface.</p>
+<p>The attack also highlights the persistent gap between how <code>.pth</code> files are treated in Python's documentation — as a benign path configuration mechanism — and how they can be abused as an execution channel. Security researchers have previously flagged this risk, but it remains under-addressed in most dependency auditing workflows.</p>
+<h4>Recommended Mitigations</h4>
+<p>Developers and security teams are advised to:</p>
+<ul>
+<li><strong>Audit recently installed PyPI packages</strong> for unexpected <code>.pth</code> files, particularly any matching the <code>*-setup.pth</code> naming pattern.</li>
+<li><strong>Pin dependency versions</strong> and verify package integrity using checksums before installation.</li>
+<li><strong>Monitor Bun process activity</strong> on development and build machines, treating unexpected Bun executions as potential indicators of compromise.</li>
+<li><strong>Use lockfile-based dependency management</strong> tools such as <code>pip-tools</code> or <code>uv</code> to reduce exposure to newly published malicious versions.</li>
+</ul>
+<p>The Hades campaign serves as a reminder that supply chain attacks are not confined to any single language or runtime. As attackers diversify their tooling and target newer platforms, developer communities must expand their defensive vigilance accordingly.</p>
+<hr>
+<p>根據 The Hacker News 於 2026 年 6 月 18 日發布的報告，一場名為「Hades」的新型供應鏈攻擊行動已入侵 PyPI 註冊表中的 19 個 Python 套件，並分發了 37 個惡意 wheel 產物，旨在靜默執行一個針對 Bun JavaScript runtime 的憑證竊取程式。</p>
+<p>Hades 行動被描述為早前 Miasma 供應鏈行動的一個分支演化，而 Miasma 行動本身則汲取了近月觀察到的 Shai-Hulud 式套件投毒攻擊的靈感。研究人員指出，攻擊者正在精煉其技術，並分裂成更小、針對特定生態系統的攻擊波次，使其在整體上更難被偵測。</p>
+<h4>攻擊如何運作</h4>
+<p>這些惡意套件透過利用 Python 的 <code>.pth</code> 檔案處理機制來傳遞其 payload。當開發者安裝受污染的 wheel 檔案時，一個特別命名的 <code>*-setup.pth</code> 檔案會包含在發行版中。這些 <code>.pth</code> 檔案——通常被 Python 用於將目錄添加到模組導入路徑——可以包含可執行語句。由於 Python 在 interpreter 啟動期間會自動處理這些檔案，惡意代碼便無需開發者任何明確調用即可運行。</p>
+<p>這種自動執行向量使該攻擊格外危險。一位僅僅在其中一個受污染套件上執行 <code>pip install</code> 的開發者可能永遠不會看到明顯的警告，但嵌入的 payload 已在背景啟動。隨後，該 payload 會下載並執行一個憑證收集腳本，利用 Bun runtime——這是一個相對較新的 JavaScript 和 TypeScript runtime，雖然在開發者中獲得了青睞，但與 Node.js 相比，仍遠未受到大多數安全監控工具的審查。</p>
+<h4>為何 Bun 成為日益增長的目標</h4>
+<p>選擇將 Bun 武器化反映了一個更廣泛的供應鏈攻擊趨勢：攻擊者正在超越那些被最嚴密監控的生態系統，轉而瞄準缺乏成熟安全工具的新興 runtime。Bun 的採用率不斷上升，尤其是在快節奏的 JavaScript 和 TypeScript 環境中工作的開發者，使其成為一個具吸引力的攻擊向量。由於許多 endpoint detection 和 intrusion monitoring 系統尚未建立針對基於 Bun 活動的穩健簽名，透過該 runtime 運行的惡意腳本可以在雷達下潛伏更長時間。</p>
+<h4>對開發者社群的影響</h4>
+<p>對於在分散且國際化的開發環境中工作的團隊——包括在 Python 和 JavaScript 生態系統經常交匯的多語言樞紐中的開發者——Hades 行動強調了審查熟悉 runtime 之外的套件依賴關係的重要性。跨國協作通常意味著從不同註冊表和生態系統的貢獻者維護的套件中拉取，這擴大了潛在的攻擊面。</p>
+<p>該攻擊也突顯了 <code>.pth</code> 檔案在 Python 文件中的處理方式（作為一種良性的路徑配置機制）與其如何被濫用作為執行通道之間持續存在的差距。安全研究人員先前已標記過此風險，但在大多數依賴項審計工作流程中，這個問題仍未得到充分解決。</p>
+<h4>建議的緩解措施</h4>
+<p>建議開發者和安全團隊：</p>
+<ul>
+<li><strong>審計近期安裝的 PyPI 套件</strong>，檢查是否有意外的 <code>.pth</code> 檔案，特別是任何符合 <code>*-setup.pth</code> 命名模式的檔案。</li>
+<li><strong>固定依賴項版本</strong>，並在安裝前使用 checksums 驗證套件完整性。</li>
+<li><strong>監控開發及 build 機器上的 Bun process 活動</strong>，將意外的 Bun 執行視為潛在的入侵指標。</li>
+<li><strong>使用基於 lockfile 的依賴項管理工具</strong>，例如 <code>pip-tools</code> 或 <code>uv</code>，以減少暴露於新發布的惡意版本。</li>
+</ul>
+<p>Hades 行動提醒我們，供應鏈攻擊並不局限於任何單一語言或 runtime。隨著攻擊者使其工具多樣化並瞄準更新的平台，開發者社群必須相應擴展其防禦警惕。</p>
+<p><a href="https://thehackernews.com/2026/06/hades-pypi-attack-19-packages-poisoned.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>

@@ -1,0 +1,48 @@
+Date: 2026-05-29 09:29:00
+Author: HKLUG Team
+Title: FortiClient EMS Authentication Bypass Actively Exploited to Deploy Credential-Stealing Malware
+Content:
+<p>Threat actors are actively exploiting an authentication bypass flaw (CVE-2026-35616) in Fortinet's FortiClient Enterprise Management Server (EMS) to silently deploy a previously undocumented credential-stealing malware tracked as EKZ, according to a report published by BleepingComputer.</p>
+<p>The vulnerability, disclosed through Fortinet's official advisory, allows attackers to bypass authentication controls on the EMS management console — the centralized platform that IT teams use to manage and push configurations to endpoint security clients across an organization. By compromising this single point of control, attackers can distribute malicious payloads to every connected endpoint in one sweep, effectively turning a security management tool into a malware delivery mechanism.</p>
+<h4>A High-Value Attack Surface</h4>
+<p>FortiClient EMS is widely deployed by enterprises to centrally manage endpoint protection across large fleets of devices. The platform's core function — pushing software, updates, and policy changes to managed endpoints — makes it an exceptionally attractive target. An attacker who gains unauthorized access to the management console inherits the same trust relationship that legitimate administrators rely on, enabling them to distribute malware at scale without triggering endpoint defenses that typically trust communications from the EMS server.</p>
+<p>According to BleepingComputer, exploitation of this flaw is already occurring in the wild, raising urgency for organizations that have not yet applied Fortinet's patches.</p>
+<h4>EKZ: A New Credential Stealer in the Wild</h4>
+<p>The malware delivered through this campaign, dubbed EKZ, is a credential-harvesting tool that researchers have not previously documented in public threat intelligence reports. Analysis indicates that EKZ typically targets stored credentials, browser data, and authentication tokens — though full technical details remain limited as research is still in its early stages.</p>
+<p>Security researchers note that the combination of a management-console compromise with a credential stealer creates a particularly dangerous chain: attackers gain initial access through the EMS vulnerability, deploy EKZ across all managed endpoints, harvest credentials at scale, and use those stolen credentials to move laterally deeper into the network or establish persistent access.</p>
+<p>The preliminary nature of EKZ analysis means that signature-based detection may lag, making patching the underlying vulnerability the most effective immediate defense.</p>
+<h4>Remediation Guidance</h4>
+<p>Fortinet has issued a security advisory addressing the authentication bypass flaw and urges all administrators to apply the available patches immediately. Organizations running FortiClient EMS should take the following steps:</p>
+<ul>
+<li><strong>Patch immediately.</strong> Apply the latest update from Fortinet's advisory page without delay, prioritizing internet-facing EMS instances.</li>
+<li><strong>Audit EMS logs.</strong> Review management console activity logs for unauthorized access attempts, unexpected configuration changes, or unusual software distribution events.</li>
+<li><strong>Hunt for EKZ indicators.</strong> Security teams should check endpoint detection and response (EDR) telemetry and threat intelligence feeds for emerging indicators of compromise associated with the EKZ malware.</li>
+<li><strong>Restrict EMS exposure.</strong> Exposing a management console to the public internet is a security anti-pattern regardless of patching status. Ensure the EMS server is reachable only from trusted internal networks, using network segmentation and access controls to limit who can reach it.</li>
+<li><strong>Rotate credentials.</strong> If compromise is suspected, rotate administrative credentials for the EMS console and consider broader credential resets for accounts accessible from managed endpoints.</li>
+</ul>
+<h4>Why This Matters</h4>
+<p>Fortinet products are among the most widely deployed network security solutions globally, including across enterprise environments in Hong Kong and the broader Asia-Pacific region. The exploitation of a centralized management platform underscores a recurring theme in enterprise security: the tools organizations depend on to protect their infrastructure can themselves become high-impact attack vectors when vulnerabilities emerge.</p>
+<p>For IT administrators, this incident is a reminder that security-management infrastructure demands the same — if not greater — patching discipline as the perimeter defenses it controls. A single unpatched flaw in a management console can effectively neutralize the security posture of an entire fleet of endpoints.</p>
+<hr>
+<p>根據 BleepingComputer 發佈的一份報告，威脅行為者正積極利用 Fortinet 的 FortiClient 企業管理伺服器（EMS）中的一個認證繞過漏洞（CVE-2026-35616），以靜默部署一種先前未有記錄的、名為 EKZ 的竊取憑證惡意軟件。</p>
+<p>此漏洞透過 Fortinet 的官方公告披露，它允許攻擊者繞過 EMS 管理控制台上的認證控制——該集中式平台是 IT 團隊用來管理並向整個組織內的端點安全客戶端推送配置的工具。透過入侵這一單一控制點，攻擊者可以一次性將惡意 payload 分發至所有連接的端點，有效地將安全管理工具轉變為惡意軟件分發機制。</p>
+<h4>高價值攻擊面</h4>
+<p>FortiClient EMS 被企業廣泛部署，用於集中管理大量裝置上的端點防護。該平台的核心功能——向受管端點推送軟件、更新及策略變更——使其成為一個極具吸引力的目標。獲得管理控制台未授權存取權限的攻擊者，將繼承合法管理員所依賴的相同信任關係，使他們能夠大規模分發惡意軟件，而不會觸發那些通常信任來自 EMS 伺服器通訊的端點防禦。</p>
+<p>據 BleepingComputer 報道，此漏洞的利用已在野外發生，這對尚未安裝 Fortinet 修補程式的機構來說，情況更為緊急。</p>
+<h4>EKZ：野外出現的新憑證竊取工具</h4>
+<p>透過此次攻擊活動傳播的惡意軟件被稱為 EKZ，它是一個憑證收集工具，研究人員此前未在公開威脅情報報告中記錄過。分析表明，EKZ 通常針對存儲的憑證、瀏覽器數據和身份驗證權杖——儘管完整技術細節仍然有限，因為研究仍處於初期階段。</p>
+<p>安全研究人員指出，管理控制台入侵與憑證竊取工具的結合，會形成一個特別危險的鏈條：攻擊者透過 EMS 漏洞獲得初始存取權限，在所有受管端點上部署 EKZ，大規模收集憑證，並利用這些被盜憑證進一步橫向移動深入網絡或建立持久性存取。</p>
+<p>由於對 EKZ 的分析尚處初步階段，基於特徵碼的檢測可能會滯後，因此修補底層漏洞是最有效的即時防禦措施。</p>
+<h4>修補指引</h4>
+<p>Fortinet 已發佈安全公告，解決此認證繞過漏洞，並敦促所有管理員立即安裝可用的修補程式。運行 FortiClient EMS 的機構應採取以下步驟：</p>
+<ul>
+<li><strong>立即修補。</strong> 立即從 Fortinet 的公告頁面安裝最新更新，優先處理面向互聯網的 EMS 實例。</li>
+<li><strong>審計 EMS 日誌。</strong> 檢查管理控制台活動日誌，查看是否有未授權存取嘗試、意外的配置變更或異常的軟件分發事件。</li>
+<li><strong>搜尋 EKZ 指標。</strong> 安全團隊應檢查端點偵測與回應（EDR）遙測數據和威脅情報源，尋找與 EKZ 惡意軟件相關的入侵指標（IoC）。</li>
+<li><strong>限制 EMS 暴露。</strong> 將管理控制台暴露於公共互聯網是一種安全反模式，無論修補狀態如何。確保 EMS 伺服器僅可從受信任的內部網絡存取，並使用網路分段和存取控制來限制可存取它的對象。</li>
+<li><strong>輪換憑證。</strong> 如果懷疑遭到入侵，應輪換 EMS 控制台的管理憑證，並考慮對可從受管端點存取的帳戶進行更廣泛的憑證重置。</li>
+</ul>
+<h4>為何此事重要</h4>
+<p>Fortinet 產品是全球部署最廣泛的網絡安全解決方案之一，在香港及更廣泛的亞太區企業環境中亦被廣泛採用。對集中式管理平台的利用凸顯了企業安全中一個反覆出現的主題：機構賴以保護其基礎設施的工具，一旦出現漏洞，本身也可能成為高衝擊力的攻擊媒介。</p>
+<p>對於 IT 管理員而言，此事件是一個提醒：安全基礎設施需要與其控制的邊界防禦同等——如果不是更高——的修補紀律。管理控制台上一個未修補的漏洞，就可能有效地使整個端點防禦態勢失效。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/hackers-exploit-forticlient-ems-flaw-to-push-infostealer-malware/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>

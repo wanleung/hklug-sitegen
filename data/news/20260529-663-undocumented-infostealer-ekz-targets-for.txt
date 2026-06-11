@@ -1,0 +1,34 @@
+Date: 2026-05-29 14:12:00
+Author: HKLUG Team
+Title: Undocumented Infostealer EKZ Targets FortiClient EMS via Critical Authentication Bypass
+Content:
+<p>Threat actors are actively exploiting a critical authentication bypass vulnerability in Fortinet's FortiClient Enterprise Management Server (EMS) to deploy a previously undocumented credential-stealing malware tracked as EKZ, according to a report by BleepingComputer.</p>
+<p>The flaw, designated CVE-2026-35616, carries a CVSS severity score of 9.6 out of 10 — a rating that places it among the most severe categories of software vulnerability. It allows attackers to bypass authentication controls on the FortiClient EMS management platform, which organisations use to centrally administer large fleets of endpoints running the FortiClient security agent.</p>
+<h4>Why this matters at scale</h4>
+<p>FortiClient EMS is designed to manage thousands — sometimes tens of thousands — of endpoints from a single console. That concentration of control makes it an exceptionally high-value target. A successful compromise of one EMS server can cascade across an entire managed environment, giving attackers a force multiplier that few other vulnerabilities offer.</p>
+<p>In this case, attackers are leveraging the authentication bypass to gain access to the EMS server and then push out EKZ, a credential stealer with no prior presence in threat-intelligence databases. Because the malware is entirely undocumented, signature-based detection tools are unlikely to flag it, significantly raising the urgency around patching rather than relying on detection alone.</p>
+<h4>Indicators of compromise</h4>
+<p>Security teams investigating potential intrusions should watch for two key indicators, as reported by BleepingComputer. The first is unexpected or anomalous PowerShell activity on EMS servers, which may signal that EKZ or a related payload is executing. The second is outbound connections from EMS infrastructure to unfamiliar or suspicious command-and-control (C2) servers, which would suggest the malware has already established a foothold and is exfiltrating stolen credentials.</p>
+<h4>Fortinet's mitigation guidance</h4>
+<p>Fortinet has urged all organisations running affected versions of FortiClient EMS to apply the available security patches immediately. As a temporary workaround for teams that cannot patch straight away, the vendor recommends restricting network access to the EMS management interface so that only trusted internal IP addresses can reach it — rather than leaving the interface broadly accessible across the network.</p>
+<p>This advice is particularly relevant for organisations that expose their EMS consoles to the internet for remote administration, a practice that dramatically widens the attack surface for authentication bypass flaws of this nature.</p>
+<h4>Broader implications</h4>
+<p>The incident underscores a recurring pattern in enterprise security: centralised management platforms, while operationally convenient, concentrate risk. When a vulnerability emerges in a tool that acts as the nerve centre for endpoint security across an organisation, the blast radius of a successful exploit extends far beyond a single machine.</p>
+<p>For IT administrators and security operations teams, the emergence of EKZ adds a further layer of concern. An entirely new malware family means defenders cannot lean on existing threat feeds or antivirus signatures to catch infections after the fact. The most reliable path to protection is eliminating the vulnerability itself through timely patching and strict network segmentation around management interfaces.</p>
+<p>Organisations using FortiClient EMS should treat this as a high-priority item on their vulnerability management agendas, audit their EMS servers for the indicators described above, and verify that management interfaces are not unnecessarily exposed to untrusted networks.</p>
+<hr>
+<p>據BleepingComputer報告，威脅行為者正積極利用Fortinet旗下FortiClient企業管理伺服器（EMS）中的一個關鍵認證繞過漏洞，部署一個此前未有記錄的、被追踪為EKZ的憑證竊取惡意軟件。</p>
+<p>該漏洞被編號為CVE-2026-35616，其CVSS嚴重性評分達到滿分10分中的9.6分——這一評級使其躋身最嚴重的軟件漏洞類別。該漏洞允許攻擊者繞過FortiClient EMS管理平台上的認證控制。企業組織利用此平台集中管理大量運行FortiClient安全代理程式的端點。</p>
+<h4>為何此事影響重大</h4>
+<p>FortiClient EMS的設計目標是從單一控制台管理數千甚至數萬個端點。這種控制的集中性使其成為價值極高的攻擊目標。成功入侵一台EMS伺服器可能會在整個受管環境中級聯擴散，為攻擊者提供鮮有其他漏洞能及的力量倍增器。</p>
+<p>在此案例中，攻擊者利用認證繞過漏洞獲取EMS伺服器的存取權限，進而推送EKZ——一個在威脅情報數據庫中此前無任何記錄的憑證竊取程式。由於該惡意軟件完全未被記錄，基於簽名的偵測工具很可能無法識別它，這大大增加了依賴修補漏洞而非僅僅依賴偵測的緊迫性。</p>
+<h4>入侵指標</h4>
+<p>正在調查潛在入侵事件的安全團隊應留意兩個關鍵指標，如BleepingComputer所報導。第一是EMS伺服器上出現異常或可疑的PowerShell活動，這可能表明EKZ或相關payload正在執行。第二是EMS基礎架構向陌生或可疑的命令與控制（C2）伺服器發起的外部連接，這暗示惡意軟件已建立立足點並正在竊取憑證。</p>
+<h4>Fortinet的緩解措施指引</h4>
+<p>Fortinet敦促所有運行受影響版本FortiClient EMS的組織立即應用可用的安全修補程式。對於無法立即修補的團隊，該供應商建議臨時性的解決方案是：限制對EMS管理介面的網絡存取，使其僅允許受信任的內部IP地址進行存取，而非讓該介面在整個網絡中廣泛可及。</p>
+<p>此建議對於那些為了遠端管理而將EMS控制台暴露在互聯網上的組織尤其相關，這種做法極大地擴大了此類認證繞過漏洞的攻擊面。</p>
+<h4>更廣泛的影響</h4>
+<p>此事件凸顯了企業安全中反覆出現的模式：集中管理平台雖然在操作上帶來便利，但也集中了風險。當一個充當組織端點安全神經中樞的工具出現漏洞時，成功利用該漏洞的破壞範圍將遠超單台機器。</p>
+<p>對於IT管理員和安全營運團隊而言，EKZ的出現帶來了額外的擔憂。一個全新的惡意軟件家族意味著防禦者無法依賴現有的威脅源或防毒簽名在事後捕獲感染。最可靠的保護途徑是通過及時修補漏洞並圍繞管理介面實施嚴格的網絡分段，從而根除漏洞本身。</p>
+<p>使用FortiClient EMS的組織應將此視為漏洞管理議程上的高優先級事項，審查其EMS伺服器是否存在上述指標，並驗證管理介面是否不必要地暴露於不受信任的網絡。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/hackers-exploit-forticlient-ems-flaw-to-push-infostealer-malware/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
