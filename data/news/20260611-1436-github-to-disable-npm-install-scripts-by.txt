@@ -1,0 +1,28 @@
+Date: 2026-06-11 07:23:00
+Author: HKLUG Team
+Title: GitHub to Disable npm Install Scripts by Default in Sweeping Version 12 Security Shift
+Content:
+<p>GitHub has announced a set of what it describes as "breaking changes" coming in npm version 12, headlined by a move to disable install scripts by default — a long-discussed security measure designed to shut down one of the most widely exploited attack vectors in the JavaScript ecosystem.</p>
+<p>The changes target the abuse of npm lifecycle hooks, which are triggered during the <code>npm install</code> process. Malicious actors have repeatedly leveraged these hooks to execute arbitrary code on developers' machines at the moment a package is downloaded and installed. By making script execution an opt-in rather than an opt-out behaviour, GitHub is fundamentally altering the trust model that has governed npm for years.</p>
+<h4>How the change works</h4>
+<p>Under the new defaults, developers who need install scripts to run — for legitimate compilation, native module building, or post-install setup tasks — will have to grant explicit consent. According to the announcement, this can be configured at a global or per-project level, or overridden on the command line using a <code>--run-scripts</code> flag. The intent is to ensure developers make a conscious choice about which packages they allow to execute code during installation, rather than silently granting that permission to every dependency in a project's tree.</p>
+<h4>A long-overdue hardening</h4>
+<p>The decision reflects a growing consensus in the open-source security community that npm's permissive default posture has outlived its usefulness. Lifecycle hooks such as <code>preinstall</code>, <code>postinstall</code>, and <code>install</code> were originally designed for convenience — allowing packages to compile native bindings or perform setup steps automatically. But the same mechanism has proven irresistible to attackers distributing trojanised packages through typosquatting, dependency confusion, and compromised maintainer accounts.</p>
+<p>Supply chain attacks targeting package managers have escalated sharply in both frequency and sophistication over the past two years. High-profile incidents across multiple ecosystems have pushed maintainers, platform operators, and regulators to reconsider how much implicit trust should be baked into developer tooling.</p>
+<h4>Friction as a feature</h4>
+<p>The change will inevitably introduce friction for legitimate packages that depend on install scripts. Open-source projects relying on native addons or custom build steps will need to update their documentation and educate users about the new opt-in requirement. However, proponents argue that this trade-off is precisely the point: forcing developers to actively approve script execution makes it significantly harder for a single compromised dependency to silently compromise an entire development environment.</p>
+<p>For the broader open-source community, GitHub's decision signals a continued shift toward a security posture where the default is restrictive and capability must be earned. Similar conversations are playing out across other ecosystems, from Python's packaging tooling to container image supply chains, as the industry reckons with the scale and interconnectedness of modern dependency graphs.</p>
+<p>The changes are expected to land with npm version 12. Developers and maintainers whose workflows depend on install scripts should begin evaluating the impact now and plan for explicit opt-in configuration in their projects and documentation.</p>
+<hr>
+<p>GitHub 宣佈，將在 npm 第 12 版中引入一系列其稱為「重大改動」的變更，其中核心措施是預設停用安裝腳本——這是一項長期討論的安全措施，旨在封堵 JavaScript 生態系統中被最廣泛利用的攻擊途徑之一。</p>
+<p>這些改動針對的是 npm 生命週期鉤子的濫用問題，這些鉤子會在 <code>npm install</code> 過程中被觸發。惡意行為者一直利用這些鉤子，在套件下載並安裝的瞬間，於開發者的電腦上執行任意代碼。透過將腳本執行從「預設允許」（opt-out）改為「需要明確允許」（opt-in）的行為，GitHub 正在從根本上改變多年來主導 npm 的信任模型。</p>
+<h4>改動如何運作</h4>
+<p>根據新的預設設定，需要執行安裝腳本的開發者——例如用於合法的編譯、原生模組構建或安裝後設置任務——必須授予明確同意。根據公告，這可以在全局或項目層級進行配置，亦可使用 <code>--run-scripts</code> 指令列旗標進行覆蓋。其意圖是確保開發者就安裝期間允許哪些套件執行代碼作出有意識的選擇，而非默默地將此權限授予項目依賴樹中的每一個依賴項。</p>
+<h4>遲來的強化措施</h4>
+<p>此決定反映了開源安全社群中日益增長的共識：npm 過於寬鬆的預設姿態已經不合時宜。諸如 <code>preinstall</code>、<code>postinstall</code> 和 <code>install</code> 等生命週期鉤子最初是為了便利而設計的——允許套件自動編譯原生綁定或執行設置步驟。然而，同一機制卻被攻擊者用來分發透過拼寫錯誤搶注、依賴混淆和受損的維護者帳戶投放的特洛伊木馬式套件，令其難以抵擋。</p>
+<p>過去兩年，針對套件管理器的供應鏈攻擊在頻率和複雜性上都急劇升級。多個生態系統中發生的高調事件，促使維護者、平台運營商和監管機構重新思考，應在開發工具中內建多少隱含信任。</p>
+<h4>以摩擦換取安全</h4>
+<p>此改動不可避免地會為依賴安裝腳本的合法套件帶來不便。依賴原生擴展或自訂構建步驟的開源項目需要更新其文件，並教育用戶了解新的「需要明確允許」要求。然而，支持者認為，這種權衡恰恰是重點所在：強迫開發者主動批准腳本執行，使得單個受損依賴項難以暗中破壞整個開發環境。</p>
+<p>對於更廣泛的開源社群而言，GitHub 的決定標誌著向一種安全姿態的持續轉變：預設是限制性的，而能力必須透過明確授權獲得。從 Python 的套件打包工具到容器映像供應鏈，類似的討論也在其他生態系統中進行著，業界正試圖應對現代依賴關係圖的規模與相互關聯性。</p>
+<p>這些改動預計將隨 npm 第 12 版發佈。依賴安裝腳本的工作流程的開發者和維護者應現在開始評估其影響，並計劃在其項目和文件中實行明確的「需要明確允許」配置。</p>
+<p><a href="https://thehackernews.com/2026/06/github-to-disable-npm-install-scripts.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
