@@ -1,0 +1,36 @@
+Date: 2026-06-11
+Author: HKLUG Team
+Title: Git 2.55 Release Candidate Enables Rust Components by Default, Shifting Build Requirements
+Content:
+<p>Git 2.55-rc0 has been released as the first release candidate for the forthcoming Git 2.55 version control system, <a href="https://www.phoronix.com/news/Git-2.55-rc0-Released">according to Phoronix</a>. The most significant change: Rust support is now enabled by default in the build configuration, marking a shift from the optional Rust integration seen in recent releases.</p>
+<p>This means developers and system administrators who compile Git from source will need a Rust toolchain installed on their build machines — a requirement that was previously opt-in but is now part of the default build process.</p>
+<h4>What Changed</h4>
+<p>Recent Git releases have experimented with optional Rust integration, allowing contributors to rewrite performance-critical or memory-safety-sensitive parts of the codebase in Rust while keeping the build functional with only a C compiler. With this release candidate, Rust support is no longer behind a flag. Build systems that compile Git from source will attempt to link Rust components unless explicitly told not to.</p>
+<p>For environments where a Rust toolchain is unavailable or unwanted, the Rust integration can still be disabled at configure time. However, the default posture has flipped, signalling the Git project's confidence in its Rust code paths.</p>
+<h4>Why It Matters for Build Pipelines</h4>
+<p>The practical implications are most immediately felt in continuous integration and delivery (CI/CD) pipelines, containerised build environments, and minimal server images. Many of these setups install only the bare essentials — a C compiler, make, and perhaps a handful of libraries. They will now need to account for <code>rustc</code> and <code>cargo</code> as well, or else explicitly opt out of Rust support.</p>
+<p>For teams running automated Git builds across fleets of build agents or Docker images, the new default could trigger unexpected build failures if the Rust toolchain is missing. The safest course of action is to audit build scripts and base images ahead of the stable Git 2.55 release to determine whether to add Rust tooling or disable the feature.</p>
+<h4>A Broader Trend in Systems Software</h4>
+<p>Git is not the first major C-based project to embrace Rust for new components. The Linux kernel began accepting Rust modules in version 6.1, and various GNU and systems-level projects have explored similar paths. What makes Git's move notable is its ubiquity — Git is effectively a universal developer tool, meaning this change will ripple across a far wider surface area of build infrastructure than most Rust adoption efforts.</p>
+<p>The integration also reflects a broader industry conversation around memory safety. Rewriting proven C code wholesale carries significant risk, but introducing Rust for new or refactored components offers a gradual path toward eliminating classes of bugs like buffer overflows and use-after-free vulnerabilities without discarding decades of battle-tested logic.</p>
+<h4>What to Expect Next</h4>
+<p>Git 2.55-rc0 is a release candidate intended for testing rather than production use. The Git project typically follows a multi-week release candidate cycle before cutting a stable release. Developers and administrators are encouraged to test the candidate against their workflows now, particularly if they maintain custom Git builds or packaging scripts.</p>
+<p>Once Git 2.55 reaches stable, downstream Linux distributions, package managers, and development toolchains will need to update their Git packaging to reflect the new Rust dependency. Distribution maintainers who have not yet integrated the Rust toolchain into their build infrastructure will likely begin that work in the coming weeks.</p>
+<p>For the open-source community, the release represents another vote of confidence in Rust as a practical complement to C in foundational software — not a replacement, but a layered addition aimed at improving robustness where it counts most.</p>
+<hr>
+<p><a href="https://www.phoronix.com/news/Git-2.55-rc0-Released">據 Phoronix 報導</a>，Git 2.55-rc0 已作為即將發佈的 Git 2.55 版本控制系統的首個候選發布版發行。最重要的變更在於：Rust 支援現已預設在建置配置中啟用，標誌著從近期版本中的可選 Rust 整合轉變而來。</p>
+<p>這意味著從原始碼編譯 Git 的開發人員和系統管理員，需要在建置機器上安裝 Rust toolchain——這項要求以前是可選的，但現在已成為預設建置流程的一部分。</p>
+<h4>變更內容</h4>
+<p>近期的 Git 版本曾嘗試性地引入可選的 Rust 整合，允許貢獻者將程式碼庫中效能關鍵或記憶體安全敏感的部分用 Rust 重寫，同時保持僅使用 C compiler 即可正常建置。隨著此候選發布版的推出，Rust 支援不再受旗標開關控制。從原始碼編譯 Git 的建置系統將嘗試連結 Rust 組件，除非明確指示不這樣做。</p>
+<p>對於 Rust toolchain 不可用或不需要的環境，Rust 整合仍可在 configure 階段禁用。然而，預設狀態已經逆轉，顯示了 Git 專案對其 Rust 程式碼路徑的信心。</p>
+<h4>對建置 Pipeline 的影響</h4>
+<p>最直接的實際影響體現在持續整合與交付（CI/CD）pipeline、容器化建置環境和精簡伺服器 image 中。這些環境中的許多設定僅安裝最基本的工具——一個 C compiler、make，以及或許少數幾個 library。現在它們還需要考慮 <code>rustc</code> 和 <code>cargo</code>，或者明確選擇禁用 Rust 支援。</p>
+<p>對於在大量建置代理或 Docker image 上運行自動化 Git 建置的團隊而言，如果缺少 Rust toolchain，新的預設設定可能導致意外的建置失敗。最安全的做法是在穩定的 Git 2.55 版本發佈前，檢查建置腳本和 base image，以決定是添加 Rust 工具還是禁用該功能。</p>
+<h4>系統軟件的更廣泛趨勢</h4>
+<p>Git 並非首個擁抱 Rust 來開發新組件的大型 C 語言專案。Linux kernel 從 6.1 版本開始接受 Rust module，各種 GNU 和系統層級的專案也探索了類似的路徑。Git 的舉動之所以引人注目，在於其無處不在——Git 實際上是一個通用的開發工具，這意味著此變更將比大多數 Rust 採用努力，影響到更廣泛的建置基礎設施。</p>
+<p>這項整合也反映了業界更廣泛的關於記憶體安全的討論。徹底重寫經過驗證的 C 程式碼伴隨著巨大風險，但為新的或重構的組件引入 Rust，提供了一條逐步消除特定類別漏洞（如 buffer overflow 和 use-after-free 錯誤）的路徑，同時無需丟棄數十年來經過實戰考驗的邏輯。</p>
+<h4>後續展望</h4>
+<p>Git 2.55-rc0 是旨在用於測試而非生產環境的候選發布版。Git 專案通常會經歷數週的候選發布週期，才會發佈穩定版本。建議開發人員和管理員現在就根據其工作流程測試此候選版，特別是如果他們維護自訂的 Git 建置或打包腳本。</p>
+<p>一旦 Git 2.55 達到穩定狀態，下游的 Linux distribution、package manager 和開發 toolchain 將需要更新其 Git 打包，以反映新的 Rust 依賴項。尚未將 Rust toolchain 整合到其建置基礎設施中的 distribution 維護者，很可能會在未來幾週內開始這項工作。</p>
+<p>對於開源社群而言，此版本代表了對 Rust 的又一次信心投票，認為它是 C 語言在基礎軟件中的一個實用補充——而非替代品，而是一個旨在於關鍵領域提高穩健性的層疊式新增。</p>
+<p><a href="https://www.phoronix.com/news/Git-2.55-rc0-Released" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
