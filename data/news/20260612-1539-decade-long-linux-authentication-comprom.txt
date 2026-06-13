@@ -1,0 +1,34 @@
+Date: 2026-06-12 20:29:00
+Author: HKLUG Team
+Title: Decade-Long Linux Authentication Compromise Highlights Persistent Threat to Core Infrastructure
+Content:
+<p>A China-nexus threat group managed to maintain persistent, undetected access to a compromised network for nearly a decade by planting backdoors deep inside the core authentication mechanisms of Linux systems, according to a report by cybersecurity firm Sygnia.</p>
+<p>The group, which Sygnia tracks under the name Velvet Ant, compromised the Pluggable Authentication Modules (PAM) and OpenSSH — two foundational components that govern how users prove their identity and sign into Linux machines. By targeting the very infrastructure that decides who is permitted to log in, the attackers effectively hid their access inside the system's front door rather than lurking in the shadows elsewhere on the network.</p>
+<h4>Why PAM and OpenSSH Matter</h4>
+<p>PAM is the modular framework that Linux distributions use to handle authentication tasks such as password verification, session management, and account checks. OpenSSH, meanwhile, is the most widely used remote access tool across Linux environments. Together, they form the trust layer through which virtually every interactive login flows.</p>
+<p>Compromising these components grants an attacker a uniquely powerful position: the ability to authenticate as any user — or create entirely new access paths — that appear legitimate to the operating system and to the security tools monitoring it. Because PAM and OpenSSH are expected to handle credentials by design, malicious code embedded within them can operate without triggering the kinds of alerts that a rogue process or unusual network connection might generate.</p>
+<h4>A Decade of Silence</h4>
+<p>According to Sygnia's findings, as reported by The Hacker News, Velvet Ant's implants went undetected for close to ten years. The compromised network apparently lacked certain defensive measures that might have caught the tampering, allowing the backdoors to persist across system updates, patches, and routine maintenance cycles.</p>
+<p>The longevity of the compromise underscores a critical challenge in incident response: when an attacker embeds themselves into authentication infrastructure, standard remediation techniques — such as resetting passwords, revoking certificates, or scanning for known malware signatures — may not be sufficient. If the PAM stack itself is backdoored, a new password simply passes through a compromised module.</p>
+<h4>A Broader Lesson for Linux Environments</h4>
+<p>This discovery carries significant implications for any organisation running Linux at scale, particularly in environments where authentication infrastructure is treated as a stable, immutable layer that receives little scrutiny after initial deployment.</p>
+<p>Security teams routinely monitor endpoints, network traffic, and application logs, but the integrity of low-level authentication modules is often taken for granted. The Velvet Ant campaign demonstrates that sophisticated adversaries are willing to invest years of patience in exchange for access that survives reboots, credential rotations, and even partial network rebuilds.</p>
+<p>Defenders looking to guard against this class of attack should consider implementing file integrity monitoring on critical authentication binaries and configuration files, auditing PAM module loads for unexpected additions, and comparing system authentication components against known-good baselines from the original distribution.</p>
+<p>The incident also reinforces the importance of supply chain verification and secure boot chains — measures that can make it significantly harder for an attacker to modify core system components without detection.</p>
+<p>While the full scope of the targeted network and the operational objectives of the campaign remain unclear from available reporting, the Velvet Ant case stands as a stark reminder that the most dangerous intrusions are not always the noisiest. Sometimes they are hiding in the very mechanisms we trust to tell us who belongs.</p>
+<hr>
+<p>根據網絡安全公司 Sygnia 的報告，一個與中國有關的威脅組織透過在 Linux 系統核心身份驗證機制中植入後門，成功維持了對一個遭入侵網絡近十年的持續且未被偵測的存取權限。</p>
+<p>Sygnia 將該組織追蹤命名為「Velvet Ant」，其入侵了「可插拔身份驗證模組」（PAM）和 OpenSSH —— 這兩個控制用戶如何證明身份及登入 Linux 機器的基礎組件。通過針對決定誰被允許登入的基礎設施本身，攻擊者有效地將其存取權限隱藏在系統的「前門」內，而非潛伏於網絡的其他角落。</p>
+<h4>為何 PAM 和 OpenSSH 如此重要</h4>
+<p>PAM 是 Linux 發行版用來處理身份驗證任務（如密碼驗證、會話管理及帳戶檢查）的模組化框架。而 OpenSSH 則是 Linux 環境中使用最廣泛的遠端存取工具。兩者共同構成了幾乎所有互動式登入流程所依賴的信任層。</p>
+<p>入侵這些組件賦予了攻擊者獨特的優勢：能夠以任何用戶身份進行身份驗證，或創建全新的存取路徑，而這些操作對作業系統及監控它的安全工具而言都顯得合法。由於 PAM 和 OpenSSH 的設計初衷就是處理憑證，因此嵌入其中的惡意代碼可以在運作時，不會觸發像異常程序或不尋常網絡連接那樣的警報。</p>
+<h4>十年的沉寂</h4>
+<p>根據 Sygnia 的發現，並經 The Hacker News 報導，「Velvet Ant」的植入物在近十年內未被偵測到。該遭入侵的網絡顯然缺乏某些可能捕捉到此類篡改的防禦措施，使得這些後門得以在系統更新、修補程式及例行維護週期中持續存在。</p>
+<p>入侵的長期性凸顯了事件回應中的一個關鍵挑戰：當攻擊者將自身嵌入身份驗證基礎設施時，標準的補救技術——例如重設密碼、撤銷證書或掃描已知的惡意軟件特徵碼——可能並不足夠。如果 PAM 堆疊本身已被植入後門，一個新密碼只不過是通過了一個被入侵的模組。</p>
+<h4>對 Linux 環境更廣泛的啟示</h4>
+<p>此發現對於任何大規模運行 Linux 的組織都具有重大影響，尤其是在那些身份驗證基礎設施在初始部署後被視為穩定、不可變且鮮少受到審查的環境中。</p>
+<p>安全團隊通常監控端點、網絡流量和應用程式日誌，但低層次身份驗證模組的完整性往往被視為理所當然。「Velvet Ant」行動表明，老練的對手願意投入數年的耐心，以換取能夠在重新啟動、憑證輪換甚至部分網絡重建後依然存在的存取權限。</p>
+<p>防禦者若要防範此類攻擊，應考慮對關鍵的身份驗證二進位檔案和配置檔案實施檔案完整性監控，審計 PAM 模組的載入以檢查是否有非預期的新增，並將系統身份驗證組件與來自原始發行版的已知良好基準進行比較。</p>
+<p>此事件也再次強調了供應鏈驗證和安全啟動鏈的重要性——這些措施能顯著增加攻擊者在未被偵測的情況下修改核心系統組件的難度。</p>
+<p>儘管根據現有報導，目標網絡的完整範圍及該行動的作戰目標仍不清楚，但「Velvet Ant」案例作為一個鮮明的提醒：最危險的入侵並不總是聲勢浩大的。有時，它們就隱藏在我們用來判斷誰屬於此處的信任機制之中。</p>
+<p><a href="https://thehackernews.com/2026/06/china-linked-hackers-backdoored-linux.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
