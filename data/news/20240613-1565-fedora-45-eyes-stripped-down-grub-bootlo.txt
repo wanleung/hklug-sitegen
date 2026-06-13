@@ -1,0 +1,34 @@
+Date: 2024-06-13 13:23:00
+Author: HKLUG Team
+Title: Fedora 45 Eyes Stripped-Down GRUB Bootloader Tailored for Confidential Computing Workloads
+Content:
+<p>The Fedora project is weighing a proposal to introduce a purpose-built, minimal version of the GRUB bootloader in Fedora 45, specifically designed for confidential computing (CoCo) environments. The move, reported by Phoronix, would see a lighter GRUB implementation stripped down to the essentials needed to boot confidential virtual machines — a significant shift from the full-featured bootloader that ships with general-purpose Fedora installations.</p>
+<p>Confidential computing technologies such as AMD SEV and Intel TDX rely on hardware-backed isolation to protect workloads running inside virtual machines from the underlying host system. Within that security model, every component in the boot chain represents a potential attack surface. A bloated, feature-rich bootloader with hundreds of modules is harder to audit and verify, which is precisely the problem this proposal aims to address.</p>
+<h4>Shrinking the Trusted Computing Base</h4>
+<p>The core rationale behind the stripped-down GRUB is to reduce the trusted computing base (TCB) within the secure boot chain. By removing modules and functionality that are unnecessary for CoCo workloads — such as filesystem drivers, graphical interfaces, and legacy support — the Fedora team aims to produce a bootloader that is more auditable and less prone to vulnerabilities.</p>
+<p>This is not a philosophical abstraction. In confidential computing, the integrity of every component between hardware reset and guest OS launch is critical. A smaller bootloader means fewer lines of code to review, fewer potential vulnerabilities to exploit, and a simpler verification path for attestation mechanisms that prove a VM launched in a trustworthy state.</p>
+<h4>Built on Existing Fedora Infrastructure</h4>
+<p>Rather than creating a standalone fork or introducing a disruptive new build system, the proposal calls for using Fedora's existing image-building tooling — including Kickstart and OSTree — to construct the minimal bootloader. This pragmatic approach means the lightweight GRUB would integrate cleanly with Fedora's current packaging and maintenance workflows, reducing the burden on package maintainers and ensuring the component stays up to date alongside the rest of the distribution.</p>
+<p>The plan positions the minimal GRUB as an optional component, explicitly not intended for everyday desktop or server installations. Standard Fedora systems would continue to ship with the full-featured bootloader, preserving compatibility with the wide range of hardware and use cases the distribution supports.</p>
+<h4>Fedora as an Incubator for Security Innovation</h4>
+<p>The proposal also underscores Fedora's longstanding role as a proving ground for technologies that later propagate to the broader Linux ecosystem. If the minimal GRUB proves viable for CoCo workloads in Fedora 45, it could serve as a reference implementation that other distributions adopt or adapt when building their own confidential computing offerings.</p>
+<p>However, the approach does come with trade-offs. A stripped-down bootloader necessarily sacrifices functionality — there is no recovery shell with every conceivable filesystem driver, no fallback to exotic boot configurations. That is an acceptable exchange for purpose-built CoCo environments, where predictability and verifiability outweigh flexibility, but it would be inappropriate for general-purpose systems.</p>
+<h4>Questions Remain</h4>
+<p>The proposal is still under review, and several questions need answering before it becomes a shipping feature. Community and maintainer review will need to confirm that the minimal GRUB provides sufficient functionality for all expected CoCo boot scenarios. There are also concerns about whether the stripped-down bootloader could complicate standard upgrade or disaster recovery paths — issues that Fedora developers will need to address through testing and documentation before Fedora 45 reaches its final release.</p>
+<p>If adopted, a minimal CoCo GRUB would represent a notable step forward in making confidential computing more accessible on open-source platforms, lowering the barrier for organizations looking to deploy hardware-isolated workloads with confidence in their boot chain integrity.</p>
+<hr>
+<p>Fedora 專案正在審視一項提案，計劃在 Fedora 45 中引入一個專門打造、極簡版本的 GRUB 啟動載入程式，專為機密運算環境設計。據 Phoronix 報導，此舉將會見到一個更輕量化的 GRUB 實現方案，僅保留啟動機密虛擬機器所需的核心功能——這與隨通用型 Fedora 安裝套件一同提供的功能完整的啟動載入程式有顯著區別。</p>
+<p>AMD SEV 和 Intel TDX 等機密運算技術，依賴硬體層級的隔離機制來保護運行於虛擬機器內的工作負載，使其免受底層主機系統的影響。在此安全模型下，啟動鏈中的每個元件都代表著潛在的攻擊面。一個臃腫、功能繁多且包含數百個模組的啟動載入程式，更難以進行審計和驗證，而這正是此提案旨在解決的問題。</p>
+<h4>縮小可信運算基底</h4>
+<p>採用精簡版 GRUB 的核心理由，是為了縮小安全啟動鏈中的可信運算基底。透過移除對機密運算工作負載而言不必要的模組與功能——例如檔案系統驅動程式、圖形介面以及傳統支援——Fedora 團隊旨在打造一個更易於審計、且較不易出現漏洞的啟動載入程式。</p>
+<p>這並非抽象的理念。在機密運算中，從硬體重置到來賓作業系統啟動之間，每個元件的完整性都至關重要。一個更小的啟動載入程式意味著需要檢視的程式碼行數更少、可供利用的潛在漏洞更少，並且為證明虛擬機器是以可信狀態啟動的驗證機制，提供更簡單的驗證路徑。</p>
+<h4>基於現有 Fedora 基礎設施建構</h4>
+<p>此提案並非要求建立一個獨立分支或引入具破壞性的全新建構系統，而是呼籲使用 Fedora 現有的映像檔建構工具——包括 Kickstart 和 OSTree——來建構此極簡版啟動載入程式。這種務實的做法意味著輕量化的 GRUB 能夠與 Fedora 現有的套件打包及維護工作流程無縫整合，減輕套件維護者的負擔，並確保該元件能與發行版的其他部分同步更新。</p>
+<p>該計畫將此極簡版 GRUB 定位為一個可選元件，明確表示並非為日常桌面或伺服器安裝而設。標準的 Fedora 系統將繼續搭載功能完整的啟動載入程式，以保持與該發行版所支援的廣泛硬體和使用案例的兼容性。</p>
+<h4>Fedora 作為安全技術的孵化器</h4>
+<p>此提案亦突顯了 Fedora 長期以來作為技術試驗場的角色，許多技術後來都推廣至更廣泛的 Linux 生態系統。如果此極簡版 GRUB 在 Fedora 45 中被證實適用於機密運算工作負載，它可能成為一個參考實現方案，供其他發行版在建構各自的機密運算產品時採用或調整。</p>
+<p>然而，此方法確實伴隨著權衡。一個精簡版的啟動載入程式必然會犧牲部分功能——不會有包含所有可能檔案系統驅動程式的救援 Shell，也無法回退至非標準的啟動配置。對於專門打造的機密運算環境而言，這是可接受的交換，因為可預測性和可驗證性比靈活性更重要；但對於通用型系統而言，這則不適用。</p>
+<h4>懸而未決的問題</h4>
+<p>此提案仍在審查階段，在成為正式發行功能之前，尚有數個問題需要解答。社群與維護者審查將需確認，此極簡版 GRUB 能為所有預期的機密運算啟動場景提供足夠的功能。亦有擔憂認為，此精簡版啟動載入程式可能會使標準的升級或災難復原流程變得複雜——這些是 Fedora 開發者在 Fedora 45 最終發行版發佈前，需要透過測試和文件來解決的問題。</p>
+<p>若獲採納，極簡版的機密運算 GRUB 將代表在開源平台上普及機密運算的重要一步，降低組織部署硬體隔離工作負載的門檻，並讓其對啟動鏈完整性抱有信心。</p>
+<p><a href="https://www.phoronix.com/news/Fedora-45-Light-GRUB-For-CoCo" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
