@@ -1,0 +1,33 @@
+Date: 2026-06-15 16:23:00
+Author: HKLUG Team
+Title: /proc/filesystems Read Bottleneck: SELinux Drives Surprising Traffic, Caching Patch Reportedly Delivers Up to 444% Speedup
+Image: 20260615-1620-proc-filesystems-read-bottleneck-selinu.jpg
+Content:
+<p>A seemingly innocuous virtual file in the Linux proc filesystem may be one of the most frequently accessed paths on many systems — and according to a recent Phoronix report, an upcoming kernel patch is set to dramatically reduce the overhead associated with reading it.</p>
+<p>The file in question is <code>/proc/filesystems</code>, which reports the list of filesystem types currently supported by the running kernel. While most administrators might assume this file is consulted only rarely, a patch reportedly targeting a future Linux kernel release reveals it is being read far more often than expected. The primary culprit, according to Phoronix's reporting, is the SELinux userspace library (<code>libselinux</code>).</p>
+<h4>A quiet hotspot</h4>
+<p>SELinux, the mandatory access control framework enabled by default on many enterprise Linux distributions, reportedly queries <code>/proc/filesystems</code> routinely as part of its security operations. Because <code>libselinux</code> is loaded by a wide range of applications that interact with the filesystem, the cumulative frequency of reads to this single virtual file can add up quickly on production systems.</p>
+<p>Previously, each read of <code>/proc/filesystems</code> would trigger a full traversal of the kernel's internal filesystem registration data. For a file read so frequently, that represents a non-trivial amount of repeated work — work that yields the same result nearly every time, since the set of supported filesystems on a running system rarely changes.</p>
+<h4>Targeted optimization yields outsized gains</h4>
+<p>According to the Phoronix report, the patch takes a pragmatic approach to this problem. Rather than restructuring how filesystem types are registered, the optimization focuses on caching the result of the <code>/proc/filesystems</code> read so that subsequent accesses can return data without repeating the full enumeration.</p>
+<p>Benchmark results cited in the report show the optimization delivers up to a 444 percent improvement in read performance for this particular virtual file. That figure reflects the reduction in per-call overhead when the cached result is served, compared to the previous unoptimized path.</p>
+<p>For individual reads, the latency savings are measured in microseconds — negligible from a human perspective. But multiplied across the volume of reads that <code>libselinux</code> generates on a busy system, the aggregate savings in CPU cycles become meaningful, particularly on high-throughput servers handling large numbers of file operations.</p>
+<h4>Why it matters</h4>
+<p>The patch is a textbook example of how micro-optimizations in the Linux kernel can produce disproportionate performance benefits when they target the right code path. It also highlights a broader lesson for systems engineers: assumptions about which operations are "rare" can be misleading, especially when userspace libraries operate in ways that are not immediately visible to administrators.</p>
+<p>For the open-source community, the discovery underscores the value of profiling and tracing real-world workloads. The bottleneck in <code>/proc/filesystems</code> reading was likely present for years but only surfaced as a target for optimization once someone traced the actual call patterns and noticed the surprising frequency.</p>
+<p>The patch is expected to land in a forthcoming Linux kernel release alongside a host of other changes. For organisations running SELinux-enabled distributions — a category that includes most Red Hat Enterprise Linux, Fedora, and their derivative deployments — the patch would represent a quiet but welcome efficiency gain that requires no configuration changes or user intervention.</p>
+<hr>
+<p>Linux proc 檔案系統中一個看似無害的虛擬檔案，可能是許多系統上存取最頻繁的路徑之一——根據 Phoronix 最近一份報告，一個即將推出的內核補丁將大幅降低讀取它所產生的開銷。</p>
+<p>相關檔案是 <code>/proc/filesystems</code>，它報告當前運行內核支持的檔案系統類型列表。儘管大多數管理員可能認為這個檔案很少被查閱，但據報一個針對未來 Linux 內核版本的補丁揭示，其讀取頻率遠超預期。根據 Phoronix 的報導，主要原因是 SELinux 用戶空間函式庫（<code>libselinux</code>）。</p>
+<h4>一個安靜的熱點</h4>
+<p>SELinux 是許多企業級 Linux 發行版預設啟用的強制存取控制框架，據報其作為安全操作的一部分，會例行查詢 <code>/proc/filesystems</code>。由於 <code>libselinux</code> 被眾多與檔案系統互動的應用程式所載入，對這個單一虛擬檔案的累積讀取頻率在生產系統上會迅速增加。</p>
+<p>先前，每次讀取 <code>/proc/filesystems</code> 都會觸發對內核內部檔案系統註冊資料的完整遍歷。對於一個被如此頻繁讀取的檔案，這代表了大量重複的工作——而這些工作幾乎每次都產生相同的結果，因為運行系統上支持的檔案系統集合很少改變。</p>
+<h4>針對性優化帶來超預期收益</h4>
+<p>根據 Phoronix 的報導，此補丁對此問題採取了一種務實的方法。優化並非重構檔案系統類型的註冊方式，而是著重於快取 <code>/proc/filesystems</code> 的讀取結果，以便後續存取可以返回數據而無需重複完整的枚舉。</p>
+<p>報告中援引的基準測試結果顯示，此優化為這個特定的虛擬檔案帶來了高達 444% 的讀取性能提升。該數字反映了與先前未優化的路徑相比，當返回快取結果時，每次呼叫的開銷減少幅度。</p>
+<p>對於單次讀取而言，延遲節省僅以微秒計——從人類角度微不足道。但當乘以 <code>libselinux</code> 在繁忙系統上產生的讀取量時，節省的 CPU 週期總和就變得非常可觀，尤其是在處理大量檔案操作的高吞吐量伺服器上。</p>
+<h4>為何這很重要</h4>
+<p>這個補丁是 Linux 內核微優化如何能在瞄準正確代碼路徑時產生不成比例性能收益的典型案例。它同時也為系統工程師提供了一個更廣泛的啟示：對於哪些操作是「罕見」的假設可能具有誤導性，特別是當用戶空間函式庫以管理員不易察覺的方式運作時。</p>
+<p>對於開源社區而言，此發現凸顯了對真實世界工作負載進行性能分析和追蹤的價值。<code>/proc/filesystems</code> 讀取中的瓶頸很可能已存在多年，但只有在有人追蹤實際呼叫模式並注意到其驚人頻率後，它才成為優化的目標。</p>
+<p>此補丁預計將在即將推出的 Linux 內核版本中，伴隨著一系列其他變更一同落地。對於運行啟用 SELinux 發行版的組織——這包括大多數 Red Hat Enterprise Linux、Fedora 及其衍生部署——此補丁將代表一項安靜但值得歡迎的效率提升，無需任何設定變更或用戶干預。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.2-Reading-Proc-FS" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
