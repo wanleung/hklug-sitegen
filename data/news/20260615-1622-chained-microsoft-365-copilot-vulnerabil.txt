@@ -1,0 +1,37 @@
+Date: 2026-06-15 16:22:00
+Author: HKLUG Team
+Title: Chained Microsoft 365 Copilot Vulnerabilities Enabled One-Click Email and File Theft via Trusted Domain
+Image: 20260615-1622-chained-microsoft-365-copilot-vulnerabil.jpg
+Content:
+<p>Security researchers have disclosed a chain of three vulnerabilities in Microsoft 365 Copilot's Enterprise Search feature that, when combined, allowed a single click on a legitimate Microsoft link to silently exfiltrate a victim's emails, calendar entries, indexed files, and even multifactor authentication codes.</p>
+<p>The attack, dubbed "SearchLeak" by the team at Varonis Threat Labs, exploited the deep integration that Copilot maintains with an organization's Microsoft 365 data. Because the malicious payload was delivered through a real <code>microsoft.com</code> URL, the technique bypassed conventional anti-phishing filters and URL reputation checks entirely.</p>
+<h4>How the Attack Worked</h4>
+<p>According to the researchers, the exploit chained three separate bugs — each individually considered low severity — into a critical one-click attack path. The first link in the chain allowed an attacker to craft a specially formatted URL on Microsoft's own infrastructure. A second vulnerability enabled the injection of a prompt that caused Copilot to retrieve and transmit sensitive data to an external server. The third bug facilitated the exfiltration of session tokens and MFA-related codes.</p>
+<p>The result was a single interaction: a user clicking what appeared to be a routine Microsoft link. Behind the scenes, Copilot's search indexing — which aggregates email, file shares, calendar data, and more — became the conduit for data theft. No malware was installed, and no suspicious domain was involved.</p>
+<p>Microsoft has reportedly patched the issue on the server side. The company has not disclosed whether any real-world exploitation occurred before the fix was deployed.</p>
+<h4>Why Domain Trust Is No Longer Enough</h4>
+<p>The SearchLeak disclosure underscores a growing problem for enterprise security teams: first-party domain trust has become an attack vector. Traditional security tooling — mail filters, secure web gateways, and endpoint URL scanners — typically whitelists links pointing to major cloud providers like Microsoft. Attackers who can weaponize those trusted pathways effectively render those controls useless.</p>
+<p>This is not an abstract concern. Business email compromise and credential phishing remain among the most costly attack types for organizations globally, and the ability to deliver a payload through a <code>microsoft.com</code> link represents a meaningful escalation in attacker tradecraft. Security teams would be wise to implement stricter behavioral inspection of links originating from major cloud providers, rather than relying on blanket domain whitelisting alone.</p>
+<h4>AI Copilots Amplify Existing Risks</h4>
+<p>The broader lesson extends beyond this specific vulnerability. AI copilot tools, by design, index and aggregate vast quantities of sensitive corporate data to deliver contextual responses to user queries. That architecture means a single flaw in the copilot's input handling or output controls can have outsized consequences — the system's core functionality doubles as the exfiltration mechanism.</p>
+<p>Organizations adopting AI-powered productivity tools are effectively granting those systems broad read access to their most sensitive information stores. When those systems are compromised, the blast radius can be enormous. Existing enterprise security frameworks, built for a pre-AI cloud era, are ill-equipped to account for this amplification effect.</p>
+<h4>What Comes Next</h4>
+<p>While Microsoft's server-side patch addresses the specific SearchLeak chain, the incident highlights gaps in how enterprises evaluate and secure AI-integrated platforms. Security teams should consider establishing dedicated logging and anomaly detection around AI copilot interactions, reassessing assumptions about trusted domains, and pressing vendors for more granular, role-based access controls on AI features that touch sensitive data.</p>
+<p>As AI copilots become embedded in daily workflows across industries, the security community will need tooling and governance frameworks that match the novelty of the risk — not just the threat models designed for yesterday's cloud applications.</p>
+<hr>
+<p>安全研究人員披露了存在於 Microsoft 365 Copilot 企業搜尋功能中的一系列三個安全漏洞。當這些漏洞被結合利用時，僅需點擊一個看似合法的 Microsoft 連結，即可在受害者不知情的情況下，悄悄竊取其電郵、日曆條目、已索引的檔案，甚至是多重驗證碼。</p>
+<p>這場被 Varonis 威脅實驗室團隊命名為「SearchLeak」的攻擊，利用了 Copilot 與組織內 Microsoft 365 數據深度整合的特性。由於惡意負載是透過真實的 <code>microsoft.com</code> 網址傳遞，此技術得以完全繞過傳統的反釣魚過濾器及網址信譽檢查。</p>
+<h4>攻擊原理</h4>
+<p>據研究人員所述，此攻擊利用了三個獨立的漏洞——每個單獨來看風險等級均被評為較低——並將其串聯成一個可一鍵觸發的關鍵攻擊路徑。漏洞鏈的第一個環節，允許攻擊者在 Microsoft 自身的基礎設施上製作一個特殊格式的網址。第二個漏洞則允許注入一則提示詞，導致 Copilot 檢索並將敏感數據傳輸至外部伺服器。第三個漏洞則有助於竊取會話令牌及與多重驗證相關的代碼。</p>
+<p>最終結果是：用戶只需進行一次交互——點擊一個看起來 routine 的 Microsoft 連結。在後台，Copilot 用於聚合電郵、檔案共享、日曆數據等的搜尋索引機制，竟成為數據竊取的渠道。整個過程沒有安裝任何惡意軟件，也沒有涉及任何可疑域名。</p>
+<p>據報，Microsoft 已在伺服器端修補了此問題。該公司並未披露在修補程式部署前，是否已有實際的漏洞利用事件發生。</p>
+<h4>域名信任已不足恃</h4>
+<p>SearchLeak 漏洞的披露凸顯了企業安全團隊面臨的一個日益嚴重的問題：對第一方域名的信任，已成為一個攻擊向量。傳統的安全工具——如郵件過濾器、安全網頁閘道和端點網址掃描器——通常會將指向 Microsoft 等主要雲端供應商的連結加入白名單。攻擊者若能將這些受信任的路徑武器化，將使這些安全控制形同虛設。</p>
+<p>這並非杞人憂天。商業電郵詐騙及憑證釣魚攻擊，至今仍是全球企業損失最慘重的攻擊類型之一。而能夠透過 <code>microsoft.com</code> 連結傳遞惡意負載的能力，代表著攻擊者技術的一次重大升級。安全團隊應明智地對源自主要雲端供應商的連結實施更嚴格的行為檢測，而非僅依賴對域名的全面白名單策略。</p>
+<h4>AI 助手放大既有風險</h4>
+<p>更廣泛的教訓超越了此特定漏洞。AI 助手工具的設計初衷，是索引並聚合大量的敏感企業數據，以對用戶查詢提供情境化回應。這種架構意味著，若助手在輸入處理或輸出控制方面存在單一缺陷，其後果可能被極大放大——系統的核心功能本身，同時也成為了數據竊取的機制。</p>
+<p>採用 AI 驅動生產力工具的組織，實質上是授予了這些系統對其最敏感信息倉庫的廣泛讀取權限。一旦這些系統遭到入侵，其影響範圍可能極為巨大。現有的企業安全框架是為前 AI 雲端時代構建的，難以應對這種放大效應。</p>
+<h4>未來展望</h4>
+<p>儘管 Microsoft 的伺服器端修補程式已解決了特定的 SearchLeak 攻擊鏈，但此事件凸顯了企業在評估及保護 AI 整合平台方面存在的不足。安全團隊應考慮圍繞 AI 助手的交互建立專門的日誌記錄與異常檢測，重新評估對受信任域名的既有假設，並推動供應商在涉及敏感數據的 AI 功能上，提供更細粒度的、基於角色的存取控制。</p>
+<p>隨著 AI 助手日益嵌入各行業的日常工作流程，安全社群所需的工具與治理框架，必須能匹配此類新型風險的複雜性——而非僅僅應對為過去的雲端應用所設計的威脅模型。</p>
+<p><a href="https://thehackernews.com/2026/06/one-click-microsoft-365-copilot-flaw.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
