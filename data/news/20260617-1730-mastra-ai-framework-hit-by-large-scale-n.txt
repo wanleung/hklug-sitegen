@@ -1,0 +1,46 @@
+Date: 2026-06-17 09:39:00
+Author: HKLUG Team
+Title: Mastra AI Framework Hit by Large-Scale npm Supply Chain Attack via Compromised Contributor Account
+Content:
+<p>A coordinated security investigation has uncovered that 144 npm packages in the <code>@mastra/*</code> namespace — belonging to Mastra, a widely adopted open-source framework for building AI applications in JavaScript and TypeScript — were poisoned in a supply chain attack researchers have dubbed "easy-day-js."</p>
+<p>Four security firms — JFrog, SafeDep, Socket, and StepSecurity — jointly disclosed the incident, tracing the malicious publications to a single npm account registered under the handle <code>ehindero</code>. That account mass-published tainted versions of the packages, corrupting the entire Mastra namespace in one sweep.</p>
+<h4>One Account, 144 Compromised Packages</h4>
+<p>The incident lays bare a persistent structural weakness in open-source ecosystems: a single compromised maintainer account can cascade across more than a hundred interrelated packages with devastating speed. Mastra's namespace is used by developers building AI agents and applications, making it a particularly attractive target for supply chain attackers seeking footholds in environments where sensitive data — API keys, cloud credentials, and model access tokens — is routinely present.</p>
+<p>As of the time of reporting, the researchers involved have not publicly disclosed the exact malicious payload injected into the compromised packages. The initial compromise vector for the <code>ehindero</code> account also remains undetermined, and no confirmed timeline has been published detailing the window between the malicious publications and their discovery.</p>
+<h4>AI Tooling: An Increasingly High-Value Target</h4>
+<p>Supply chain attacks on npm are not without precedent, but the deliberate targeting of an AI-specific framework reflects a growing pattern. Dependencies used in AI and machine learning development pipelines are increasingly prized by malicious actors. These environments frequently store secrets directly in configuration files or environment variables, and tampered packages can harvest credentials for cloud services, model APIs, and internal infrastructure with relative ease.</p>
+<p>For IT teams evaluating and deploying AI frameworks, the Mastra incident reinforces that due diligence on open-source dependencies must go beyond basic functionality checks. Organisations relying on any <code>@mastra/*</code> packages should audit their installed versions immediately, cross-referencing against the compromised releases identified by the investigating security firms.</p>
+<h4>Collaborative Disclosure as a Force Multiplier</h4>
+<p>The fact that four independent security firms contributed to both the investigation and the disclosure points to a maturing defence practice within the open-source community. Coordinated disclosure of this nature compresses the window of exposure and delivers actionable intelligence to downstream users far faster than any single vendor could provide alone.</p>
+<p>Still, the incident highlights the inherent limits of reactive detection. Malicious packages may already reside in CI/CD pipelines and production environments by the time they are identified and removed from the registry. Automated dependency scanning, lockfile verification, and namespace-level provenance checks remain essential layers of defence.</p>
+<h4>Practical Steps for Affected Teams</h4>
+<p>Teams using Mastra or any <code>@mastra/*</code> packages should take the following actions without delay:</p>
+<ul>
+<li><strong>Audit all installed package versions</strong> against the list of compromised releases published by JFrog, SafeDep, Socket, and StepSecurity.</li>
+<li><strong>Rotate every credential</strong> — API keys, npm tokens, cloud service secrets — that was present in any environment where these packages were installed.</li>
+<li><strong>Enable npm provenance and mandatory two-factor authentication</strong> on all publishing accounts within your organisation.</li>
+<li><strong>Review CI/CD pipeline logs and configurations</strong> for indicators of compromise, particularly any anomalous network activity during package installation phases.</li>
+</ul>
+<p>The attack on Mastra is a cautionary demonstration of how trust in open-source maintainership can be weaponised at scale. As AI frameworks proliferate across the npm ecosystem, the security posture of adopting teams becomes inseparable from the integrity of the supply chain itself.</p>
+<hr>
+<p>一項協同安全調查揭露，屬於 Mastra（一個被廣泛採用、用於 JavaScript 和 TypeScript 建構人工智能應用程式的開源框架）名下的 144 個 npm 套件，在一場被研究人員稱為「easy-day-js」的供應鏈攻擊中遭到植入惡意程式。</p>
+<p>四間安全公司——JFrog、SafeDep、Socket 和 StepSecurity——聯合披露了此事件，並將惡意發佈溯源至單一個以 <code>ehindero</code> 為用戶名註冊的 npm 帳號。該帳號批量發佈了遭污染的套件版本，一舉破壞了整個 Mastra 命名空間。</p>
+<h4>一個帳號，144 個被入侵的套件</h4>
+<p>此事件揭示了開源生態系統中一個持久存在的結構性弱點：單一個被入侵的維護者帳號，能以驚人的速度波及超過一百個相關聯的套件。Mastra 的命名空間被開發者用於建構 AI 代理和應用程式，這使其成為供應鏈攻擊者特別有吸引力的目標，因為他們尋求在經常存在敏感數據（如 API 密鑰、雲端服務憑證和模型存取權杖）的環境中建立立足點。</p>
+<p>截至報導時間，參與調查的研究人員尚未公開披露注入被入侵套件中的確切惡意載荷。<code>ehindero</code> 帳號最初的入侵途徑仍未確定，也沒有公佈確認的時間線，說明惡意發佈到發現之間的時間窗口。</p>
+<h4>針對 AI 工具的攻擊：價值日益提高的目標</h4>
+<p>針對 npm 的供應鏈攻擊並非沒有先例，但刻意針對特定人工智能框架的攻擊反映了一個日益明顯的模式。人工智能和機器學習開發流程中使用的依賴項，越來越受到惡意行為者的青睞。這些環境經常將密鑰直接儲存在設定檔或環境變數中，而被篡改的套件可以相對輕易地竊取雲端服務、模型 API 和內部基礎設施的憑證。</p>
+<p>對於評估和部署 AI 框架的 IT 團隊而言，Mastra 事件再次強調，對開源依賴項的盡職調查必須超越基本的功能檢查。組織若依賴任何 <code>@mastra/*</code> 套件，應立即稽核其已安裝的版本，並與調查安全公司公佈的受損發佈版本進行交叉比對。</p>
+<h4>協同披露的力量乘數效應</h4>
+<p>四間獨立安全公司共同參與調查和披露的事實，表明開源社群內的防禦實踐正在走向成熟。這種協同披露壓縮了風險暴露的時間窗口，並比任何單一供應商所能單獨提供的更快地向下游用戶傳遞可操作的情報。</p>
+<p>然而，此事件也凸顯了反應式檢測的固有侷限性。惡意套件在被識別並從登錄檔中移除時，可能早已存在於 CI/CD 流水線和生產環境中。自動化依賴項掃描、鎖定檔驗證以及命名空間級別的來源檢查，仍然是至關重要的防禦層次。</p>
+<h4>受影響團隊的實用步驟</h4>
+<p>使用 Mastra 或任何 <code>@mastra/*</code> 套件的團隊應立即採取以下行動：</p>
+<ul>
+<li><strong>稽核所有已安裝的套件版本</strong>，對照 JFrog、SafeDep、Socket 和 StepSecurity 公佈的受損發佈版本清單。</li>
+<li><strong>輪換每一個憑證</strong>——包括 API 密鑰、npm 權杖、雲端服務密鑰——這些憑證存在於安裝過這些套件的任何環境中。</li>
+<li><strong>啟用 npm 來源驗證和強制雙重認證</strong>，應用於組織內所有發佈帳號。</li>
+<li><strong>審查 CI/CD 流水線的紀錄和設定</strong>，尋找入侵指標，特別是在套件安裝階段出現的任何異常網絡活動。</li>
+</ul>
+<p>針對 Mastra 的攻擊是一個警示性示範，展示了對開源維護者的信任如何能被大規模地武器化。隨著 AI 框架在 npm 生態系統中不斷擴散，採用團隊的安全態勢已與供應鏈本身的完整性密不可分。</p>
+<p><a href="https://thehackernews.com/2026/06/144-mastra-npm-packages-compromised-via.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
