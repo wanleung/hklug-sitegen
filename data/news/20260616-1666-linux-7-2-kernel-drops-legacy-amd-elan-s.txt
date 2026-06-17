@@ -1,0 +1,35 @@
+Date: 2026-06-16 11:34:00
+Author: HKLUG Team
+Title: Linux 7.2 Kernel Drops Legacy AMD Elan Support, Adds New Power Management Hardware
+Image: 20260616-1666-linux-7-2-kernel-drops-legacy-amd-elan-s.jpg
+Content:
+<p>The Linux 7.2 kernel development cycle continues to advance the operating system's power management subsystem, merging a substantial set of changes that balance legacy hardware cleanup with expanded support for modern platforms.</p>
+<h4>AMD Elan Gets the Axe</h4>
+<p>Among the most notable changes is the removal of support for the AMD Elan processor family. The AMD Elan, commonly associated with National Semiconductor's SC400 series before being absorbed into AMD's embedded processor lineup, powered a generation of embedded systems, thin clients, and industrial devices throughout the late 1990s and early 2000s. As reported by <a href="https://www.phoronix.com/news/Linux-7.2-Power-Management">Phoronix</a>, its removal from the kernel's power management code reflects the ongoing effort by maintainers to strip out drivers and platform-specific code for hardware that has effectively fallen out of active use.</p>
+<p>For the broader open-source community, the deprecation is a familiar and recurring event. Kernel maintainers regularly face the tension between keeping the codebase lean and maintainable versus preserving compatibility with aging hardware. Each legacy driver left in the tree carries maintenance burden, potential code rot, and complications for developers working on the subsystem. Dropping AMD Elan support signals that the development community has judged the processor's remaining user base too small to justify continued in-tree maintenance.</p>
+<p>Organizations still operating embedded devices built on AMD Elan silicon will need to plan accordingly. Options include pinning to older kernel versions, carrying out-of-tree patches, or beginning migration to more modern embedded platforms.</p>
+<h4>New Hardware Support Arrives</h4>
+<p>On the other end of the spectrum, the Linux 7.2 power management pull request includes additions for new hardware platforms and devices. While specific platform names were not detailed in the initial merge report, the introduction of new support code is a routine and critical part of each kernel release cycle, ensuring Linux remains compatible with the latest mobile processors, system-on-chip designs, and peripheral devices that rely on sophisticated power state management.</p>
+<p>Power management is one of the most consequential subsystems in the Linux kernel. For mobile devices, its quality directly determines battery life. For data centres running thousands of machines, even marginal improvements in power state transitions and frequency scaling can translate into meaningful reductions in energy costs and thermal output. The subsystem, typically maintained under the linux-pm tree, receives consistent attention as a result.</p>
+<h4>Bug Fixes and Incremental Improvements</h4>
+<p>Beyond the headline changes, the merged patch set includes a range of bug fixes, performance tweaks, and enhancements across the power management framework. These cover areas such as CPU frequency scaling governors, runtime power management of peripherals, and ACPI (Advanced Configuration and Power Interface) handling — all areas where subtle bugs can lead to system instability, unexpected wake events, or power drain.</p>
+<p>Such incremental work rarely makes headlines on its own, but it forms the backbone of kernel reliability. The accumulated quality-of-life improvements across each release are what allow Linux to operate reliably across an enormous range of hardware, from Raspberry Pi boards to high-performance computing clusters.</p>
+<h4>Why It Matters</h4>
+<p>For system administrators, embedded developers, and anyone deploying Linux at scale, the Linux 7.2 power management changes reinforce two practical realities. First, hardware lifecycle management cannot be ignored — legacy platform support in the mainline kernel is a privilege, not a guarantee. Second, keeping systems current with recent kernel releases is essential to benefit from the latest device support and stability fixes.</p>
+<p>The Linux 7.2 merge window remains active, and additional power management changes may yet land before the release candidate phase begins.</p>
+<hr>
+<p>Linux 7.2 內核的開發週期繼續推進作業系統的電源管理子系統，合併了一系列重大變更，在清理舊式硬件支援的同時擴展了對現代平台的兼容性。</p>
+<h4>AMD Elan 被移除</h4>
+<p>其中一項最顯著的變更是移除了對 AMD Elan 處理器系列的支援。AMD Elan 處理器通常與國家半導體（National Semiconductor）的 SC400 系列相關聯，後被納入 AMD 的嵌入式處理器產品線。在 1990 年代末至 2000 年代初，它曾驅動一代嵌入式系統、薄客戶端及工業設備。據 <a href="https://www.phoronix.com/news/Linux-7.2-Power-Management">Phoronix</a> 報導，其從內核電源管理代碼中被移除，反映了維護者為清理那些已無實際活躍用戶的硬件驅動程式及平台專屬代碼所做的持續努力。</p>
+<p>對於更廣泛的開源社群而言，這種棄用是熟悉且反覆發生的事件。內核維護者經常面臨保持代碼庫精簡易維護與保留舊式硬件兼容性之間的張力。遺留在代碼庫中的每個舊式驅動程式都會帶來維護負擔、潛在的代碼腐化問題，並為從事子系統開發的開發者帶來複雜性。移除 AMD Elan 支援，表明開發社群判定該處理器的剩餘用戶群體規模已不足以支援其在主線代碼庫中繼續維護。</p>
+<p>仍在使用基於 AMD Elan 晶片的嵌入式設備的機構，需要相應地規劃應對方案。選項包括固定使用較舊的內核版本、使用內核代碼庫外的補丁，或開始遷移至更現代的嵌入式平台。</p>
+<h4>新增硬件支援</h4>
+<p>在光譜的另一端，Linux 7.2 電源管理的 pull request 包含了對新硬件平台及設備的支援新增。雖然初期合併報告中未詳細列出具體的平台名稱，但引入新的支援代碼是每個內核發布週期的常規且關鍵部分，確保 Linux 能持續兼容最新的移動處理器、系統單晶片設計以及依賴複雜電源狀態管理的週邊設備。</p>
+<p>電源管理是 Linux 內核中最具影響力的子系統之一。對於移動設備，其品質直接決定了電池續航力。對於運行數千台機器的數據中心，即使在電源狀態切換和頻率調節方面有微小改進，也能轉化為能源成本和熱量輸出的顯著降低。該子系統通常由 linux-pm 代碼庫維護，因此受到持續關注。</p>
+<h4>錯誤修復與漸進式改進</h4>
+<p>除了標誌性的變更外，合併的補丁集還包括一系列針對電源管理框架的錯誤修復、性能調整和增強。這些覆蓋了 CPU 頻率調節策略（governors）、週邊設備的運行時電源管理以及 ACPI（進階配置與電源介面）處理等領域——這些領域中細微的錯誤可能導致系統不穩定、意外的喚醒事件或異常耗電。</p>
+<p>此類漸進式工作本身很少成為頭條新聞，但它構成了內核可靠性的基礎。每個發布版本中累積的質量改進，使得 Linux 能夠在極其廣泛的硬件上可靠運行，從樹莓派開發板到高效能運算叢集皆然。</p>
+<h4>為何重要</h4>
+<p>對於系統管理員、嵌入式開發者以及任何大規模部署 Linux 的人而言，Linux 7.2 的電源管理變更加強了兩個實際要點。首先，硬件生命週期管理不容忽視——主線內核對舊式平台的支援是一種特權，而非保證。其次，保持系統更新至近期的內核版本，對於獲得最新的設備支援和穩定性修復至關重要。</p>
+<p>Linux 7.2 的合併窗口仍處於活躍狀態，在進入候選發布階段之前，可能還會有額外的電源管理變更被合併。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.2-Power-Management" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
