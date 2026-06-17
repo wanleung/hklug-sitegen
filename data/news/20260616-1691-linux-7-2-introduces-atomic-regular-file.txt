@@ -1,0 +1,31 @@
+Date: 2026-06-16 14:23:00
+Author: HKLUG Team
+Title: Linux 7.2 Introduces Atomic Regular-File Guard for Secure File Access
+Image: 20260616-1691-linux-7-2-introduces-atomic-regular-file.jpg
+Content:
+<p>According to a report by Phoronix, a new flag merged into the Linux 7.2 development tree gives developers a straightforward way to ensure their applications only open regular files — closing a long-standing class of race-condition vulnerabilities in the process.</p>
+<p>The <code>OPENAT2_REGULAR</code> flag, integrated as part of a broader set of VFS (Virtual File System) changes slated for Linux 7.2, adds a kernel-level constraint to the <code>openat2</code> system call. When specified, it instructs the kernel to reject any attempt to open a path that does not point to a regular file, blocking access to device nodes, symbolic links to special files, and other non-standard filesystem objects.</p>
+<h4>Closing a TOCTOU gap</h4>
+<p>The flag addresses a well-known pattern in systems programming: applications that check a file's type in userspace — for example, by calling <code>fstat()</code> after <code>open()</code> — leave a time-of-check-to-time-of-use (TOCTOU) window. An attacker who can manipulate the filesystem between those two operations, such as replacing a regular file with a symlink to <code>/dev/mem</code> or a named pipe, can trick the program into accessing unintended resources.</p>
+<p>By moving the file-type check into the kernel as an atomic part of the open operation itself, <code>OPENAT2_REGULAR</code> eliminates that race window entirely. The kernel verifies the file type at the exact moment it resolves the path and opens the descriptor, leaving no opportunity for a filesystem mutation to intervene.</p>
+<h4>Part of the openat2 evolution</h4>
+<p>The new flag naturally extends the existing family of <code>RESOLVE_*</code> flags available through the <code>openat2</code> interface, which was designed as a more secure and flexible successor to the older <code>openat</code> system call. Those flags already allow developers to control aspects of path resolution — preventing symlink traversal, restricting mount-point crossings, and more. Adding a file-type constraint to that toolbox reinforces <code>openat2</code> as the preferred interface for security-conscious file access.</p>
+<p>For developers, the mechanism is declarative and simple: set the flag, and the kernel handles the rest. There is no need to implement multi-step validation logic in userspace, which reduces both the complexity and the attack surface of file-handling code.</p>
+<h4>Who should pay attention</h4>
+<p>The flag is particularly relevant for software that routinely processes untrusted or user-supplied file paths. Container runtimes, deployment automation tools, setuid utilities, and file-processing daemons are all candidates for hardening with this new mechanism. Any application that opens files based on external input stands to benefit from shifting validation responsibility into the kernel.</p>
+<p>It remains to be seen how quickly the broader ecosystem will adopt the flag. High-level programming languages and standard libraries will need to expose <code>OPENAT2_REGULAR</code> through their file I/O APIs before it becomes accessible to the average application developer. Performance characteristics under high-frequency file operations also warrant benchmarking as adoption grows.</p>
+<p>For now, the merge into the Linux 7.2 cycle marks a meaningful step toward making secure file access the default rather than an afterthought — one atomic flag at a time.</p>
+<hr>
+<p>據 Phoronix 報道，一項合併至 Linux 7.2 開發樹的新旗標，為開發人員提供了一種直接了當的方式，以確保其應用程式僅開啟常規檔案——同時解決了長期存在的一類競爭條件漏洞。</p>
+<p>這項 <code>OPENAT2_REGULAR</code> 旗標，作為 Linux 7.2 計劃中更廣泛的 VFS（虛擬檔案系統）變更的一部分整合進來，為 <code>openat2</code> 系統呼叫增添了一項核心層級的約束。指定此旗標後，它會指示核心拒絕任何嘗試開啟指向非常規檔案的路徑的操作，從而阻止對裝置節點、指向特殊檔案的符號連結以及其他非標準檔案系統物件的存取。</p>
+<h4>填補 TOCTOU 漏洞</h4>
+<p>此旗標解決了系統程式設計中一個眾所周知的模式：應用程式在使用者空間檢查檔案類型——例如，在 <code>open()</code> 之後呼叫 <code>fstat()</code>——會留下「檢查時間到使用時間」（TOCTOU）的窗口。攻擊者若能在這兩個操作之間操控檔案系統，例如將常規檔案替換為指向 <code>/dev/mem</code> 或命名管道的符號連結，便可能誘騙程式存取非預期的資源。</p>
+<p>通過將檔案類型檢查作為開啟操作本身的原子部分移入核心，<code>OPENAT2_REGULAR</code> 徹底消除了該競爭窗口。核心在解析路徑並開啟檔案描述符的精確時刻驗證檔案類型，不給檔案系統變更留下任何介入的機會。</p>
+<h4>openat2 演進的一部分</h4>
+<p>這項新旗標自然擴展了現有的 <code>RESOLVE_*</code> 旗標系列，這些旗標可通過 <code>openat2</code> 介面使用。<code>openat2</code> 被設計為舊版 <code>openat</code> 系統呼叫更安全、更靈活的繼任者。這些現有旗標已允許開發人員控制路徑解析的各個方面——防止符號連結遍歷、限制掛載點交叉等等。在工具箱中增加檔案類型約束，進一步強化了 <code>openat2</code> 作為安全意識檔案存取首選介面的地位。</p>
+<p>對於開發人員而言，該機制是宣告式且簡單的：設定旗標，其餘工作由核心處理。無需在使用者空間實施多步驗證邏輯，這降低了檔案處理代碼的複雜性和攻擊面。</p>
+<h4>應關注者</h4>
+<p>這項旗標對於經常處理不受信任或使用者提供的檔案路徑的軟件尤其相關。Container runtime、部署自動化工具、setuid 公用程式以及檔案處理 daemon，都是適合使用此新機制進行強化的候選對象。任何基於外部輸入開啟檔案的應用程式，都可受益於將驗證責任轉移至核心。</p>
+<p>更廣泛的生態系統將多快採用此旗標，仍有待觀察。高階程式語言和標準程式庫需要在其檔案 I/O API 中暴露 <code>OPENAT2_REGULAR</code>，然後一般應用程式開發人員才能使用它。在高頻檔案操作下的性能特性，也需在採用率增長時進行基準測試。</p>
+<p>就目前而言，併入 Linux 7.2 週期標誌著朝著讓安全檔案存取成為預設而非事後補救的方向邁出的有意義一步——一次一個原子旗標。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.2-VFS-OPENAT2-REGULAR" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
