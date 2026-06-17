@@ -1,0 +1,35 @@
+Date: 2026-06-16 11:32:00
+Author: HKLUG Team
+Title: DragonForce Ransomware Hides Command-and-Control Traffic Inside Microsoft Teams Infrastructure
+Image: 20260616-1668-dragonforce-ransomware-hides-command-and.jpg
+Content:
+<p>The DragonForce ransomware operation has been caught routing its command-and-control communications through Microsoft Teams relay infrastructure, leveraging a custom malware implant dubbed 'Backdoor.Turn' to disguise malicious traffic as legitimate collaboration platform activity.</p>
+<p>The technique, reported by BleepingComputer, represents a significant escalation in the "living-off-the-cloud" playbook increasingly favored by cybercriminal groups. By tunneling C2 instructions through Microsoft's own Teams relay servers, DragonForce effectively forces defenders into an impossible position: blocking the malicious channel means disrupting one of the most widely deployed enterprise communication platforms in the world.</p>
+<h4>How the Attack Works</h4>
+<p>Once deployed on a compromised system, the 'Backdoor.Turn' malware establishes a covert communication channel that piggybacks on Microsoft Teams' relay infrastructure. Rather than connecting directly to attacker-controlled servers — which network monitoring tools could flag and block — the implant routes its traffic through Microsoft's own legitimate services. To security teams reviewing network logs, the connections appear to be routine Teams activity, making detection at the network layer extremely difficult.</p>
+<p>This approach gives DragonForce operators several tactical advantages. The relay infrastructure is globally distributed, high-availability, and encrypted by default. It blends seamlessly into environments where Teams traffic is already ubiquitous, reducing the signal-to-noise ratio that defenders rely on to spot anomalies.</p>
+<h4>A Growing Pattern of Cloud Platform Abuse</h4>
+<p>DragonForce is not the first threat actor to exploit trusted SaaS platforms as covert infrastructure, but the use of Microsoft Teams for C2 relay marks a notable advancement. Security researchers have previously documented campaigns that weaponised Slack, Google Drive, Dropbox, and other cloud services for similar purposes. The pattern reflects a broader strategic shift: as organisations invest in network-level defences and adopt zero-trust architectures, attackers are adapting by hiding inside the very tools businesses trust most.</p>
+<p>What makes the Teams relay abuse particularly concerning is its scalability. Microsoft Teams is embedded in the daily workflow of hundreds of millions of users worldwide. Any environment running the platform becomes a potential noise generator that masks malicious activity.</p>
+<h4>Defensive Implications</h4>
+<p>The discovery underscores a critical lesson for security teams: perimeter and network-based detection alone are no longer sufficient against sophisticated adversaries. When malicious traffic is indistinguishable from legitimate business communications at the network level, the detection burden shifts decisively to the endpoint.</p>
+<p>Organisations should prioritise robust endpoint detection and response (EDR) deployments across their environments, with a focus on behavioural monitoring. EDR solutions that track process behaviour, file system changes, and memory-level anomalies on individual hosts stand a far better chance of identifying implants like 'Backdoor.Turn' before they can establish outbound C2 channels.</p>
+<p>As a supplementary measure, security teams may also want to review their Microsoft 365 audit logs for unusual Teams relay usage patterns, unexpected connection targets, or anomalous data transfer volumes — though the inherent challenge remains that such traffic is specifically designed to blend in with normal activity.</p>
+<p>As of publication, Microsoft has not issued official guidance or mitigation advice specifically addressing this abuse of its Teams relay infrastructure. IT administrators and security professionals monitoring this development should watch for potential updates from Microsoft's security response teams in the coming days.</p>
+<p>The DragonForce campaign is a reminder that the tools organisations adopt for productivity can become weapons in the hands of determined adversaries, and that defending against modern ransomware operations requires visibility at every layer of the stack — not just the network edge.</p>
+<hr>
+<p>DragonForce 勒索軟件操作被發現透過 Microsoft Teams 中繼基礎設施傳輸其指令與控制通訊，並利用一種名為「Backdoor.Turn」的自訂惡意軟件植入物，將惡意流量偽裝成合法的協作平台活動。</p>
+<p>據 BleepingComputer 報導，這項技術標誌著網絡犯罪團體日益青睞的「憑藉雲端資源活動」策略出現了重大升級。通過將 C2 指令封裝在微軟自身的 Teams 中繼伺服器內，DragonForce 實際上將防禦者置於兩難境地：封鎖惡意通道意味著干擾全球部署最廣泛的企業通訊平台之一。</p>
+<h4>攻擊如何運作</h4>
+<p>一旦部署在受感染的系統上，「Backdoor.Turn」惡意軟件便會建立一個隱蔽的通訊頻道，並藉由 Microsoft Teams 的中繼基礎設施進行搭載傳輸。該植入物不會直接連接至攻擊者控制的伺服器——網絡監控工具可能會標記並封鎖這類連接——而是將流量經由微軟自身的合法服務進行路由。對於檢查網絡日誌的安全團隊而言，這些連接看似常規的 Teams 活動，使得在網絡層面進行偵測變得極為困難。</p>
+<p>這種方法為 DragonForce 操作者帶來數項戰術優勢。中繼基礎設施具有全球分佈、高可用性以及預設加密等特點。它能與 Teams 流量已無處不在的環境無縫融合，降低了防禦者依賴用於發現異常的信噪比。</p>
+<h4>濫用雲端平台的趨勢日益增長</h4>
+<p>DragonForce 並非首個利用受信任 SaaS 平台作為隱蔽基礎設施的威脅行為者，但使用 Microsoft Teams 進行 C2 中繼傳輸標誌著一次顯著的進展。安全研究人員此前已記錄過利用 Slack、Google Drive、Dropbox 和其他雲端服務達到類似目的的攻擊活動。此模式反映了一個更廣泛的戰略轉變：隨著組織加大對網絡層防禦的投資並採用零信任架構，攻擊者正透過隱藏在企業最信任的工具內部來適應。</p>
+<p>Teams 中繼濫用尤其令人擔憂之處在於其可擴展性。Microsoft Teams 已融入全球數億用戶的日常工作流程中。任何運行此平台的環境，都可能成為掩蓋惡意活動的潛在噪聲生成器。</p>
+<h4>防禦意涵</h4>
+<p>這項發現凸顯了安全團隊的一個關鍵教訓：僅依賴周邊和基於網絡的偵測，已不足以應對複雜的對手。當惡意流量在網絡層面與合法業務通訊難以區分時，偵測的重任便決定性地轉移至端點層面。</p>
+<p>組織應優先在全環境中部署穩健的端點偵測與回應（EDR）解決方案，並側重於行為監控。能夠追蹤單一主機上的程序行為、檔案系統變更以及記憶體層級異常的 EDR 解決方案，在識別「Backdoor.Turn」這類植入物建立對外 C2 通道之前，其偵測機會要大得多。</p>
+<p>作為補充措施，安全團隊亦可能需檢查其 Microsoft 365 審計日誌，留意異常的 Teams 中繼使用模式、非預期的連接目標或異常的資料傳輸量——儘管內在挑戰依然存在，即此類流量的設計初衷本就是為了與正常活動混為一體。</p>
+<p>截至本文發表時，微軟尚未就此特定濫用其 Teams 中繼基礎設施的行為發布官方指引或緩解建議。監控此發展的 IT 管理員和安全專業人士應在未來數日留意微軟安全回應團隊的潛在更新。</p>
+<p>DragonForce 攻擊活動提醒我們，組織為提升生產力而採用的工具，在堅定的對手手中可能成為武器；防禦現代勒索軟件操作需要對技術堆疊的每一層都具備可見性——而不僅僅是網絡邊緣。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/ransomware-gang-abuses-microsoft-teams-relays-to-hide-malicious-traffic/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
