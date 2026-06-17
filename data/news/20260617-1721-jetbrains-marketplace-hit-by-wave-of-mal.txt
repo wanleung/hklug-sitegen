@@ -1,0 +1,46 @@
+Date: 2026-06-17 04:23:00
+Author: HKLUG Team
+Title: JetBrains Marketplace Hit by Wave of Malicious Plugins Targeting Developers' AI API Keys
+Content:
+<p>A coordinated campaign to siphon artificial intelligence API credentials has been uncovered on the JetBrains Marketplace, with researchers identifying at least 15 malicious plugins that collectively reached an estimated 40,000 developers before detection.</p>
+<p>The trojanized extensions, disclosed by BleepingComputer, masqueraded as legitimate productivity and AI-assistance tools for popular JetBrains IDEs such as IntelliJ IDEA, PyCharm, and WebStorm. Once installed, the plugins exfiltrated stored API keys for services including OpenAI, Azure OpenAI, and other AI platform endpoints, funnelling the stolen credentials to attacker-controlled infrastructure.</p>
+<h4>How the Attack Worked</h4>
+<p>The malicious plugins followed a familiar but effective playbook. Each was published under innocuous names and descriptions designed to blend in with the thousands of community-contributed extensions already hosted on the marketplace. Upon installation, injected code scanned local configuration files and environment variables for API tokens associated with AI services, then transmitted them to external command-and-control servers over HTTPS.</p>
+<p>Because developers frequently store API keys in plaintext configuration files or environment variables for ease of use during testing and development, the attack surface was significant. The stolen keys could allow attackers to run inference workloads at the victim's expense, access proprietary model fine-tuning data, or pivot into broader cloud environments where those credentials grant additional permissions.</p>
+<h4>A Growing Pattern in Software Supply Chains</h4>
+<p>The incident is the latest in a string of supply-chain compromises targeting developer tooling ecosystems. In recent years, malicious packages have been discovered across npm, PyPI, and the Visual Studio Code Marketplace, underscoring the trust developers place in extension registries and the relative ease with which adversaries can abuse that trust.</p>
+<p>What makes the JetBrains Marketplace incident particularly notable is the targeting of AI-specific credentials. As organisations increasingly embed large language models and generative AI services into their workflows, API keys for these platforms have become a high-value target — functioning almost as a new class of secret alongside traditional cloud credentials and signing certificates.</p>
+<p>The compromise also highlights a persistent tension in developer ecosystems: open, community-driven plugin marketplaces encourage innovation and rapid tooling improvements, but the low barrier to publishing creates opportunities for malicious actors to distribute harmful code at scale.</p>
+<h4>JetBrains Response and Remediation</h4>
+<p>According to BleepingComputer, the identified plugins have been removed from the JetBrains Marketplace following the discovery. JetBrains has historically employed automated and manual review processes for submitted plugins, though the company has not yet announced specific new vetting measures in response to this campaign. No particular threat actor has been publicly attributed to the operation at the time of reporting.</p>
+<h4>Lessons for Developers</h4>
+<p>Security researchers advise developers and organisations to take several precautionary steps:</p>
+<ul>
+<li><strong>Audit installed plugins</strong> — Review any JetBrains Marketplace extensions currently in use and verify their publishers and source repositories.</li>
+<li><strong>Rotate AI API keys</strong> — Treat any keys that may have been exposed as compromised and regenerate them immediately.</li>
+<li><strong>Use secret management tools</strong> — Avoid storing API credentials in plaintext files; use dedicated vaults or OS-level secret stores instead.</li>
+<li><strong>Apply least-privilege principles</strong> — Configure AI service keys with minimal required permissions and spending limits where possible.</li>
+</ul>
+<p>The incident serves as a reminder that as the developer toolchain evolves to incorporate AI services, the security posture around those integrations must evolve in parallel. Plugin marketplaces, while indispensable to modern development workflows, remain a potent vector for supply-chain attacks — and the growing economic value of AI credentials is making developers an increasingly attractive target.</p>
+<hr>
+<p>JetBrains 市場上揭發了一場協調行動，旨在竊取人工智能 API 憑證。研究人員發現了至少 15 個惡意外掛程式，在被偵測到之前，估計總共已觸及約 4 萬名開發人員。</p>
+<p>據 BleepingComputer 披露，這些被植入木馬的外掛程式偽裝成適用於熱門 JetBrains IDE（如 IntelliJ IDEA、PyCharm 和 WebStorm）的合法生產力與 AI 輔助工具。一旦安裝，這些外掛程式便會竊取儲存的 API 金鑰，目標服務包括 OpenAI、Azure OpenAI 及其他 AI 平台端點，並將竊得的憑證傳送至攻擊者控制的基礎設施。</p>
+<h4>攻擊如何運作</h4>
+<p>這些惡意外掛程式遵循了熟悉但有效的手法。每個外掛都以看似無害的名稱和描述發佈，旨在與市場上已託管的數千個社群貢獻外掛融為一體。安裝後，注入的代碼會掃描本機設定檔和環境變數，尋找與 AI 服務相關的 API 令牌，然後透過 HTTPS 將其傳輸至外部的命令與控制伺服器。</p>
+<p>由於開發人員為了在測試和開發期間方便使用，經常以純文字形式將 API 金鑰儲存在設定檔或環境變數中，因此攻擊面相當廣泛。被竊取的金鑰可能讓攻擊者得以犧牲受害者的費用運行推理工作負載、存取專有的模型微調數據，或入侵這些憑證具備額外權限的更廣泛雲端環境。</p>
+<h4>軟件供應鏈中日益增長的模式</h4>
+<p>此事件是針對開發工具生態系統的一連串供應鏈入侵事件中的最新一例。近年來，在 npm、PyPI 及 Visual Studio Code 市場均發現過惡意套件，這突顯了開發人員對擴充功能註冊表的信任，以及對手利用此種信任的相對容易程度。</p>
+<p>JetBrains 市場事件之所以特別值得注意，在於其瞄準了 AI 專屬的憑證。隨著企業組織日益將大型語言模型和生成式 AI 服務嵌入其工作流程，這些平台的 API 金鑰已成為高價值目標——幾乎成為與傳統雲端憑證及簽署憑證並列的新型態機密。</p>
+<p>此次入侵事件也突顯了開發生態系統中一個長期存在的張力：開放、社群驅動的外掛市場促進了創新和快速的工具改進，但其低門檻的發佈機制也為惡意行為者大規模傳播有害代碼創造了機會。</p>
+<h4>JetBrains 的回應與補救</h4>
+<p>據 BleepingComputer 報道，被識別的外掛程式在事件發現後已從 JetBrains 市場移除。JetBrains 歷來採用自動化與人工審核流程來審查提交的外掛，但該公司尚未宣布為應對此次行動而採取的具體新審查措施。截至報導時，尚無特定威脅行為者被公開歸咎於此行動。</p>
+<h4>給開發人員的教訓</h4>
+<p>安全研究人員建議開發人員及企業組織採取以下預防措施：</p>
+<ul>
+<li><strong>審核已安裝的外掛程式</strong> — 檢查目前正在使用的任何 JetBrains 市場擴充功能，並驗證其發佈者及來源代碼庫。</li>
+<li><strong>更換 AI API 金鑰</strong> — 將任何可能已曝光的金鑰視為已洩露，並立即重新產生。</li>
+<li><strong>使用機密管理工具</strong> — 避免在純文字檔案中儲存 API 憑證；改用專用的金鑰庫或作業系統層級的機密儲存機制。</li>
+<li><strong>應用最小權限原則</strong> — 在可能的情況下，配置 AI 服務金鑰時僅賦予最低所需權限，並設定支出限額。</li>
+</ul>
+<p>此事件提醒我們，隨著開發工具鏈不斷演進以整合 AI 服務，圍繞這些整合的安全態勢也必須同步演進。外掛程式市場雖然對現代開發工作流程不可或缺，但仍是供應鏈攻擊的有力途徑——而 AI 憑證日益增長的經濟價值，正使開發人員成為越來越具吸引力的目標。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/malicious-jetbrains-marketplace-plugins-steal-ai-api-keys-from-developers/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
