@@ -1,0 +1,36 @@
+Date: 2026-06-16 21:23:00
+Author: HKLUG Team
+Title: Google Vertex AI SDK Flaw Enabled Bucket Squatting to Hijack Model Uploads
+Content:
+<p>Security researchers at Palo Alto Networks Unit 42 have disclosed a vulnerability in Google Cloud's Vertex AI SDK for Python that could have allowed an unauthenticated attacker to hijack a victim's machine learning model upload and execute arbitrary code within Google's own serving infrastructure.</p>
+<p>The flaw, which Google patched in SDK version 1.148.0 after it was reported through the company's bug bounty programme, exploits a predictable naming convention used for Google Cloud Storage (GCS) buckets during the model upload process. Unit 42 has dubbed the technique "Pickle in the Middle," reflecting both the attack vector and the underlying serialization format that makes the exploit dangerous.</p>
+<h4>How the Attack Works</h4>
+<p>When a user uploads a model through the Vertex AI SDK, the library automatically creates a GCS bucket to stage the model artifact before it is processed by Google's infrastructure. The problem, according to Unit 42's research, is that the naming scheme for these buckets follows a predictable pattern tied to the user's project identifiers. An attacker who can guess or derive the bucket name can register it first — a classic "bucket squatting" move — and plant a malicious payload in place of the legitimate model file.</p>
+<p>Because the Vertex AI pipeline subsequently deserializes the uploaded object using Python's <code>pickle</code> format without adequate integrity checks, the attacker's payload would be executed as part of the normal model loading process. Critically, this code execution occurs inside Google's infrastructure, not the victim's environment — meaning the attacker needs no credentials or access to the target project whatsoever.</p>
+<p>Unit 42 confirmed it observed no exploitation of the vulnerability in the wild prior to disclosure.</p>
+<h4>A Familiar Pattern: Pickle Remains a Persistent Risk</h4>
+<p>The incident reinforces a well-known but stubbornly persistent problem in the machine learning ecosystem. The <code>pickle</code> serialization format, native to Python, can execute arbitrary code during deserialization. Security researchers have flagged this risk for years, yet pickle remains the default or supported serialization mechanism in many popular ML frameworks and cloud SDKs.</p>
+<p>What makes this particular vulnerability notable is not just the pickle deserialization risk — it is the fact that the attack surface extends into a cloud provider's internal serving pipeline. The model artifact does not simply sit in storage; it is actively consumed and deserialized by Google's backend systems, turning a bucket-squatting opportunity into a code execution vector within a major cloud platform.</p>
+<h4>ML Pipelines as Software Supply Chains</h4>
+<p>The "Pickle in the Middle" disclosure is the latest evidence that machine learning model pipelines should be treated as critical software supply chains. Traditional software development has increasingly adopted integrity verification practices — signed packages, checksums, reproducible builds — but ML workflows often lag behind, relying on implicit trust in storage locations and serialization formats.</p>
+<p>In this case, the Vertex AI SDK trusted that a bucket with a predictable name was legitimately controlled by the project owner. No cryptographic verification of the model artifact's origin or integrity was performed before deserialization. That trust model is fundamentally fragile.</p>
+<p>Google has since addressed the vulnerability by modifying how the SDK handles bucket creation and model staging. The company awarded a bounty to Unit 42 through its Vulnerability Reward Programme, though the specific payout was not disclosed.</p>
+<h4>What It Means for Cloud ML Teams</h4>
+<p>For teams running cloud ML workloads, the incident is a reminder to verify SDK provenance, enforce bucket ownership checks, and treat model artifacts with the same integrity controls applied to traditional software dependencies. Broader adoption of safer serialization formats — such as SafeTensors, which eliminates arbitrary code execution during loading — and emerging model-signing standards could help close the integrity gap that made this class of attack possible in the first place. As machine learning pipelines grow in complexity and move deeper into production infrastructure, the consequences of supply-chain weaknesses in these workflows will only increase.</p>
+<hr>
+<p>Palo Alto Networks Unit 42 的安全研究人員披露了 Google Cloud 的 Vertex AI Python SDK 中的一個安全漏洞。該漏洞可能允許未經驗證的攻擊者劫持受害者的機器學習模型上載，並在 Google 自身的服務基礎設施內執行任意代碼。</p>
+<p>此漏洞在透過公司的漏洞賞金計劃報告後，已在 SDK 1.148.0 版本中得到修補。它利用了在模型上載過程中，用於 Google Cloud Storage (GCS) 儲存桶的一種可預測命名慣例。Unit 42 將此技術命名為「Pickle in the Middle」，反映了攻擊向量及使該漏洞利用變得危險的底層序列化格式。</p>
+<h4>攻擊原理</h4>
+<p>當用戶透過 Vertex AI SDK 上載模型時，該程式庫會自動建立一個 GCS 儲存桶，用作暫存模型構件，在由 Google 的基礎設施處理之前。根據 Unit 42 的研究，問題在於這些儲存桶的命名方案遵循一種可預測的模式，與用戶的項目標識符相關聯。能夠猜測或推導出儲存桶名稱的攻擊者，可以率先註冊它——這是一種典型的「儲存桶搶注」手法——並在合法模型檔案的位置植入惡意負載。</p>
+<p>由於 Vertex AI 流程隨後會使用 Python 的 <code>pickle</code> 格式反序列化上載的物件，且沒有充分的完整性檢查，攻擊者的負載將作為正常模型載入過程的一部分被執行。關鍵在於，此代碼執行發生在 Google 的基礎設施內部，而非受害者的環境中——這意味著攻擊者完全不需要目標項目的任何憑證或存取權限。</p>
+<p>Unit 42 確認，在漏洞披露前，未觀察到野外利用此漏洞的情況。</p>
+<h4>熟悉的模式：Pickle 仍是持續存在的風險</h4>
+<p>此事件強化了機器學習生態系統中一個眾所周知但頑固存在的問題。Python 原生的 <code>pickle</code> 序列化格式在反序列化過程中可以執行任意代碼。多年來，安全研究人員一直指出此風險，但 pickle 在許多流行的機器學習框架和雲端 SDK 中，仍然是預設或支援的序列化機制。</p>
+<p>使此特定漏洞值得注意的，不僅僅是 pickle 反序列化的風險——而是攻擊面延伸到了雲端供應商的內部服務管道。模型構件不僅僅存放在儲存中；它還被 Google 的後端系統主動消費和反序列化，從而將儲存桶搶注的機會轉變為在主要雲端平台內的代碼執行向量。</p>
+<h4>機器學習管道作為軟件供應鏈</h4>
+<p>「Pickle in the Middle」漏洞的披露是最新證據，表明機器學習模型管道應被視為關鍵的軟件供應鏈。傳統軟件開發已越來越多地採用完整性驗證實踐——簽名套件、校驗和、可重現構建——但機器學習工作流程往往滯後，依賴於對儲存位置和序列化格式的隱性信任。</p>
+<p>在此案例中，Vertex AI SDK 信任一個具有可預測名稱的儲存桶是由項目擁有者合法控制的。在反序列化之前，沒有對模型構件的來源或完整性進行任何加密驗證。這種信任模型本質上是脆弱的。</p>
+<p>Google 此後已透過修改 SDK 處理儲存桶建立和模型暫存的方式來解決此漏洞。公司透過其漏洞獎勵計劃向 Unit 42 發放了賞金，但具體金額未有披露。</p>
+<h4>對雲端機器學習團隊的意義</h4>
+<p>對於運行雲端機器學習工作負載的團隊而言，此事件提醒他們需要驗證 SDK 來源、強制執行儲存桶擁有權檢查，並以應用於傳統軟件依賴項的同等完整性控制措施來對待模型構件。更廣泛地採用更安全的序列化格式——例如 SafeTensors，它消除了載入期間的任意代碼執行——以及新興的模型簽名標準，有助於彌合最初使此類攻擊成為可能的完整性差距。隨著機器學習管道變得越來越複雜，並深入生產基礎設施，這些工作流程中的供應鏈弱點所帶來的後果只會日益嚴重。</p>
+<p><a href="https://thehackernews.com/2026/06/google-vertex-ai-sdk-flaw-let-attackers.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
