@@ -1,0 +1,28 @@
+Date: 2026-06-17 13:22:00
+Author: HKLUG Team
+Title: Secure Boot Root Keys Nearing Expiration — What IT Teams Need to Do Now
+Content:
+<p>A critical deadline is approaching for virtually every modern PC and server on the planet. The Platform Key (PK) and Key Exchange Keys (KEKs) that form the cryptographic root of trust for Secure Boot are nearing expiration, with Ars Technica reporting on 17 June that the window for action is closing fast. Failure to act in time could leave systems unable to boot — or force them into an insecure fallback state vulnerable to bootkit and rootkit attacks.</p>
+<p>Secure Boot is the UEFI security mechanism that verifies every piece of software loaded during the boot process — from firmware to bootloader to operating system kernel — against a chain of trusted cryptographic certificates. When the root certificates in that chain expire without being replaced, the entire verification mechanism breaks down. This is not a routine patch; it is a foundational cryptographic renewal affecting hardware manufactured over the past decade.</p>
+<h4>Who is affected</h4>
+<p>Any system with Secure Boot enabled is in scope, regardless of whether it runs Windows or Linux. For Windows users, the primary update path runs through Windows Update, with corresponding UEFI firmware patches from device manufacturers. Linux distributions that rely on Microsoft's signing infrastructure — which includes most major distros using the standard shim bootloader — will need to ship updated, signed binaries. Users with custom or dual-boot configurations face additional complexity, as they must verify that new keys are compatible with their specific setups.</p>
+<p>Enterprise environments face the most significant operational challenge. Servers that reboot infrequently, firmware that is difficult to update remotely, and large hardware fleets with diverse configurations all complicate a coordinated rollout. Testing is essential: applying firmware updates without thorough validation could cause boot failures on production systems.</p>
+<h4>The open questions that remain</h4>
+<p>What happens when a key expires varies by firmware implementation. Some systems may refuse to boot entirely; others may silently disable Secure Boot without any visible indication to the user, leaving machines running with an unverified boot chain. This ambiguity makes risk assessment difficult, particularly for organisations running heterogeneous hardware.</p>
+<p>For systems where administrators have configured custom keys — a practice more common in security-conscious environments — the situation is even less clear. These configurations may not benefit from vendor-supplied updates and could require manual key rotation.</p>
+<h4>A recurring structural problem</h4>
+<p>The impending expiration also raises a deeper question about the architecture of trust in modern computing. Secure Boot's design is historically tied to Microsoft's signing infrastructure, creating a centralised trust model that sits uneasily alongside the decentralised, community-controlled security philosophy valued across the open-source ecosystem. For Linux users and administrators, this event is a reminder that critical security infrastructure depends on the certificate lifecycle decisions of a single commercial vendor.</p>
+<p>The practical takeaway for IT and security professionals is straightforward: audit your hardware estate now, confirm firmware update availability for every device model in your fleet, and begin staged rollouts as soon as possible. The cost of inaction is not merely a theoretical security risk — it is the possibility that systems simply will not start. And as enterprises invest ever more heavily in predictive and AI-driven defence tooling, events like this underscore that some of the most consequential security obligations remain fundamentally manual, time-sensitive, and beyond what any algorithm can substitute for.</p>
+<hr>
+<p>一個關鍵的截止日期正逼近全球幾乎所有現代個人電腦與伺服器。構成 Secure Boot 密碼學信任根基的平台金鑰與金鑰交換金鑰即將到期，Ars Technica 在 6 月 17 日報導指行動窗口正在迅速關閉。若未能及時採取行動，系統可能無法啟動 — 或被迫進入一個不安全的後備狀態，使其容易遭受 bootkit 與 rootkit 攻擊。</p>
+<p>Secure Boot 是統一可延伸韌體介面的安全機制，用於驗證啟動過程中載入的每一段軟件 — 從韌體到開機載入程式再到作業系統核心 — 是否符合可信的密碼學憑證鏈。當該鏈中的根憑證到期而未被更換時，整個驗證機制將會崩潰。這並非例行修補；這是一次影響過去十年所製造硬體的根本性密碼學更新。</p>
+<h4>受影響對象</h4>
+<p>任何啟用了 Secure Boot 的系統均在影響範圍內，無論其運作的是 Windows 還是 Linux。對於 Windows 用戶，主要的更新途徑是透過 Windows Update，並配合來自裝置製造商的對應 UEFI 韌體修補程式。依賴 Microsoft 簽署基礎架構的 Linux 發行版 — 這包括大多數使用標準 shim 開機載入程式的主要發行版 — 將需要提供更新且已簽署的二進位檔案。擁有自訂或雙重啟動設定的使用者將面臨額外的複雜性，因為他們必須驗證新金鑰是否與其特定設定相容。</p>
+<p>企業環境面臨最重大的營運挑戰。不常重新啟動的伺服器、難以遠端更新的韌體，以及設定多樣化的大型硬體裝置群，都使得協調部署變得複雜。測試至關重要：未經驗證就套用韌體更新，可能會導致生產系統啟動失敗。</p>
+<h4>懸而未決的問題</h4>
+<p>金鑰到期後會發生什麼，取決於韌體的具體實現。有些系統可能會完全拒絕啟動；有些可能會在用戶毫無察覺的情況下靜默停用 Secure Boot，使機器在未經驗證的啟動鏈下運作。這種不確定性使得風險評估變得困難，特別是對於運作異質硬體的組織。</p>
+<p>對於管理員已設定了自訂金鑰的系統 — 這在注重安全的環境中更為常見 — 情況更加不明朗。這些設定可能無法從供應商提供的更新中受益，且可能需要手動輪換金鑰。</p>
+<h4>一個反覆出現的結構性問題</h4>
+<p>這次即將到來的到期事件，也引發了關於現代運算信任架構的更深層問題。Secure Boot 的設計歷史上與 Microsoft 的簽署基礎架構緊密相連，形成了一個集中式的信任模型，這與開源生態系統中重視的去中心化、由社群控制的安全理念格格不入。對於 Linux 用戶和管理員而言，此事件是一個警示：關鍵的安全基礎架構依賴於單一商業供應商的憑證生命週期決策。</p>
+<p>對於資訊科技及安全專業人員而言，實際的行動要點非常明確：立即審查您的硬體資產，確認您裝置群中每個型號的韌體更新可用性，並盡快開始分階段部署。無所作為的代價不僅僅是理論上的安全風險 — 而是系統可能根本無法啟動。隨著企業在預測性及人工智能驅動的防禦工具上投入日益加大，像這樣的事件凸顯了某些最關鍵的安全義務，根本上仍然是手動操作、時間緊迫，且無法被任何演算法所取代的。</p>
+<p><a href="https://arstechnica.com/security/2026/06/windows-and-linux-users-the-deadline-to-update-secure-boot-keys-is-near/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
