@@ -1,0 +1,40 @@
+Date: 2026-06-17 17:22:00
+Author: HKLUG Team
+Title: Threat Actor 'Poisson' Weaponised Tailscale and OpenSSH for Stealthy Persistence in 33-Day Intrusion
+Content:
+<p>A threat actor tracked as "Poisson" concluded a 33-day intrusion with an unusual display of operational foresight, installing legitimate administrative tools on a compromised machine to guarantee persistent access even after their command-and-control (C2) server went offline.</p>
+<p>According to research by Cato Networks covered by <em>The Hacker News</em> on 17 June 2026, the French-speaking attacker initially breached a small business through conventional means, deploying a keylogger to steal banking and email credentials. The attack followed a standard pattern, relying on the Havoc C2 framework for remote control. However, the incident took a notable turn before the attacker's primary C2 infrastructure was disabled.</p>
+<p><strong>The Proactive Pivot</strong></p>
+<p>In a move that blurred the lines between malicious intrusion and legitimate IT administration, Poisson installed OpenSSH and Tailscale on a compromised machine while the primary Havoc C2 was still operational. This created a secondary, independent channel for regaining access. When the Havoc server went dark the next day, the attacker's foresight paid off; they used the newly established Tailscale mesh VPN connection to log back into the system via SSH, bypassing the need for the defunct C2 entirely.</p>
+<p><strong>Evading Detection Through Legitimacy</strong></p>
+<p>Cato Networks noted that this technique is effective precisely because it weaponises trust. Tailscale is a popular commercial VPN service that simplifies creating secure networks, while OpenSSH is the standard tool for remote server management. Traffic from these applications—encrypted SSH sessions flowing over a Tailscale network—closely resembles normal remote administration activity. For many security monitoring systems tuned to detect known malicious binaries or suspicious C2 beaconing, this traffic can appear entirely benign, challenging traditional detection models.</p>
+<p>This incident exemplifies the "living off the land" (LotL) tactic, where attackers leverage trusted, pre-existing or commonly installed software to achieve their objectives and evade security controls. The use of Tailscale, in particular, creates a resilient peer-to-peer network that is difficult to trace back to a central attacker-controlled server.</p>
+<p><strong>A Stark Lesson for Resource-Constrained Businesses</strong></p>
+<p>The case underscores a significant vulnerability for small and medium-sized enterprises (SMEs), which often lack dedicated security operations centres (SOCs) and robust controls over software deployment. The initial compromise exploited that gap, and the persistence mechanism was built on tools that such organisations might not immediately flag as malicious.</p>
+<p>For defenders, the incident highlights the need to extend monitoring beyond known indicators of compromise. Key defensive measures include:</p>
+<ul>
+<li><strong>Application Allowlisting:</strong> Restricting which software can be installed on endpoints.</li>
+<li><strong>Network Segmentation:</strong> Limiting lateral movement even if a device is compromised.</li>
+<li><strong>Baseline Configuration:</strong> Documenting what legitimate software is installed on network assets to spot anomalies.</li>
+<li><strong>Egress Controls:</strong> Monitoring and restricting outbound connections, especially to unfamiliar IP ranges or domains.</li>
+</ul>
+<p>The attack serves as a clear reminder that advanced operational planning is not exclusive to high-profile threat groups. Even less sophisticated actors are adapting, using accessible, legitimate tools to build persistence that is both resilient and stealthy—a formidable challenge for organisations with limited defensive resources.</p>
+<hr>
+<p>一名被追蹤為「Poisson」的威脅行為者在歷時33天的入侵行動中，展現出異常的操作遠見——於受入侵的機器上安裝合法管理工具，確保持續存取權限，即使其指令與控制（C2）伺服器最終離線。</p>
+<p>根據Cato Networks的研究，經《The Hacker News》於2026年6月17日報導，該名法語系攻擊者最初通過常規手段入侵一家小型企業，部署鍵盤記錄器以竊取銀行及電郵登入憑證。攻擊初期遵循標準模式，依賴Havoc C2框架進行遠端控制。然而，在攻擊者的主要C2基礎設施被癱瘓前，事件出現了顯著轉折。</p>
+<p><strong>主動調整策略</strong></p>
+<p>攻擊者在主要Havoc C2仍運作期間，於受入侵的機器上安裝了OpenSSH和Tailscale。此舉模糊了惡意入侵與合法IT管理的界限，建立了一條獨立的次要通道以恢復存取。當Havoc伺服器在次日停止運作時，Poisson的預先部署奏效了；他們通過新建立的Tailscale網狀網絡VPN連接，經SSH重新登入系統，完全繞過了已失效的C2通道。</p>
+<p><strong>藉合法性規避偵測</strong></p>
+<p>Cato Networks指出，此手法之所以有效，正是因為它將信任機制武器化。Tailscale是一款流行的商業VPN服務，能簡化安全網絡的建立；而OpenSSH則是遠端伺服器管理的標準工具。來自這些應用程式的流量——通過Tailscale網絡傳輸的加密SSH連線——與正常的遠端管理活動高度相似。對於許多旨在偵測已知惡意軟件或可疑C2信標的安全監控系統而言，這類流量可能呈現完全良性，從而對傳統偵測模型構成挑戰。</p>
+<p>此事件是「借用系統現有工具」（Living off the Land，LotL）戰術的典型例證。攻擊者利用可信的、系統預先安裝或常見軟件來達成目標，並規避安全控制。特別是Tailscale的使用，建立了一個難以追溯至中央攻擊者控制伺服器的對等網絡。</p>
+<p><strong>資源有限企業的深刻教訓</strong></p>
+<p>此案例凸顯了中小型企業（SME）的重大安全弱點。這些企業通常缺乏專職安全運作中心（SOC）及嚴格的軟件部署管控。最初的入侵利用了這一缺口，而持續性機制則建立在這類組織可能不會立即標記為惡意的工具之上。</p>
+<p>對於防禦者而言，此事件強調了擴展監測範圍、超越已知入侵指標的重要性。關鍵防禦措施包括：</p>
+<ul>
+<li><strong>應用程式允許清單：</strong> 限制哪些軟件可在端點設備上安裝。</li>
+<li><strong>網絡分段：</strong> 即使設備被入侵，也能限制橫向移動。</li>
+<li><strong>基線配置：</strong> 記錄網絡資產上安裝的合法軟件，以便發現異常。</li>
+<li><strong>外發流量控制：</strong> 監控並限制外發連線，特別是通往不熟悉IP地址範圍或域名的連線。</li>
+</ul>
+<p>此次攻擊明確提醒我們，高級的操作規劃並非高調威脅組織的專利。即便是技術層次較低的攻擊者也在不斷適應，利用易於獲取的合法工具來構建既持久又隱蔽的存取權限——這對於防禦資源有限的組織而言，是一項嚴峻的挑戰。</p>
+<p><a href="https://thehackernews.com/2026/06/junior-hacker-used-tailscale-and.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
