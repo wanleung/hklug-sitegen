@@ -127,13 +127,19 @@ Renders the site homepage (C<index.html>) from the eight most recent news posts.
 
 =cut
 
+sub _today_stamp {
+    my @t = localtime(time);
+    return sprintf('%04d%02d%02d', $t[5] + 1900, $t[4] + 1, $t[3]);
+}
+
 sub gen_home {
     my ($tt, $config) = @_;
+    my $today = _today_stamp();
     my @filelist;
     opendir(my $dh, $news_dir) or die $!;
     while (my $file = readdir($dh)) { push @filelist, $file if $file =~ m/\.txt$/ }
     closedir($dh);
-    my @sortlist = sort @filelist;
+    my @sortlist = sort grep { !/^(\d{8})/ || substr($_, 0, 8) le $today } @filelist;
     my $total    = scalar @sortlist;
 
     my @news_posts;
@@ -194,12 +200,13 @@ C<gen_tags>.
 
 sub gen_archive {
     my ($tt, $config, $cache) = @_;
+    my $today = _today_stamp();
     my @filelist;
     opendir(my $dh, $news_dir) or die $!;
     while (my $file = readdir($dh)) { push @filelist, $file if $file =~ m/\.txt$/ }
     closedir($dh);
 
-    my @sortlist = sort @filelist;
+    my @sortlist = sort grep { !/^(\d{8})/ || substr($_, 0, 8) le $today } @filelist;
     my $total    = scalar @sortlist;
     my (@allnews, $count);
     $count = 0;
