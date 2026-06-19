@@ -1,0 +1,34 @@
+Date: 2026-06-18 14:22:00
+Author: HKLUG Team
+Title: Linux 7.2 Drops AF_ALG Crypto Interface, Removes Deprecated Kernel Code
+Content:
+<p>The upcoming Linux 7.2 kernel will officially deprecate the AF_ALG socket interface and strip out associated cryptographic driver code that has long been considered both unnecessary and a potential security liability, according to a report by Phoronix.</p>
+<p>The changes were merged as part of the broader cryptographic subsystem updates during the ongoing Linux 7.2 merge window.</p>
+<h4>What AF_ALG Is — and Why It's Going Away</h4>
+<p>AF_ALG is a kernel-provided socket interface that exposes Linux's in-kernel cryptographic algorithms to userspace programs. In theory, it offered a way for applications to offload encryption, hashing, and other crypto operations to the kernel without bundling their own implementations. In practice, it saw very limited adoption. Most applications rely on dedicated userspace libraries such as OpenSSL, libsodium, or the kernel's own hardware-accelerated paths via different interfaces.</p>
+<p>The removal addresses a long-standing concern in the kernel community: AF_ALG expanded the kernel's attack surface by allowing unprivileged userspace processes to interact with kernel crypto subsystems. Security researchers have previously highlighted that this interface could be leveraged to trigger vulnerabilities in kernel-side cryptographic code. By removing the interface and its associated driver code — which kernel developers have characterised as both useless and insecure — they are reducing the number of pathways through which kernel memory and crypto operations can be reached from userspace.</p>
+<h4>Broader Crypto Cleanup in Linux 7.2</h4>
+<p>The AF_ALG deprecation is part of a wider set of cryptographic subsystem changes landing in the Linux 7.2 merge window. Kernel maintainers have been progressively tidying up legacy code in the crypto stack, removing unused algorithm implementations and drivers that add maintenance burden without clear benefit.</p>
+<p>For most desktop and server Linux users, this change will have no practical impact. Applications almost never use AF_ALG directly. The small number of niche tools or frameworks that may have relied on the interface will need to migrate to alternative approaches — typically userspace crypto libraries that have their own well-audited implementations.</p>
+<h4>What This Means for System Administrators</h4>
+<p>System administrators and engineers running custom or embedded Linux builds should audit whether any of their workloads depend on AF_ALG. This is particularly relevant for those maintaining older distributions that might backport newer kernel features, or for teams building minimal Linux images for specialised hardware where unusual kernel interfaces might be the only crypto path available.</p>
+<p>To check for AF_ALG usage on a running system, administrators can look for <code>AF_ALG</code> socket activity or review kernel configs that enable <code>CONFIG_CRYPTO_USER_API_AEAD</code>, <code>CONFIG_CRYPTO_USER_API_HASH</code>, and related options. These will likely be marked as deprecated or removed in the Linux 7.2 kernel configuration tooling.</p>
+<h4>A Sensible Housekeeping Step</h4>
+<p>The removal reflects a mature engineering decision: eliminate code that few people use, that increases attack surface, and that burdens kernel maintainers. The crypto subsystem is a critical component of the Linux kernel, and pruning low-value interfaces lets developers focus their security review efforts on the code paths that actually matter to the broader ecosystem.</p>
+<p>Linux 7.2 is expected to follow the standard kernel release cadence. Developers and packagers should track the merge window progress to understand the full scope of changes landing in this release.</p>
+<hr>
+<p>根據 Phoronix 的報導，即將推出的 Linux 7.2 內核將正式棄用 AF_ALG socket 介面，並剝離相關的加密驅動程式代碼。這些代碼長久以來被認為既非必要，亦構成潛在安全風險。</p>
+<p>這些變更是在 Linux 7.2 merge window 進行期間，作為更廣泛的加密子系統更新的一部分被合併的。</p>
+<h4>AF_ALG 是什麼 — 為何要移除</h4>
+<p>AF_ALG 是一個由內核提供的 socket 介面，它將 Linux 內核內建的加密算法暴露給用戶空間程式使用。理論上，它為應用程式提供了一種將加密、hash 及其他加密運算卸載到內核的方式，而無需自行捆綁相關實作。但實際上，其應用範圍非常有限。大多數應用程式都依賴專門的用戶空間 library，例如 OpenSSL、libsodium，或是內核透過不同介面提供的硬件加速路徑。</p>
+<p>移除 AF_ALG 解決了內核社群一個長久以來的顧慮：此介面透過允許非特權的用戶空間程序與內核加密子系統互動，擴大了內核的攻擊面。安全研究人員先前曾指出，此介面可能被利用來觸發內核端加密程式碼的漏洞。透過移除此介面及其相關的驅動程式代碼 — 內核開發者形容這些代碼既無用又不安全 — 他們正在減少從用戶空間觸及內核記憶體與加密運算的途徑。</p>
+<h4>Linux 7.2 更廣泛的加密清理工作</h4>
+<p>AF_ALG 的棄用是登陸 Linux 7.2 merge window 的一系列更廣泛加密子系統變更的一部分。內核維護者一直在逐步清理加密 stack 中的舊代碼，移除那些增加維護負擔卻無明確效益的未使用算法實作和驅動程式。</p>
+<p>對大多數桌面及伺服器的 Linux 用戶而言，此變更不會產生實際影響。應用程式幾乎從不直接使用 AF_ALG。少數可能依賴此介面的小眾工具或框架，將需要遷移至替代方案 — 通常是那些擁有經過良好審計實作的用戶空間加密 library。</p>
+<h4>對系統管理員的意義</h4>
+<p>運行自訂或嵌入式 Linux 版本的系統管理員和工程師，應審計其任何工作負載是否依賴 AF_ALG。這對於那些維護可能 backport 較新內核功能的舊版發行版的團隊，或為特殊硬件構建精簡 Linux 映像、其中異常的內核介面可能是唯一可用加密路徑的團隊而言，尤其重要。</p>
+<p>要在運行中的系統檢查 AF_ALG 的使用情況，管理員可尋找 <code>AF_ALG</code> socket 活動，或檢視啟用了 <code>CONFIG_CRYPTO_USER_API_AEAD</code>、<code>CONFIG_CRYPTO_USER_API_HASH</code> 及相關選項的內核配置。在 Linux 7.2 內核配置工具中，這些選項很可能會被標記為已棄用或已移除。</p>
+<h4>合理的清理步驟</h4>
+<p>此移除反映了一個成熟的工程決策：淘汰那些少人使用、增加攻擊面，並為內核維護者帶來負擔的代碼。加密子系統是 Linux 內核的關鍵組件，修剪低價值的介面能讓開發者將安全審查工作的焦點，集中在對更廣泛生態系統真正重要的代碼路徑上。</p>
+<p>Linux 7.2 預計將遵循標準的內核發佈週期。開發者和套件維護者應追蹤 merge window 的進展，以了解此版本中登陸的變更全貌。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.2-Crypto" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
