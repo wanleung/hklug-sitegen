@@ -1,0 +1,34 @@
+Date: 2026-06-20 20:29:00
+Author: HKLUG Team
+Title: After Six Years and 360 Patches, Linux Kernel Finally Ditches Vulnerable strncpy Function
+Content:
+<p>The Linux kernel has officially eliminated all remaining uses of the <code>strncpy</code> function, a long-deprecated string-copying API, after a sustained effort spanning six years and more than 360 patches. The milestone was reached with the release of Linux 7.2, as reported by Phoronix.</p>
+<h4>A marathon, not a sprint</h4>
+<p>The removal of <code>strncpy()</code> — a C standard library function designed to copy a specified number of bytes from one buffer to another — may sound like a minor housekeeping task. In practice, it represented a monumental undertaking across one of the largest and most widely deployed codebases in the world.</p>
+<p>The Linux kernel contains millions of lines of code contributed by thousands of developers over more than three decades. Tracing every call site of a single function, understanding the surrounding code logic, and replacing it with a safer alternative without introducing regressions requires meticulous, case-by-case analysis. The fact that this effort required over 360 individual patches underscores the sheer scale of accumulated technical debt even in actively maintained open-source projects.</p>
+<h4>Why strncpy had to go</h4>
+<p>The <code>strncpy</code> function has long been flagged as a source of security vulnerabilities and subtle bugs. Its design predates modern understanding of memory safety: it does not guarantee null-termination of the destination buffer when the source string meets or exceeds the specified length, and it pads shorter strings with null bytes unnecessarily — wasting cycles in performance-critical kernel paths.</p>
+<p>These characteristics make <code>strncpy</code> a frequent contributor to buffer overflows and unterminated string issues, both of which are well-established attack vectors in systems-level software.</p>
+<p>The Linux kernel community has been systematically replacing historically dangerous C string and memory APIs — including <code>strcpy</code>, <code>sprintf</code>, and <code>strncpy</code> — with kernel-specific alternatives such as <code>strscpy</code>, which provides clearer semantics and guaranteed null-termination. The final removal of <code>strncpy</code> represents the culmination of a deliberate philosophical shift: prioritising memory safety and defensive programming at the foundation of the software stack.</p>
+<h4>Broader implications</h4>
+<p>The significance of this work extends well beyond kernel developers. Linux underpins a vast portion of the world's computing infrastructure — from cloud data centres and Android smartphones to embedded systems, network equipment, and IoT devices. Every class of vulnerability eliminated at the kernel level has a multiplier effect across this ecosystem, reducing the attack surface for billions of endpoints.</p>
+<p>For IT professionals and security practitioners, the removal of <code>strncpy</code> signals that the kernel community is treating legacy API elimination as a security imperative, not merely a code quality exercise. Organisations running custom kernel modules or maintaining downstream forks should audit their own codebases for continued use of <code>strncpy</code> and other deprecated string functions to stay aligned with upstream security improvements.</p>
+<h4>The long road ahead</h4>
+<p>While this particular milestone is complete, the broader effort to modernise the kernel's handling of strings and memory is far from finished. Other legacy APIs remain in use across various subsystems, and the kernel's constantly evolving codebase means that vigilance is an ongoing requirement.</p>
+<p>Still, the successful elimination of <code>strncpy</code> after six years of sustained community effort offers a notable case study for large-scale codebase modernisation — a reminder that even the most entrenched technical debt can be addressed with patience, coordination, and persistence.</p>
+<hr>
+<p>Linux 核心已正式移除所有剩餘的 <code>strncpy</code> 函數使用，這是一個早已棄用的字串複製 API。此舉是在持續長達六年、涉及逾 360 個修補程式後取得的成果。據 Phoronix 報導，這個里程碑隨著 Linux 7.2 的發佈而達成。</p>
+<h4>馬拉松而非短跑</h4>
+<p>移除 <code>strncpy()</code> —— 一個設計用來從一個緩衝區複製指定數量位元組到另一個緩衝區的 C 標準庫函數 —— 聽起來可能像是小事一樁。但在實踐中，這代表了在全球最大、部署最廣泛的程式碼庫之一中進行的一項浩大工程。</p>
+<p>Linux 核心包含數百萬行程式碼，由數千名開發者在超過三十年間貢獻而成。追蹤單一函數的所有呼叫點、理解周邊程式碼邏輯，並用更安全的替代方案取代它，同時避免引入回歸問題，需要極其仔細、逐案分析。這項工作需要超過 360 個獨立修補程式的事實，突顯了即使在積極維護的開源項目中，累積的技術債規模依然巨大。</p>
+<h4>為何必須移除 strncpy</h4>
+<p><code>strncpy</code> 函數長期以來被標記為安全漏洞和隱蔽錯誤的來源。其設計早於對現代記憶體安全的認知：它不保證當來源字串達到或超過指定長度時，目標緩衝區能正確以空值終止，並且它會不必要地用空值位元組填充較短的字串 —— 在效能至關重要的核心路徑中浪費處理週期。</p>
+<p>這些特性使 <code>strncpy</code> 成為緩衝區溢位和未終止字串問題的常見成因，這兩者都是系統級軟件中眾所周知的攻擊向量。</p>
+<p>Linux 核心社群一直系統性地將歷史悠久且危險的 C 字串及記憶體 API —— 包括 <code>strcpy</code>、<code>sprintf</code> 和 <code>strncpy</code> —— 替換為核心特定的替代方案，例如 <code>strscpy</code>，後者提供更清晰的語義並保證空值終止。最終移除 <code>strncpy</code> 代表了一次深思熟慮的哲學轉變的高潮：在軟件堆疊的基礎層面優先考慮記憶體安全和防禦性編程。</p>
+<h4>更廣泛的影響</h4>
+<p>此項工作的意義遠超核心開發者本身。Linux 支撐著全球大部分計算基礎設施 —— 從雲端數據中心、Android 智能手機，到嵌入式系統、網絡設備和物聯網裝置。在核心層面消除的每一類漏洞，都會在這個生態系統中產生乘數效應，減少數十億端點的攻擊面。</p>
+<p>對於 IT 專業人員和安全從業者而言，移除 <code>strncpy</code> 表明核心社群將淘汰遺留 API 視為安全當務之急，而不僅僅是程式碼質量的練習。運行自定義核心模組或維護下游分支的組織，應審計自身的程式碼庫，檢查是否仍持續使用 <code>strncpy</code> 及其他已棄用的字串函數，以保持與上游安全改進的一致性。</p>
+<h4>漫漫長路</h4>
+<p>儘管這個特定的里程碑已經完成，但現代化核心處理字串和記憶體方式的更廣泛努力遠未結束。其他遺留 API 仍在各種子系統中使用，且核心不斷演進的程式碼庫意味著持續保持警惕是必不可少的。</p>
+<p>儘管如此，在社群持續六年的不懈努力後成功移除 <code>strncpy</code>，為大規模程式碼庫現代化提供了一個值得注意的案例研究 —— 提醒我們，即使是最根深蒂固的技術債，也能透過耐心、協調和毅力加以解決。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.2-Drops-strncpy" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
