@@ -1,0 +1,29 @@
+Date: 2026-06-21 13:23:00
+Author: HKLUG Team
+Title: Open-Source Mesa Stack Adds Key Vulkan Feature for Smoother Linux Gaming
+Content:
+<p>```</p>
+<p>Mesa 26.2 has gained support for the <code>VK_EXT_present_timing</code> Vulkan extension on X11 and XWayland, a move that narrows a longstanding gap between Linux's open-source graphics stack and proprietary driver capabilities. The merge, reported by Phoronix on May 14, brings the Mesa Vulkan Windowing System Integration (WSI) layer into alignment with a feature that matters most where frame pacing and latency are critical — gaming, real-time visualisation, and VR workloads.</p>
+<h4>What the extension actually does</h4>
+<p><code>VK_EXT_present_timing</code> allows Vulkan applications to query the precise timing of vertical blank (vblank) intervals — the moment the display finishes drawing one frame and is ready for the next. With this information, an application can schedule frame presentation to hit the display's refresh cycle exactly, reducing stutter and cutting input latency. Without the extension, applications must guess at timing or rely on less precise mechanisms, which can result in uneven frame delivery.</p>
+<p>For Linux developers who have worked around these limitations with manual frame-rate limiting or compositor-level hacks, having native Vulkan-level timing queries through Mesa is a meaningful step forward.</p>
+<h4>Why XWayland matters here</h4>
+<p>The inclusion of XWayland support is arguably the most significant aspect of the merge. As the Linux desktop continues its transition from X11 to Wayland as the default display protocol, XWayland serves as the compatibility bridge that allows legacy X11 applications — and importantly, many games — to run under Wayland compositors.</p>
+<p>On handheld Linux gaming devices such as the Steam Deck, XWayland is often the standard path through which Windows titles running via Valve's Proton compatibility layer interact with the display server. Present timing support through this path means smoother frame delivery for the growing library of games on these platforms, without requiring game developers or Proton engineers to implement workarounds.</p>
+<h4>The adoption chain</h4>
+<p>Mesa support alone does not deliver the benefit to end users, however. The extension must be supported at every layer of the stack: Wayland compositors need to expose the timing data, window managers must not interfere with it, and game engines or middleware need to query and act on it. Proprietary drivers from Nvidia and AMD have historically offered more complete support for features like these, which has been a frequent point of criticism from Linux enthusiasts comparing open-source and closed-source performance.</p>
+<p>This Mesa merge represents the foundational layer being put in place. The question now is how quickly the surrounding ecosystem — GNOME's Mutter, KDE's KWin, and the various Vulkan-based game engines — will integrate the extension into their frame scheduling logic.</p>
+<p>Mesa 26.2 is expected to be released as a stable version in the coming months, with present timing support available to any Vulkan application targeting X11 or XWayland environments using the open-source driver stack.</p>
+<hr>
+<p>Mesa 26.2 已在 X11 和 XWayland 上獲得對 <code>VK_EXT_present_timing</code> Vulkan 擴充的支援，此舉縮小了 Linux 開源圖形堆疊與專有驅動程式功能之間長期存在的差距。據 Phoronix 於 5 月 14 日報導的此項合併，將 Mesa 的 Vulkan 視窗系統整合層與一項對幀節奏與延遲至關重要的功能對齊——這在遊戲、即時視覺化與 VR 工作負載中最為重要。</p>
+<h4>該擴充的實際作用</h4>
+<p><code>VK_EXT_present_timing</code> 允許 Vulkan 應用程式查詢垂直消隱間隔的精確時序——即顯示器完成繪製一幀畫面並準備好下一幀的時刻。透過此資訊，應用程式可以精確地排程幀的呈現，以完美契合顯示器的刷新週期，從而減少卡頓並降低輸入延遲。若沒有此擴充，應用程式必須猜測時序或依賴精確度較低的機制，這可能導致幀傳輸不均。</p>
+<p>對於那些曾透過手動限制幀率或合成器層級的變通方案來繞過這些限制的 Linux 開發者而言，能透過 Mesa 原生獲得 Vulkan 層級的時序查詢，是向前邁出的重要一步。</p>
+<h4>XWayland 在此處的重要性</h4>
+<p>包含 XWayland 支援可說是此次合併最重大的面向。隨著 Linux 桌面環境持續從 X11 過渡至以 Wayland 作為預設的顯示協議，XWayland 充當了相容性橋樑，允許舊有的 X11 應用程式——重要的是，包括許多遊戲——在 Wayland 合成器下運行。</p>
+<p>在 Steam Deck 等手持式 Linux 遊戲裝置上，XWayland 通常是 Windows 遊戲透過 Valve 的 Proton 相容層與顯示伺服器互動的標準路徑。在此路徑上支援幀時序，意味著這些平台上不斷擴充的遊戲庫將獲得更流暢的幀傳輸，而無需遊戲開發者或 Proton 工程師實施變通方案。</p>
+<h4>採用鏈</h4>
+<p>然而，僅有 Mesa 支援並不能直接為終端使用者帶來好處。此擴充必須在堆疊的每一層都獲得支援：Wayland 合成器需要公開時序資料，視窗管理器不得干擾它，且遊戲引擎或中介軟體需要查詢並據此行動。來自 Nvidia 和 AMD 的專有驅動程式歷來對此類功能提供更完整的支援，這常是 Linux 愛好者比較開源與閉源效能時批評的焦點。</p>
+<p>此次 Mesa 合併代表基礎層已就位。現在的問題是，周邊生態系統——GNOME 的 Mutter、KDE 的 KWin，以及各種基於 Vulkan 的遊戲引擎——將以多快的速度將此擴充整合至其幀排程邏輯中。</p>
+<p>Mesa 26.2 預計將在未來幾個月內作為穩定版本發布，屆時任何針對 X11 或 XWayland 環境使用開源驅動程式堆疊的 Vulkan 應用程式，都將可使用此幀時序支援。</p>
+<p><a href="https://www.phoronix.com/news/Mesa-26.2-X11-Present-Timing" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
