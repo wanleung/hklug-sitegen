@@ -1,0 +1,50 @@
+Date: 2026-06-20 20:23:00
+Author: HKLUG Team
+Title: Ransomware Group 'The Gentlemen' Packages EDR-Killer as a Service for Affiliates
+Content:
+<blockquote>
+<p><strong>Editor's note:</strong> This article is based on a Security Affairs report covering an ESET technical analysis. Readers should consult the <a href="https://securityaffairs.com/193941/uncategorized/inside-gentlekiller-the-edr-killer-powering-the-gentlemen.html">original source</a> and ESET's publication directly for full details and indicators of compromise.</p>
+</blockquote>
+<p>A ransomware operation known as The Gentlemen has been running a centralised toolkit that systematically disables endpoint detection and response (EDR) products before encrypting victims' networks, according to a technical analysis published by ESET on 18 June 2026. The report, based on months of incident-level investigation and corroborated by what the security firm describes as an internal data leak from the group reportedly dating to May 2026, reveals how the gang has turned sophisticated evasion techniques into a turnkey commodity for its affiliates.</p>
+<h4>GentleKiller: EDR evasion as a service</h4>
+<p>At the heart of The Gentlemen's infrastructure is a suite ESET has dubbed "GentleKiller." Rather than requiring each affiliate to develop or source their own evasion capabilities, the group centralises these tools and distributes them as part of its operational toolkit. The result is that even less technically skilled partners can reliably neutralise security products before deploying ransomware payloads.</p>
+<p>The technique underpinning GentleKiller is Bring Your Own Vulnerable Driver (BYOVD) — a well-documented attack class in which adversaries load a legitimately signed but known-vulnerable kernel driver onto a target system, then exploit it to gain kernel-level access and tamper with security software. What distinguishes The Gentlemen's approach, ESET notes, is the systematic rotation of vulnerable drivers, allowing the group to stay ahead of vendor blocklists maintained by security teams and operating system vendors.</p>
+<h4>Why BYOVD persists as a systemic challenge</h4>
+<p>The BYOVD problem is not new. Microsoft has expanded its Vulnerable Driver Blocklist over the years, and security vendors have invested heavily in detecting unsigned or suspicious kernel drivers. Yet the sheer volume of signed-but-flawed drivers that exist in the software ecosystem, combined with the speed at which threat actors rotate to newly discovered vulnerable versions, makes blocklisting an inherently reactive defence.</p>
+<p>The Gentlemen's operation underscores this asymmetry. By maintaining a library of exploitable drivers and automating their deployment, the group ensures that a single blocked driver is quickly replaced with an alternative. For defenders relying primarily on EDR products to detect and block malicious activity, this creates a dangerous blind spot: if the security tool itself is neutralised at the kernel level before it can alert, later stages of the attack — including data exfiltration and encryption — proceed largely unimpeded.</p>
+<h4>ESET's recommendations for defenders</h4>
+<p>According to ESET's analysis, the findings reinforce a message the security community has been highlighting for some time: endpoint protection alone is not sufficient. The report recommends that organisations adopt a layered defensive posture, including:</p>
+<ul>
+<li><strong>Strict driver loading policies</strong> — Limiting which kernel-mode drivers can be loaded on production systems, using tools such as Windows Defender Application Control (WDAC) or AppLocker with driver rules.</li>
+<li><strong>Hypervisor-Protected Code Integrity (HVCI)</strong> — Enabling this Windows feature to enforce kernel-mode code integrity and make it harder for attackers to load unsigned or manipulated code.</li>
+<li><strong>Kernel-level monitoring and telemetry</strong> — Supplementing EDR with additional monitoring that can detect anomalous driver loading events or unexpected changes to kernel structures.</li>
+<li><strong>Regular review of Microsoft's Vulnerable Driver Blocklist</strong> — Ensuring that the blocklist is actively enforced and updated, while recognising its limitations against rapidly rotating driver sets.</li>
+</ul>
+<p>The report serves as a reminder that ransomware groups continue to professionalise their operations. The commoditisation of EDR evasion lowers the barrier to entry for attackers and increases the volume and sophistication of threats that defenders must handle.</p>
+<h4>Looking ahead</h4>
+<p>The Gentlemen's model — packaging advanced evasion as a managed service for affiliates — represents a broader trend in the ransomware ecosystem. As these capabilities become more accessible, the gap between well-resourced and under-resourced defenders risks widening.</p>
+<p>ESET has published a full set of indicators of compromise (IOCs) and detection guidance alongside its analysis. Security professionals are advised to consult the complete technical report to assess exposure and update their defensive controls accordingly.</p>
+<hr>
+<blockquote>
+<p><strong>編者按：</strong> 本文基於Security Affairs對ESET技術分析的報導。讀者應直接查閱<a href="https://securityaffairs.com/193941/uncategorized/inside-gentlekiller-the-edr-killer-powering-the-gentlemen.html">原始來源</a>及ESET的發布，以獲取完整詳情及入侵指標。</p>
+</blockquote>
+<p>根據ESET於2026年6月18日發佈的一項技術分析，一個名為「The Gentlemen」的勒索軟件運作正運行一個集中式工具套件，在加密受害者網絡之前，系統性地禁用端點偵測與回應（EDR）產品。該報告基於數月的事件級調查，並得到安全公司所描述、據稱源自該集團2026年5月內部數據洩露的佐證，揭示了該幫派如何將複雜的規避技術轉化為其附屬成員可用的現成商品。</p>
+<h4>GentleKiller：以服務形式提供的EDR規避</h4>
+<p>「The Gentlemen」基礎設施的核心，是ESET稱為「GentleKiller」的一套工具。該集團並非要求每個附屬成員自行開發或獲取規避能力，而是將這些工具集中化，並作為其操作工具套件的一部分進行分發。其結果是，即使技術水平較低的合作夥伴，也能在部署勒索軟件有效載荷前可靠地中和安全產品。</p>
+<p>支撐GentleKiller的技術是「自備易受攻擊驅動程式」（Bring Your Own Vulnerable Driver，BYOVD）—— 這是一個有充分記錄的攻擊類別，攻擊者將一個經過合法簽署但已知存在漏洞的內核驅動程式載入到目標系統上，然後利用它獲取內核級存取權限並篡改安全軟件。ESET指出，「The Gentlemen」方法的不同之處在於系統性地輪換易受攻擊的驅動程式，使集團能夠領先於安全團隊及操作系統供應商維護的供應商封鎖列表。</p>
+<h4>為何BYOVD持續構成系統性挑戰</h4>
+<p>BYOVD問題並非新事物。微軟多年來已擴展其「易受攻擊驅動程式封鎖列表」，安全供應商亦在偵測未簽署或可疑的內核驅動程式方面投入巨資。然而，軟件生態系統中存在大量「已簽署但有缺陷」的驅動程式，加上威脅行為者快速輪換至新發現的漏洞版本，使得封鎖列表本質上是一種被動防禦。</p>
+<p>「The Gentlemen」的運作凸顯了這種不對稱性。通過維護一個可利用驅動程式庫並自動化其部署，該集團確保單一被封鎖的驅動程式會迅速被替代方案取代。對於主要依賴EDR產品來偵測和阻止惡意活動的防禦者來說，這造成了一個危險的盲點：如果安全工具本身在內核層面被中和而無法發出警報，攻擊的後續階段——包括數據竊取和加密——將在很大程度上暢通無阻地進行。</p>
+<h4>ESET給防禦者的建議</h4>
+<p>根據ESET的分析，研究結果強化了安全社群一直以來強調的一個訊息：僅靠端點保護是不足夠的。報告建議組織採取分層防禦態勢，包括：</p>
+<ul>
+<li><strong>嚴格的驅動程式載入策略</strong> —— 限制哪些內核模式驅動程式可以在生產系統上載入，使用諸如Windows Defender應用程式控制（WDAC）或帶有驅動程式規則的AppLocker等工具。</li>
+<li><strong>Hypervisor保護的程式碼完整性（HVCI）</strong> —— 啟用此Windows功能以強制執行內核模式程式碼完整性，增加攻擊者載入未簽署或被篡改程式碼的難度。</li>
+<li><strong>內核級監控與遙測</strong> —— 以額外監控補充EDR，以偵測異常的驅動程式載入事件或內核結構的意外變更。</li>
+<li><strong>定期審查微軟的「易受攻擊驅動程式封鎖列表」</strong> —— 確保積極執行和更新封鎖列表，同時認識到其對抗快速輪換驅動程式集的局限性。</li>
+</ul>
+<p>該報告提醒我們，勒索軟件集團正持續將其運作專業化。EDR規避的商品化降低了攻擊者的進入門檻，並增加了防禦者必須處理的威脅數量與複雜性。</p>
+<h4>展望未來</h4>
+<p>「The Gentlemen」的模式——將先進的規避技術打包成託管服務提供給附屬成員——代表了勒索軟件生態系統的一個更廣泛趨勢。隨著這些能力變得更加普及，資源充足與資源匱乏的防禦者之間的差距有可能擴大。</p>
+<p>ESET已隨其分析一併公佈了完整的入侵指標（IOCs）及偵測指南。建議安全專業人員查閱完整的技術報告，以評估風險敞口並相應更新其防禦控制措施。</p>
+<p><a href="https://securityaffairs.com/193941/uncategorized/inside-gentlekiller-the-edr-killer-powering-the-gentlemen.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
