@@ -1,0 +1,34 @@
+Date: 2026-06-22 11:23:00
+Author: HKLUG Team
+Title: Linux 7.2 Pushes BPF-Powered Scheduling Forward With Sub-Scheduler Capabilities
+Content:
+<p>The Linux kernel's extensible scheduler framework, <code>sched_ext</code>, took another step forward with the merge of its latest batch of updates into the Linux 7.2 development tree. As reported by Phoronix, the changes focus on advancing sub-scheduler functionality within the framework — a feature that promises to give developers and system architects finer-grained control over how workloads are dispatched across CPU resources.</p>
+<h4>What Is sched_ext?</h4>
+<p>For those unfamiliar, <code>sched_ext</code> is a Linux kernel framework that allows custom CPU scheduling policies to be written as BPF (Berkeley Packet Filter) programs and loaded from user-space at runtime. Rather than requiring kernel recompilation or modifying core scheduler code, developers can attach BPF-based scheduling logic to specific task groups. This makes experimentation and workload-specific tuning significantly more accessible and lower-risk.</p>
+<p>The framework was initially developed by engineers at Meta and has since attracted broad community interest, particularly from teams managing large-scale cloud and data centre infrastructure where default kernel scheduling heuristics may not be optimal for every workload.</p>
+<h4>Sub-Scheduler Support Maturing</h4>
+<p>The most significant aspect of the Linux 7.2 <code>sched_ext</code> changes is the continued maturation of sub-scheduler support. Sub-schedulers allow different scheduling policies to be applied to distinct groups of tasks within the same system. For example, a high-throughput batch processing workload on a server could run under a throughput-optimised scheduling policy, while latency-sensitive services on the same machine could use a separate policy tuned for responsiveness — all without modifying the underlying kernel.</p>
+<p>This approach moves beyond a one-size-fits-all scheduling model and opens the door to more nuanced resource management. The Linux 7.2 merge brings the sub-scheduler infrastructure closer to production readiness, with incremental improvements that build on earlier groundwork laid in previous kernel releases.</p>
+<h4>Why It Matters</h4>
+<p>The significance of these developments extends well beyond kernel hackers. As organisations increasingly rely on containerised workloads and microservices architectures, the ability to tailor scheduling behaviour per workload — without deploying custom kernels — is a meaningful operational advantage.</p>
+<p>For cloud providers and enterprises running heterogeneous workloads on shared hardware, sub-schedulers could reduce the need for over-provisioning resources by ensuring that each task group gets scheduling behaviour optimised for its specific characteristics. The BPF-based approach also lowers the barrier to entry: developers with BPF experience can write and test scheduling policies without deep kernel internals knowledge.</p>
+<h4>Broader Context</h4>
+<p>The <code>sched_ext</code> framework has been one of the more closely watched kernel features in recent development cycles. Its progression from experimental to increasingly production-capable reflects a broader trend in the Linux ecosystem toward programmable, user-space-configurable infrastructure. BPF's expanding role — from networking to observability to security — now clearly extends into CPU scheduling, and the Linux 7.2 updates reinforce that trajectory.</p>
+<p>While the sub-scheduler functionality is not yet complete, the steady cadence of merges with each kernel release signals strong community momentum. Developers and systems engineers interested in experimenting with the feature can already find reference implementations and documentation in the upstream kernel source tree.</p>
+<p>The full <code>sched_ext</code> changeset for Linux 7.2 was merged last week and is now part of the ongoing development window for the upcoming kernel release.</p>
+<hr>
+<p>Linux 內核的可擴展排程框架 <code>sched_ext</code> 隨著最新一輪更新合併至 Linux 7.2 開發分支，又向前邁進了一步。根據 Phoronix 的報導，此次變更重點在於推進框架內的子排程器功能——這項特性有望讓開發者和系統架構師在將工作負載分派到 CPU 資源時，獲得更細緻的控制能力。</p>
+<h4>何謂 sched_ext？</h4>
+<p>對於不熟悉的讀者而言，<code>sched_ext</code> 是一個 Linux 內核框架，允許將自訂的 CPU 排程策略編寫為 BPF（伯克利資料包過濾器）程式，並在運行時從使用者空間載入。開發者無需重新編譯內核或修改核心排程器代碼，即可將基於 BPF 的排程邏輯附加到特定的任務群組。這使得實驗與針對特定工作負載的調校變得顯著更易實現，風險也更低。</p>
+<p>此框架最初由 Meta 的工程師開發，隨後吸引了廣泛的社群關注，特別是那些管理大規模雲端與資料中心基礎架構的團隊——對他們而言，內核預設的排程啟發式規則未必適用於每一種工作負載。</p>
+<h4>子排程器支援日趨成熟</h4>
+<p>Linux 7.2 中 <code>sched_ext</code> 變更最重要的面向，在於子排程器支援的持續成熟化。子排程器允許在同一系統內，針對不同的任務群組應用不同的排程策略。例如，伺服器上運行的高吞吐量批次處理工作負載，可採用針對吞吐量優化的排程策略；而同一機器上對延遲敏感的服務，則可使用另一套針對回應性調整的策略——這一切都無需修改底層內核。</p>
+<p>這種方法超越了「一刀切」的排程模式，為更精細的資源管理開闢了道路。Linux 7.2 的合併使子排程器基礎架構更接近生產就緒狀態，並透過漸進式改進，建立在此前內核版本所奠定的基礎之上。</p>
+<h4>為何重要</h4>
+<p>這些發展的意義遠超出內核黑客的範疇。隨著企業日益依賴容器化工作負載與微服務架構，針對每個工作負載量身調整排程行為——而無需部署自訂內核——成為一項切實的營運優勢。</p>
+<p>對於在共享硬體上運行異質工作負載的雲端供應商與企業而言，子排程器可透過確保每個任務群組獲得最適合其特定特性的排程行為，減少過度配置資源的需求。基於 BPF 的方法也降低了准入門檻：具備 BPF 經驗的開發者，無需深入內核內部知識即可編寫和測試排程策略。</p>
+<h4>更廣泛的脈絡</h4>
+<p><code>sched_ext</code> 框架一直是近期開發週期中備受關注的內核特性之一。它從實驗性階段向日益具備生產能力的方向演進，反映了 Linux 生態系統中一個更廣泛的趨勢：向可編程、可透過使用者空間配置的基礎架構邁進。BPF 不斷擴展的角色——從網絡到可觀測性，再到安全性——現已明確延伸至 CPU 排程領域，而 Linux 7.2 的更新進一步強化了這一發展軌跡。</p>
+<p>儘管子排程器功能尚未完全就緒，但隨著每個內核版本發佈而合併的穩定期程，顯示出強勁的社群推動力。有興趣嘗試此功能的開發者與系統工程師，現已能在上游內核原始碼樹中找到參考實作與文件。</p>
+<p>適用於 Linux 7.2 的完整 <code>sched_ext</code> 變更集已於上週合併，現已成為即將發佈的內核版本持續開發週期的一部分。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.2-sched_ext" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
