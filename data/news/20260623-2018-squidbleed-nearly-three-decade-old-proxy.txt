@@ -1,0 +1,34 @@
+Date: 2026-06-23 11:34:00
+Author: HKLUG Team
+Title: Squidbleed: Nearly Three-Decade-Old Proxy Flaw Exposes User Credentials Through Memory Overread
+Content:
+<p>A critical vulnerability lurking in the widely used Squid Proxy software since 1997 can silently leak user credentials, authentication tokens, and other sensitive HTTP data — and it evaded detection through nearly three decades of development, code audits, and architectural rewrites.</p>
+<h4>What Is Squidbleed?</h4>
+<p>Researchers at Calif.io have disclosed the flaw, assigned the identifier CVE-2026-47729 and dubbed "Squidbleed." The vulnerability is a memory overread issue that allows an attacker to extract data from the proxy server's memory, potentially exposing credentials and session tokens belonging to users whose traffic passes through the affected instance.</p>
+<p>The bug was introduced in Squid's codebase in 1997 and has persisted across every subsequent release, as reported by Security Affairs. It is not yet known whether the vulnerability has been actively exploited in the wild.</p>
+<h4>A Case Study in Persistent Memory Safety Failures</h4>
+<p>Squid is one of the most widely deployed open-source proxy and caching solutions in the world, used by internet service providers, enterprises, and organisations of all sizes to manage, filter, and optimise web traffic. Its ubiquity makes any vulnerability in the software a matter of broad concern.</p>
+<p>What makes Squidbleed particularly notable is not just its severity but its longevity. The flaw survived for 29 years — through countless code changes, community contributions, and the kind of rigorous review processes that open-source projects are often praised for. It is a sobering reminder that even mature, well-maintained C/C++ codebases can harbour memory safety defects that evade detection for decades.</p>
+<h4>Implications for Organisations Running Squid</h4>
+<p>The practical impact of Squidbleed is significant. Any environment where Squid handles authenticated traffic — including corporate networks, ISP infrastructure, and cloud-hosted proxy services — is potentially at risk. Credentials, tokens, and other HTTP data flowing through the proxy could be extracted by a remote attacker who triggers the memory overread.</p>
+<p>Organisations should audit their deployments for affected Squid versions and apply patches as they become available. For environments where patching cannot happen immediately, network-level monitoring for anomalous proxy behaviour, reviewing access logs for exploitation indicators, and minimising the volume of authenticated traffic routed through vulnerable instances are prudent interim measures.</p>
+<p>The disclosure also underscores a broader challenge for the open-source ecosystem. Critical infrastructure software like Squid underpins significant portions of the internet, yet security resources for such projects often lag behind their importance. Squidbleed is a reminder that longevity in a codebase does not equate to security — and that adversarial code review, fuzzing, and eventual migration to memory-safe alternatives deserve sustained investment.</p>
+<h4>What Comes Next</h4>
+<p>With proof-of-concept details emerging from the Calif.io disclosure, system administrators should treat patching as a near-term priority. The combination of the vulnerability's ease of exploitation, the sensitivity of the data at risk, and the breadth of Squid deployments worldwide makes Squidbleed one of the more consequential open-source disclosures of the year.</p>
+<p>As the security community continues to digest the implications, Squidbleed serves as a powerful argument for the ongoing push toward memory-safe systems programming — and a cautionary tale about the hidden costs of technical debt in foundational internet infrastructure.</p>
+<hr>
+<p>一個自 1997 年以來便潛伏於廣泛使用的 Squid Proxy 軟件中的嚴重漏洞，可以悄無聲息地洩漏用戶憑證、認證令牌及其他敏感 HTTP 數據——它在近三十年的開發、程式碼審計和架構重寫過程中，成功逃過了偵測。</p>
+<h4>什麼是 Squidbleed？</h4>
+<p>Calif.io 的研究人員披露了這一漏洞，其被分配的識別碼為 CVE-2026-47729，並被命名為「Squidbleed」。該漏洞是一個記憶體越界讀取問題，攻擊者可利用它從代理伺服器的記憶體中提取數據，可能暴露其流量經過受影響實例的用戶的憑證和會話令牌。</p>
+<p>據 Security Affairs 報告，此漏洞於 1997 年被引入 Squid 的程式碼庫，並在之後的每個版本中持續存在。目前尚不清楚該漏洞是否已在野外被主動利用。</p>
+<h4>持久性記憶體安全缺陷的案例研究</h4>
+<p>Squid 是全球部署最廣泛的開源代理伺服器及快取解決方案之一，被互聯網服務供應商、企業和各種規模的組織用於管理、過濾和優化網絡流量。其普及性使得軟件中的任何漏洞都成為廣泛關注的問題。</p>
+<p>Squidbleed 特別值得注意之處不僅在於其嚴重性，更在於其存在的持久性。這一缺陷存在了 29 年——經歷了無數次程式碼更改、社區貢獻，以及開源項目常受稱讚的那種嚴格審查流程。這是一個發人深省的提醒，即使是成熟的、維護良好的 C/C++ 程式碼庫，也可能隱藏著數十年未被發現的記憶體安全缺陷。</p>
+<h4>對運行 Squid 的組織的影響</h4>
+<p>Squidbleed 的實際影響是巨大的。任何 Squid 處理認證流量的環境——包括企業網絡、ISP 基礎設施和雲端託管的代理服務——都面臨潛在風險。流經代理伺服器的憑證、令牌和其他 HTTP 數據，可能被觸發記憶體越界讀取的遠程攻擊者提取。</p>
+<p>組織應審查其部署的 Squid 版本是否受影響，並在補丁可用時及時應用。對於無法立即修補的環境，採取以下臨時謹慎措施：進行網絡層面的異常代理行為監控、檢查訪問日誌以尋找漏洞利用指標，以及最小化流經易受攻擊實例的認證流量。</p>
+<p>此次披露也突顯了開源生態系統面臨的一個更廣泛挑戰。像 Squid 這樣的關鍵基礎設施軟件支撐著互聯網的相當一部分，然而此類項目獲得的安全資源往往與其重要性不相匹配。Squidbleed 提醒我們，程式碼庫的悠久歷史並不等同於安全性——對對抗性程式碼審查、fuzzing 以及最終遷移到記憶體安全替代方案的持續投入是必要的。</p>
+<h4>接下來會怎樣？</h4>
+<p>隨著概念驗證細節從此次 Calif.io 披露中浮出水面，系統管理員應將修補作為近期優先事項。該漏洞易於利用、面臨風險的數據敏感性高，以及 Squid 在全球部署範圍廣泛，這些因素結合起來，使得 Squidbleed 成為今年最具影響力的開源披露事件之一。</p>
+<p>隨著安全界持續消化其影響，Squidbleed 為持續推動記憶體安全系統程式設計提供了有力論據——同時也是一個關於基礎互聯網設施中技術債務隱藏成本的警示故事。</p>
+<p><a href="https://securityaffairs.com/194041/hacking/squidbleed-29-year-old-squid-bug-leaks-user-credentials.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
