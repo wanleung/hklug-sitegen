@@ -1,0 +1,36 @@
+Date: 2026-06-23 15:22:00
+Author: HKLUG Team
+Title: GitHub Embeds Security Guardrails in Checkout Action to Curb Persistent CI/CD Attack Pattern
+Content:
+<p>GitHub has taken a notable step toward secure-by-default CI/CD tooling by updating <code>actions/checkout</code> to actively block a class of attack patterns known as "pwn requests." Rather than continuing to rely on documentation and developer vigilance, the company is embedding enforcement directly into its widely used checkout action — a move that signals a philosophical shift from advisory guidance to built-in guardrails.</p>
+<p>Version 7 of the action, effective June 18, 2026, targets a technique that has plagued open-source maintainers for years: exploiting misconfigured <code>pull_request_target</code> workflows to run attacker-controlled code with a repository's full privileges.</p>
+<h4>How the Attack Works</h4>
+<p>The issue lies in how the <code>pull_request_target</code> trigger interacts with a common developer practice — checking out and executing code from incoming pull requests.</p>
+<p>Workflows triggered by <code>pull_request_target</code> run in the context of the base repository, carrying its full permissions, including access to secrets and write tokens. When such a workflow also checks out the pull request's code and runs build or test steps against it, a malicious contributor can submit a pull request that executes arbitrary code with those elevated privileges.</p>
+<p>This pattern requires no novel exploit. It thrives on the gap between developer intent — running CI on external contributions — and what the permission model actually grants. In code review, the dangerous configuration is virtually indistinguishable from a safe one, which is precisely why it has persisted despite years of security research documenting the risk.</p>
+<h4>From Documentation to Enforcement</h4>
+<p>The updated <code>actions/checkout</code> now detects and blocks the dangerous pattern of checking out untrusted code within <code>pull_request_target</code>-triggered workflows. This marks a departure from the previous approach of warning developers through security advisories and documentation — guidance that, in practice, a significant number of teams overlook.</p>
+<p>By hardening the tooling itself, GitHub propagates protection across millions of repositories that depend on the action, without requiring each maintainer to independently restructure their workflows. The move reflects a growing recognition that in an ecosystem of this scale, defaults shape security outcomes far more reliably than best-practice documents.</p>
+<h4>Migration Considerations</h4>
+<p>The change introduces real friction. Some repositories legitimately pair <code>pull_request_target</code> with code checkout — for labeling logic, preview comments, or trusted CI checks on external contributions. These workflows will break under the new behavior, making this a backward-incompatible change for those specific use cases.</p>
+<p>Affected maintainers should review their workflow configurations and consider alternatives. Using the standard <code>pull_request</code> trigger where elevated permissions are unnecessary is one option; adopting newer GitHub Actions features designed for safe untrusted-code execution is another. The short-term disruption is a cost, but one that forces teams to explicitly confront privilege boundaries in their CI/CD pipelines — boundaries that previously remained invisible until exploited.</p>
+<h4>The Bigger Picture</h4>
+<p>The <code>pwn request</code> pattern has persisted not because it is technically sophisticated, but because it exploits a fundamental trust assumption baked into the way developers configure workflows. GitHub's decision to enforce the boundary at the tooling level, rather than leaving it to individual awareness, is a meaningful acknowledgment that secure-by-default defaults matter more than perfect documentation.</p>
+<p>For development teams of all sizes, this update is a prompt to audit CI/CD configurations for privilege boundaries and to treat workflow files as security-critical infrastructure deserving the same scrutiny as application code.</p>
+<hr>
+<p>GitHub 在邁向安全預設的 CI/CD 工具方面邁出了重要一步，透過更新 <code>actions/checkout</code> 以主動阻截一類稱為「pwn requests」的攻擊模式。該公司不再繼續依賴開發文件和開發者的警覺性，而是將防護措施直接嵌入其廣泛使用的 checkout action 中——這標誌著一種理念上的轉變，從提供建議性指引轉向內建防護機制。</p>
+<p>該 action 的第 7 版於 2026 年 6 月 18 日生效，針對的是一種多年來一直困擾開源維護者的技術：利用配置錯誤的 <code>pull_request_target</code> 工作流程，以儲存庫的完整權限執行攻擊者控制的程式碼。</p>
+<h4>攻擊原理</h4>
+<p>問題在於 <code>pull_request_target</code> 觸發器與一個常見的開發實踐——檢出並執行來自傳入 pull request 的程式碼——之間的互動方式。</p>
+<p>由 <code>pull_request_target</code> 觸發的工作流程會在基礎儲存庫的上下文中執行，並攜帶其完整權限，包括對金鑰和寫入權杖的存取權限。當此類工作流程也檢出 pull request 的程式碼並對其執行建構或測試步驟時，惡意的貢獻者便可以提交一個 pull request，以這些提升的權限執行任意程式碼。</p>
+<p>此模式並不需要新穎的 exploit。它盛行於開發者的意圖——為外部貢獻執行 CI——與權限模型實際授予權限之間的差距。在程式碼審查中，危險的配置與安全的配置幾乎無法區分，這正是儘管多年來有安全研究記錄了此風險，它仍然持續存在的原因。</p>
+<h4>從指引到強制執行</h4>
+<p>更新後的 <code>actions/checkout</code> 現在可以偵測並阻止在 <code>pull_request_target</code> 觸發的工作流程中檢出不受信任程式碼的危險模式。這標誌著與以往做法的決裂——此前是透過安全公告和開發文件來警告開發者，而在實踐中，有相當多的團隊忽略了這些指引。</p>
+<p>透過強化工具本身，GitHub 在數百萬依賴此 action 的儲存庫中傳播了防護措施，而無需每個維護者獨立重新配置其工作流程。此舉反映出一種日益增長的認識：在如此規模的生態系統中，預設設定比最佳實踐文件更能可靠地塑造安全成果。</p>
+<h4>遷移考量</h4>
+<p>此項變更帶來了實際的摩擦。有些儲存庫合法地將 <code>pull_request_target</code> 與程式碼檢出配對使用——用於標籤邏輯、預覽評論，或對外部貢獻執行受信任的 CI 檢查。這些工作流程在新行為下將會中斷，因此對這些特定使用案例而言，這是一個向後不相容的變更。</p>
+<p>受影響的維護者應檢視其工作流程配置並考慮替代方案。在不需要提升權限的情況下，使用標準的 <code>pull_request</code> 觸發器是一個選擇；採用專為安全執行不受信任程式碼而設計的新版 GitHub Actions 功能則是另一個選擇。短期的干擾是一種成本，但它迫使團隊明確應對其 CI/CD pipeline 中的權限邊界——這些邊界在被利用之前通常是不可見的。</p>
+<h4>更宏觀的圖景</h4>
+<p><code>pwn request</code> 模式之所以持續存在，並非因為它技術上多麼複雜，而是因為它利用了開發者配置工作流程方式中固有的基本信任假設。GitHub 決定在工具層級強制執行此邊界，而非交由個人意識來處理，這有意義地承認了安全預設比完美的開發文件更重要。</p>
+<p>對於各種規模的開發團隊而言，此更新是一個契機，促使他們審查 CI/CD 配置中的權限邊界，並將工作流程檔案視為值得與應用程式程式碼同等審視的、安全至關重要的基礎設施。</p>
+<p><a href="https://thehackernews.com/2026/06/github-updates-actionscheckout-to-block.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
