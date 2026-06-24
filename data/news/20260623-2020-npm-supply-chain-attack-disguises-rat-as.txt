@@ -1,0 +1,59 @@
+Date: 2026-06-23 11:26:00
+Author: HKLUG Team
+Title: Npm Supply Chain Attack Disguises RAT as Popular PostCSS Packages
+Content:
+<p>```</p>
+<p>Security researchers have uncovered a trio of malicious npm packages masquerading as popular PostCSS CSS-processing tools, designed to install a Windows-based remote access trojan (RAT) on victims' machines. The discovery, reported by The Hacker News, highlights the persistent and growing threat of open-source supply chain attacks targeting the developer ecosystem.</p>
+<h4>The Packages</h4>
+<p>Three npm packages were identified in the campaign:</p>
+<ul>
+<li><strong>postcss-minify-selector-parser</strong> — 615 downloads</li>
+<li><strong>postcss-minify-selector</strong> — 256 downloads</li>
+<li><strong>aes-decode-runner-pro</strong> — 145 downloads</li>
+</ul>
+<p>Together, the packages accumulated over 1,000 downloads before they were flagged and removed from the npm registry. All three were published by the same npm user account within the past month, a pattern consistent with coordinated supply chain campaigns observed in recent years.</p>
+<p>The naming strategy is deliberate. PostCSS is a widely used CSS transformation tool with a large ecosystem of community plugins. By choosing package names that closely resemble legitimate PostCSS utilities, the attacker exploited developer trust and the common habit of installing packages quickly, often without verifying the publisher or scrutinising the source.</p>
+<h4>How the Attack Works</h4>
+<p>Once installed, the malicious packages deliver a Windows RAT — a type of malware that grants remote attackers full control over an infected system. Capabilities typically include file exfiltration, keystroke logging, screen capture, and the ability to execute arbitrary commands. For any organisation, the presence of such a tool on even a single developer workstation can serve as a beachhead for lateral movement across internal networks.</p>
+<h4>The Business Risk: Beyond the Dev Team</h4>
+<p>The consequences of a supply chain compromise extend far beyond immediate technical remediation. A RAT installed through a developer's machine can provide attackers with access to source code repositories, customer databases, credentials, and sensitive internal documentation. In jurisdictions with robust data protection regulations, such a breach can trigger significant legal and compliance obligations, requiring notification to authorities and affected individuals.</p>
+<p>Regulators increasingly expect organisations to demonstrate proactive security measures. An incident stemming from a publicly available malicious package, which could have been identified with basic due diligence, is difficult to reconcile with expectations of taking reasonably practicable steps to protect data.</p>
+<h4>Defending Against Supply Chain Threats</h4>
+<p>The incident reinforces several best practices that development teams should treat as non-negotiable:</p>
+<ul>
+<li><strong>Verify publishers.</strong> Before installing any npm package, check the author, repository link, and download history. Packages with minimal history and unfamiliar publishers warrant scrutiny.</li>
+<li><strong>Pin dependencies.</strong> Use lockfiles (<code>package-lock.json</code> or <code>yarn.lock</code>) to lock exact package versions and prevent unexpected updates from pulling in compromised code.</li>
+<li><strong>Audit install scripts.</strong> Many npm packages execute scripts during installation. Tools like <code>npm audit</code> and third-party scanners can flag suspicious behaviour before it executes.</li>
+<li><strong>Use automated scanning.</strong> Integrate software composition analysis (SCA) tools into CI/CD pipelines to catch known malicious or vulnerable packages early.</li>
+</ul>
+<h4>A Wider Pattern</h4>
+<p>This campaign is the latest in a long string of typosquatting and dependency confusion attacks targeting the npm ecosystem, which remains the largest package registry in the world. With millions of packages available and thousands published daily, the registry's openness is both its greatest strength and its most exploitable weakness.</p>
+<p>For development teams — and the organisations that depend on their output — the takeaway is clear: trust in open-source tooling must be paired with verification. A few extra minutes of scrutiny can prevent weeks of incident response and potential regulatory exposure.</p>
+<hr>
+<p>安全研究人員揭露了三個惡意 npm 套件，它們偽裝成流行的 PostCSS CSS 處理工具，旨在於受害者的電腦上安裝一個基於 Windows 的遠端存取木馬（RAT）。據《The Hacker News》報導，此發現凸顯了針對開發者生態系統的開源供應鏈攻擊所帶來的持續且日益增長的威脅。</p>
+<h4>相關套件</h4>
+<p>此次攻擊行動中識別出三個 npm 套件：</p>
+<ul>
+<li><strong>postcss-minify-selector-parser</strong> — 615 次下載</li>
+<li><strong>postcss-minify-selector</strong> — 256 次下載</li>
+<li><strong>aes-decode-runner-pro</strong> — 145 次下載</li>
+</ul>
+<p>這些套件在被標記並從 npm 註冊表中移除之前，累計下載量已超過 1,000 次。三者均於過去一個月內由同一個 npm 使用者帳戶發佈，這種模式與近年來觀察到的協調性供應鏈攻擊行動一致。</p>
+<p>其命名策略是刻意為之。PostCSS 是一個廣泛使用的 CSS 轉換工具，擁有龐大的社群外掛生態系統。攻擊者選擇與合法 PostCSS 工具高度相似的套件名稱，正是利用了開發者的信任以及快速安裝套件（往往未經核實發佈者或仔細審查來源）的常見習慣。</p>
+<h4>攻擊如何運作</h4>
+<p>一旦安裝，惡意套件便會傳送一個 Windows RAT——這是一種惡意軟件，能授予遠端攻擊者對受感染系統的完全控制權限。其典型功能包括檔案竊取、鍵盤側錄、螢幕截圖以及執行任意指令。對於任何組織而言，即使只是在一個開發者工作站上存在此類工具，也可能成為在內部網絡中進行橫向移動的橋頭堡。</p>
+<h4>業務風險：超越開發團隊</h4>
+<p>供應鏈入侵的後果遠不止於立即的技術修復。透過開發者電腦安裝的 RAT，可讓攻擊者得以存取原始碼儲存庫、客戶數據庫、憑證及敏感內部文件。在擁有健全數據保護法規的司法管轄區，此類洩露可能觸發重大的法律與合規責任，要求向監管機構及受影響的個人發出通知。</p>
+<p>監管機構日益期望組織能展示主動的安全措施。若一起因公開可用的、本可透過基本盡職調查識別的惡意套件而引發的事故，將難以與「採取合理可行步驟保護數據」的期望相吻合。</p>
+<h4>防禦供應鏈威脅</h4>
+<p>此事件強化了數項開發團隊應視為不可協商的最佳實踐：</p>
+<ul>
+<li><strong>核實發佈者。</strong> 安裝任何 npm 套件前，檢查作者、儲存庫連結及下載歷史。歷史記錄簡短且發佈者陌生的套件應予審慎看待。</li>
+<li><strong>固定依賴版本。</strong> 使用鎖定檔（<code>package-lock.json</code> 或 <code>yarn.lock</code>）來鎖定確切的套件版本，防止意外更新引入受感染的程式碼。</li>
+<li><strong>稽核安裝腳本。</strong> 許多 npm 套件在安裝時會執行腳本。像 <code>npm audit</code> 這類工具及第三方掃描器可在腳本執行前標記可疑行為。</li>
+<li><strong>使用自動化掃描。</strong> 將軟件組成分析（SCA）工具整合到 CI/CD 流程中，以便及早發現已知的惡意或存在漏洞的套件。</li>
+</ul>
+<h4>更廣泛的模式</h4>
+<p>此次攻擊行動是針對 npm 生態系統（迄今仍是全球最大的套件註冊表）的一系列 typosquatting（錯字搶註）與 dependency confusion（依賴混淆）攻擊中的最新一例。隨著數百萬套件可用且每日有數千新套件發佈，該註冊表的開放性既是其最大優點，也是最容易被利用的弱點。</p>
+<p>對於開發團隊——以及依賴其產出成果的組織——結論很明確：對開源工具的信任必須與驗證相結合。多花幾分鐘進行審查，便能預防數週的事故應對及潛在的監管風險。</p>
+<p><a href="https://thehackernews.com/2026/06/malicious-npm-packages-pose-as-postcss.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
