@@ -1,0 +1,42 @@
+Date: 2026-06-24 15:27:00
+Author: HKLUG Team
+Title: Major Open-Source Repositories Vulnerable to 'Cordyceps' CI/CD Pipeline Hijack
+Content:
+<p>A newly identified class of vulnerability in continuous integration and continuous deployment (CI/CD) workflows is forcing a reassessment of trust boundaries in open-source software development. Dubbed "Cordyceps" by researchers at Novee Security, the pattern exploits a common but risky configuration to grant attackers control over automated pipelines, threatening over 300 prominent GitHub repositories.</p>
+<p>According to The Hacker News, cybersecurity firm Novee Security has disclosed a "critical exploitable pattern" that is not a flaw in source code, but in the operational design of automation itself. This underscores how the systems built to build and secure software have become a primary target.</p>
+<h5>The Mechanics of a Pipeline Hijack</h5>
+<p>At the heart of Cordyceps is the widespread misuse of a GitHub Actions trigger called <code>pull_request_target</code>. This trigger is designed to run workflows for pull requests from the <em>base</em> repository, with elevated permissions such as access to secrets and write access to the codebase. The dangerous flaw arises when a workflow configured with this trigger checks out and executes code from an untrusted, incoming pull request.</p>
+<p>This creates a privilege escalation scenario. An attacker can submit a malicious pull request containing code that the workflow then runs with the maintainers' high-level credentials. This effectively turns a standard development review process into an attack vector, allowing the hijacking of the automated pipeline and potentially the entire repository.</p>
+<h5>A Systemic Issue, Not an Isolated Bug</h5>
+<p>The scope of the disclosure underscores a systemic gap in CI/CD security awareness. Affected projects include repositories from major technology organizations like Microsoft, Google, and the Apache Software Foundation.</p>
+<p>Researchers frame this as a widespread misconfiguration rather than a singular software bug. It represents a critical blind spot where security focus has traditionally been on source code and dependencies, while the integrity of the build and deployment machinery has been overlooked. While code and dependency vulnerabilities receive significant attention, the automation that handles them is an equally critical, and apparently softer, target.</p>
+<p>The incident reveals a fragile trust boundary: developers routinely grant powerful permissions to automation scripts, assuming they will only ever process trusted inputs. Cordyceps demonstrates the danger when that assumption is incorrect, highlighting a fundamental privilege escalation risk in modern DevOps practices.</p>
+<h5>Actionable Remediation and the Path Forward</h5>
+<p>The immediate fix for affected repositories involves auditing CI/CD workflow files and removing dangerous patterns. Security experts advise maintainers:</p>
+<ol>
+<li><strong>Audit and Remediate:</strong> Review all workflow files within <code>.github/workflows/</code>.</li>
+<li><strong>Remove Dangerous Patterns:</strong> Any workflow triggered by <code>pull_request_target</code> that checks out or executes code from the pull request must be disabled or fixed.</li>
+<li><strong>Shift to Safer Triggers:</strong> Replace <code>pull_request_target</code> with the standard <code>pull_request</code> trigger for testing external contributions, as it runs in a restricted context without access to repository secrets.</li>
+</ol>
+<p>The disclosure raises critical questions about the remediation timeline and verification process. It also puts a spotlight on the responsibility of platform holders like GitHub to implement proactive safeguards, such as mandatory warnings or built-in linters that flag dangerous combinations of triggers and untrusted code checkouts.</p>
+<p>Ultimately, Cordyceps serves as a case study in operational security for the open-source community. As automated pipelines become the backbone of software delivery, their configuration must be treated with the same rigor as the application code they build. The vulnerability is a clear signal that securing the software supply chain requires securing every step of the automation process.</p>
+<hr>
+<p>持續整合與持續部署（CI/CD）workflow 中，一種新近被識別的漏洞類別，正迫使業界重新評估開源軟件開發中的信任邊界。這類由 Novee Security 研究人員命名為「木霉菌」的攻擊模式，利用了一種常見但高風險的配置，賦予攻擊者對自動化流水線的控制權，威脅超過 300 個知名的 GitHub 儲存庫。</p>
+<p>據 The Hacker News 報導，網絡安全公司 Novee Security 披露了一個「可被利用的關鍵模式」，其漏洞並非源於源代碼，而是源於自動化操作設計本身。這突顯了用於構建及保護軟件的系統，已成為主要攻擊目標。</p>
+<h5>流水線劫持的運作機制</h5>
+<p>「木霉菌」的核心在於 GitHub Actions 一個名為 <code>pull_request_target</code> 的 trigger 被廣泛誤用。該 trigger 旨在為來自<em>基礎</em>儲存庫的 pull request 運行 workflows，並享有提升的權限，例如存取 secrets 及對代碼庫的寫入權限。當配置了此 trigger 的 workflow checkout 並執行來自不受信任、傳入的 pull request 的代碼時，便產生了危險的漏洞。</p>
+<p>這造成了權限提升的場景。攻擊者可以提交一個包含惡意代碼的 pull request，而 workflow 隨後會以維護者的高級權限運行該代碼。這實質上將一個標準的開發審查流程轉化為攻擊向量，使得劫持自動化流水線及可能控制整個儲存庫成為可能。</p>
+<h5>一個系統性問題，而非孤立缺陷</h5>
+<p>此次披露的範圍突顯了 CI/CD 安全意識上的系統性缺口。受影響的項目包括來自 Microsoft、Google 及 Apache 軟件基金會等大型科技組織的儲存庫。</p>
+<p>研究人員將此定性為一個普遍的配置錯誤，而非單一的軟件缺陷。這代表了一個關鍵的盲點，因為安全關注傳統上集中在源代碼及 dependencies 上，而構建和部署機制的完整性則被忽視。儘管代碼和 dependency 漏洞受到高度關注，但處理它們的自動化流程同樣是至關重要、且明顯較脆弱的目標。</p>
+<p>此次事件揭示了一個脆弱的信任邊界：開發者常規地授予自動化腳本強大權限，假設它們只會處理受信任的輸入。「木霉菌」證明了當此假設錯誤時的危險性，突顯了現代 DevOps 實踐中一個根本的權限提升風險。</p>
+<h5>可行的補救措施與未來路徑</h5>
+<p>針對受影響儲存庫的即時修復方案涉及審核 CI/CD workflow 文件並移除危險模式。安全專家建議維護者：</p>
+<ol>
+<li><strong>審核與補救：</strong> 檢查 <code>.github/workflows/</code> 內的所有 workflow 文件。</li>
+<li><strong>移除危險模式：</strong> 任何由 <code>pull_request_target</code> 觸發、且 checkout 或執行 pull request 中代碼的 workflow，必須被禁用或修正。</li>
+<li><strong>改用更安全的 triggers：</strong> 將 <code>pull_request_target</code> 替換為標準的 <code>pull_request</code> trigger，以測試外部貢獻。後者在限制性的上下文中運行，無法存取儲存庫 secrets。</li>
+</ol>
+<p>此次披露引發了對補救時間表和驗證流程的關鍵質疑。同時，它也將聚光燈投向了像 GitHub 這樣的平台持有者，敦促其實施主動的保障措施，例如強制性的警告，或是內建的代碼檢查工具，用以標記 triggers 與不受信任的代碼 checkout 之間的危險組合。</p>
+<p>總結而言，「木霉菌」事件為開源社群提供了一個操作安全的案例研究。隨著自動化流水線成為軟件交付的支柱，其配置必須與其構建的應用代碼受到同等嚴格的對待。該漏洞是一個明確的信號，表明保護軟件供應鏈需要保障自動化流程的每一個環節。</p>
+<p><a href="https://thehackernews.com/2026/06/cordyceps-cicd-flaws-expose-300-github.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
