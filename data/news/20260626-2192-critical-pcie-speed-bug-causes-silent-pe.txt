@@ -1,0 +1,26 @@
+Date: 2026-06-26 13:22:00
+Author: HKLUG Team
+Title: Critical PCIe Speed Bug Causes Silent Performance Throttle in Linux Kernels 6.5+
+Content:
+<p>A serious performance regression in the Linux kernel, present in versions 6.5 and later, is set to be resolved in the upcoming 7.2 release. The bug causes compatible PCIe devices to be silently downgraded to the much slower 1.0 standard speed, severely impacting system performance without any obvious warnings.</p>
+<p>The issue stems from a flaw in the PCI subsystem's device initialization logic. During the crucial PCIe link training phase, the kernel was misidentifying device capabilities. This error forced endpoints—including high-speed NVMe drives, modern GPUs, and advanced network cards—to operate at just 2.5 GT/s, regardless of their true hardware potential. The result is a massive, invisible bottleneck that can cripple data throughput and system responsiveness, yet generates no error logs to alert the user.</p>
+<p>The definitive fix is contained in kernel patch 603bc084a75, which corrects the faulty detection mechanism. This allows devices to properly negotiate and operate at their designed link speeds during boot. This patch has now been merged into the mainline code for the upcoming Linux 7.2 kernel.</p>
+<p><strong>Immediate Action for Users:</strong>
+For those running any kernel from 6.5 up to the current stable, the first step is diagnosis. Administrators and power users should run <code>lspci -v</code> and inspect the <code>LnkSta</code> (Link Status) line for critical components like NVMe controllers or GPUs. A reported speed of "2.5GT/s" for a device known to support Gen3, Gen4, or higher confirms the issue is active on your system.</p>
+<p><strong>Primary Solution:</strong>
+The path to resolution is a kernel upgrade. Linux 7.2, expected later this year, will contain the automated fix. No manual configuration or workaround is required; updating the kernel will allow the hardware to initialize correctly.</p>
+<p><strong>Unresolved Risk for LTS Users:</strong>
+A key concern remains for long-term support (LTS) kernel users, such as those on the widely deployed 6.6 series. There is currently no confirmation that this critical patch will be backported to these stable branches. Enterprises and individuals relying on LTS for stability may therefore need to manually assess the risk, monitor for backport announcements, or test applying the patch themselves.</p>
+<p>This incident serves as a stark reminder of how a silent regression in a core subsystem can have a profound impact on system performance. It highlights the value of routine hardware configuration audits, as a simple check of PCIe link speeds can uncover hidden issues that standard diagnostics might miss.</p>
+<hr>
+<p>Linux核心存在一個嚴重的效能退化問題，自6.5版本起一直存在，即將在7.2版本中獲得解決。此缺陷會導致兼容的PCIe裝置悄然降級至較慢的1.0標準速度，在無任何明顯警示下嚴重損害系統效能。</p>
+<p>問題源於PCI子系統的裝置初始化邏輯存在缺陷。在關鍵的PCIe鏈路訓練階段，核心錯誤識別了裝置能力。此錯誤迫使端點裝置——包括高速NVMe硬碟、現代顯示卡及進階網絡卡——僅以2.5 GT/s速率運作，不論其實際硬體潛力為何。結果形成了一個巨大且隱蔽的瓶頸，可能嚴重削弱數據吞吐量及系統回應能力，卻不會生成任何錯誤日誌來警示使用者。</p>
+<p>根本修復方案已包含於核心補丁603bc084a75中，此補丁修正了故障的偵測機制，允許裝置在啟動時正確協商並以其設計的鏈路速度運作。該補丁現已整合至即將發布的Linux 7.2核心主線代碼中。</p>
+<p><strong>使用者即時行動：</strong>
+對於使用6.5版至當前穩定版核心的用戶，首要步驟是診斷。管理員及資深用戶應執行 <code>lspci -v</code> 指令，並檢查NVMe控制器或顯示卡等關鍵組件的 <code>LnkSta</code>（鏈路狀態）欄位。若已知支援Gen3、Gen4或更高規格的裝置報告速度為「2.5GT/s」，即證實問題正在您的系統中活躍。</p>
+<p><strong>主要解決方案：</strong>
+解決路徑在於核心升級。預計今年稍後推出的Linux 7.2將包含自動化修復。無需任何手動配置或變通方法；更新核心即可讓硬體正確初始化。</p>
+<p><strong>長期支援版本用戶的未解風險：</strong>
+一個關鍵問題仍影響長期支援（LTS）核心用戶，例如廣泛部署的6.6系列。目前尚無確認此關鍵補丁是否會回溯移植至這些穩定分支。依賴LTS版本以維持穩定性的企業及個人可能因此需自行評估風險、留意回溯移植公告，或測試自行套用補丁。</p>
+<p>此事件尖銳提醒我們，核心子系統的靜默退化如何能對系統效能產生深遠影響。它突顯了定期硬體配置審查的價值，因為僅檢查PCIe鏈路速度便可能揭露標準診斷可能遺漏的隱蔽問題。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.2-PCI" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
