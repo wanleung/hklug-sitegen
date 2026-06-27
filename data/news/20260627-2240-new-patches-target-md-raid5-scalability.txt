@@ -1,0 +1,16 @@
+Date: 2026-06-27 12:21:00
+Author: HKLUG Team
+Title: New Patches Target MD RAID5 Scalability Bottleneck in Linux Kernel
+Content:
+<p>A new patch series aimed at addressing long-standing scalability bottlenecks in Linux's MD RAID5 software RAID implementation has been submitted to the kernel mailing list for community review. According to a report from Phoronix, testing shows these patches can deliver scalability improvements of up to 17% under specific configurations.</p>
+<p>MD RAID5 is a widely used software RAID solution in Linux that balances capacity, performance, and redundancy through parity. However, its traditional request management mechanism suffers from lock contention, which severely limits parallel processing on multi-core CPUs as array sizes and workloads grow, creating a significant performance bottleneck.</p>
+<p>The core of this proposed fix involves a structural redesign of the internal data path. Specifically, the patches replace the existing hash chain with a radix tree for managing request metadata. The radix tree is a more efficient data structure that significantly reduces lock contention during high-concurrency operations. This allows a RAID5 array to leverage multi-core parallelism more effectively, translating into higher throughput and lower latency.</p>
+<p>For Linux servers running high-load databases, handling large-scale data processing, or equipped with numerous high-speed NVMe SSDs, this improvement has direct practical value. It offers a path to unlocking the performance potential of existing storage hardware without additional cost—a compelling proposition for operations teams and storage architects focused on cost-efficiency.</p>
+<p>The patch series is currently in active community discussion. Following the Linux kernel development process, it must undergo multiple rounds of review and testing before it can be considered for merging into the mainline kernel. While the timeline for inclusion remains undetermined, this progress underscores the community's ongoing commitment to enhancing the performance and scalability of Linux's foundational storage stack. Developers and engineers focused on system performance tuning should continue to track the progress of these patches.</p>
+<hr>
+<p>一系列旨在解決 Linux MD RAID5 軟件 RAID 實作中長期存在的擴展性瓶頸的新補丁，已提交至核心郵件列表供社群審查。據 Phoronix 報導，測試顯示這些補丁在特定配置下可帶來高達 17% 的擴展性提升。</p>
+<p>MD RAID5 是 Linux 下廣泛使用的軟件 RAID 方案，透過奇偶校驗實現容量、效能與冗餘的平衡。然而，其傳統的請求管理機制存在鎖爭用問題，當陣列規模與工作負載增長時，嚴重限制了多核 CPU 的並行處理能力，構成顯著的效能瓶頸。</p>
+<p>此次修補的核心涉及內部資料路徑的結構性重構。具體而言，補丁將現有的哈希鏈替換為基數樹來管理請求元資料。基數樹是更高效的資料結構，能顯著減少高並發操作中的鎖競爭，讓 RAID5 陣列更有效地利用多核並行能力，從而提升吞吐量並降低延遲。</p>
+<p>對於運行高負載資料庫、處理大規模資料運算，或配備大量高速 NVMe SSD 的 Linux 伺服器而言，此改進具備直接的實用價值。它提供了一條無需額外成本即可釋放現有儲存硬件效能潛力的途徑——這對專注成本效益的運維團隊與儲存架構師而言，是相當吸引人的方案。</p>
+<p>該補丁系列目前正在社群中進行積極討論。依照 Linux 核心的開發流程，在被考慮合併至主線核心之前，必須經過多輪審查與測試。雖然納入的時程尚未確定，但此進展再次彰顯了社群致力於提升 Linux 基礎儲存堆疊效能與擴展性的持續承諾。專注系統效能調校的開發人員與工程師，應持續關注這些補丁的進展。</p>
+<p><a href="https://www.phoronix.com/news/Linux-MD-RAID5-Scalability-Work" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
