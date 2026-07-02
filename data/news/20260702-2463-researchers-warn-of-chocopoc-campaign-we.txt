@@ -1,0 +1,48 @@
+Date: 2026-07-02 00:23:00
+Author: HKLUG Team
+Title: Researchers Warn of 'ChocoPoC' Campaign Weaponizing GitHub to Deploy Custom RAT
+Content:
+<p>A targeted campaign is exploiting the collaborative ethos of GitHub, delivering a custom Python-based remote access trojan (RAT) through weaponized proof-of-concept (PoC) exploits. Tracked as "ChocoPoC," the operation specifically targets cybersecurity researchers in a strategic intelligence-gathering effort, according to a report from BleepingComputer.</p>
+<p>The attack scheme hinges on the implicit trust within the security research community. Adversaries have set up malicious repositories that appear to be legitimate, working exploits for recent vulnerabilities. Researchers seeking to study these PoCs unknowingly execute a loader, kicking off a multi-stage infection chain designed to evade detection before installing the final ChocoPoC RAT.</p>
+<p>This represents a strategic pivot from broad campaigns to focused attacks on a high-value niche. By compromising researchers, the operators aim to gain access to unpublished zero-day vulnerabilities, proprietary tooling, sensitive communications, and potentially credentials for broader corporate or government networks. The campaign effectively turns a key platform for collaborative defense into a primary infection vector.</p>
+<h4>Anatomy of a Staged Infection</h4>
+<p>The malicious PoCs utilize a sophisticated, multi-stage loader to obscure their intent:</p>
+<ol>
+<li><strong>Deceptive Initiation:</strong> A user runs what seems to be a benign exploit script. Hidden within is obfuscated code that retrieves and executes a secondary payload.</li>
+<li><strong>Environmental Camouflage:</strong> The loader establishes persistence, often by creating a dedicated virtual environment and installing legitimate-looking dependencies to blend in, before fetching the core malware components.</li>
+<li><strong>Final Payload Deployment:</strong> The ChocoPoC RAT is installed and activated. Written in Python, it grants the attacker a full remote control interface.</li>
+</ol>
+<p>The RAT's capabilities are comprehensive, including remote command execution, theft of files, browser cookies, and credentials, plus screenshot and keylog capture, mechanisms for persistence, and detailed system reconnaissance.</p>
+<h4>Defensive Recommendations for the Community</h4>
+<p>The discovery underscores a need for heightened security discipline. The report urges researchers and security teams to adopt these specific measures:</p>
+<ul>
+<li><strong>Scrutinize Repository History:</strong> Investigate a repository's age, contributor activity, stars, and issue history before execution. Treat new repositories from unknown authors offering critical exploits with extreme caution.</li>
+<li><strong>Mandatory Isolation:</strong> Analyze and execute all untrusted PoCs within a disposable, network-isolated virtual machine or sandbox. Never run them on systems with access to production data or internal networks.</li>
+<li><strong>Behavioral Monitoring:</strong> Deploy Endpoint Detection and Response (EDR) tools to flag anomalous activity, such as a Python script spawning a command shell or connecting to unfamiliar domains.</li>
+<li><strong>Network Segmentation and Filtering:</strong> Restrict outbound connections from development environments using firewall rules and place research networks on strict segments with limited access to core infrastructure.</li>
+<li><strong>Dependency Vetting:</strong> Audit all Python package dependencies for signs of compromise or malicious hosting.</li>
+</ul>
+<p>The ChocoPoC campaign is a stark reminder of the threats lurking in the software supply chain. As researchers leverage open-source collaboration, they must balance trust with rigorous verification. A "verify, then trust" mentality is now essential to protect both individual projects and the collective intellectual capital of the security community.</p>
+<hr>
+<p>一個針對性活動正利用 GitHub 的協作精神，透過武器化的概念驗證（PoC）漏洞利用，投遞自訂的 Python 遠端存取木馬（RAT）。根據 BleepingComputer 的報告，這項被追蹤為「ChocoPoC」的行動，專門以網絡安全研究人員為目標，進行策略性的情報收集。</p>
+<p>攻擊方案依賴安全研究社群內部的隱含信任。對手設立了看似是近期漏洞合法、可用利用程式的惡意儲存庫。研究人員試圖研究這些 PoC 時，會無意間執行一個載入器，啟動多階段感染鏈，旨在規避偵測，最終安裝 ChocoPoC RAT。</p>
+<p>這代表從廣泛的活動轉向對高價值利基的集中攻擊。透過入侵研究人員，攻擊者旨在獲取未公開的零日漏洞、專有工具、敏感通訊，以及可能用於更廣泛企業或政府網絡的憑證。該活動有效地將一個協作防禦的關鍵平台變成了主要感染媒介。</p>
+<h4>分階段感染剖析</h4>
+<p>惡意 PoC 利用了一個複雜的多階段載入器來掩蓋其意圖：</p>
+<ol>
+<li><strong>欺騙性啟動：</strong> 用戶運行看似是無害的漏洞利用腳本。其中隱藏了經過混淆的代碼，用於擷取並執行次要載荷。</li>
+<li><strong>環境偽裝：</strong> 載入器建立持久性，通常是透過建立專用的虛擬環境並安裝看似合法的依賴項以融入環境，然後才獲取核心惡意軟件組件。</li>
+<li><strong>最終載荷部署：</strong> ChocoPoC RAT 被安裝並啟動。它以 Python 編寫，為攻擊者提供完整的遠端控制介面。</li>
+</ol>
+<p>RAT 的功能非常全面，包括遠端命令執行、竊取檔案、瀏覽器 Cookies 和憑證、截圖與鍵盤記錄擷取、持久性機制以及詳細的系統偵察。</p>
+<h4>社群的防禦建議</h4>
+<p>此發現突顯了提高安全紀律的必要性。報告敦促研究人員和安全團隊採取以下具體措施：</p>
+<ul>
+<li><strong>仔細審查儲存庫歷史：</strong> 在執行前，調查儲存庫的歷史、貢獻者活動、Stars 和 Issue 歷史。對來自未知作者、提供關鍵漏洞利用的新儲存庫保持極度謹慎。</li>
+<li><strong>強制隔離：</strong> 在可拋棄、網絡隔離的虛擬機或沙箱中分析和執行所有不受信任的 PoC。切勿在存取生產數據或內部網絡的系統上運行它們。</li>
+<li><strong>行為監控：</strong> 部署端點偵測與回應（EDR）工具以標記異常活動，例如 Python 腳本產生命令 Shell 或連接到不熟悉的域。</li>
+<li><strong>網絡分段與過濾：</strong> 使用防火牆規則限制開發環境的出站連接，並將研究網絡置於嚴格分段中，限制對核心基礎設施的存取。</li>
+<li><strong>依賴項審查：</strong> 審計所有 Python 套件依賴項，檢查是否有被入侵或惡意託管的跡象。</li>
+</ul>
+<p>ChocoPoC 活動是一個鮮明的提醒，提醒我們隱藏在軟件供應鏈中的威脅。隨著研究人員利用開源協作，他們必須在信任與嚴格驗證之間取得平衡。「先驗證，後信任」的心態現在對於保護個別項目和安全社群的集體知識資本都至關重要。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/new-chocopoc-malware-targets-researchers-via-trojanized-poc-exploits/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
