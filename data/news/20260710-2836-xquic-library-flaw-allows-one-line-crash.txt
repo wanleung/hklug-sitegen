@@ -1,0 +1,14 @@
+Date: 2026-07-10 12:29:00
+Author: HKLUG Team
+Title: XQUIC Library Flaw Allows One-Line Crash of HTTP/3 Servers With No Patch Available
+Content:
+<p>A critical flaw in XQUIC, Alibaba's open-source QUIC and HTTP/3 library, enables any remote client to crash HTTP/3 servers with a short burst of valid traffic. The vulnerability, disclosed on July 8 by FoxIO researcher Sébastien Féry and named "XRING," has no available patch.</p>
+<p>The root cause is a simple coding error in the library's processing of QPACK, the header compression format used by HTTP/3. Exploitation is straightforward: an attacker needs no credentials, no specialized tools, and does not need to send malformed packets. Sending only about 260 bytes of standard, compliant QPACK data is sufficient to trigger a denial-of-service crash on a vulnerable server.</p>
+<p>XQUIC is a foundational library designed to give applications efficient QUIC and HTTP/3 support. Its role as a core component means the impact could be broad, potentially affecting many services and platforms built on this technology.</p>
+<p>In the absence of an official fix, security experts advise a three-phase response for all organizations using the library. First, conduct an immediate audit to identify all public-facing services deploying XQUIC. Second, apply temporary mitigations such as rate-limiting inbound QUIC traffic or, where feasible, temporarily disabling HTTP/3 support entirely. Third, closely monitor the official XQUIC repository for a patch and apply it immediately upon release. No timeline for a fix has been communicated by maintainers.</p>
+<hr>
+<p>阿里巴巴的開源 QUIC 與 HTTP/3 函式庫 XQUIC 存在一個關鍵漏洞，任何遠程客戶端均可透過一小段有效流量癱瘓 HTTP/3 伺服器。此漏洞由 FoxIO 研究員 Sébastien Féry 於 7 月 8 日揭露，並命名為「XRING」，目前尚無可用修補程式。</p>
+<p>漏洞根源是該函式庫在處理 QPACK（HTTP/3 使用的標頭壓縮格式）時出現的簡單編碼錯誤。利用方式相當直接：攻擊者無需憑證、無需專門工具，亦無需傳送格式異常的資料包。僅需傳送約 260 位元組符合標準的 QPACK 數據，便足以觸發脆弱伺服器發生拒絕服務式崩潰。</p>
+<p>XQUIC 作為基礎函式庫，旨在為應用程式提供高效的 QUIC 與 HTTP/3 支援。其作為核心組件的角色意味著影響可能相當廣泛，潛在波及眾多基於此技術建構的服務與平台。</p>
+<p>在缺乏官方修補程式的情況下，安全專家建議使用該函式庫的所有機構採取三階段應對措施。首先，立即進行審計以識別所有部署 XQUIC 的公開服務。其次，實施臨時緩解措施，例如限制入站 QUIC 流量速率，或在可行情況下暫時完全停用 HTTP/3 支援。第三，密切關注官方 XQUIC 儲存庫，並在補丁發布後立即套用。維護者尚未傳達修復時間表。</p>
+<p><a href="https://thehackernews.com/2026/07/unpatched-xring-flaw-in-xquic-lets.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
