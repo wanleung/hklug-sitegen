@@ -1,0 +1,20 @@
+Date: 2026-07-14 12:28:00
+Author: HKLUG Team
+Title: Apple Silicon Sensor Inconsistencies Present Major Hurdle for Linux Mainlining
+Content:
+<p>Getting full hardware monitoring into the mainline Linux kernel for Apple Silicon Macs is proving difficult—not because of missing driver code, but due to the inconsistent and poorly documented nature of the hardware itself.</p>
+<p>According to a report on Phoronix, the Apple System Management Controller (SMC) driver, intended to expose battery statistics, thermal data, and fan controls, has yet to work properly in the mainline kernel. The problems are twofold: incomplete Device Tree nodes that the kernel relies on to identify hardware, and a disorganized spread of different sensor configurations across Apple's M-series SoCs.</p>
+<p>This inconsistency creates a moving target. A solution that works on one chip family may fail on another—not because of a software bug, but because the physical sensor addressing changes between generations and even between variants within the same generation. This effectively makes every SoC a distinct problem rather than part of a unified ecosystem.</p>
+<p>Reverse-engineering efforts by the community, while significant, cannot keep up with this undocumented and shifting landscape. The result is a fragile status quo where system monitoring on Linux for Apple Silicon remains incomplete and inconsistent.</p>
+<p>A two-part community strategy has emerged to address the deadlock. The first involves a collaborative project to systematically map out sensor layouts across all known M-series chips, producing a shared reference with unified Device Tree bindings. The second focuses on refactoring the SMC driver itself into a more flexible, chipset-agnostic framework capable of adapting to hardware variations rather than treating each SoC in isolation.</p>
+<p>The aim is to produce a solid, adaptable driver suitable for mainline inclusion—acknowledging that full sensor support for every model may take time. Key unresolved questions include who will coordinate the documentation effort and whether the current driver architecture can support the needed flexibility or will require a more fundamental redesign.</p>
+<p>For the time being, users running Linux on Apple hardware should expect system monitoring to remain a community-driven effort, with support varying across models and often relying on ongoing patches and workarounds.</p>
+<hr>
+<p>將完整硬件監控功能整合到Apple Silicon Mac的Linux主線內核中，已證實極其困難——原因並非缺少驅動程式碼，而是硬件本身存在不一致性及文件匱乏的問題。</p>
+<p>根據Phoronix的報導，Apple系統管理控制器驅動程式旨在提供電池統計、溫度數據及風扇控制功能，但至今未能在主線內核中正常運作。問題有兩方面：內核依賴用於識別硬件的設備樹節點不完整，以及Apple M系列系統芯片中混雜著各種不同的感測器配置。</p>
+<p>這種不一致性製造了一個移動的目標。在一款芯片家族上可行的解決方案，可能在另一款上失效——原因並非軟件錯誤，而是感測器的物理定址方式在不同世代之間，甚至在同代的不同型號之間都有所改變。這實際上使得每顆系統芯片都成為一個獨特的問題，而非統一生態系統的一部分。</p>
+<p>社群進行的逆向工程工作雖然意義重大，卻難以跟上這種未被記錄且不斷變化的現狀。結果是形成了一個脆弱的現狀：Linux對Apple Silicon的系統監控功能仍然不完整且不一致。</p>
+<p>一個由兩部分組成的社群策略已浮現，以應對此僵局。第一部分涉及一個協作項目，旨在系統性地繪製所有已知M系列芯片的感測器佈局圖，產出一份帶有統一設備樹綁定的共享參考文件。第二部分則專注於將SMC驅動程式本身重構為一個更靈活、不依賴特定芯片組的框架，使其能夠適應硬件變化，而非孤立地處理每顆系統芯片。</p>
+<p>此策略的目標是產出一個堅實、可適應且適合納入主線的驅動程式——承認為每個型號提供完整的感測器支持可能需要時間。關鍵的待決問題包括：誰將協調這份文件記錄工作，以及現有的驅動程式架構能否支持所需的靈活性，抑或需要更根本性的重新設計。</p>
+<p>目前，在Apple硬件上運行Linux的用戶應預期系統監控功能仍將是一項社群驅動的工作，其支持程度因型號而異，且通常依賴持續的修補與權宜方案。</p>
+<p><a href="https://www.phoronix.com/news/Apple-Wild-Mess-Sensors-Linux" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
