@@ -1,0 +1,18 @@
+Date: 2026-07-16 16:27:00
+Author: HKLUG Team
+Title: n8n Enterprise Flaw Enables Attackers to Hijack Accounts Across Trusted SSO Providers
+Content:
+<p>A critical implementation flaw in n8n's Enterprise platform has exposed organizations to a serious authentication bypass, allowing attackers to log in as any system user simply by presenting a valid token from a different trusted identity provider.</p>
+<p>Tracked as CVE-2026-59208, the vulnerability targets Enterprise deployments configured with multiple Single Sign-On (SSO) providers. In these setups, n8n improperly validated incoming JSON Web Tokens (JWTs) by matching them to local accounts based solely on the subject (<code>sub</code>) claim, while ignoring the issuer (<code>iss</code>) field entirely.</p>
+<p>This oversight enables a straightforward "issuer confusion" attack. An attacker can present a cryptographically valid token from one trusted identity provider that contains the subject identifier of a user registered under a different provider. Because the platform fails to verify that the token’s origin aligns with the user’s designated identity source, it grants immediate access without requiring a password.</p>
+<p>The stakes are particularly high for n8n, which operates as a central nervous system for enterprise workflows. A compromised account hands over stored credentials, API keys, execution histories, and the ability to trigger or alter automated business processes. This transforms a single identity bypass into a potential vector for lateral movement and operational disruption across connected infrastructure.</p>
+<p>n8n has issued a patch to resolve the issue. Administrators running multi-issuer Enterprise environments must apply the update immediately and confirm that the platform now enforces strict binding between the <code>iss</code> and <code>sub</code> claims during authentication. Security teams should also audit other internal services that consume JWTs, ensuring they validate the complete claim set—including audience (<code>aud</code>) and expiration (<code>exp</code>)—per RFC 7519 guidelines.</p>
+<p>The incident highlights a recurring pitfall in modern identity architecture: convenience often outpaces validation rigor. As organizations layer multiple SSO providers to support distributed teams, enforcing granular, standards-compliant claim verification at every trust boundary becomes non-negotiable.</p>
+<hr>
+<p>n8n 企業版平台存在一項嚴重的實作漏洞，令機構面臨認證繞過風險。攻擊者只需出示來自其他受信任身份供應商的合法 Token，即可以系統內任何用戶身份登入。</p>
+<p>此漏洞編號為 CVE-2026-59208，主要影響配置了多個單點登入（SSO）供應商的企業部署環境。在此類設定中，n8n 未能正確驗證接收的 JSON Web Tokens (JWTs)，僅憑主體（<code>sub</code>）claim 將 Token 與本地帳戶配對，卻完全忽略簽發者（<code>iss</code>）欄位。</p>
+<p>此疏忽令攻擊者可輕易發動「issuer confusion」攻擊。攻擊者可出示來自某個受信任身份供應商、且密碼學驗證合法的 Token，該 Token 內含註冊於另一供應商下的用戶主體識別碼。由於平台未有核實 Token 來源是否與用戶指定的身份來源一致，系統將直接授予存取權限，無須輸入密碼。</p>
+<p>由於 n8n 擔任企業工作流程的核心樞紐，此漏洞的影響尤為嚴重。帳戶一旦遭入侵，攻擊者即可取得儲存的憑證、API keys、執行紀錄，以及觸發或篡改自動化業務流程的權限。這使得單一身份認證繞過，可能演變為跨連通基礎設施進行橫向移動及破壞運營的潛在途徑。</p>
+<p>n8n 已發布修補程式以解決此問題。運行多簽發者企業環境的管理員必須立即套用更新，並確認平台在認證過程中已嚴格綁定 <code>iss</code> 與 <code>sub</code> claim。安全團隊亦應審計內部其他接收 JWTs 的服務，確保其依照 RFC 7519 指引驗證完整的 claim 組合，包括受眾（<code>aud</code>）及有效期（<code>exp</code>）。</p>
+<p>是次事件突顯現代身份架構中反覆出現的盲點：便利性往往凌駕於驗證嚴謹度之上。隨著機構為支援分散式團隊而疊加多個 SSO 供應商，於每個信任邊界執行細緻且符合標準的 claim 驗證，已成為不容妥協的安全底線。</p>
+<p><a href="https://thehackernews.com/2026/07/n8n-token-exchange-flaw-could-let.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
