@@ -1,0 +1,26 @@
+Date: 2026-07-24 15:30:00
+Author: HKLUG Team
+Title: Fedora 45 to Disable Kernel Crypto API Interface by Default
+Content:
+<p>```</p>
+<p>Fedora 45 will disable the AF_ALG interface—the mechanism allowing user-space programs to interact directly with the Linux kernel's cryptographic API—as a default setting. The move aligns the distribution with an ongoing upstream Linux kernel deprecation effort that began in kernel version 7.2.</p>
+<p>AF_ALG has historically provided a direct conduit into kernel crypto routines, a convenience that security researchers have repeatedly flagged as expanding the kernel's attack surface. This direct exposure adds complexity and risk to a privileged subsystem. The upstream kernel began formally deprecating AF_ALG in version 7.2 and imposed further restrictions in 7.3. Fedora's change is designed to accelerate ecosystem adoption of the more secure default, pushing software to rely on established user-space alternatives.</p>
+<p>For developers and administrators, the impact is clear. Any software relying on AF_ALG must migrate to well-maintained user-space cryptography libraries such as OpenSSL, libsodium, or GnuTLS. These libraries offer portability, active auditing, and are already the standard for most modern applications. Shifting cryptographic operations from kernel space to user space is considered a cleaner architecture that limits the potential damage of any future vulnerability.</p>
+<p>Crucially, the interface is not removed. System administrators requiring AF_ALG can re-enable it manually, providing a transitional pathway while codebases are updated. This phased approach grants packagers and developers time to audit dependencies and release updated software before a future kernel version potentially removes the capability entirely.</p>
+<p>The decision highlights a broader industry trend toward minimizing privileged code paths within the kernel. Features once implemented for performance are now often re-evaluated as security liabilities. As an early adopter, Fedora serves as a practical testbed, helping to surface compatibility issues before such a change could become universal upstream. Projects with cross-platform compatibility should proactively audit for AF_ALG usage to avoid production disruptions.</p>
+<p>The timeline for the final upstream removal of AF_ALG from the Linux kernel has not been specified. Similarly, other major distributions have yet to announce parallel plans. For now, Fedora's secure-by-default configuration, coupled with a clear migration path, provides a pragmatic model for hardening the Linux cryptographic stack without breaking existing workflows.</p>
+<hr>
+<pre><code>
+Fedora 45 將預設停用 AF_ALG 介面——該介面允許用戶空間程式直接與 Linux 核心的加密 API 互動。此舉與上游 Linux 核心自 7.2 版本開始的棄用工作保持一致。
+
+AF_ALG 歷來提供了一條直通核心加密例程的途徑，這種便利性已多次被安全研究人員指出會擴大核心的攻擊面。這種直接暴露增加了這個高權限子系統的複雜性和風險。上游核心從 7.2 版本開始正式棄用 AF_ALG，並在 7.3 版本中進一步限制。Fedora 的此項變更旨在加速生態系統採用更安全的預設設定，推動軟體依賴成熟的用戶空間替代方案。
+
+對開發者和管理員而言，影響顯而易見。任何依賴 AF_ALG 的軟體必須遷移到維護良好的用戶空間加密函式庫，例如 OpenSSL、libsodium 或 GnuTLS。這些函式庫具有可移植性、持續接受審計，且已是大多數現代應用程式的標準選擇。將加密操作從核心空間轉移到用戶空間被認為是一種更乾淨的架構，能限制任何未來漏洞可能造成的潛在損害。
+
+至關重要的是，該介面並未被移除。需要 AF_ALG 的系統管理員可以手動重新啟用它，這在程式碼庫更新的同時提供了一個過渡途徑。這種分階段方法給予套件維護者和開發者時間來審計依賴項並發布更新的軟體，之後某個未來的核心版本才可能完全移除該功能。
+
+此決定突顯了業界減少核心內高權限代碼路徑的普遍趨勢。過去為效能而實作的功能，現在常因被視為安全隱患而重新評估。作為早期採用者，Fedora 充當了實用的試驗平台，有助於在這種變更可能於上游全面推行之前，發現相容性問題。具有跨平台相容性的專案應主動審計 AF_ALG 的使用情況，以避免生產環境中斷。
+
+Linux 核心最終完全移除 AF_ALG 的時間表尚未確定。同樣地，其他主要發行版亦未宣布類似的計劃。目前，Fedora 的「安全預設」配置，加上清晰的遷移途徑，為加固 Linux 加密堆疊而不破壞現有工作流程提供了一個務實的模型。
+</code></pre>
+<p><a href="https://www.phoronix.com/news/Fedora-45-Disable-Kernel-Crypt" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
