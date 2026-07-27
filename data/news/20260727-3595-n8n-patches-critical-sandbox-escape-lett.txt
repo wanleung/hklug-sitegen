@@ -1,0 +1,26 @@
+Date: 2026-07-27 15:30:00
+Author: HKLUG Team
+Title: n8n Patches Critical Sandbox Escape Letting Editors Run Server Commands
+Content:
+<p>n8n has issued emergency patches for a high-severity sandbox escape vulnerability that allows authenticated workflow editors to execute arbitrary operating-system commands on the host server. The flaw breaks down the critical security boundary between workflow design and system-level access, potentially granting full server control.</p>
+<p>The vulnerability was discovered by security researchers at Security Joes during a re-examination of n8n's earlier fix for CVE-2026-27577. Their analysis revealed a bypass in the expression sandbox, proving the initial patch did not fully secure the JavaScript evaluation engine against all attack vectors.</p>
+<p>Versions of n8n prior to 2.31.5, as well as the 2.32.0 series before 2.32.1, are vulnerable. The fixed releases are 2.31.5 and 2.32.1. Self-hosted administrators must upgrade immediately, as these instances expose the underlying operating system directly to compromise.</p>
+<p>In n8n's design, editors create automations using dynamic expressions meant to run inside a restricted sandbox. This flaw breaks that isolation, allowing an attacker with editor credentials to run OS commands as the n8n process user—often a privileged service account.</p>
+<p>The incident highlights the persistent challenge of securing JavaScript sandboxes. Attackers continually probe for bypasses by exploiting new language features or obscure evaluation paths. The discovery underscores that sandbox security requires ongoing regression testing, not just one-time patches.</p>
+<p>For the broader low-code ecosystem, this event serves as a stark reminder. Platforms that empower more users with powerful automation tools also expand the pool of individuals whose accounts could be weaponized. When editor access can lead to host compromise, every such account becomes a high-value target.</p>
+<p>Recommended actions are clear: deploy the updated versions at once, audit editor permissions to enforce least-privilege access, and consider network segmentation to limit the n8n process's reach. Organizations should also review logs for signs of prior exploitation.</p>
+<p>While exploitation requires valid editor credentials, this does not lessen the risk in environments with many editors or lax credential management. In shared or multi-tenant setups, the potential impact is significantly larger.</p>
+<p>n8n's prompt release of corrective updates shows responsible maintenance, but the issue reinforces that expression sandboxes remain a prime target for researchers and attackers. Operators should treat editor interfaces as critical trust boundaries and verify the integrity of their isolation guarantees.</p>
+<p>All teams managing n8n deployments are advised to prioritize this update and review access controls for workflow authoring roles.</p>
+<hr>
+<p>n8n 已針對一個高嚴重性沙箱逃逸漏洞發佈緊急修補程式，該漏洞允許已獲授權的工作流程編輯者在宿主伺服器上執行任意操作系統命令。此缺陷打破了工作流程設計與系統層級存取之間的關鍵安全界線，可能導致伺服器被完全控制。</p>
+<p>安全研究機構 Security Joes 的研究員在重新檢視 n8n 此前針對 CVE-2026-27577 的修復時發現此漏洞。他們的分析揭示了表達式沙箱中的一個繞過機制，證明初始修補程式並未完全使 JavaScript 評估引擎免受所有攻擊向量的影響。</p>
+<p>n8n 2.31.5 之前的版本，以及 2.32.0 系列中 2.32.1 之前的版本均受影響。已修復的版本為 2.31.5 和 2.32.1。自託管管理員必須立即升級，因為這些實例會將底層操作系統直接暴露於入侵風險之下。</p>
+<p>在 n8n 的設計中，編輯者使用預期在受限沙箱內運行的動態表達式來創建自動化流程。此缺陷打破了這種隔離，允許擁有編輯者憑證的攻擊者以 n8n 流程用戶的身份運行操作系統命令——這通常是一個特權服務帳戶。</p>
+<p>此事件突顯了保護 JavaScript 沙箱安全所面臨的持續挑戰。攻擊者不斷利用新語言特性或隱蔽的評估路徑來測試繞過方法。這一發現強調，沙箱安全需要持續的回歸測試，而不僅僅是一次性的修補。</p>
+<p>對於更廣泛的低代碼生態系統而言，此事件是一個嚴峻的提醒。賦予更多用戶強大自動化工具的平台，也擴大了其帳戶可能被武器化的個人群體。當編輯者存取權限可能導致宿主機被入侵時，每一個這樣的帳戶都會成為高價值目標。</p>
+<p>建議措施很明確：立即部署更新版本，審核編輯者權限以實施最低權限存取原則，並考慮使用網絡分段以限制 n8n 流程的觸及範圍。組織亦應檢閱日誌，查找先前遭受利用的跡象。</p>
+<p>雖然利用此漏洞需要有效的編輯者憑證，但在編輯者眾多或憑證管理鬆散的環境中，這並不會降低風險。在共享或多租戶設置中，潛在影響顯著更大。</p>
+<p>n8n 及時發佈修正更新展現了負責任的維護態度，但此問題再次表明表達式沙箱仍是研究人員和攻擊者的首要目標。運營者應將編輯者介面視為關鍵的信任邊界，並驗證其隔離保證的完整性。</p>
+<p>所有管理 n8n 部署的團隊均被建議優先處理此更新，並檢視工作流程創作角色的存取控制。</p>
+<p><a href="https://thehackernews.com/2026/07/n8n-sandbox-escape-lets-workflow.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
