@@ -1,0 +1,24 @@
+Date: 2026-07-28 16:22:00
+Author: HKLUG Team
+Title: Widespread Server Flaw: Tens of Thousands of Management Interfaces Leak Password Hashes
+Content:
+<p>Cybersecurity researchers have uncovered a major security hygiene failure: tens of thousands of server management controllers directly exposed to the public internet are broadcasting password hashes before any login takes place.</p>
+<p>According to a report from The Hacker News, scans identified 24,650 Baseboard Management Controller (BMC) interfaces using the Intelligent Platform Management Interface (IPMI) protocol that automatically disclose authentication hashes during the initial connection handshake, prior to any credential check. Researchers noted this represents a significant subset of the total internet-exposed BMC surfaces examined, with the broader scan covering tens of thousands of such management endpoints.</p>
+<p>BMCs are dedicated microcontrollers on server motherboards that allow remote administration and recovery, even when the main server is offline. IPMI is a common protocol for this out-of-band management. The vulnerability lies in specific implementations that reveal password-derived hashes too early, providing attackers with material for offline password cracking without needing any prior access.</p>
+<p>Compromising a BMC grants an attacker hardware-level control. This access is particularly potent: it can persist through operating system reinstallations, bypass host-based firewalls, and potentially undermine disk encryption or secure boot mechanisms. In effect, controlling the BMC often means owning the entire physical server.</p>
+<p>The scale of the exposure points to a systemic issue rather than a single product bug. Security best practices dictate that management interfaces should be isolated on private networks, accessible only through secure jump points or VPNs. Their direct internet exposure is a significant deviation from these standards. Researchers noted the problem spans multiple vendors and environments, highlighting a widespread neglect of network segmentation.</p>
+<p>For administrators, immediate remediation is critical. The first step is to audit and locate any internet-facing BMCs. Second, ensure IPMI and similar services are bound exclusively to protected management networks or behind strict access controls. Third, all credentials on potentially exposed interfaces should be rotated, with a move towards certificate-based or multi-factor authentication where possible. Applying the latest vendor firmware is also essential, as updates often patch protocol-level information leaks.</p>
+<p>This incident re-emphasizes that out-of-band management channels require the same stringent security controls as production data networks. Leaving them open to the public internet is akin to handing out the keys to your server hardware. Organizations with significant server footprints—from data centers to cloud providers—should use this as a catalyst to review and reinforce their management-plane architecture.</p>
+<p>The findings carry clear implications for infrastructure teams worldwide. Isolating BMC interfaces is a fundamental security practice that mitigates the risk of deep, persistent server compromise.</p>
+<p>Continued vigilance, including monitoring for exposed management services and enforcing robust network controls, remains the primary defense. The 24,650 already-identified systems starkly illustrate how operational convenience can rapidly become a severe liability when basic network isolation principles are not followed.</p>
+<hr>
+<p>網絡安全研究人員揭露一項嚴重的安全衛生問題：數萬個直接暴露於公共網絡的伺服器管理控制器，在任何登入發生前就廣播著密碼雜湊。</p>
+<p>根據 The Hacker News 報導，掃描識別出 24,650 個使用智能平台管理接口（IPMI）協議的底板管理控制器（BMC）界面，這些系統在初始連接握手階段、在任何憑證驗證之前，就自動披露了認證雜湊。研究人員指出，這代表了所檢視的整體暴露於互聯網 BMC 界面的一個重要子集，更廣泛的掃描涵蓋了數萬個此類管理端點。</p>
+<p>BMC 是伺服器主板上的專用微控制器，即使主伺服器離線時，也能允許遠程管理和恢復。IPMI 是這種帶外管理的常用協議。漏洞存在於特定實現中，這些實現在過早階段揭示了密碼衍生的雜湊，為攻擊者提供了進行離線密碼破解的材料，而無需事先獲得任何訪問權限。</p>
+<p>入侵 BMC 可使攻擊者獲得硬件級別的控制權。這種訪問權限尤其強大：它可以持續存在於操作系統重新安裝之後，繞過基於主機的防火牆，並可能破壞磁碟加密或安全啟動機制。實際上，控制 BMC 往往意味著擁有了整個實體伺服器。</p>
+<p>這種暴露的規模指向的是一個系統性問題，而非單一產品的錯誤。安全最佳實踐規定，管理界面應隔離在私有網絡中，僅通過安全的跳板或 VPN 訪問。它們直接暴露於互聯網，嚴重偏離了這些標準。研究人員指出，該問題跨越多個供應商和環境，突顯了網絡分段被廣泛忽視的現狀。</p>
+<p>對於管理員而言，立即採取補救措施至關重要。第一步是審計並定位任何面向互聯網的 BMC。第二步，確保 IPMI 及類似服務僅綁定到受保護的管理網絡或嚴格的訪問控制之後。第三步，應輪換所有可能暴露界面上的憑證，並盡可能轉向基於證書或多因素認證。應用最新的供應商韌體也至關重要，因為更新通常能修補協議層面的資訊洩露。</p>
+<p>此次事件再次強調，帶外管理通道需要與生產數據網絡同樣嚴格的安全控制。將其開放給公共互聯網，等同於將伺服器硬件的鑰匙交了出去。擁有大量伺服器足跡的組織——從數據中心到雲提供商——應以此為契機，審查並加強其管理平面架構。</p>
+<p>這些發現對全球的基礎設施團隊具有明確的影響。隔離 BMC 接口是一項基本的安全實踐，能降低深度、持久性伺服器入侵的風險。</p>
+<p>持續的警惕，包括監控暴露的管理服務和執行強大的網絡控制，仍然是主要的防禦手段。已識別的 24,650 個系統清楚地說明了當基本的網絡隔離原則未被遵守時，操作的便利性如何迅速演變成嚴重的負累。</p>
+<p><a href="https://thehackernews.com/2026/07/24650-internet-exposed-bmcs-disclose.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
