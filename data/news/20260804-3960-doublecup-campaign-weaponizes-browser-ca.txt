@@ -1,0 +1,24 @@
+Date: 2026-08-04 11:22:00
+Author: HKLUG Team
+Title: DOUBLECUP Campaign Weaponizes Browser Cache to Evade Detection
+Content:
+<p>A novel malware delivery campaign from a Russian "loader-as-a-service" operation is turning a routine browser component into a stealthy attack vector. The operation, dubbed DOUBLECUP, uses social engineering to plant malicious code directly into a victim's browser cache, allowing it to slip past conventional endpoint security tools.</p>
+<p>First disclosed by The Hacker News on August 4, the DOUBLECUP campaign employs ClickFix-style lures to trick users into running a script. This script doesn't download a file to a typical folder; instead, it instructs the browser to cache a seemingly ordinary PNG image. Hidden within the image's data via steganography is a secondary payload. Once stored in the browser's temporary directory, a small routine extracts and executes this hidden code in memory, staging the deployment of two payloads: the CountLoader and a newly discovered remote access trojan (RAT) named DeviceManager.</p>
+<p>The technique exploits a common blind spot in corporate security monitoring. Endpoint detection and response (EDR) platforms often treat browser cache directories as benign, deprioritizing or ignoring activity within them. By weaponizing this trusted space, DOUBLECUP achieves initial execution with minimal forensic footprint.</p>
+<p>The campaign also highlights the industrialization of advanced evasion tactics. As a loader-as-a-service, DOUBLECUP provides less-skilled affiliates with access to a sophisticated delivery chain, removing the need for them to develop their own steganography or cache manipulation tools.</p>
+<p>For security teams, the campaign necessitates a revision of detection strategies. Defenders should:
+*   Implement monitoring that correlates browser cache file activity with suspicious process creation and script execution.
+*   Audit logging configurations to ensure telemetry captures file operations within browser temporary directories.
+*   Adopt behavioral analytics and memory inspection to identify the extraction and execution routines, moving beyond reliance on file hashes or static paths.</p>
+<p>The emergence of the DeviceManager RAT suggests DOUBLECUP operators are expanding their toolkit for persistent access. As attackers increasingly blend malicious activity with legitimate system operations like temporary file storage, security frameworks must adapt. This includes reviewing developer practices for applications that handle temporary files and incorporating cache-directory heuristics into threat intelligence feeds to preempt similar abuse of other temporary storage mechanisms.</p>
+<hr>
+<p>一個源自俄羅斯「加載器即服務」運作的新型惡意軟件投放行動，正將一個常見的瀏覽器組件轉變為隱蔽的攻擊載體。這項被命名為DOUBLECUP的行動，利用社會工程學直接在受害者的瀏覽器快取中植入惡意代碼，使其能避開常規端點安全工具的偵測。</p>
+<p>據The Hacker News於8月4日首次披露，DOUBLECUP行動採用ClickFix式的誘餌，欺騙用戶執行一個腳本。該腳本並非將檔案下載至典型資料夾；取而代之的是，它指示瀏覽器快取一張看似普通的PNG圖片。圖片的數據中透過隱寫術藏有第二個攻擊載荷。一旦存儲在瀏覽器的臨時目錄中，一個小型例程會提取並於記憶體中執行這段隱藏代碼，從而為部署兩個載荷鋪平道路：CountLoader和一個新發現的遠端存取木馬（RAT）名為DeviceManager。</p>
+<p>這項技術利用了企業安全監控中一個常見的盲點。端點偵測與回應（EDR）平台通常將瀏覽器快取目錄視為良性，會降低或忽略其內活動的優先級。透過將這個受信任的空間武器化，DOUBLECUP以極小的取證痕跡實現了初始執行。</p>
+<p>此次行動亦突顯了高級規避戰術的工業化趨勢。作為一項「加載器即服務」，DOUBLECUP為技能較不足的關聯方提供了先進的投放鏈，免除了他們自行開發隱寫術或快取操作工具的需要。</p>
+<p>對於安全團隊而言，此次行動要求對偵測策略進行修訂。防禦者應：
+*   實施監控，將瀏覽器快取檔案活動與可疑進程建立和腳本執行關聯起來。
+*   審計日誌記錄配置，確保遙測數據能捕捉瀏覽器臨時目錄內的檔案操作。
+*   採用行為分析和記憶體檢查，以識別提取和執行例程，超越對檔案雜湊值或靜態路徑的依賴。</p>
+<p>DeviceManager RAT的出現表明，DOUBLECUP操作者正在擴展其持續存取的工具包。隨著攻擊者將惡意活動與臨時檔案儲存等合法系統操作日益融合，安全框架必須相應調整。這包括審查處理臨時檔案的應用程式的開發實踐，並將快取目錄啟發法納入威脅情報源，以預防類似濫用其他臨時儲存機制的行為。</p>
+<p><a href="https://thehackernews.com/2026/08/doublecup-uses-clickfix-and-cached-pngs.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
