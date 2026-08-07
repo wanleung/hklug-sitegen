@@ -1,0 +1,18 @@
+Date: 2026-08-07 13:22:00
+Author: HKLUG Team
+Title: A Use-After-Free Lurking for 18 Years: Critical SCTP Flaw Enables Linux Container Escape
+Content:
+<p>Security researchers have uncovered a severe, long-standing vulnerability in the Linux kernel's SCTP networking protocol that enables a local attacker to gain root access and escape container environments. The use-after-free bug, which has resided in the codebase since 2008, was disclosed by Tencent's security team and demonstrates how a flaw in a less common kernel component can undermine core infrastructure security models.</p>
+<p>The defect resides in the Stream Control Transmission Protocol (SCTP) implementation. While not as prevalent as TCP, SCTP is compiled into most Linux distributions and is critical for telecom systems and certain cloud networking stacks. Its 18-year history before discovery underscores the challenges in thoroughly auditing all parts of mature, complex codebases.</p>
+<p>The primary threat escalates beyond a standard local privilege escalation due to its proven ability to bypass container isolation. In cloud-native architectures, containers are a fundamental security boundary for isolating workloads. This kernel-level vulnerability renders that boundary ineffective, allowing an attacker to potentially pivot from a compromised container to the underlying host system. This directly challenges the security assumptions of platforms like Docker and Kubernetes.</p>
+<p>Patches for the flaw have already been released. Stable kernel versions 7.1.6, 6.18.42, 6.12.101, and 6.6.148, issued on August 3, contain the fix. System administrators are urged to update immediately, as there are no effective workarounds at the configuration level; patching is the only mitigation.</p>
+<p>This incident highlights critical lessons for the industry. It shows that niche kernel subsystems can harbor high-impact vulnerabilities for years, reinforcing the need for advanced, automated auditing tools like continuous fuzzing. Furthermore, it serves as a stark reminder that containerization does not eliminate the need for robust host-level kernel security. When the kernel itself is compromised, higher-layer isolation technologies can fail.</p>
+<p>For organisations operating Linux servers — especially those with SCTP enabled or running containerised workloads — applying these updates should be an immediate priority. The swift release of fixed kernels is a positive sign, but the ultimate responsibility for patch deployment lies with system operators. Maintaining a disciplined patch management strategy is essential as legacy vulnerabilities continue to surface in the foundational software that powers modern IT.</p>
+<hr>
+<p>安全研究人員揭露了Linux核心SCTP網絡協議中一個嚴重且長期存在的漏洞，該漏洞允許本地攻擊者取得root權限並逃逸容器環境。這項自2008年即存在於代碼庫中的釋放後使用漏洞，由騰訊安全團隊披露，凸顯了較少使用的核心組件缺陷如何能破壞基礎設施的安全模型。</p>
+<p>該缺陷存在於流控制傳輸協議的實現中。雖然不如TCP普及，但SCTP已被編譯進大多數Linux發行版，對電信系統及某些雲網絡架構至關重要。其被發現前長達18年的存在歷史，突顯了全面審計成熟複雜代碼庫各部分的挑戰。</p>
+<p>主要威脅超越了標準的本地權限提升，因其已證實能繞過容器隔離。在雲原生架構中，容器是隔離工作負載的基本安全邊界。這項核心層面的漏洞使該邊界失效，攻擊者可能從受感染的容器跳轉至底層主機系統，直接挑戰了Docker和Kubernetes等平台的安全假設。</p>
+<p>漏洞補丁已發布。8月3日發佈的穩定核心版本7.1.6、6.18.42、6.12.101和6.6.148包含修復。系統管理員被敦促立即更新，因為配置層面無有效解決方案；打補丁是唯一的緩解措施。</p>
+<p>此事件為業界揭示了重要教訓。它表明冷門核心子系統可能多年藏匿高影響力漏洞，強調了對持續模糊測試等高級自動化審計工具的需求。同時提醒，容器化並不能取代穩健的主機層核心安全性。當核心本身被攻破，上層隔離技術可能失效。</p>
+<p>對於運行Linux伺服器的組織——特別是啟用SCTP或運行容器化工作負載者——應用這些更新應是當務之急。快速發布已修復的核心是正面跡象，但補丁部署的最終責任在於系統運營商。隨著舊有漏洞持續在驅動現代IT的基礎軟件中浮現，維持紀律化的補丁管理策略至關重要。</p>
+<p><a href="https://thehackernews.com/2026/08/18-year-old-linux-sctp-flaw-could-let.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
