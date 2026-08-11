@@ -1,0 +1,18 @@
+Date: 2026-08-11
+Author: HKLUG Team
+Title: Mozilla Revokes Linux Signing Key After Credential Leak in Private Repository
+Content:
+<p>Mozilla has revoked the cryptographic signing key used to verify Firefox and Thunderbird downloads on Linux, after an unencrypted copy of the credential was accidentally committed to one of the organization's own private code repositories.</p>
+<p>The compromised key is the foundational trust mechanism that allows Linux users and distribution packagers to cryptographically verify that downloaded browser binaries originate directly from Mozilla and have not been tampered with. According to a report from The Hacker News, the exposure occurred when a developer inadvertently committed the sensitive material to a restricted repository. While not publicly accessible, the incident violated core security protocols for handling signing credentials.</p>
+<p>The revocation immediately breaks the existing verification chain for Linux environments. To prevent package validation failures, all Linux distributions and third-party maintainers must now update their infrastructure to recognize a newly generated Mozilla key. This requires adjusting repository scripts to validate downloads against the new credential, testing updated packages across supported releases, and proactively communicating the transition to end users to avoid confusion over temporary verification warnings.</p>
+<p>Security experts note that the incident underscores a critical operational lesson: private repositories are not secure vaults for secrets. Cryptographic signing keys demand isolated, hardened storage like Hardware Security Modules (HSMs) or dedicated vault services, not version control systems. Mozilla's decision to rotate the key immediately, despite finding no evidence of malicious exploitation, is consistent with established supply chain risk mitigation frameworks.</p>
+<p>Several operational questions remain. The exact exposure window between the initial commit and its discovery has not been publicly disclosed, nor has the scope of any forensic investigation to definitively rule out unauthorized access. Looking ahead, Mozilla is expected to implement stricter pre-commit scanning and automated secret detection to prevent similar leaks.</p>
+<p>For the broader open-source ecosystem, this event highlights how a single misstep can disrupt a major software distribution pipeline. As maintainers execute the coordinated update process, it will likely accelerate discussions around standardized secrets management and the need to treat cryptographic assets with the same rigor as production infrastructure.</p>
+<hr>
+<p>Mozilla 已撤銷用於驗證 Linux 平台 Firefox 及 Thunderbird 下載的加密簽署密鑰，原因是一份未經加密的憑證副本意外地被提交至該組織其中一個私有代碼倉庫。</p>
+<p>這份遭洩漏的密鑰是 Linux 用戶與發行版封裝維護者用以密碼學驗證下載的瀏覽器二進位檔案直接源自 Mozilla、且未遭篡改的基礎信任機制。據 The Hacker News 報導，事件起因是一名開發者不慎將敏感資料提交至一個受限的倉庫。雖然該倉庫未對外公開，但此事件違反了處理簽署憑證的核心安全協議。</p>
+<p>此次撤銷立即中斷了現有 Linux 環境的驗證鏈。為防堵套件驗證失敗，所有 Linux 發行版及第三方維護者現必須更新其基礎設施以識別新生成的 Mozilla 密鑰。這涉及調整倉庫腳本以依據新憑證驗證下載內容，在所有支援版本中測試更新後的套件，並主動向終端用戶說明過渡事宜，以避免因臨時驗證警告造成混淆。</p>
+<p>安全專家指出，此事件凸顯出一個關鍵的操作教訓：私有倉庫並非存放機密的安全堡壘。加密簽署密鑰需要隔離且受強化保護的儲存環境，例如硬件安全模組（HSM）或專用金庫服務，而非版本控制系統。Mozilla 決定立即輪換密鑰，儘管未發現惡意利用的證據，此舉符合既定的供應鏈風險緩解框架。</p>
+<p>若干操作問題仍有待釐清。從密鑰初次提交到被發現之間的確切洩露時間窗口，以及任何用以排除未授權存取之法證調查的範圍，均未對外公開。展望未來，Mozilla 預計將實施更嚴格的提交前掃描與自動化機密偵測，以防類似洩漏事件重演。</p>
+<p>對更廣泛的開源生態系統而言，此事件突顯單一失誤即可中斷主要軟件分發管線。隨著維護者執行協調更新過程，此事件或將加速圍繞標準化機密管理以及以對待生產環境設施同等嚴謹態度看待密碼學資產之必要性的討論。</p>
+<p><a href="https://thehackernews.com/2026/08/mozilla-revokes-firefox-and-thunderbird.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
