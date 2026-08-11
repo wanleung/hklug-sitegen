@@ -1,0 +1,20 @@
+Date: 2026-08-11 00:22:00
+Author: HKLUG Team
+Title: Fedora CoreOS 45 Defaults to Smarter Memory Management with systemd-oomd and zRAM
+Content:
+<p>Containerized environments often face unpredictable memory spikes, leading to disruptive process kills that threaten service stability. To address this, the Fedora project is overhauling the default memory management in its container-focused OS, moving from reactive safeguards to a proactive, automated system.</p>
+<p>With Fedora CoreOS 45, the project will enable both <code>systemd-oomd</code> and zRAM-backed swap as defaults, according to a formal Fedora Change proposal. This change establishes a coordinated strategy for handling memory pressure without requiring manual tuning from platform teams.</p>
+<p>Traditionally, Linux has relied on the kernel's Out-Of-Memory (OOM) killer as a last-resort defense. While effective at preventing total system lockups, this mechanism is reactive and can terminate critical processes indiscriminately. The new default, <code>systemd-oomd</code>, acts as a more intelligent, userspace-based monitor. It uses the kernel's Pressure Stall Information (PSI) to detect memory pressure early and gracefully shut down lower-priority workloads before a crisis occurs. This gives administrators predictable control over which services are affected during contention.</p>
+<p>Alongside this, zRAM swap will be active by default. Instead of writing memory pages to slow disk-based swap, zRAM compresses inactive pages within RAM itself. This trades a small amount of CPU for a significant gain in performance, avoiding the severe latency of disk swapping and effectively increasing usable memory on container hosts.</p>
+<p>Together, these technologies form a tiered defense. As memory pressure builds, zRAM first compresses idle pages to free up physical RAM. If pressure continues, <code>systemd-oomd</code> steps in to selectively terminate non-essential processes. This layered approach provides a stable foundation for orchestration platforms like Kubernetes and Podman, minimizing unexpected halts.</p>
+<p>This shift reflects a broader industry trend toward self-healing infrastructure. As container deployments scale across cloud, edge, and bare-metal environments, manual memory tuning becomes unsustainable. By embedding these safeguards into the base OS, Fedora CoreOS reduces operational overhead for DevOps teams. The adoption of these defaults by a production-focused distribution like Fedora CoreOS marks a significant step in validating these technologies for mainstream use.</p>
+<p>System administrators planning to upgrade to Fedora CoreOS 45 should find a more robust memory baseline out of the box. Teams with custom swap configurations or legacy OOM scripts may need to review their provisioning workflows, but the overall trajectory promises fewer manual interventions and greater stability for container hosts.</p>
+<hr>
+<p>容器化環境常面臨不可預測的記憶體尖峰負載，導致進程被強制終止，威脅服務穩定性。針對此問題，Fedora 項目正徹底改革其專注於容器的操作系統預設記憶體管理機制，從被動防護轉向主動自動化系統。</p>
+<p>根據正式的 Fedora 變更提案，Fedora CoreOS 45 將預設啟用 <code>systemd-oomd</code> 及基於 zRAM 的交換分區。此項變更建立了協同策略來處理記憶體壓力，無需平台團隊進行手動調校。</p>
+<p>傳統上，Linux 依賴內核的「記憶體不足終止」機制作為最後防線。雖然該機制能有效防止系統完全鎖死，但其屬於被動反應，且可能不加區別地終止關鍵進程。新的預設機制 <code>systemd-oomd</code> 則充當更智能的用戶空間監控器，利用內核的「壓力停頓資訊」早期偵測記憶體壓力，並在危機發生前優雅關閉低優先級工作負載。此舉讓管理員能在資源爭用時，對受影響的服務獲得可預測的控制權。</p>
+<p>與此同時，zRAM 交換分區將預設啟動。與其將記憶體頁寫入緩慢的硬盤交換分區，zRAM 直接在 RAM 內壓縮非活動頁面。此做法以少量 CPU 開銷換取顯著性能提升，避免硬盤交換帶來的嚴重延遲，並實質增加容器主機的可用記憶體空間。</p>
+<p>這兩項技術共同構成分層防禦體系。當記憶體壓力累積時，zRAM 先壓縮閒置頁面以釋放物理 RAM；若壓力持續，<code>systemd-oomd</code> 將介入並選擇性終止非必要進程。這種分層方法為 Kubernetes 和 Podman 等編排平台提供穩定基礎，最大限度減少意外停頓。</p>
+<p>此轉變反映了業界邁向自我修復基礎設施的整體趨勢。隨著容器部署在雲端、邊緣及裸機環境中擴展，手動記憶體調校已難以為繼。透過將這些防護機制嵌入基礎作業系統，Fedora CoreOS 減少了 DevOps 團隊的運維負擔。像 Fedora CoreOS 這樣專注於生產環境的發行版採用此類預設設定，標誌著驗證這些技術進入主流應用的重要一步。</p>
+<p>計劃升級至 Fedora CoreOS 45 的系統管理員應會獲得開箱即用、更穩健的記憶體基線。採用自訂交換分區配置或舊式 OOM 腳本的團隊可能需要檢查其配置流程，但整體發展方向承諾更少人工干預，並為容器主機帶來更高穩定性。</p>
+<p><a href="https://www.phoronix.com/news/Fedora-CoreOS-OOMD-zRAM-Swap" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
