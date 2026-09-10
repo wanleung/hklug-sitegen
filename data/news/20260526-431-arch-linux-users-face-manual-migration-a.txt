@@ -1,0 +1,40 @@
+Date: 2026-05-26 10:24:00
+Author: HKLUG Team
+Title: Arch Linux Users Face Manual Migration as Varnish Rebrands to Vinyl Cache
+Content:
+<h3>Arch Linux Users Face Manual Migration as Varnish Rebrands to Vinyl Cache</h3>
+<p>System administrators running Arch Linux are being urged to execute careful, manual migrations after the Varnish HTTP cache project announced a comprehensive rebrand to Vinyl Cache. Arch Linux confirmed the change on 25 May 2026, pushing the new <code>vinyl-cache</code> v9.0 package to its stable repositories alongside a series of breaking changes that will require manual intervention from infrastructure teams.</p>
+<p>According to the Arch Linux announcement, the upstream Varnish project has formally adopted the Vinyl Cache name, and the distribution has responded by publishing a replacement <code>vinyl-cache</code> package. The transition is not cosmetic: the package rename brings shifted systemd unit names, renamed system users and groups, and new filesystem paths. Legacy configurations referencing <code>/etc/varnish</code> or <code>/var/lib/varnish</code> will no longer function without modification.</p>
+<h4>Why This Matters for Rolling-Release Users</h4>
+<p>Arch Linux's rolling-release model means the change lands immediately in stable repositories with no extended transition window. Unlike distributions that hold back major version bumps for months, Arch users must treat upstream announcements as immediate operational signals. Any system running <code>pacman -Syu</code> without first reviewing the migration guidance risks service disruption.</p>
+<p>The upstream documentation outlines the breaking changes in detail, and Arch Linux advises users to study the upgrade notes before attempting any installation. A controlled, staging-first approach is the only prudent path forward.</p>
+<h4>What Has Changed</h4>
+<p>The concrete breaking changes introduced by the <code>vinyl-cache</code> package are:</p>
+<ul>
+<li><strong>Filesystem paths:</strong> Configuration and data directories have moved from <code>varnish</code> to <code>vinyl-cache</code> namespaces. Paths such as <code>/etc/varnish</code> and <code>/var/lib/varnish</code> must be updated to their new locations.</li>
+<li><strong>System user and group:</strong> The system user and group previously named for Varnish have been renamed to match the Vinyl Cache branding.</li>
+<li><strong>Systemd units:</strong> Service unit files have been renamed accordingly. Any scripts or automation referencing the old unit names will need to be updated.</li>
+</ul>
+<p>Administrators should inventory all servers, container images, and automation scripts that reference the old package name, paths, user/group names, or systemd units before attempting the upgrade.</p>
+<h4>Recommended Approach</h4>
+<p>Arch Linux recommends that users study the upstream upgrade documentation and plan the migration before running any system updates. The safest approach is to test the migration in a staging environment that mirrors production, verify that configuration files work with the new paths and that systemd units start without errors, and only then proceed to live systems during a planned maintenance window.</p>
+<p>System administrators are encouraged to review the full Arch Linux announcement and the upstream upgrade documentation at <a href="https://vinyl-cache.org/docs/9.0/whats-new/upgrading-9.0.html">vinyl-cache.org</a> before proceeding with any changes.</p>
+<hr>
+<h3>Arch Linux 用戶面臨手動遷移：Varnish 更名為 Vinyl Cache</h3>
+<p>使用 Arch Linux 的系統管理員獲促請執行審慎的手動遷移，此前 Varnish HTTP cache 項目宣布全面更名為 Vinyl Cache。Arch Linux 於 2026 年 5 月 25 日確認此項變更，將全新的 <code>vinyl-cache</code> v9.0 套件推送至穩定儲存庫，並伴隨一系列破壞性變更，基礎設施團隊必須進行手動干預。</p>
+<p>根據 Arch Linux 的公告，上游 Varnish 項目已正式採用 Vinyl Cache 名稱，發行版亦相應推出替代的 <code>vinyl-cache</code> 套件。是次變更並非僅止於名稱：套件更名帶來變更的 systemd unit 名稱、重新命名的系統用戶和群組，以及全新的檔案系統路徑。凡引用 <code>/etc/varnish</code> 或 <code>/var/lib/varnish</code> 的舊有設定，如未經修改將無法正常運作。</p>
+<h4>為何這對 Rolling-Release 用戶至關重要</h4>
+<p>Arch Linux 的 rolling-release 模式意味著此項變更會即時推送至穩定儲存庫，並無過渡期。與那些將主要版本更新推遲數月的發行版不同，Arch 用戶必須將上游公告視為即時營運信號。任何系統如在未審閱遷移指引的情況下執行 <code>pacman -Syu</code>，將面臨服務中斷的風險。</p>
+<p>上游文件已詳細列出破壞性變更，Arch Linux 建議用戶在嘗試任何安裝前仔細研究升級說明。採取受控、先於測試環境驗證的策略，是唯一審慎的推進方式。</p>
+<h4>具體變更內容</h4>
+<p><code>vinyl-cache</code> 套件引入的具體破壞性變更如下：</p>
+<ul>
+<li><strong>檔案系統路徑：</strong> 設定和資料目錄已由 <code>varnish</code> 遷移至 <code>vinyl-cache</code> 命名空間。<code>/etc/varnish</code> 和 <code>/var/lib/varnish</code> 等路徑必須更新至新位置。</li>
+<li><strong>系統用戶和群組：</strong> 原先為 Varnish 設定的系統用戶和群組已重新命名，以配合 Vinyl Cache 品牌。</li>
+<li><strong>Systemd units：</strong> 服務 unit 檔案已相應重新命名。任何引用舊 unit 名稱的腳本或自動化程式均需更新。</li>
+</ul>
+<p>管理員在嘗試升級前，應盤點所有引用舊套件名稱、路徑、用戶/群組名稱或 systemd units 的伺服器、container 映像和自動化腳本。</p>
+<h4>建議做法</h4>
+<p>Arch Linux 建議用戶在執行任何系統更新前，仔細研究上游升級文件並規劃遷移。最安全的做法是在與生產環境相似的 staging 環境中測試遷移，驗證設定檔案能否配合新路徑正確運作，以及 systemd units 能否無誤啟動，然後才於預定的維護時段內推展至正式系統。</p>
+<p>建議系統管理員在進行任何變更前，詳閱完整的 Arch Linux 公告及上游升級文件：<a href="https://vinyl-cache.org/docs/9.0/whats-new/upgrading-9.0.html">vinyl-cache.org</a>。</p>
+<p><a href="https://archlinux.org/news/breaking-changes-for-all-users-of-varnish-which-is-renamed-to-vinyl-cache/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
