@@ -1,0 +1,37 @@
+Date: 2026-06-16 15:34:00
+Author: HKLUG Team
+Title: GhostTree Attack Turns Windows File System Feature Into a Weapon Against Antivirus Scanners
+Image: 20260616-1695-ghosttree-attack-turns-windows-file-syst.jpg
+Content:
+<p>Security researchers have disclosed a novel attack technique dubbed "GhostTree" that exploits a legitimate Windows file system mechanism to effectively neutralize antivirus scanning — without relying on traditional code exploits or requiring elevated privileges.</p>
+<p>The technique, detailed by data security firm Varonis, abuses recursive NTFS junctions to generate an enormous number of valid file system paths. When a security scanner such as Microsoft Defender attempts to traverse these paths during a folder scan, it can become trapped in what amounts to an infinite loop, causing the scan to stall indefinitely or consume disproportionate system resources.</p>
+<h4>How the Attack Works</h4>
+<p>NTFS junctions are a built-in Windows feature that allow a folder to point to another directory location — functioning similarly to a symbolic link. GhostTree chains multiple junctions together recursively, creating a structure where scanning one path leads to another, which leads back to the original, and so on.</p>
+<p>The result is a self-referential tree of file paths that multiplies the workload for any security tool attempting to enumerate and inspect files in the affected directory. According to Varonis, the technique can cause Microsoft Defender's folder scans to effectively never complete, leaving any malware hidden within the structure undetected.</p>
+<h4>Why It Concerns Security Teams</h4>
+<p>What makes GhostTree particularly alarming is its simplicity and low barrier to execution. The attack requires no special system privileges and leaves a minimal forensic footprint. For an attacker who has already gained a foothold on a Windows system — through phishing, credential theft, or any other initial access vector — deploying GhostTree could serve as a lightweight, persistent evasion mechanism.</p>
+<p>Rather than trying to bypass detection through code obfuscation or encryption — techniques that endpoint detection and response (EDR) products have become increasingly adept at catching — GhostTree represents a paradigm shift: it attacks the scanner's ability to complete its work in the first place. The security tool's dependence on the underlying operating system's file system primitives becomes its weakness when those primitives are weaponized.</p>
+<h4>A Broader Design Challenge</h4>
+<p>The discovery exposes a fundamental design problem for the security industry. Antivirus and EDR solutions depend on the integrity and predictability of the file systems they scan. When legitimate OS features can be weaponized to degrade scanning performance, vendors face an architectural challenge: how to maintain thorough coverage without being vulnerable to resource exhaustion attacks.</p>
+<p>Mitigations will need to include junction-aware scanning logic. Specifically, security tools require loop detection and visited-path tracking capabilities that allow them to recognise when a recursive structure is leading back to an already-scanned location. Without these safeguards, any scanner that naively follows junctions remains vulnerable.</p>
+<p>The distribution of responsibility for fixes remains unclear. Microsoft has not yet publicly commented on specific patches or mitigations for GhostTree-related abuse of NTFS junctions in Defender. It remains to be seen whether the company will address this at the operating system level — by imposing limits on recursive junction creation — or whether the burden will fall on individual security vendors to harden their own scanning engines.</p>
+<h4>What Comes Next</h4>
+<p>For IT administrators and security professionals, the GhostTree disclosure serves as a reminder that post-compromise evasion techniques continue to evolve beyond traditional malware hiding methods. Monitoring for unusual junction creation activity on endpoints and ensuring all endpoint security products are updated with the latest vendor patches or detection rules are prudent immediate steps.</p>
+<p>The Varonis research highlights that even well-established file system features can become attack surfaces when viewed through a creative lens — and that security tools must evolve to handle not just malicious code, but malicious use of benign infrastructure.</p>
+<hr>
+<p>安全研究人員披露了一種名為「幽靈樹」的新型攻擊技術，該技術利用 Windows 檔案系統的合法機制來有效癱瘓防毒掃描，且無需依賴傳統的程式碼漏洞利用或要求提升權限。</p>
+<p>這項由數據安全公司 Varonis 詳細說明的技術，濫用了遞迴的 NTFS junction 來產生大量有效的檔案系統路徑。當 Microsoft Defender 等安全掃描器在掃描資料夾期間嘗試遍歷這些路徑時，可能會陷入一個實質上是無限迴圈的困境，導致掃描無限期停滯或消耗不成比例的系統資源。</p>
+<h4>攻擊如何運作</h4>
+<p>NTFS junction 是 Windows 的一項內建功能，允許一個資料夾指向另一個目錄位置，其功能類似於符號連結。「幽靈樹」將多個 junction 遞迴地鏈接在一起，創建一個結構，使得掃描一個路徑會導向另一個路徑，而該路徑又鏈接回原始路徑，如此反覆。</p>
+<p>其結果是一個自引用的檔案路徑樹，任何嘗試在受影響的目錄中列舉和檢查檔案的安全工具，其工作量都會被放大。根據 Varonis 的說法，這項技術可以導致 Microsoft Defender 的資料夾掃描實質上永遠無法完成，使得隱藏在該結構中的任何惡意軟件都無法被偵測到。</p>
+<h4>為何這令安全團隊擔憂</h4>
+<p>「幽靈樹」特別令人震驚之處在於其簡易性和低執行門檻。這項攻擊不需要特殊的系統權限，且只留下極少的取證痕跡。對於已經透過網絡釣魚、憑證盜竊或任何其他初始存取途徑在 Windows 系統上取得立足點的攻擊者來說，部署「幽靈樹」可以充當一種輕量級、持久的規避機制。</p>
+<p>與其嘗試通過程式碼混淆或加密來繞過偵測（這些技術已被端點偵測與回應（EDR）產品越來越善於捕捉），「幽靈樹」代表了一種典範轉移：它直接攻擊掃描器完成其工作的能力。安全工具對底層作業系統檔案系統原語的依賴，在這些原語被武器化時，反而成為其弱點。</p>
+<h4>更廣泛的設計挑戰</h4>
+<p>這一發現暴露了安全產業的一個根本性設計問題。防毒和 EDR 解決方案依賴於它們所掃描的檔案系統的完整性和可預測性。當合法的作業系統功能可以被武器化以降低掃描效能時，供應商面臨一個架構層面的挑戰：如何在不受到資源耗盡攻擊影響的情況下，維持全面的覆蓋範圍。</p>
+<p>緩解措施需要包括具有 junction 感知能力的掃描邏輯。具體而言，安全工具需要具備迴圈偵測和已訪問路徑追蹤功能，使其能夠識別遞迴結構何時將其引導回已掃描的位置。如果沒有這些保障措施，任何盲目跟隨 junction 的掃描器都將仍然脆弱。</p>
+<p>修復責任的分配仍不清楚。Microsoft 尚未公開評論針對「幽靈樹」相關濫用 Defender 中 NTFS junction 的特定修補程式或緩解措施。該公司將是在作業系統層面解決此問題（例如限制遞迴 junction 的創建），還是由各個安全供應商承擔加固自身掃描引擎的責任，仍有待觀察。</p>
+<h4>後續發展</h4>
+<p>對於 IT 管理員和安全專業人員而言，「幽靈樹」的披露是一個提醒：入侵後規避技術的發展已超越傳統的惡意軟件隱藏方法。監控端點上異常的 junction 創建活動，並確保所有端點安全產品都已更新至最新的供應商修補程式或偵測規則，是審慎的即時措施。</p>
+<p>Varonis 的研究強調，即使是成熟的檔案系統功能，若透過創意的視角審視，也可能成為攻擊面——安全工具必須不斷演進，不僅要處理惡意程式碼，還要處理對良性基礎設施的惡意使用。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/ghosttree-attack-abused-recursive-windows-junctions-to-hide-malware/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
