@@ -1,0 +1,30 @@
+Date: 2026-09-08
+Author: HKLUG Team
+Title: APT Group Targets HAProxy Load Balancers With Post-Deployment Backdoor
+Content:
+<p>Threat actors linked to North Korea compromised locally deployed HAProxy load balancers at two South Korean organizations, modifying the software's source code on the target systems to embed a backdoor that masked command-and-control traffic and siphoned data — all while the load balancer continued to function normally.</p>
+<p>The campaign, analyzed by security firm Rapid7, represents a notable tactical shift in how advanced persistent threat groups exploit trusted infrastructure. Rather than pursuing a traditional supply-chain attack against the upstream HAProxy project, the attackers first gained access to the victims' networks through other means, then tampered with the HAProxy binaries already running at the network edge. The modified software retained its full load-balancing capability, making the compromise exceptionally difficult to detect through conventional monitoring.</p>
+<h4>How the Attack Worked</h4>
+<p>Once inside the target environments, the threat actors located the HAProxy installations and altered the source code to embed malicious functionality. The backdoor leveraged HAProxy's normal network traffic patterns to conceal command-and-control communications, effectively blending attacker traffic with legitimate load balancer operations. Data exfiltration followed the same covert channel.</p>
+<p>This approach is particularly insidious because HAProxy typically sits at the network perimeter, handling incoming and outgoing traffic for web applications and services. A compromised instance at this position grants broad visibility into traffic flows and the ability to intercept or redirect communications without triggering standard intrusion detection alerts.</p>
+<h4>A Critical Distinction</h4>
+<p>It is important to note that this incident does not represent a compromise of the HAProxy open-source project itself. The upstream codebase, repository, and build pipeline were not affected. The attackers modified HAProxy after gaining footholds within the specific organizations' networks. This distinction matters for the broader open-source community — the vulnerability lies not in the software supply chain but in the runtime integrity of deployed infrastructure.</p>
+<p>However, this framing also underscores a growing blind spot. Many organizations invest heavily in securing endpoints and cloud workloads but pay comparatively less attention to verifying the integrity of network infrastructure software after deployment. Load balancers, reverse proxies, and similar edge devices often run with high privileges and deep access to traffic, yet receive far less security scrutiny than application servers or databases.</p>
+<h4>Implications for Infrastructure Security</h4>
+<p>The campaign highlights an evolving strategy among state-sponsored groups: targeting the network edge rather than endpoints. Load balancers and proxies are attractive targets precisely because they are expected to handle large volumes of traffic, making anomalous data flows harder to spot. They also tend to be long-lived deployments that may not receive the same patching cadence as other software.</p>
+<p>Security teams should consider implementing runtime integrity checks — such as file integrity monitoring, binary verification against known-good hashes, and network traffic analysis for unusual patterns originating from infrastructure components. Tools like AIDE, Tripwire, or platform-native integrity monitoring services can help detect unauthorized modifications to critical software on production systems.</p>
+<p>The incident also raises broader questions about how organizations monitor the health and authenticity of widely deployed open-source infrastructure software in their environments. As attackers continue to seek stealthy footholds, the security of post-deployment configurations may prove just as important as securing the software supply chain itself.</p>
+<hr>
+<p>與北韓有關的威脅行為者入侵了兩家南韓組織本地部署的HAProxy負載均衡器，修改目標系統上的軟件原始碼以植入後門。該後門能掩蓋命令與控制流量並竊取數據——在此期間，負載均衡器本身仍維持正常運作。</p>
+<p>由網絡安全公司Rapid7分析的這起行動，代表高級持續威脅組織利用可信基礎設施的策略轉變。攻擊者並未針對HAProxy上游專案發動傳統供應鏈攻擊，而是透過其他手段先入侵受害者網絡，再篡改已部署於網絡邊緣的HAProxy二進制檔案。被修改的軟件保留完整的負載均衡功能，使得這種入侵極難透過常規監控發現。</p>
+<h4>攻擊手法剖析</h4>
+<p>進入目標環境後，威脅行為者定位HAProxy安裝並修改其原始碼，嵌入惡意功能。後門利用HAProxy正常的網絡流量模式來隱蔽命令與控制通訊，將攻擊者流量巧妙地混入合法的負載均衡器操作中。數據竊取同樣透過這條隱蔽通道進行。</p>
+<p>此手法尤為陰險，因為HAProxy通常位於網絡周界，負責處理網絡應用程式與服務的進出流量。位於此關鍵位置的受入侵實例，可廣泛掌握流量動態，並能在不觸發標準入侵偵測警報的情況下，攔截或重導通訊。</p>
+<h4>關鍵區別說明</h4>
+<p>必須明確指出，此事件並非指HAProxy開源專案本身遭入侵。上游程式碼庫、儲存庫及建構流程均未受影響。攻擊者是在特定組織網絡取得立足點後才修改HAProxy。此區別對整個開源社群至關重要——漏洞源頭並非軟件供應鏈，而在於已部署基礎設施的執行時完整性。</p>
+<p>然而，此論述亦凸顯了一個日益嚴重的盲點。多數企業投入大量資源保護端點與雲端工作負載，卻相對較少關注基礎設施軟件部署後的完整性驗證。負載均衡器、反向代理等邊緣裝置通常享有高權限並深度存取流量，其獲得的安全審查程度卻遠低於應用伺服器或數據庫。</p>
+<h4>基礎設施安全啟示</h4>
+<p>此行動揭示了國家級組織演進中的策略：鎖定網絡邊緣而非端點。負載均衡器與代理伺服器之所以成為具吸引力的目標，正因為它們預期處理海量流量，使得異常數據流更難被察覺。這些裝置往往長期運行，可能未獲得與其他軟件同等的補丁更新頻率。</p>
+<p>安全團隊應考慮實施執行時完整性檢查，例如檔案完整性監控、針對已知良好雜湊值的二進制檔案驗證，以及對源自基礎設施組件的異常模式進行網絡流量分析。AIDE、Tripwire或平台原生完整性監控服務等工具，有助於偵測生產系統關鍵軟件遭未授權的修改。</p>
+<p>此事亦引發更廣泛的議題：組織應如何監控其環境中廣泛部署的開源基礎設施軟件的健康狀態與真實性。隨著攻擊者持續尋求隱蔽的立足點，部署後配置的安全性，其重要性可能與保障軟件供應鏈本身相當。</p>
+<p><a href="https://securityaffairs.com/198656/apt/north-korea-linked-hackers-hide-a-backdoor-inside-haproxy.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
