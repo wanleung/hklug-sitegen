@@ -1,0 +1,62 @@
+Date: 2024-05-23 09:00:00
+Author: HKLUG Team
+Title: Windows Server 2025 Preview Builds Can Crash Applications, Microsoft Warns
+Content:
+<p><strong>HONG KONG –</strong> IT teams piloting Windows Server 2025 are facing a critical compatibility hurdle, as Microsoft has confirmed that a recent security update can cause existing applications to crash. The company has issued an urgent warning and provided a temporary workaround, highlighting a classic security-versus-stability dilemma for early adopters.</p>
+<p>The issue stems from a proactive memory management enhancement designed to harden the operating system against corruption vulnerabilities. While intended to bolster security, this stricter enforcement breaks compatibility with older application code, triggering a critical "Error 0xc0000005" (access violation) failure. For Hong Kong enterprises currently testing preview builds, this presents a direct operational risk to line-of-business software that hasn't been fully validated.</p>
+<h5>A Necessary Trade-Off Creates a Testing Roadblock</h5>
+<p>At its core, the problem represents the inherent tension in modern security design. Microsoft's update alters low-level memory operations to close exploitation avenues. However, software relying on previously permissive memory access patterns now violates these new rules and crashes.</p>
+<p>This forces a difficult choice in non-production environments: apply the security update and risk application instability, or avoid it and remain exposed to potential memory corruption threats during the evaluation phase. The situation underscores the importance of thorough pre-deployment testing.</p>
+<h5>Temporary Mitigation: A Testing-Only Fix</h5>
+<p>Microsoft has provided a registry-based workaround to restore compatibility, but emphasizes it <strong>must only be used in preview and testing environments</strong>. Applying this mitigation may reduce some of the security benefits of the memory management change and is not intended for production systems.</p>
+<p><strong>Administrators can implement the temporary fix by following these steps:</strong></p>
+<ol>
+<li><strong>Identify and Prepare:</strong> Confirm which servers hosting applications are experiencing the crash. <strong>Before proceeding, create a full system backup or a restore point.</strong></li>
+<li><strong>Modify the Registry:</strong> Open the Registry Editor and navigate to:
+    <code>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management</code></li>
+<li><strong>Create the Value:</strong> Add a new DWORD (32-bit) value with the following details:<ul>
+<li><strong>Name:</strong> <code>CompatibilityModeEnabled</code></li>
+<li><strong>Value:</strong> <code>1</code></li>
+</ul>
+</li>
+<li><strong>Reboot:</strong> Restart the server for the change to take effect.</li>
+<li><strong>Verify:</strong> Conduct rigorous testing in the staging environment to confirm application stability.</li>
+</ol>
+<p>This is a stopgap measure. Organizations must document its use and plan to remove it once Microsoft delivers a permanent solution.</p>
+<h5>The Path Forward: Audit and Prepare</h5>
+<p>Microsoft has not yet announced a timeline for a final fix that reconciles security and legacy compatibility. This leaves early adopters to manage the risk.</p>
+<p>For Hong Kong's enterprise IT teams, the key actions are clear:
+*   <strong>Mandate Application Audits:</strong> Proactively test all critical software against the new server OS in isolated environments.
+*   <strong>Enforce Staging Discipline:</strong> Never apply unvetted patches or workarounds directly to production.
+*   <strong>Engage Vendors:</strong> Document issues and communicate them to software vendors to drive updates for Windows Server 2025 readiness.</p>
+<p>While confined to preview builds, this issue is a potent early warning. It signals the importance of rigorous compatibility planning for the broader enterprise ecosystem as the Windows Server 2025 lifecycle progresses toward general availability.</p>
+<hr>
+<p><strong>香港 –</strong> 正在試用 Windows Server 2025 的 IT 團隊正面臨一項關鍵的兼容性障礙。微軟已證實，近期的一個安全性更新可能會導致現有應用程式崩潰。該公司已發出緊急警告並提供了臨時解決方案，凸顯了早期採用者在安全性與穩定性之間面臨的經典兩難處境。</p>
+<p>此問題源於一項主動的記憶體管理增強功能，旨在加強作業系統對損壞漏洞的防護。雖然其目的是為了提升安全性，但此更嚴格的執行機制卻破壞了與較舊應用程式碼的兼容性，觸發關鍵的「錯誤 0xc0000005」（存取違規）故障。對於目前正在測試預覽版本的香港企業來說，這對尚未經過完全驗證的關鍵業務軟件構成了直接的運營風險。</p>
+<h5>必要的取捨構成測試障礙</h5>
+<p>從根本上看，這個問題反映了現代安全設計中固有的緊張關係。微軟的更新更改了低階記憶體操作，以堵塞攻擊途徑。然而，依賴以前寬鬆記憶體存取模式的軟件現在違反了這些新規則而崩潰。</p>
+<p>這迫使管理員在非生產環境中做出艱難抉擇：套用安全性更新但承擔應用程式不穩定的風險，或避開更新並在評估階段繼續暴露於潛在的記憶體損壞威脅之下。這種情況凸顯了徹底的部署前測試的重要性。</p>
+<h5>臨時緩解措施：僅限測試的修復</h5>
+<p>微軟提供了一個基於登錄檔的解決方案以恢復兼容性，但強調它<strong>必須僅在預覽和測試環境中使用</strong>。套用此緩解措施可能會降低部分記憶體管理變更的安全效益，並非設計用於生產系統。</p>
+<p><strong>管理員可按照以下步驟實作臨時修復：</strong></p>
+<ol>
+<li><strong>識別與準備：</strong> 確認哪些託管應用程式的伺服器正在經歷崩潰。<strong>在繼續之前，請建立完整的系統備份或還原點。</strong></li>
+<li><strong>修改登錄檔：</strong> 開啟登錄檔編輯器並導航至：
+    <code>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management</code></li>
+<li><strong>建立數值：</strong> 新增一個 DWORD (32 位元) 值，詳細資訊如下：<ul>
+<li><strong>名稱：</strong> <code>CompatibilityModeEnabled</code></li>
+<li><strong>數值：</strong> <code>1</code></li>
+</ul>
+</li>
+<li><strong>重新啟動：</strong> 重新啟動伺服器以使變更生效。</li>
+<li><strong>驗證：</strong> 在預備環境中進行嚴格測試，以確認應用程式的穩定性。</li>
+</ol>
+<p>這是一個權宜之計。組織必須記錄其使用情況，並在微軟提供永久解決方案後規劃將其移除。</p>
+<h5>前進之路：審計與準備</h5>
+<p>微軟尚未公布協調安全性與舊版兼容性的最終修復時間表。這使得早期採用者必須自行管理風險。</p>
+<p>對於香港的企業 IT 團隊來說，關鍵行動很明確：
+*   <strong>強制進行應用程式審計：</strong> 在隔離環境中，主動針對新伺服器作業系統測試所有關鍵軟件。
+*   <strong>嚴格遵守預備環境規範：</strong> 切勿將未經審查的修補程式或解決方案直接套用至生產環境。
+*   <strong>聯繫供應商：</strong> 記錄問題並與軟件供應商溝通，以推動其更新軟件，使其符合 Windows Server 2025 的準備要求。</p>
+<p>雖然目前問題僅限於預覽版本，但它是一個強而有力的早期預警。隨著 Windows Server 2025 的生命週期逐步邁向正式發行，它標誌著為更廣泛的企業生態系統進行嚴格兼容性規劃的重要性。</p>
+<p><a href="https://www.bleepingcomputer.com/news/microsoft/microsoft-windows-server-2025-changes-may-cause-app-crashes/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
