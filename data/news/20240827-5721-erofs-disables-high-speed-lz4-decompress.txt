@@ -1,0 +1,18 @@
+Date: 2024-08-27 04:23:00
+Author: HKLUG Team
+Title: EROFS Disables High-Speed LZ4 Decompression Variant to Prevent Silent Data Corruption
+Content:
+<p>A recent patch merged into the Linux kernel disables a specific performance optimization in the EROFS file system after developers discovered it could cause silent data corruption. The precautionary measure targets only the "rolling" decompression variant for the LZ4 algorithm, leaving standard LZ4 functionality intact.</p>
+<p>The flaw, identified during code review, could subtly alter file content during retrieval without triggering any system error. This type of silent corruption is particularly dangerous, as it can go unnoticed while affecting application data, backups, and system updates.</p>
+<p>While no incidents have been reported in the wild, the maintainers moved to disable the feature proactively. EROFS is widely deployed in Android devices, embedded systems, and container image storage, meaning the potential impact spans a broad range of infrastructure.</p>
+<p>For operators, the primary challenge is patch propagation. Although the fix is upstream, many systems—particularly Android devices with vendor firmware and container hosts running lightweight distributions—may lag behind in receiving kernel updates, leaving them exposed.</p>
+<p>Disabling this feature results in a measurable but modest performance regression in decompression speed. This is considered an acceptable trade-off by the community to guarantee data integrity, prioritizing correctness over peak throughput.</p>
+<p>System administrators should audit their environments immediately. For Android fleet managers, this means engaging with OEMs about kernel security patches. For container platform operators, it requires verifying host kernel versions and the runtimes within their images. Given EROFS's role in read-only contexts, silent corruption could propagate through system backups and updates if left unaddressed.</p>
+<hr>
+<p>近日合併至Linux kernel的一個patch，禁用了EROFS檔案系統中的一項特定效能優化措施，因為開發者發現此措施可能導致靜默數據損壞。這項預防性措施僅針對LZ4算法的「滾動」解壓縮變體，標準LZ4功能則維持不變。</p>
+<p>該缺陷在代碼審查過程中被識別出來，它可能在檢索數據時悄然改變檔案內容，卻不會觸發任何系統錯誤。這種靜默損壞尤為危險，因其可能在影響應用程式數據、備份及系統更新的同時未被察覺。</p>
+<p>儘管目前尚未有野外事故報告，維護者仍主動禁用了此功能。EROFS廣泛部署於Android裝置、嵌入式系統及容器映像儲存中，意味著其潛在影響範圍涵蓋廣泛的基礎設施架構。</p>
+<p>對營運人員而言，主要挑戰在於patch的傳播部署。雖然修復已合併至upstream，但許多系統——特別是裝有廠商韌體的Android裝置及運行輕量級發行版的容器主機——在獲取kernel更新方面可能滯後，使其面臨風險。</p>
+<p>禁用此功能導致解壓縮速度出現可量化但輕微的效能回落。社群認為這是為保障數據完整性而接受的合理折衷方案，優先確保準確性而非追求峰值吞吐量。</p>
+<p>系統管理員應立即審核其環境。對於Android裝置叢集管理員，這意味著需要與裝置廠商協調kernel安全patch事宜。對於容器平台營運人員，則需驗證主機kernel版本及其映像中的運行時環境。鑑於EROFS在唯讀環境中的作用，若未予處理，靜默損壞可能隨系統備份與更新傳播擴散。</p>
+<p><a href="https://www.phoronix.com/news/EROFS-Disabled-LZ4-Rolling" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
