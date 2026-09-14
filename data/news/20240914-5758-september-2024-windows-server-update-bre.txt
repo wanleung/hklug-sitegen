@@ -1,0 +1,48 @@
+Date: 2024-09-14 12:06:00
+Author: HKLUG Team
+Title: September 2024 Windows Server Update Breaks Remote Desktop Services, Posing Admin Dilemma
+Content:
+<p>System administrators face a pressing choice between security and uptime after Microsoft confirmed that its September 2024 security updates cause critical failures in Remote Desktop Services (RDS) on affected Windows Server systems.</p>
+<p>The issue, first reported by BleepingComputer, prevents the core RDS services from starting after patch installation. This effectively locks users out of remote desktop sessions and disrupts access to published applications, creating a severe operational impact for businesses relying on the technology for remote work and application delivery.</p>
+<p><strong>Affected Systems and Symptoms</strong>
+The problematic update impacts Windows Server 2019 and Windows Server 2022. After applying the September 2024 patch, administrators report that the "Remote Desktop Services" and "Remote Desktop Configuration" services fail to initialize. Attempts to start them manually are unsuccessful, breaking all RDS connectivity.</p>
+<p>Microsoft has acknowledged the regression but has not yet provided a root cause analysis or a timeline for a permanent fix. This leaves administrators managing the fallout with incomplete guidance.</p>
+<p><strong>Immediate Workarounds and Difficult Choices</strong>
+Microsoft has offered two primary mitigation paths, each with significant trade-offs:</p>
+<ol>
+<li><strong>Manual Service Reset:</strong> For servers already patched, admins can use the <code>services.msc</code> console to reset the startup type of the two affected RDS services to "Automatic," then reboot the server. This restores functionality but leaves the system without the security protections the update was meant to deliver.</li>
+<li><strong>Update Removal:</strong> A more robust workaround is to uninstall the problematic September 2024 update. This can be done via Windows Server Update Services (WSUS) or manually through the command line. For servers not yet patched, Microsoft's guidance is to pause deployment of the September updates for all RDS infrastructure until a corrective release is available.</li>
+</ol>
+<p>This scenario encapsulates the classic patch management dilemma: the immediate need to deploy security patches to mitigate vulnerabilities versus the requirement to maintain the stability of mission-critical systems.</p>
+<p><strong>Actionable Steps for System Administrators</strong>
+Based on the current situation, IT teams should prioritize the following:</p>
+<ul>
+<li><strong>Audit and Identify:</strong> Immediately inventory all Windows Server systems in the RDS environment to determine which have installed the September 2024 update.</li>
+<li><strong>Implement Workarounds:</strong> For affected systems, apply the service reset workaround as a temporary fix. For unpatched systems, block or pause the update specifically for RDS roles.</li>
+<li><strong>Document the Risk:</strong> Clearly document the security trade-off of using the workaround. Systems running with this fix are restored to operation but remain vulnerable to the threats addressed by the original patch.</li>
+<li><strong>Monitor for Resolution:</strong> Actively monitor Microsoft's support channels for the release of a revised update that resolves the RDS regression while reinstating the security fixes.</li>
+</ul>
+<p>The lack of a clear fix timeline from Microsoft compounds the difficulty, forcing sysadmins to manually manage a workaround without a clear path back to a fully patched and stable state. This incident underscores the critical importance of robust pre-deployment testing and well-defined rollback procedures for updates affecting core infrastructure.</p>
+<hr>
+<p>Microsoft 已確認其 2024 年 9 月安全更新會導致受影響的 Windows Server 系統中遠端桌面服務（RDS）出現嚴重故障，系統管理員因此面臨在安全性與系統正常運行時間之間做出迫切抉擇。</p>
+<p>該問題最初由 BleepingComputer 報導，指出安裝補丁後，核心 RDS 服務無法啟動。這實質上鎖定了使用者的遠端桌面連線，並中斷對已發佈應用程式的存取，對依賴該技術進行遠端工作及應用程式交付的企業造成嚴重營運影響。</p>
+<p><strong>受影響系統及症狀</strong>
+此問題更新影響 Windows Server 2019 及 Windows Server 2022。管理員報告指出，在套用 2024 年 9 月補丁後，「遠端桌面服務」及「遠端桌面設定」服務無法初始化。手動啟動這些服務的嘗試均告失敗，導致所有 RDS 連接中斷。</p>
+<p>Microsoft 已承認此回歸問題，但尚未提供根本原因分析或永久修復的時間表。這使得管理員在指引不全的情況下需自行處理後果。</p>
+<p><strong>立即的暫行方案及艱難抉擇</strong>
+Microsoft 提供了兩項主要的緩解途徑，但每項都有顯著的取捨：</p>
+<ol>
+<li><strong>手動重置服務：</strong> 對於已安裝補丁的伺服器，管理員可使用 <code>services.msc</code> 控制台，將兩個受影響 RDS 服務的啟動類型重置為「自動」，然後重新啟動伺服器。此方法可恢復功能，但系統將失去該更新原擬提供的安全防護。</li>
+<li><strong>移除更新：</strong> 一個更穩健的暫行方案是解除安裝有問題的 2024 年 9 月更新。此操作可透過 Windows Server Update Services（WSUS）或手動經由命令列進行。對於尚未安裝補丁的伺服器，Microsoft 的指引是暫停對所有 RDS 基礎設施部署 9 月更新，直至有修正版本可用。</li>
+</ol>
+<p>此情景體現了經典的補丁管理難題：即時部署安全補丁以緩解漏洞的需求，與維持關鍵任務系統穩定性的要求之間的矛盾。</p>
+<p><strong>系統管理員的可行步驟</strong>
+基於目前情況，IT 團隊應優先處理以下事項：</p>
+<ul>
+<li><strong>審計與識別：</strong> 立即清點 RDS 環境中所有 Windows Server 系統，以確定哪些已安裝 2024 年 9 月更新。</li>
+<li><strong>實施暫行方案：</strong> 對受影響系統，套用服務重置暫行方案作為臨時修復。對未安裝補丁的系統，特別針對 RDS 角色阻止或暫停該更新。</li>
+<li><strong>記錄風險：</strong> 清晰記錄使用該暫行方案的安全性取捨。套用此修復後恢復運作的系統，仍易受原始補丁所針對的威脅影響。</li>
+<li><strong>監控解決方案進展：</strong> 積極監控 Microsoft 的支援管道，以獲知能解決 RDS 回歸問題並同時恢復安全修復的修訂更新的發佈情況。</li>
+</ul>
+<p>Microsoft 缺乏明確的修復時間表，加劇了處理難度，迫使系統管理員在沒有明確途徑恢復至完全補丁且穩定狀態的情況下，手動管理暫行方案。此次事件突顯了對影響核心基礎設施的更新進行強健的部署前測試及制定明確回滾程序的至關重要性。</p>
+<p><a href="https://www.bleepingcomputer.com/news/microsoft/microsoft-september-updates-cause-rds-failures-on-windows-server/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
