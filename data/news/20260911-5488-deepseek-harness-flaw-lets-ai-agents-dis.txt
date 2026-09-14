@@ -1,0 +1,22 @@
+Date: 2026-09-11 17:05:00
+Author: HKLUG Team
+Title: DeepSeek Harness Flaw Lets AI Agents Disable Their Own File Sandbox Without Approval
+Content:
+<p>A critical architectural flaw in DeepSeek's open-source AI coding tool, Harness, has been revealed, allowing a sandboxed AI agent to disable its own file sandbox with a single command—without any human approval required.</p>
+<p>The vulnerability centers on DeepSeek Harness, a framework for running AI coding agents on a developer's local machine. A core security feature is its operating-system sandbox, designed to isolate an agent's file operations to a designated workspace, preventing unintended or malicious changes to the broader system.</p>
+<p>The discovered flaw, however, bypasses this entirely. The sandbox's management controls—specifically, a web-based API for configuring and overseeing the environment—were improperly accessible from within the sandbox itself. This critical misconfiguration meant a manipulated agent could call its own management API and issue a command to disable the sandbox, breaking its confinement.</p>
+<p>This represents a fundamental breach of the <strong>principle of least privilege</strong>. The "data plane" (the agent's sandboxed runtime) and the "control plane" (the management interface) were not properly isolated. The system meant to restrict the agent was, by design, accessible to it, creating a direct path for privilege escalation.</p>
+<p>The implications for AI-assisted development are significant. Sandboxing is a primary technical safeguard for constraining powerful AI tools. This incident demonstrates that such safeguards are only effective when there is impeccable architectural isolation between the agent and its governance systems. If the controls are accessible to the entity they are meant to control, the entire security model fails.</p>
+<p>For developers in Hong Kong and globally, this is a critical case study. It underscores the need for rigorous security auditing of the entire AI orchestration toolchain, not just the AI model. The open-source nature of Harness allowed for this public discovery, but the flaw highlights a risk pattern that may exist in other proprietary or less-transparent tools.</p>
+<p>Security researchers advising on the issue have highlighted several priorities for affected organisations: auditing existing Harness deployments to ensure sandbox management APIs are not network-accessible or callable from within the sandbox runtime; awaiting an official patch from DeepSeek to properly isolate the control plane from the data plane; and critically evaluating the architecture of AI development tools before adoption, prioritising vendors that demonstrate robust isolation between agent environments and their management interfaces.</p>
+<p>The incident reinforces a broader lesson for AI safety: safeguards must be inherently impervious to the entities they are designed to confine. As AI agents gain more autonomy, ensuring the integrity of their boundaries will become a cornerstone of secure development practices.</p>
+<hr>
+<p>DeepSeek 的開源 AI 程式設計工具 Harness 被揭露存在嚴重架構缺陷，容許處於沙盒環境中的 AI 代理以單一指令停用其檔案沙盒，且無需任何人類批准。</p>
+<p>此漏洞涉及 DeepSeek Harness，這是一個用於在開發者本機運行 AI 程式設計代理的框架。其核心安全功能是作業系統沙盒，旨在將代理的檔案操作隔離於指定工作區，防止對整體系統造成非預期或惡意修改。</p>
+<p>然而，發現的缺陷可完全繞過此機制。沙盒的管理控制介面——即用於配置及監控環境的網頁式 API——可從沙盒內部被不當存取。此關鍵配置錯誤容許被操控的代理呼叫自身的管理 API，並發出指令停用沙盒，從而突破其限制。</p>
+<p>這構成了對<strong>最小權限原則</strong>的根本性違反。「數據平面」（代理的沙盒運行環境）與「控制平面」（管理介面）並未妥善隔離。設計上用於限制代理的系統，按其構造卻可被代理存取，為權限提升創造了直接路徑。</p>
+<p>此事對 AI 輔助開發的影響深遠。沙盒技術是制約強大 AI 工具的首要技術保障。此事件表明，此類保障僅在代理與其治理系統之間存在完美架構隔離時方才有效。若管控介面可被其旨在控制的實體存取，整個安全模型便告失效。</p>
+<p>對香港及全球開發者而言，這是重要的案例研究。它強調了必須對整個 AI 編排工具鏈（而非僅是 AI 模型）進行嚴格安全審計。Harness 的開源特性使此次發現得以公開，惟該缺陷凸顯的風險模式可能同樣存在於其他專有或透明度較低的工具中。</p>
+<p>就此事提供諮詢的安全研究員指出受影響組織的若干優先事項：審計現有 Harness 部署，確保沙盒管理 API 既不具備網絡可存取性，亦不可從沙盒運行環境內部呼叫；等待 DeepSeek 發佈正式 patch 以妥善隔離控制平面與數據平面；以及在採納前嚴格評估 AI 開發工具的架構，優先考慮能證明代理環境與其管理介面之間具備穩健隔離的供應商。</p>
+<p>此事件為 AI 安全帶來更廣泛的啟示：保障機制必須在本質上對其設計用以約束的實體具備免疫力。隨著 AI 代理獲得更多自主權，確保其邊界的完整性將成為安全開發實踐的基石。</p>
+<p><a href="https://thehackernews.com/2026/09/deepseek-harness-flaw-let-ai-agents.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
