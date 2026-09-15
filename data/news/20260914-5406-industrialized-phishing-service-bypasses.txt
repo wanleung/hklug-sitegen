@@ -1,0 +1,44 @@
+Date: 2026-09-14 11:39:00
+Author: HKLUG Team
+Title: Industrialized Phishing Service Bypasses MFA at 258 Organizations, Stealing Thousands of Microsoft 365 Credentials
+Content:
+<p>A large-scale phishing campaign powered by an industrialized service has compromised multi-factor authentication (MFA) at 258 organizations, resulting in the theft of more than 5,000 Microsoft 365 credentials. The "BigBear 2.0" framework highlights a critical evolution in credential theft that moves beyond the login screen, forcing a strategic shift in how defenders protect cloud accounts.</p>
+<p>The attacks employ an Adversary-in-the-Middle (AiTM) technique, a significant advancement over traditional phishing. In this model, a proxy site inserts itself between the victim and the legitimate Microsoft login page. It relays the entire authentication flow in real-time, capturing the session cookie that is issued after the user successfully completes MFA. This token is then hijacked, granting the attacker persistent, authenticated access without needing to re-authenticate or possess the user's password.</p>
+<p>"This method effectively renders common MFA methods, such as push notifications or time-based one-time passwords, insufficient against this level of threat," the source report details. The session hijacking occurs post-login, bypassing the security control entirely.</p>
+<p>The threat is magnified by its delivery through Phishing-as-a-Service (PhaaS). Platforms like BigBear 2.0 democratize sophisticated attack tools, offering user-friendly interfaces and subscription access. This lowers the technical barrier, enabling a broad range of adversaries to launch large-scale, targeted campaigns against enterprise cloud environments.</p>
+<p>Security experts and the report's analysis agree: organizations must shift from a "protect the login" to a "protect the session" defense model. This means implementing controls that secure activity throughout a user's session lifecycle, not just during the initial authentication step.</p>
+<h5>Actionable Defenses for Microsoft 365 Administrators</h5>
+<p>To counter AiTM and session token theft, administrators should prioritize:</p>
+<ol>
+<li>
+<p><strong>Deploying Phishing-Resistant Authentication:</strong> The most robust defense is to move to methods that cannot be proxied, such as FIDO2 security keys or Windows Hello for Business. These solutions cryptographically verify the legitimacy of the site during authentication, preventing the token from being intercepted.</p>
+</li>
+<li>
+<p><strong>Enforcing Granular Conditional Access Policies:</strong> Configure policies to require trusted locations, managed devices, or compliant device health for access. This adds critical verification layers that an attacker's hijacked session, often originating from an unknown device or location, will fail to meet.</p>
+</li>
+<li>
+<p><strong>Implementing Continuous Session Monitoring:</strong> Security teams must monitor for anomalies after login. This includes analyzing for improbable travel (e.g., a session starting in New York and then appearing from Tokyo minutes later), logins from unrecognized browsers or devices, and other suspicious patterns. Integration with SIEM or XDR platforms can automate detection and response for these session-based threats.</p>
+</li>
+</ol>
+<p>The scale of the BigBear 2.0 campaign serves as a stark reminder that traditional MFA is not a panacea. It raises pressing questions about the division of responsibility between cloud providers and customers for securing active sessions. Until default protections evolve, the primary duty remains with organizations to adopt layered, session-aware defenses.</p>
+<hr>
+<p>一項由工業化服務推動的大規模釣魚攻擊行動，已成功繞過258間機構的多因素認證（MFA），導致超過5,000個Microsoft 365帳戶憑證被竊取。名為「BigBear 2.0」的攻擊框架突顯了憑證竊取技術的一個關鍵演進，其攻擊範圍已超越登入頁面，迫使防禦者必須改變保護雲本服務帳戶的策略。</p>
+<p>此次攻擊採用了「中間人攻擊」（Adversary-in-the-Middle, AiTM）技術，相較於傳統釣魚攻擊是一項重大進步。在這種攻擊模式中，一個代理網站會將自己插入受害者與合法的Microsoft登入頁面之間，即時轉送整個認證流程，從而捕獲用戶成功完成MFA後獲發的會話Cookie（session cookie）。此代幣隨後被劫持，使攻擊者無需重新認證或持有用戶密碼，即可獲得持久、已認證的存取權限。</p>
+<p>「這種方法使得常見的MFA方式，例如推送通知或基於時間的一次性密碼，面對此等威脅時顯得不足，」來源報告詳細說明。會話劫持發生在登入之後，完全繞過了這些安全控制措施。</p>
+<p>由於透過「釣魚即服務」（PhaaS）模式發動，該威脅的影響被進一步放大。像BigBear 2.0這類平台，將精密的攻擊工具大眾化，提供使用者友好的界面和訂閱制存取。這降低了技術門檻，使更廣泛的攻擊者能夠針對企業雲本服務環境發起大規模、具針對性的攻擊行動。</p>
+<p>安全專家與報告分析一致認為：組織必須從「保護登入」的防禦模式轉變為「保護會話」模式。這意味著需要實施控制措施，以保障用戶整個會話生命週期內的活動安全，而不僅僅是在初始認證階段。</p>
+<h5>Microsoft 365管理員的可行防禦措施</h5>
+<p>為了應對AiTM與會話代幣竊取威脅，管理員應優先考慮：</p>
+<ol>
+<li>
+<p><strong>部署抗釣魚認證機制</strong>：最穩健的防禦是轉向無法被代理的方法，例如FIDO2安全金鑰或Windows Hello for Business。這些解決方案在認證過程中能以密碼學方式驗證網站的合法性，防止代幣被攔截。</p>
+</li>
+<li>
+<p><strong>強制執行細粒度條件式存取原則</strong>：配置原則要求存取必須來自受信任的位置、受管理的裝置或符合健康狀態的裝置。這增加了關鍵的驗證層，攻擊者劫持的會話（通常來自未知裝置或位置）將無法通過這些檢查。</p>
+</li>
+<li>
+<p><strong>實施持續性會話監控</strong>：安全團隊必須在登入後監控異常情況。這包括分析不可能的地理移動（例如，一個會話從紐約開始，幾分鐘後卻出現在東京）、來自無法識別瀏覽器或裝置的登入，以及其他可疑模式。與SIEM或XDR平台整合，可以自動化偵測和回應這類基於會話的威脅。</p>
+</li>
+</ol>
+<p>BigBear 2.0攻擊行動的規模是一個嚴厲的提醒：傳統MFA並非萬能解方。這引發了關於雲本服務供應商與客戶之間，在保護活躍會話安全方面的責任劃分之迫切疑問。在預設保護措施演進之前，主要職責仍在於組織自身採用分層式、具備會話感知能力的防禦措施。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/bigbear-microsoft-365-phishing-service-bypassed-mfa-at-258-organizations/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
