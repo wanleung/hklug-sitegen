@@ -1,0 +1,18 @@
+Date: 2026-09-15 14:26:00
+Author: HKLUG Team
+Title: Java 27 Arrives With G1 Garbage Collector as Default Across All Profiles
+Content:
+<p>OpenJDK 27 has been released, marking a significant change to the Java Virtual Machine: the G1 garbage collector is now the default across all four application profiles — client, embedded, server, and minimal — where simpler collectors like Serial or Parallel previously served as defaults for the non-server categories.</p>
+<p>As reported by Phoronix, the release extends G1's default status universally across the platform. Previously, G1 was the default only for server workloads, while the other profiles relied on lighter-weight collectors better suited to constrained environments.</p>
+<h5>Editorial: Enterprise Upgrade Considerations</h5>
+<p>For enterprise development and operations teams, this shift promises greater consistency between development and production environments. Historically, performance inconsistencies and configuration drift have stemmed from mismatches where development systems used lower-overhead collectors while production relied on tuned G1 configurations. Standardizing on G1 eliminates this common source of environment-specific performance bugs, continuing a broader JVM trend of integrating optimized defaults — similar to the adoption of virtual threads.</p>
+<p>The change does require attention during upgrades. G1 carries higher memory overhead than the Serial or Parallel collectors it replaces as the default for smaller applications. Services in memory-constrained containers or cost-sensitive cloud deployments that did not explicitly configure a garbage collector may see altered latency profiles and increased resource consumption.</p>
+<p>Teams should audit JVM configurations before upgrading. Applications without explicit garbage collector flags such as <code>-XX:+UseG1GC</code> or <code>-XX:+UseZGC</code> will switch to G1. Load testing remains essential for latency-sensitive services, and monitoring strategies should be reviewed for relevance under G1's behavior patterns. Applications with explicitly configured garbage collectors are unaffected and can proceed with standard upgrade procedures.</p>
+<hr>
+<p>OpenJDK 27 已正式發布，為 Java 虛擬機器帶來重大改變：G1 垃圾收集器現已成為所有四種應用程式配置的預設選項——包括客戶端、嵌入式、伺服器及最小化配置——而像 Serial 或 Parallel 這類較簡單的收集器以往僅是非伺服器類別的預設選項。</p>
+<p>據 Phoronix 報導，此次發布將 G1 的預設地位普遍擴展至整個平台。此前，G1 僅是伺服器工作負載的預設選項，而其他配置則依賴更輕量、更適合資源受限環境的收集器。</p>
+<h5>編輯評論：企業升級考量</h5>
+<p>對於企業開發及運維團隊而言，此轉變意味著開發與生產環境之間將實現更高的一致性。歷史上，性能不一致與配置偏差源於開發系統使用較低資源消耗的收集器，而生產環境則依賴經過調校的 G1 配置。將 G1 標準化消除了這類特定於環境的性能問題根源，延續了 JVM 整合優化預設值的廣泛趨勢——類似於虛擬執行緒的採用。</p>
+<p>然而，此項更改在升級過程中需要留意。G1 相較於它所取代的 Serial 或 Parallel 收集器具有更高的記憶體開銷，後者曾是較小應用程式的預設選項。部署在記憶體受限容器或對成本敏感雲端環境中、且未明確設定垃圾收集器的服務，可能會經歷延遲特性變化及資源消耗增加。</p>
+<p>團隊應在升級前審計其 JVM 配置。未透過 <code>-XX:+UseG1GC</code> 或 <code>-XX:+UseZGC</code> 等標誌明確設定垃圾收集器的應用程式將切換至 G1。對於延遲敏感型服務，負載測試仍然至關重要，監控策略也應重新評估其在 G1 行為模式下的相關性。已明確配置垃圾收集器的應用程式不受影響，可按標準流程進行升級。</p>
+<p><a href="https://www.phoronix.com/news/OpenJDK-27-Java-27" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
