@@ -1,0 +1,46 @@
+Date: 2026-09-16 13:25:00
+Author: HKLUG Team
+Title: Acronis cPanel Backup Plugin Vulnerability Actively Exploited; Patch Now
+Content:
+<p>System administrators running Acronis's Backup plugin for cPanel and Web Host Manager on Linux servers are being urged to patch immediately after the vendor confirmed that a privilege escalation vulnerability is being actively exploited in targeted attacks.</p>
+<p>The flaw, tracked as CVE-2026-87886 and carrying a CVSS score of 7.8, stems from insecure file permissions within the plugin that could allow a local user to elevate their privileges on the system, according to an Acronis security bulletin referenced by The Hacker News on 16 September. Because cPanel and WHM are widely deployed across web hosting environments, the vulnerability has significant implications for managed service providers and hosting companies managing large fleets of customer servers.</p>
+<h4>What the vulnerability allows</h4>
+<p>The vulnerability is a local privilege escalation issue. In practical terms, this means an attacker who already has a foothold on a server — even with limited, unprivileged access — could exploit the flawed file permissions to gain higher-level system privileges. On a typical shared hosting server running cPanel, that could translate from a restricted cPanel account to root-level access, effectively giving an attacker full control over the machine and all accounts hosted on it.</p>
+<p>The fact that the vulnerability is not merely theoretical is what elevates the urgency. Acronis has confirmed that CVE-2026-87886 is being exploited in targeted campaigns in the wild, meaning adversaries are already using it against real deployments. This is not a case where administrators can afford to schedule a patch for a routine maintenance window weeks from now.</p>
+<h4>Affected versions and remediation</h4>
+<p>The flaw affects the Acronis Backup plugin for cPanel &amp; WHM on Linux. Administrators should consult the <a href="https://thehackernews.com/2026/09/acronis-cpanel-backup-plugin.html">official Acronis security bulletin</a> for the specific version ranges impacted and the exact patched release that resolves the issue. Acronis has provided a remediation update that eliminates the insecure file permission behavior at the root cause.</p>
+<p>For environments where immediate patching is not feasible — for instance, in hosting data centres where update rollouts require coordinated change management — Acronis recommends a temporary mitigation: restricting local user access on affected systems. By limiting which users can interact with the plugin's components, administrators can reduce the attack surface until the patch is deployed. However, this is a stopgap measure, not a long-term solution, and should be treated as such.</p>
+<h4>Supply chain risk in backup tooling</h4>
+<p>The incident underscores a broader lesson about supply chain security in hosting environments. Backup and disaster recovery plugins are among the most deeply integrated third-party components in a server management stack. They typically operate with elevated system permissions to read, write, and restore data across all hosted accounts. That deep integration makes them high-value targets for attackers — a flaw in a backup plugin can serve as a direct shortcut to full server compromise.</p>
+<p>This means the security and patch management discipline that administrators apply to the operating system and the cPanel control panel itself must extend equally to every plugin and extension in the stack. A hosting provider that patches cPanel diligently but neglects third-party plugin updates is leaving a wide-open attack surface.</p>
+<h4>Recommended actions for system administrators and hosting providers</h4>
+<p>For system administrators and hosting providers, the action items are immediate:</p>
+<ol>
+<li><strong>Check your installed version</strong> of the Acronis Backup plugin against the vendor's bulletin to determine whether your deployment is affected.</li>
+<li><strong>Apply the patched release</strong> as soon as operationally possible. Given active exploitation, this should be treated as a priority incident, not a routine update.</li>
+<li><strong>If patching is delayed</strong>, restrict local user access as an interim measure to limit who can trigger the privilege escalation path.</li>
+<li><strong>Audit for compromise</strong> if there is any reason to believe the vulnerability may have already been leveraged on your systems. Logs and unexpected privilege elevation activity should be reviewed.</li>
+</ol>
+<p>The broader takeaway is that every component in a managed hosting stack — no matter how peripheral it may seem — demands the same vulnerability tracking and rapid response discipline as the core platform. Plugins that handle backups are not exceptions; they are, in many ways, the highest-stakes components of all.</p>
+<hr>
+<p>系統管理員如在Linux伺服器上運行Acronis的cPanel與Web Host Manager備份外掛程式，現正被敦促立即進行修補。廠商已確認一個權限提升漏洞正在針對性攻擊中被活躍利用。</p>
+<p>根據《The Hacker News》於9月16日引用的Acronis安全公告，此缺陷（追蹤代碼為CVE-2026-87886，CVSS評分為7.8）源於外掛程式內不安全的檔案權限設定，可能允許本地用戶提升其系統權限。由於cPanel和WHM廣泛部署於網頁託管環境中，此漏洞對管理大型客戶伺服器群組的託管服務供應商及託管公司具有重大影響。</p>
+<h4>漏洞允許的操作</h4>
+<p>此漏洞屬於本地權限提升問題。實際上，這意味著已經在伺服器上取得立足點的攻擊者——即便僅有有限的、無權限的存取權限——亦可利用有缺陷的檔案權限來獲取更高層級的系統權限。在運行cPanel的典型共享託管伺服器上，這可能意味著從受限的cPanel帳戶提升至root層級存取權限，從而使攻擊者完全控制該機器及託管於其上的所有帳戶。</p>
+<p>漏洞並非僅止於理論層面，這提升了處理的緊迫性。Acronis已確認CVE-2026-87886正在野外的針對性攻擊活動中被利用，意味著敵對者已將其用於攻擊真實部署。管理員無法將修補工作排程數週後的定期維護時段。</p>
+<h4>受影響版本與補救措施</h4>
+<p>此缺陷影響Linux環境下的Acronis cPanel &amp; WHM備份外掛程式。管理員應查閱<a href="https://thehackernews.com/2026/09/acronis-cpanel-backup-plugin.html">Acronis官方安全公告</a>，以了解受影響的具體版本範圍及解決此問題的確切修補版本。Acronis已提供一項補救更新，從根源消除了不安全的檔案權限行為。</p>
+<p>對於無法立即進行修補的環境——例如在需要協調變更管理才能推出更新的託管數據中心——Acronis建議採取臨時緩解措施：限制受影響系統上的本地用戶存取。透過限制哪些用戶可以與外掛程式的元件互動，管理員可在部署修補程式前縮小攻擊面。然而，這僅是權宜之計，並非長遠解決方案，應被如此看待。</p>
+<h4>備份工具中的供應鏈風險</h4>
+<p>此事件凸顯了託管環境中供應鏈安全的一個更廣泛教訓。備份與災難恢復外掛程式是伺服器管理堆疊中整合度最深的第三方元件之一。它們通常以提升的系統權限運作，以讀取、寫入及還原所有託管帳戶的資料。這種深度整合使其成為攻擊者的高價值目標——備份外掛程式中的缺陷可能成為全面入侵伺服器的直接捷徑。</p>
+<p>這意味著管理員應用於作業系統及cPanel控制台本身的安全與修補管理紀律，必須同等延伸至堆疊中的每一個外掛程式與擴充功能。若託管供應商勤於修補cPanel，卻忽視第三方外掛程式的更新，則無異於留下寬敞的攻擊面。</p>
+<h4>對系統管理員與託管供應商的建議行動</h4>
+<p>對於系統管理員與託管供應商而言，行動項目迫在眉睫：</p>
+<ol>
+<li><strong>檢查您已安裝的Acronis備份外掛程式版本</strong>，對照廠商公告以確定您的部署是否受影響。</li>
+<li><strong>盡快應用修補版本</strong>。鑒於存在活躍利用，此舉應被視為優先事件處理，而非例行更新。</li>
+<li><strong>若修補被延遲</strong>，則作為過渡措施限制本地用戶存取，以限制可觸發權限提升路徑的人員。</li>
+<li><strong>若有任何理由相信漏洞可能已遭利用，請進行入侵審計</strong>。應檢視日誌及異常的權限提升活動。</li>
+</ol>
+<p>更廣泛的啟示在於，託管堆疊中的每一個元件——無論其看似多麼周邊——都需與核心平台同樣的漏洞追蹤及快速應對紀律。處理備份的外掛程式並非例外；在許多方面，它們反而是風險最高的元件。</p>
+<p><a href="https://thehackernews.com/2026/09/acronis-cpanel-backup-plugin.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
