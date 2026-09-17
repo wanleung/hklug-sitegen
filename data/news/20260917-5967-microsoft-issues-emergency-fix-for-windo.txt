@@ -1,0 +1,44 @@
+Date: 2026-09-17 10:23:00
+Author: HKLUG Team
+Title: Microsoft Issues Emergency Fix for Windows Domain Login Failures Caused by September Update
+Content:
+<p>Microsoft has rushed out a temporary workaround for a critical authentication bug affecting Windows 11 machines in enterprise domain environments. The issue, triggered by the September 2026 security update, prevents users from logging in with valid credentials — a failure that has thrown IT departments into crisis mode across affected organisations.</p>
+<p>Reports indicate the bug surfaces on Windows 11 devices patched with the latest monthly security rollup, particularly in environments with complex domain configurations or non-standard security policies. Affected users are unable to authenticate against domain controllers despite entering correct usernames and passwords, effectively locking them out of their workstations and halting productivity.</p>
+<p>Microsoft documented the issue and published a registry-based bypass designed to restore basic login functionality. For IT administrators scrambling to regain access for locked-out employees, this workaround represents the most immediate path forward.</p>
+<h5>Scope and Limitations</h5>
+<p>Any Windows 11 machine running the September 2026 security update is potentially vulnerable. The direct consequence is a complete authentication failure — users cannot verify their identity against the domain, leading to widespread work stoppages and an overwhelming volume of helpdesk tickets.</p>
+<p>It is critical to understand that Microsoft's registry fix is <strong>temporary by design</strong>. It restores the ability to log in but does not resolve the underlying conflict between the update and certain domain configurations. Administrators should thoroughly test the workaround and assess its compatibility with existing security policies before deploying it across the fleet.</p>
+<h5>Step-by-Step Troubleshooting Guide for IT Administrators</h5>
+<p>Follow these instructions carefully:</p>
+<p><strong>Warning:</strong> Modifying the Windows Registry carries inherent risk. Back up the system or create a restore point before proceeding. Incorrect changes may cause system instability.</p>
+<p><strong>Step 1: Boot into Safe Mode</strong>
+Since normal login is blocked, you must access the Windows Recovery Environment. At the login screen, hold down the <code>Shift</code> key, click the power icon, and select "Restart" while still holding <code>Shift</code>. Once in the recovery environment, navigate to "Troubleshoot" &gt; "Advanced Options" &gt; "Startup Settings" &gt; "Restart". After the reboot, press <code>4</code> or <code>F4</code> to boot into Safe Mode (without networking).</p>
+<p><strong>Step 2: Modify the Registry</strong>
+In Safe Mode, launch the Registry Editor (regedit) with administrator privileges. Navigate to the following path:
+<code>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa</code></p>
+<p>In the right-hand pane, locate the DWORD (32-bit) value named <code>UseMachineId</code>. If it exists, change its data value to <code>0</code>. If it does not exist, create a new DWORD (32-bit) value named <code>UseMachineId</code> and set its data value to <code>0</code>.</p>
+<p><strong>Step 3: Restart and Verify</strong>
+Close the Registry Editor and reboot the machine. Attempt to log in with a domain account as normal. This modification temporarily disables the authentication mechanism causing the conflict and should restore login capability.</p>
+<p><strong>Important Note:</strong> This is not a permanent fix. Microsoft is expected to deliver a proper solution in an upcoming update. Until then, document this change thoroughly and monitor Microsoft's advisories for follow-up patches. Under no circumstances should you disable security features such as Windows Defender as an alternative workaround — doing so introduces far greater vulnerabilities than the login issue itself.</p>
+<p>This incident once again highlights the enduring tension IT operations teams face between maintaining security through patching and ensuring system availability. For administrators, the best safeguard remains a disciplined patch testing and phased deployment strategy — testing updates on a limited subset of machines before rolling them out organisation-wide.</p>
+<hr>
+<p>微軟已緊急發布一個暫時性的繞行方案，以解決影響企業網域環境中Windows 11裝置的一個嚴重驗證錯誤。該問題由2026年9月的安全更新觸發，導致用戶無法使用有效憑據登入系統，這場故障已令受影響組織的IT部門陷入危機狀態。</p>
+<p>報告指出，此錯誤出現在安裝了最新月度安全彙總更新的Windows 11裝置上，在網域配置複雜或採用非標準安全策略的環境中尤其常見。受影響的用戶即便輸入了正確的用戶名和密碼，仍無法通過網域控制器的驗證，實質上被鎖定在自己的工作站之外，導致生產力停滯。</p>
+<p>微軟已記錄此問題並發佈了一個基於登錄檔的繞行方案，旨在恢復基本的登入功能。對於正忙亂地為被鎖定的員工恢復存取權限的IT管理員而言，此繞行方案是目前最即時可行的途徑。</p>
+<h5>影響範圍與方案局限</h5>
+<p>任何運行了2026年9月安全更新的Windows 11裝置都可能受此問題影響。其直接後果是完全的驗證失敗——用戶無法通過網域驗證身份，導致大規模的工作停擺及大量的服務台支援請求。</p>
+<p>必須理解的是，微軟的登錄檔修復方案<strong>本質上是臨時性的</strong>。它能恢復登入能力，但並未解決更新與特定網域配置之間的根本衝突。管理員在將其部署到整個機構前，應徹底測試此繞行方案，並評估其與現行安全策略的兼容性。</p>
+<h5>IT管理員分步故障排除指南</h5>
+<p>請謹慎遵循以下指示：</p>
+<p><strong>警告：</strong> 修改Windows登錄檔存在固有風險。操作前請務必備份系統或建立還原點。不當的修改可能導致系統不穩定。</p>
+<p><strong>步驟一：進入安全模式</strong>
+由於正常登入被阻止，您必須透過Windows恢復環境操作。在登入畫面，按住<code>Shift</code>鍵，點擊電源圖示，並在仍按住<code>Shift</code>鍵的同時選擇「重新啟動」。進入恢復環境後，依序選擇「疑難排解」&gt;「進階選項」&gt;「啟動設定」&gt;「重新啟動」。重啟後，按<code>4</code>或<code>F4</code>以安全模式（不含網絡）啟動系統。</p>
+<p><strong>步驟二：修改登錄檔</strong>
+在安全模式下，以系統管理員身分開啟登錄檔編輯器（regedit）。導航至以下路徑：
+<code>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa</code></p>
+<p>在右側窗格中，找到名為<code>UseMachineId</code>的DWORD (32位元)值。如果存在，將其數值資料改為<code>0</code>。如果不存在，請新建一個DWORD (32位元)值，命名為<code>UseMachineId</code>，並將其數值資料設定為<code>0</code>。</p>
+<p><strong>步驟三：重啟並驗證</strong>
+關閉登錄檔編輯器並重新啟動電腦。嘗試使用網域帳戶正常登入。此變更暫時停用引發衝突的驗證機制，應能恢復登入能力。</p>
+<p><strong>重要提示：</strong> 這並非永久修復。微軟預計將在後續更新中提供正式解決方案。在此之前，請完整記錄此變更，並關注微軟的公告以獲取後續補丁。<strong>絕對不應</strong>透過禁用Windows Defender等安全功能作為替代繞行方案——此舉引入的安全隱患將遠超登入問題本身。</p>
+<p>此事件再次突顯了IT運維團隊在透過補丁維護確保安全性與確保系統可用性之間面臨的持久張力。對管理員而言，最佳的防護措施仍然是建立嚴謹的補丁測試與分階段部署策略——在大規模推行前，先於有限數量的裝置上測試更新。</p>
+<p><a href="https://www.bleepingcomputer.com/news/microsoft/microsoft-releases-workaround-for-windows-domain-login-authentication-issues/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
