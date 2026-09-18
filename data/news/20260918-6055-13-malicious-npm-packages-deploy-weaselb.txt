@@ -1,0 +1,36 @@
+Date: 2026-09-18 11:29:00
+Author: HKLUG Team
+Title: 13 Malicious npm Packages Deploy WeaselBiscuit Stealer Targeting Chrome Extension Data
+Content:
+<p>```
+Security researchers have identified a coordinated campaign deploying a novel JavaScript stealer through 13 malicious packages on the npm registry. Dubbed WeaselBiscuit, the malware marks an evolution in credential theft by specifically targeting the local storage of Google Chrome extensions to harvest persistent authentication tokens and session cookies.</p>
+<p>Discovered by researchers at OpenSourceMalware and detailed in a report from The Hacker News, the campaign involved packages posing as common development tools. These malicious packages, which gained thousands of downloads, installed WeaselBiscuit upon execution. The stealer shows functional overlap with malware strains linked to the Democratic People's Republic of Korea's (DPRK) "Contagious Interview" campaign, particularly the BeaverTail loader and InvisibleFerret backdoor.</p>
+<p>The core innovation lies in its target. Rather than scraping browser histories or files, WeaselBiscuit navigates directly to the directories where Chrome extensions store data—often in JSON or LevelDB databases. This storage frequently contains long-lived authentication tokens, session cookies, and cached credentials for services like Slack, GitHub, and corporate applications, granting persistent access once stolen.</p>
+<p>This technical approach underscores a critical threat to the software development lifecycle. Compromising foundational tools in the npm ecosystem provides attackers with a potent entry point into developer environments, creating significant risk for lateral movement within corporate networks. The connection to established state-sponsored tooling suggests sophisticated actors are repurposing and adapting their capabilities for broader supply chain attacks.</p>
+<p>The discovery necessitates a layered defense response from development teams:</p>
+<ol>
+<li><strong>Immediate Audit &amp; Breach Assumption:</strong> Organizations using any of the 13 identified packages must assume a breach. All credentials, tokens, and sessions within local Chrome profiles should be rotated, and affected systems inspected for further compromise.</li>
+<li><strong>Enhanced Dependency Hygiene:</strong> This incident demonstrates that automated scanning tools like <code>npm audit</code>, Socket.dev, or Dependabot are necessary but insufficient. They must be complemented by manual vetting of package health, repository activity, and download trends before installation.</li>
+<li><strong>Adopt Short-Lived Credentials:</strong> The attack exploits the longevity of locally stored tokens. Teams should favor short-lived credentials where feasible and treat Chrome extension data with the same security rigor as any other sensitive credential store.</li>
+<li><strong>Harden Development Environments:</strong> Isolate development workstations with network segmentation and egress controls to limit the attacker's ability to pivot from a single compromised machine.</li>
+</ol>
+<p>WeaselBiscuit serves as a stark reminder that the npm registry remains a primary vector for malware. Protecting the integrity of the dependency chain requires vigilance from the point of installation through the continuous monitoring of the entire development environment.</p>
+<hr>
+<pre><code>安全研究人員已識別出一項協調行動，透過npm登記庫中13個惡意軟件包分發新型JavaScript竊取程式。這款名為WeaselBiscuit的惡意軟件標誌著憑證竊取技術的演進，專門針對Google Chrome擴充功能的本機儲存空間，以獲取長期有效的認證權杖及工作階段Cookie。
+
+該行動由OpenSourceMalware研究人員發現，並在The Hacker News的報告中詳述。涉及的惡意軟件包偽裝為常用開發工具，下載次數達數千次，執行時會安裝WeaselBiscuit。此竊取程式與朝鮮民主主義人民共和國（DPRK）「傳染性訪談」行動相關的惡意軟件株系（特別是BeaverTail載入器及InvisibleFerret後門）存在功能重疊。
+
+其核心創新在於攻擊目標。WeaselBiscuit並非直接抓取瀏覽器歷史記錄或檔案，而是直搗Chrome擴充功能儲存數據的目錄——通常為JSON或LevelDB數據庫。此類儲存空間常包含Slack、GitHub及企業應用程式等服務的長期認證權杖、工作階段Cookie及快取憑證，一旦被竊取即可獲得持久訪問權限。
+
+此技術手段突顯了軟體開發生命週期面臨的重大威脅。入侵npm生態系統的基礎工具為攻擊者提供了進入開發人員環境的有效切入點，並對企業網絡內的橫向移動構成重大風險。與既有的國家級資助工具關聯，顯示相關行為者正重新運用及調整其能力，以進行更廣泛的供應鏈攻擊。
+
+此次發現要求開發團隊採取多層防禦措施：
+
+1.  **立即審計與假設已遭入侵：** 使用任何13個已識別軟件包的機構必須假設已遭入侵。所有本機Chrome設定檔內的憑證、權杖及工作階段均應輪替，並檢查受影響系統是否存在進一步入侵。
+2.  **加強依賴項管理：** 此事件表明，`npm audit`、Socket.dev或Dependabot等自動化掃描工具雖有必要但不足。在安裝前，必須輔以手動審查軟件包健康狀態、儲存庫活動及下載趨勢。
+3.  **採用短期有效憑證：** 此攻擊利用本機儲存權杖的長效性。團隊應在可行情況下優先使用短期有效憑證，並以對待其他敏感憑證儲存區的同等安全嚴謹度處理Chrome擴充功能數據。
+4.  **強化開發環境：** 透過網絡分段及出口控制隔離開發工作站，以限制攻擊者從單一受感染機器進行橫向移動的能力。
+
+WeaselBiscuit事件清楚提醒，npm登記庫仍是惡意軟件的主要傳播媒介。保護依賴鏈完整性需要從安裝環節開始，直至持續監控整個開發環境全程保持警惕。
+</code></pre>
+<p><a href="https://thehackernews.com/2026/09/weaselbiscuit-stealer-spreads-via-13.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
