@@ -1,0 +1,32 @@
+Date: 2026-09-18 12:05:00
+Author: HKLUG Team
+Title: Ubuntu 26.10 Desktop Replaces Kernel OOM Killer with Proactive systemd-oomd
+Content:
+<p>Ubuntu 26.10 is set to overhaul its memory management for desktops, swapping out the traditional kernel out-of-memory (OOM) killer for the more proactive <code>systemd-oomd</code> daemon.</p>
+<p>The upcoming desktop release will use <code>systemd-oomd</code> as the default, shifting from a last-resort, system-wide termination strategy to one based on continuous monitoring and targeted intervention. The move aims to improve system responsiveness and stability for everyday users.</p>
+<h5>A Shift from Reaction to Prevention</h5>
+<p>The current Linux kernel OOM killer is a blunt tool. It activates only when the system is completely out of memory, then selects and kills processes based on a calculated score to free up RAM. This can cause sudden, disruptive application crashes.</p>
+<p>The new default, <code>systemd-oomd</code>, takes a different approach. It uses the kernel's Pressure Stall Information (PSI) interface to monitor system resource pressure in real-time. By detecting rising pressure early, it can intervene proactively to relieve stress before the system becomes unresponsive.</p>
+<h5>Cgroup-Aware Targeting for Smoother Desktops</h5>
+<p>A major advantage of the systemd approach is its awareness of control groups (cgroups). This allows the daemon to apply pressure relief to specific resource groups, such as an individual user session, a particular application, or a set of services, rather than making unpredictable, system-wide decisions.</p>
+<p>For desktop users, this means background tasks might be throttled or specific demanding applications managed without destabilizing the entire graphical session. The primary goal is a more fluid and predictable experience during heavy multitasking.</p>
+<p>This change aligns with a wider trend in the Linux ecosystem, where distributions like Fedora have already adopted similar defaults to enhance desktop reliability.</p>
+<h5>New Diagnostics for Administrators</h5>
+<p>For system administrators and power users, this transition changes troubleshooting procedures. Diagnosing out-of-memory events will no longer primarily involve scanning kernel logs (<code>dmesg</code>) for OOM kill messages.</p>
+<p>Instead, admins will need to examine the systemd journal for entries related to the <code>systemd-oomd</code> service. Configuration also moves from kernel parameters like <code>vm.overcommit_memory</code> to defining OOM policies and resource limits within systemd slices for finer-grained control.</p>
+<p>It is crucial to note that this switch applies specifically to the <strong>Ubuntu Desktop</strong> edition. Server and cloud images may retain different, more conservative defaults tailored for process stability over desktop-style responsiveness.</p>
+<hr>
+<p>Ubuntu 26.10 即將大幅改革其桌面版的記憶體管理方式，以更具前瞻性的 <code>systemd-oomd</code> 守護程式，取代傳統的核心記憶體不足（OOM）殺手。</p>
+<p>即將推出的桌面版將以 <code>systemd-oomd</code> 作為預設選項，從一種最後手段式的全系統終止策略，轉向基於持續監控與針對性干預的策略。此舉旨在提升日常用戶的系統反應速度與穩定性。</p>
+<h5>從反應式轉向預防式</h5>
+<p>現行的 Linux 核心 OOM Killer 是一種粗放的工具。它僅在系統完全耗盡記憶體時才被啟動，並根據計算得分選擇並終止行程以釋放 RAM。這可能導致應用程式突然崩潰，造成使用中斷。</p>
+<p>新的預設選項 <code>systemd-oomd</code> 則採取了不同的方法。它使用核心的「壓力停頓資訊」（PSI）介面來即時監控系統資源壓力。透過提早偵測到壓力上升，它能在系統變得無回應之前主動介入，以緩解壓力。</p>
+<h5>感知 Cgroup 的目標定位，實現更流暢的桌面體驗</h5>
+<p>systemd 方案的一大優勢在於其對控制群組（cgroups）的感知能力。這使得守護程式能夠對特定資源群組（例如單個用戶會話、某個特定應用程式或一組服務）施加壓力緩解，而非做出不可預測的全系統決策。</p>
+<p>對桌面用戶而言，這意味著後台任務可能被節流，或對特定高需求的應用程式進行管理，而不會破壞整個圖形會話的穩定性。主要目標是在多重任務處理繁重時，提供更流暢且可預測的體驗。</p>
+<p>此變更符合 Linux 生態系統的一個更廣泛趨勢，例如 Fedora 等發行版已採用類似預設設定，以強化桌面可靠性。</p>
+<h5>為管理員提供新的診斷工具</h5>
+<p>對於系統管理員和進階用戶而言，這一轉變改變了故障排除的流程。診斷記憶體不足事件將不再主要涉及掃描核心日誌（<code>dmesg</code>）中的 OOM 終止訊息。</p>
+<p>相反，管理員需要檢查 systemd 日誌中與 <code>systemd-oomd</code> 服務相關的條目。配置也從核心參數（如 <code>vm.overcommit_memory</code>）轉向在 systemd slice 內定義 OOM 策略和資源限制，以實現更精細的控制。</p>
+<p>必須注意的是，此切換專門適用於 <strong>Ubuntu Desktop</strong> 版本。伺服器和雲端映像可能保留不同的、更保守的預設設定，這些設定針對行程穩定性的考量優先於桌面式的反應速度。</p>
+<p><a href="https://www.phoronix.com/news/Ubuntu-26.10-OOM-Adjustments" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
