@@ -1,0 +1,30 @@
+Date: 2026-09-18 04:24:00
+Author: HKLUG Team
+Title: Docker Sandboxes Flaw on macOS Lets Malicious Code Seize Host File Access
+Content:
+<p>A critical vulnerability in Docker Desktop for macOS breaks the isolation guarantee of its sandbox feature, potentially allowing malicious code running in a container to read and write files across the entire host system. Docker has issued an urgent advisory, urging all affected users to apply a patch immediately.</p>
+<p>According to The Hacker News, citing Docker's security advisory, the flaw—tracked as CVE-2026-77179—enables a process running inside a Docker Sandbox virtual machine to escape its designated shared directory. Following the escape, code can operate with the full read/write privileges of the host user account, accessing any file on the Mac.</p>
+<p>This represents a severe compromise of a core security principle. Sandboxes are a trusted mechanism for isolating untrusted workloads, such as when developers analyze external code, run unvetted dependencies, or execute potentially risky scripts. The flaw invalidates that trust model, posing a high-impact risk.</p>
+<p>The practical implications are serious. A compromised sandbox could be used to steal source code, harvest SSH keys and credentials, or establish persistent backdoors on the development machine. The threat extends to automated CI/CD pipelines and shared analysis workstations that process code from external sources.</p>
+<p>Docker's disclosure did not detail the technical root cause of the escape mechanism. The company has, however, released a patched version. The definitive mitigation is to update Docker Desktop to the latest release.</p>
+<p>Users should take the following steps:
+1.  Open Docker Desktop and check the current version.
+2.  Apply the update using the built-in automatic update feature.
+3.  Download the latest installer directly from Docker's official website if automatic updates are unavailable.</p>
+<p>For users unable to update immediately, the only interim safeguard is to avoid using Docker Sandboxes for any untrusted code until the patch is deployed.</p>
+<p>This incident highlights the critical need for developers to maintain up-to-date tooling and respond swiftly to security advisories affecting their local development environment. For the macOS developer community, applying this Docker Desktop update is an immediate priority.</p>
+<p><strong>Editor's note:</strong> <em>This article reports information as published by The Hacker News and attributed to Docker's security advisory. Readers seeking primary source verification should consult Docker's official security communications.</em></p>
+<hr>
+<p>macOS 版 Docker Desktop 的沙箱功能存在關鍵漏洞，破壞其隔離保障，可能令在容器中運行的惡意程式碼讀寫整個主機系統的檔案。Docker 已發佈緊急公告，敦促所有受影響用戶立即安裝補丁。</p>
+<p>據 The Hacker News 引述 Docker 安全公告報道，此漏洞（編號 CVE-2026-77179）容許在 Docker Sandbox 虛擬機內運行的程式逃逸其指定的共享目錄。逃逸後，程式碼可獲得主機用戶帳戶的完整讀寫權限，存取 Mac 上的任何檔案。</p>
+<p>這嚴重違背核心安全原則。沙箱是隔離不可信工作負載的可靠機制，例如開發者分析外部代碼、運行未經審核的 dependencies 或執行潛在有風險的腳本時會使用。此漏洞瓦解了該信任模型，構成高影響風險。</p>
+<p>實際影響十分嚴重。遭入侵的沙箱可用於竊取原始碼、擷取 SSH 金鑰與認證資訊，或在開發機器上建立持久性後門。威脅亦延伸至處理外部代碼的自動化 CI/CD 流程及共用分析工作站。</p>
+<p>Docker 的披露並未詳述逃逸機制的技術根因，但已發佈修復版本。根本解決方案是將 Docker Desktop 更新至最新版本。</p>
+<p>用戶應採取以下步驟：
+1.  開啟 Docker Desktop 並檢查當前版本。
+2.  使用內建自動更新功能套用更新。
+3.  若自動更新不可用，請直接從 Docker 官方網站下載最新安裝程式。</p>
+<p>若用戶無法立即更新，唯一臨時防護措施是在部署補丁前，避免對任何不可信代碼使用 Docker 沙箱。</p>
+<p>此次事件突顯開發者必須維持工具最新狀態，並迅速回應影響其本地開發環境的安全公告。對 macOS 開發者社群而言，套用此 Docker Desktop 更新乃當務之急。</p>
+<p><strong>編輯按語：</strong> <em>本文報導 The Hacker News 所發表及引述 Docker 安全公告的資訊。讀者如需查證第一手資料，請參閱 Docker 官方安全通訊。</em></p>
+<p><a href="https://thehackernews.com/2026/09/critical-docker-sandboxes-flaw-lets.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
