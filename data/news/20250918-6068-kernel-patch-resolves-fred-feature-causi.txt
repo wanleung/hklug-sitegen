@@ -1,0 +1,16 @@
+Date: 2025-09-18 14:50:00
+Author: HKLUG Team
+Title: Kernel Patch Resolves FRED Feature Causing Game Crashes on Intel Panther Lake Under Wine and Proton
+Content:
+<p>A kernel patch has been merged to solve a frustrating issue where Windows games crash on Intel Panther Lake hardware when run through Linux compatibility layers like Wine and Proton. The root cause was a conflict with the kernel's new Flexible Return and Event Delivery (FRED) feature, not a graphics driver flaw as initially suspected.</p>
+<p>Gamers reported titles such as <em>Red Dead Redemption 2</em> and <em>Elden Ring</em> freezing or crashing immediately when played via Steam Play on Panther Lake systems. Early investigation pointed to Mesa's Intel Xe3 drivers, but developers soon discovered the problem lay deeper in the Linux kernel itself.</p>
+<p>The bug stemmed from an incompatibility between FRED—a performance-boosting feature debuting with Core Ultra Series 3 processors—and the non-standard execution flows used by translation layers like Wine and Proton. Native Linux games compiled for Vulkan remained unaffected, indicating the issue was specific to the translation process.</p>
+<p>The merged fix modifies FRED's behavior to accommodate the event-handling patterns of compatibility layers. This preserves FRED's performance benefits for standard software while preventing crashes in translated applications.</p>
+<p>Availability now depends on distribution update cycles. Users on bleeding-edge kernels will get the patch soon, while those on stable releases may need to wait for backports or explore manual solutions. The incident highlights how kernel-level optimizations can create unexpected cross-stack dependencies, requiring collaborative debugging across the open-source ecosystem.</p>
+<hr>
+<p>一個核心補丁已獲合併，用以解決一個令人困擾的問題：透過Wine和Proton等Linux相容層運行的Windows遊戲，在Intel Panther Lake硬件上會當機。根本原因與核心新推出的「彈性回傳與事件傳遞」(FRED)功能發生衝突，而非最初懷疑的顯示卡驅動程式缺陷。</p>
+<p>玩家報告指《碧血狂殺2》及《艾爾登法環》等遊戲，透過Steam Play在Panther Lake系統上運行時，會立即凍結或當機。初步調查指向Mesa的Intel Xe3驅動程式，但開發者很快發現問題更深層，源自Linux核心本身。</p>
+<p>該錯誤源於FRED功能——隨Core Ultra Series 3處理器推出的性能增強技術——與Wine和Proton等翻譯層使用的非標準執行流程不相容。原生為Vulkan編譯的Linux遊戲不受影響，顯示問題僅限於翻譯過程。</p>
+<p>已合併的修正方案調整了FRED的行為模式，以配合相容層的事件處理模式。這既保留了FRED對標準軟件的性能優勢，又防止了翻譯應用程式當機。</p>
+<p>目前補丁的可用性取決於各發行版的更新週期。使用前沿核心的用戶將很快獲得補丁，而使用穩定版本的用戶可能需要等待向後移植或探索手動解決方案。此事件突顯了核心層級優化可能產生意料之外的跨堆棧依賴性，需要開源生態系統各方協作進行除錯。</p>
+<p><a href="https://www.phoronix.com/news/Linux-FRED-Fix-For-Wine-Games" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
