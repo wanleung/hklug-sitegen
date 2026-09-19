@@ -1,0 +1,18 @@
+Date: 2026-09-19 19:23:00
+Author: HKLUG Team
+Title: Simple VFS Optimization in Linux 7.4 Delivers Up to 39% Faster File Opens
+Content:
+<p>A patch targeting Linux 7.4 promises substantial gains in file-open performance, with benchmarks indicating up to 39% faster reads under ideal conditions. The optimization, reported by Phoronix, addresses redundant processing within the Virtual File System (VFS) layer that had persisted for years.</p>
+<p>At the heart of the change is a simplification of the <code>do_open()</code> code path—the routine responsible for initiating file access. The patch eliminates duplicative checks that were being executed multiple times throughout the call stack. Though the modification is straightforward in concept, its impact compounds significantly in scenarios involving rapid, repeated file opens.</p>
+<p>I/O-intensive workloads stand to benefit most from this refinement. Build systems, database engines, and data processing pipelines that read large numbers of files will encounter lower per-operation latency. For cloud providers and server operators, these kernel-level efficiencies can accumulate into meaningful performance improvements and reduced resource consumption.</p>
+<p>Notably, this patch represents more than two years of development and review. That timeline underscores the Linux kernel community's deliberate approach to core subsystem changes—prioritizing correctness, stability, and long-term maintainability over rapid feature delivery.</p>
+<p>The headline benchmark figure reflects optimal conditions. Actual performance gains in production will vary based on hardware, filesystem selection, and workload characteristics. While mainline inclusion ensures all distributions will eventually carry the optimization, its arrival in enterprise long-term support releases like RHEL or Ubuntu LTS will follow established backporting procedures.</p>
+<p>Changes like these demonstrate how Linux continues to evolve through careful, incremental refinement rather than dramatic overhauls—sustaining the kernel's position as the backbone of modern server infrastructure worldwide.</p>
+<hr>
+<p>一個針對 Linux 7.4 的修補程式有望大幅提升檔案開啟效能，基準測試顯示在理想條件下讀取速度可提升最高 39%。據 Phoronix 報導，此項優化解決了虛擬檔案系統（VFS）層中存在多年的冗餘處理問題。</p>
+<p>此次更新的核心在於簡化 <code>do_open()</code> 程式碼路徑——此常式負責啟動檔案存取。該修補程式移除了在整個呼叫堆疊中被多次執行的重複檢查。儘管此修改在概念上直接，但在涉及快速重複檔案開啟的情景中，其影響會顯著累積。</p>
+<p>I/O 密集型工作負載將從此項調校中受益最大。建構系統、資料庫引擎以及需要讀取大量檔案的資料處理管線，其每次操作的延遲將會降低。對於雲端服務供應商和伺服器營運商而言，這些核心層級的效率提升能累積成顯著的效能改進和資源消耗減少。</p>
+<p>值得關注的是，該修補程式代表了兩年多的開發與審查歷程。此時間線突顯了 Linux 核心社群對於核心子系統變更的謹慎態度——優先考量正確性、穩定性和長期可維護性，而非快速交付新功能。</p>
+<p>標題中的基準測試數字反映的是最佳條件。在生產環境中的實際效能增益將因硬體、檔案系統選擇及工作負載特性而異。雖然併入主線確保所有發行版本最終都將採用此優化，但其在企業級長期支援版本（如 RHEL 或 Ubuntu LTS）中的採用，將遵循既定的向後移植程序。</p>
+<p>這類變更展示了 Linux 如何透過謹慎、漸進式的優化而非劇烈重構來持續演進——從而維繫其核心作為全球現代伺服器基礎設施支柱的地位。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.4-Faster-Do-Open" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
