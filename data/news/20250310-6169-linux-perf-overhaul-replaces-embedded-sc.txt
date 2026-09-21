@@ -1,0 +1,22 @@
+Date: 2025-03-10 12:05:00
+Author: HKLUG Team
+Title: Linux Perf Overhaul Replaces Embedded Scripting With Blazing-Fast C-Backed Python Module
+Content:
+<p>A sweeping patch series for the Linux kernel's <code>perf</code> subsystem aims to deliver major performance gains for system analysis by eliminating its embedded scripting interpreters in favor of a new, standalone Python module written in C.</p>
+<p>As reported by Phoronix, the proposal targets a fundamental architectural limitation. The current <code>perf script</code> tool embeds separate Python and Perl interpreters, creating a costly data serialization bottleneck between the profiler and the analysis engine. This overhead becomes a significant drag when working with large trace files.</p>
+<p>The new design replaces this with a high-performance C extension module, providing a direct Python interface to perf's core data structures—event records, memory headers, and symbol tables. By cutting out the round-trip serialization, the module enables scripts to operate at near-native speed, similar to the approach used by high-performance scientific libraries.</p>
+<p>The Phoronix report cites early benchmarks from the patch series showing dramatic improvements: analysis tasks that previously took 18 seconds reportedly completed in 3 seconds—a sixfold improvement. For certain workloads, the reported speedup reaches as high as 25 times faster than the existing implementation.</p>
+<p>For DevOps and SRE teams, this overhaul means dramatically more responsive profiling. Interactive-speed analysis can tighten feedback loops during production debugging, allowing engineers to iterate through hypotheses on live system data far more efficiently. The familiar <code>perf script</code> command-line interface remains unchanged, ensuring a smooth transition for current users.</p>
+<p>The patch also simplifies kernel maintenance by dropping embedded Perl support entirely. This consolidation focuses development on a single, optimized scripting path, reducing technical debt. While users with Perl-based scripts will need to migrate, the change establishes a more maintainable and extensible foundation.</p>
+<p>A performant, standardized Python module lowers barriers for building custom tooling. Developers can now more easily create dashboards, visualization utilities, and automated analysis pipelines that leverage perf's rich data format, potentially enriching the broader ecosystem of performance utilities.</p>
+<p>The patch series is currently under review. If accepted, it will land in a mainline kernel release and subsequently propagate through major distributions. The specific kernel version targeting and distribution rollout timelines remain pending, marking the next key milestones for this significant upgrade to Linux's native performance toolkit.</p>
+<hr>
+<p>Linux 核心 <code>perf</code> 子系統的一系列全面性修補程式，旨在透過廢除內置的腳本解釋器，改用全新的獨立 C 語言支援 Python 模組，從而大幅提升系統分析的效能。</p>
+<p>據 Phoronix 報導，這項提案旨在解決一個根本性的架構限制。目前的 <code>perf script</code> 工具內置了獨立的 Python 和 Perl 解釋器，導致分析器與分析引擎之間產生繁重的數據序列化瓶頸。在處理大型追蹤文件時，此開銷成為顯著的拖慢因素。</p>
+<p>新設計以高效能 C 擴展模組取代此架構，提供直接連接至 perf 核心數據結構的 Python 接口——包括事件記錄、記憶體標頭及符號表。透過消除來回序列化過程，該模組使腳本能以接近原生的速度運行，類似高效能科學計算庫所採用的方式。</p>
+<p>Phoronix 報導引述了該系列修補程式的早期基準測試結果，顯示出顯著改進：以往據稱需時 18 秒的分析任務現僅需 3 秒完成，效能提升六倍。針對某些工作負載，據稱加速比更高達現有實現的 25 倍。</p>
+<p>對 DevOps 及 SRE 團隊而言，這次大改造意味著分析工具的響應速度大幅提高。即時互動式分析能縮短生產環境除錯的反饋週期，讓工程師能更有效地基於即時系統數據迭代假設。熟悉的 <code>perf script</code> 命令列接口保持不變，確保現有用戶能平穩過渡。</p>
+<p>此修補程式亦透過完全移除 Perl 支援簡化核心維護工作。此整合將開發資源集中於單一優化的腳本路徑，減少技術負債。雖然使用 Perl 腳本的用戶需要遷移，但此變更建立了更易維護且可擴展的基礎。</p>
+<p>高效能標準化 Python 模組降低了建構自定義工具的門檻。開發者現能更輕鬆地利用 perf 的豐富數據格式創建儀表板、視覺化工具及自動化分析管線，有望豐富更廣泛的效能工具生態系。</p>
+<p>該系列修補程式目前正在審核中。若獲通過，將被納入主線核心版本，其後透過各主要發行版傳播。具體目標核心版本及發行版推出時間表仍有待確定，標誌著這項 Linux 原生效能工具套件重大升級的下一個關鍵里程碑。</p>
+<p><a href="https://www.phoronix.com/news/Linux-Perf-Python-Module" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
