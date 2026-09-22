@@ -1,0 +1,28 @@
+Date: 2026-09-22 10:25:00
+Author: HKLUG Team
+Title: Arch Linux Update Mandates Manual TPM2 Re-enrollment to Prevent Boot Lockout
+Content:
+<p>An update to a core Arch Linux utility has introduced a breaking change that could lock users out of their systems if they do not perform a manual configuration step. The advisory, published by Arch Linux, warns that version 42 and later of <code>mkinitcpio</code> alters the boot process for systems using Trusted Platform Module 2 (TPM2) for automated disk decryption.</p>
+<p>The issue centers on the <code>mkinitcpio</code> package, which is responsible for generating the initial RAM filesystem (initramfs) used during the boot sequence. Specifically, the <code>systemd</code> hook within this package has been updated to include a new service called <code>systemd-pcrosseparator.service</code>.</p>
+<p>This new service changes how the system measures boot integrity using the TPM2 chip. It alters the Platform Configuration Register (PCR) values for indices 0 through 7, 9, and 12 through 14. For users who previously configured their system to automatically unlock LUKS (Linux Unified Key Setup) encrypted partitions using TPM2 policies tied to these specific PCR values, this change creates a mismatch. The system will no longer recognize the previously enrolled policy, and the auto-unlock feature will fail.</p>
+<p>According to the official notice, users who meet all three of the following criteria are directly affected:
+1. Using the <code>systemd</code> hook in their <code>mkinitcpio</code> configuration.
+2. Having previously enrolled their LUKS partitions for TPM2-based auto-unlock.
+3. Updating to <code>mkinitcpio</code> version 42 or newer.</p>
+<p>For these users, the update introduces a critical risk. Upon the next reboot after the package update, the system will likely be unable to unlock the root or other essential partitions automatically, potentially resulting in a lockout and requiring intervention from a live recovery media.</p>
+<p>There is no automated migration path provided. The solution is a mandatory manual re-enrollment process. Users must execute the <code>systemd-cryptenroll</code> command again to generate new TPM2 policies that align with the updated PCR measurements. The official advisory directs users to a specific procedure on the Arch Linux news page that must be completed <strong>before</strong> rebooting the system to maintain access.</p>
+<p>This scenario highlights a recurring tension within rolling-release Linux distributions, where beneficial upstream security enhancements—like more precise boot measurements from the systemd project—can necessitate disruptive manual steps for users with advanced, security-sensitive configurations. It underscores the importance of reading release notes for critical system components in such distributions.</p>
+<p>While this advisory is specific to Arch Linux, the core components involved are widely used. Other distributions that ship a recent version of systemd and utilize <code>mkinitcpio</code> or similar initramfs generators with a <code>systemd</code> hook could potentially face analogous issues. Users of distributions like Manjaro, EndeavourOS, or other Arch-based systems should pay close attention to their respective maintainers' announcements.</p>
+<hr>
+<p>Arch Linux 一項核心工具程式的更新引入了重大變動，若使用者未執行手動配置步驟，可能導致其無法進入系統。Arch Linux 發布的公告警告，<code>mkinitcpio</code> 第42版及更新版本，改變了使用受信任平台模組2（TPM2）進行自動磁碟解密的系統之啟動流程。</p>
+<p>此問題核心在於 <code>mkinitcpio</code> 套件，該套件負責產生系統啟動序列期間使用的初始 RAM 檔案系統（initramfs）。具體而言，套件中的 <code>systemd</code> hook 已更新，新增名為 <code>systemd-pcrosseparator.service</code> 的服務。</p>
+<p>這項新服務改變了系統使用 TPM2 晶片測量啟動完整性的方式。它修正了索引 0 至 7、9 以及 12 至 14 的平台配置寄存器（PCR）數值。對於先前配置系統，使用與這些特定 PCR 值綁定的 TPM2 策略來自動解密 LUKS（Linux Unified Key Setup）加密分割區的使用者而言，此變動造成了不匹配。系統將無法再辨識先前註冊的策略，自動解鎖功能將會失效。</p>
+<p>根據官方公告，完全符合以下三項條件的使用者直接受到影響：
+1. 在 <code>mkinitcpio</code> 配置中使用 <code>systemd</code> hook。
+2. 先前已為基於 TPM2 的自動解鎖註冊了 LUKS 分割區。
+3. 已升級至 <code>mkinitcpio</code> 第42版或更新版本。</p>
+<p>對於這些使用者，本次更新引入了嚴重風險。套件更新後的下次重新啟動時，系統很可能無法自動解鎖根目錄或其他必要分割區，可能導致系統鎖定，並需要使用即時救援介質進行干預。</p>
+<p>目前並未提供自動遷移路徑。解決方案是強制進行手動重新註冊流程。使用者必須再次執行 <code>systemd-cryptenroll</code> 指令，以產生符合更新後 PCR 測量值的新 TPM2 策略。官方公告指引使用者前往 Arch Linux 新聞頁面上的特定步驟，該步驟必須在<strong>重新啟動系統前完成</strong>，以維持存取權限。</p>
+<p>此情境突顯了滾動發行版 Linux 發行版中一個反覆出現的張力：有益的上游安全性增強——例如 systemd 專案提供的更精確啟動測量——可能對具備進階、安全性敏感配置的使用者造成必須執行破壞性手動步驟的必要。這強調了在此類發行版中閱讀關鍵系統元件發行說明的重要性。</p>
+<p>雖然此公告特定於 Arch Linux，但涉及的核心元件被廣泛使用。其他發行版若採用近期版本的 systemd，並使用帶有 <code>systemd</code> hook 的 <code>mkinitcpio</code> 或類似 initramfs 產生器，也可能面臨類似問題。Manjaro、EndeavourOS 或其他基於 Arch 的系統使用者，應密切關注各自維護者的公告。</p>
+<p><a href="https://archlinux.org/news/mkinitcpio-42-requires-manual-intervention-for-tpm2-based-unlocking-of-luks-devices/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
