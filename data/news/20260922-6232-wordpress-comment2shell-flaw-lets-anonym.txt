@@ -1,0 +1,44 @@
+Date: 2026-09-22 07:23:00
+Author: HKLUG Team
+Title: WordPress 'Comment2Shell' Flaw Lets Anonymous Comments Trigger Full Server Compromise
+Content:
+<p>A critical vulnerability in WordPress core, now patched, allowed an anonymous visitor to plant a malicious script via a standard comment. If a logged-in administrator later viewed that page, the script could hijack their session and execute code on the server, turning a routine feature into a pathway for full site takeover.</p>
+<p>According to The Hacker News, the flaw—designated CVE-2026-93485 and dubbed "Comment2Shell"—was fixed by WordPress in version 7.1.1, released on September 17. Site administrators are strongly urged to update immediately.</p>
+<h5>Anatomy of the Attack Chain</h5>
+<p>The vulnerability connects two stages to achieve remote code execution (RCE). First, an attacker submits a comment containing hidden JavaScript—a classic stored cross-site scripting (XSS) flaw. This script remains dormant for regular visitors.</p>
+<p>The danger activates when an administrator with an active session visits the page. The stored script executes within their browser, leveraging their privileged access. The attacker's code then makes internal WordPress API requests, ultimately uploading and executing a malicious PHP file on the server. This grants complete control over the website and its underlying infrastructure.</p>
+<p>The report highlights how the attack weaponizes the comments section—a trusted core feature—to silently chain a low-privilege action into full server compromise. The only prerequisites are getting the malicious comment published and the presence of a logged-in administrator.</p>
+<h5>Mitigation: Patching First, Hardening as Backup</h5>
+<p>The definitive solution is updating to WordPress 7.1.1. This patch directly resolves the flaw and should be applied without delay.</p>
+<p>For instances where an immediate update is not possible, two interim measures can significantly reduce risk:
+1.  <strong>Strict Comment Moderation:</strong> Set all comments to require manual approval. This stops an attacker from planting the malicious script in the first place.
+2.  <strong>Content Security Policy (CSP):</strong> Implement a strict CSP header to restrict script sources and execution. This can block the data exfiltration or external connections needed to complete the attack.</p>
+<h5>Action Checklist for Administrators</h5>
+<ol>
+<li><strong>Update WordPress:</strong> From your Dashboard, navigate to <em>Updates</em> and install version 7.1.1 or newer.</li>
+<li><strong>Audit Comments:</strong> Manually review recently published comments for hidden scripts or suspicious content.</li>
+<li><strong>Lock Down Moderation:</strong> Temporarily require all comments to be manually approved.</li>
+<li><strong>Deploy CSP:</strong> If your environment supports it, add a Content Security Policy as a layer of defense-in-depth.</li>
+</ol>
+<p>The Comment2Shell flaw underscores how sophisticated attack chains can emerge from common functionalities. For the vast ecosystem of WordPress sites, applying the official patch is the essential step to close this severe security gap.</p>
+<hr>
+<p>WordPress 核心中的一個嚴重漏洞（現已修補）曾允許匿名訪客透過標準評論植入惡意腳本。如果已登入的管理員隨後瀏覽該頁面，腳本可劫持其會話並在伺服器上執行代碼，將常規功能轉變為全面接管網站的通道。</p>
+<p>據 The Hacker News 報導，此漏洞——編號為 <strong>CVE-2026-93485</strong>，代號「Comment2Shell」——已在 WordPress <strong>7.1.1 版本</strong>中修補，該版本於 9 月 17 日發布。網站管理員被強烈敦促立即進行更新。</p>
+<h5>攻擊鏈剖析</h5>
+<p>此漏洞透過連接兩個階段來實現遠端代碼執行（RCE）。首先，攻擊者提交一個包含隱藏 JavaScript 的評論——這是一個典型的儲存跨站腳本攻擊（XSS）漏洞。該腳本對普通訪客保持休眠狀態。</p>
+<p>危險在於當具有活躍會話的管理員訪問該頁面時被觸發。儲存的腳本在其瀏覽器中執行，利用其權限。攻擊者的代碼隨後向 WordPress 內部 API 發出請求，最終在伺服器上上傳並執行惡意 PHP 檔案。這使得攻擊者完全控制網站及其底層基礎設施。</p>
+<p>報導指出，此攻擊將評論區——一個受信任的核心功能——武器化，悄無聲息地將低權限操作鏈結為完整的伺服器入侵。唯一的先決條件是使惡意評論成功發布，以及有一個已登入的管理員存在。</p>
+<h5>緩解措施：首要補丁，次要加固</h5>
+<p>最直接的解決方案是更新至 WordPress 7.1.1。此補丁直接解決了該漏洞，應毫不延遲地套用。</p>
+<p>在無法立即更新的情況下，兩項過渡措施可顯著降低風險：
+1.  <strong>嚴格的評論審核：</strong> 設定所有評論為需手動批准。這能從源頭阻止攻擊者植入惡意腳本。
+2.  <strong>內容安全策略（CSP）：</strong> 實施嚴格的 CSP 頭部，限制腳本來源和執行。這可以阻止完成攻擊所需的資料外洩或外部連接。</p>
+<h5>管理員行動清單</h5>
+<ol>
+<li><strong>更新 WordPress：</strong> 從控制台導航至 <em>更新</em>，並安裝 7.1.1 或更新版本。</li>
+<li><strong>審核評論：</strong> 手動檢查近期發布的評論，查看是否有隱藏腳本或可疑內容。</li>
+<li><strong>鎖定審核機制：</strong> 暫時要求所有評論進行手動批准。</li>
+<li><strong>部署 CSP：</strong> 若您的環境支援，請添加內容安全策略作為縱深防禦的一層。</li>
+</ol>
+<p>Comment2Shell 漏洞突顯了複雜的攻擊鏈如何從常見功能中產生。對於龐大的 WordPress 網站生態系統而言，套用官方補丁是關閉此嚴重安全缺口的必要步驟。</p>
+<p><a href="https://thehackernews.com/2026/09/wordpress-comment2shell-flaw-can-turn.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
