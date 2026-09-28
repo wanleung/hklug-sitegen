@@ -1,0 +1,18 @@
+Date: 2026-09-28 21:47:00
+Author: HKLUG Team
+Title: Next.js Patches Critical Flaw Allowing Code Execution via Malicious SVG Image Data
+Content:
+<p>A critical, server-side code execution vulnerability in the Next.js framework has been patched, following a rapid response from its maintainer, Vercel. The flaw, which resides in the <code>ImageResponse</code> API used for generating social preview images, allows an attacker to take full control of a server by manipulating data passed into SVG image processing.</p>
+<p>The core issue is a severe injection vulnerability. When applications pass attacker-controlled data—such as text from a URL query parameter or other unsanitized user input—directly into the <code>ImageResponse</code> function, that data can be crafted to break out of its intended context. This malicious SVG input is then interpreted as executable code on the server, enabling compromise.</p>
+<p>The attack scenario, while specific, is a realistic threat for many applications, particularly those that generate dynamic, shareable link previews based on user content. Vercel addressed the security issue swiftly, releasing a fix on September 22. The primary action for developers is to <strong>upgrade immediately to Next.js version 14.3.1</strong>.</p>
+<p>As an interim measure before or during the upgrade, development teams must audit their codebases to ensure no untrusted external input reaches <code>ImageResponse</code> functions without proper validation and sanitization.</p>
+<p>This incident underscores a fundamental security lesson: all external input must be treated as hostile. Features focused on presentation, like image generation, can quickly become dangerous attack surfaces if data handling is lax. The rapid patch from Vercel shifts the urgency of mitigation to the developer community, making awareness and swift deployment of the update critical.</p>
+<p>While the initial disclosure did not cite a specific CVE identifier, the severity of the risk demands immediate attention. Next.js developers are advised to consult Vercel's official advisory for the most current details and to prioritize applying the patch to eliminate the risk of server-side code execution.</p>
+<hr>
+<p>Next.js 框架中一個嚴重的伺服器端代碼執行漏洞已被修補，此前其維護公司 Vercel 進行了快速回應。該漏洞存在於用於生成社交媒體預覽圖片的 <code>ImageResponse</code> API 中，攻擊者可透過操控傳入 SVG 圖片處理的數據，從而完全控制伺服器。</p>
+<p>核心問題在於一個嚴重的注入漏洞。當應用程式將攻擊者可控制的數據（例如來自 URL 查詢參數的文本或其他未經淨化的用戶輸入）直接傳入 <code>ImageResponse</code> 函數時，這些數據可被精心設計以突破其預期上下文。這惡意的 SVG 輸入隨後會在伺服器上被解讀為可執行代碼，從而導致系統被入侵。</p>
+<p>雖然此攻擊情景較為特定，但對許多應用程式而言，尤其是那些根據用戶內容生成動態、可分享連結預覽的應用程式，仍是一個現實威脅。Vercel 迅速處理了此安全問題，於 9 月 22 日發布了修復程式。開發者的主要行動是 <strong>立即升級至 Next.js 版本 14.3.1</strong>。</p>
+<p>作為升級前或升級期間的臨時措施，開發團隊必須審查其程式碼庫，以確保沒有不受信任的外部輸入在未經適當驗證和淨化的情況下到達 <code>ImageResponse</code> 函數。</p>
+<p>此次事件凸顯了一個基本的安全教訓：所有外部輸入均應被視為敵對。像圖片生成這類著重於展示的功能，若數據處理不夠嚴謹，便可能迅速成為危險的攻擊面。Vercel 的快速修補將緩解措施的緊迫性轉移到了開發者社群，這使得對此更新的認知和迅速部署變得至關重要。</p>
+<p>雖然最初的披露並未提及具體的 CVE 標識符，但風險的嚴重性要求立即關注。建議 Next.js 開發者查閱 Vercel 的官方公告以獲取最新詳情，並優先套用此修補程式，以消除伺服器端代碼執行的風險。</p>
+<p><a href="https://thehackernews.com/2026/09/critical-nextjs-imageresponse-flaw-can.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
