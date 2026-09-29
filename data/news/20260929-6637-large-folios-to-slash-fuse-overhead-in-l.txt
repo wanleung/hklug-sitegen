@@ -1,0 +1,28 @@
+Date: 2026-09-29
+Author: HKLUG Team
+Title: Large Folios to Slash FUSE Overhead in Linux 7.4
+Content:
+<p>The forthcoming Linux 7.4 kernel will unlock significant performance gains for user-space filesystems by activating large folio support for the FUSE subsystem, marking another step in eliminating the traditional speed gap versus in-kernel filesystems.</p>
+<p>Building on FUSE enhancements shipped in Linux 7.3, this update optimizes the memory management layer responsible for moving data across the kernel-user divide. The core improvement is the shift from handling numerous small memory pages to managing data in fewer, larger, contiguous blocks called folios.</p>
+<h5>The Efficiency of Larger Memory Blocks</h5>
+<p>A folio represents a substantial, contiguous chunk of memory for file data. While the kernel has traditionally managed data in small, fixed-size pages (like 4KB), large folios consolidate these into bigger units. This is critical for FUSE, where data must be copied between kernel space and a separate user-space process.</p>
+<p>Managing one large block demands fewer operations and less context-switching overhead than handling thousands of individual pages. This reduction in "data shuffling" directly boosts throughput and reduces latency, especially for I/O-heavy workloads.</p>
+<h5>Instant Wins for the Developer Ecosystem</h5>
+<p>A key advantage is its transparency. Any application or filesystem built on the standard <code>libfuse</code> library will automatically benefit from higher performance, with no code changes required. This lowers the barrier for adopting FUSE in performance-sensitive scenarios.</p>
+<p>The boost is most pronounced for sequential read/write tasks. Consequently, it directly benefits common use cases like network file shares, container storage volumes, and encrypted filesystems where large transfers, backups, and streaming are routine.</p>
+<h5>Modernizing Core Data Paths</h5>
+<p>This enhancement is part of a sustained kernel effort to modernize fundamental data handling pathways. By optimizing the FUSE data lane, maintainers are making user-space filesystems a more competitive choice for demanding workloads.</p>
+<p>The update ensures the flexibility and developer convenience of user-space implementations can now come with much less of a performance trade-off, bolstering a key tool for creating everything from cloud storage backends to specialized data platforms.</p>
+<hr>
+<p>即將推出的 Linux 7.4 核心將透過為 FUSE 子系統啟用大型 Folio 支持，為使用者空間檔案系統釋放顯著的效能提升，這是消除其與核心內檔案系統傳統速度差距的又一里程碑。</p>
+<p>此更新建立於 Linux 7.3 中推出的 FUSE 增強功能之上，優化了負責跨越核心與使用者空間界線移動數據的記憶體管理層。核心改進在於從處理大量小型記憶體頁面，轉向以更少、更大、連續的資料區塊（稱為 folios）來管理數據。</p>
+<h5>更大記憶體區塊的效率優勢</h5>
+<p>一個 Folio 代表一段用於檔案數據的大型連續記憶體區塊。核心傳統上以小型固定大小頁面（如 4KB）管理數據，而大型 Folios 則將其整合為更大的單位。這對 FUSE 來說至關重要，因為數據必須在核心空間與獨立的使用者空間程式之間複製。</p>
+<p>管理一個大型區塊所需的運算操作和上下文切換開銷，遠少於處理數千個獨立頁面。這種「數據搬運」的減少直接提升了吞吐量並降低了延遲，尤其是在 I/O 密集型的工作負載中。</p>
+<h5>開發生態系統的即時獲益</h5>
+<p>一個關鍵優勢在於其透明性。任何基於標準 <code>libfuse</code> 函式庫構建的應用程式或檔案系統都將自動受益於更高的效能，無需進行任何代碼更改。這降低了在效能敏感場景中採用 FUSE 的門檻。</p>
+<p>這種提升對於循序讀寫任務最為明顯。因此，它直接受益於常見用例，例如網絡檔案共享、容器儲存卷以及加密檔案系統，其中大量傳輸、備份和串流是常規操作。</p>
+<h5>核心數據路徑的現代化</h5>
+<p>此項增強是核心持續努力現代化基礎數據處理路徑的一部分。透過優化 FUSE 數據通道，維護者正在使使用者空間檔案系統成為應對高要求工作負載時更具競爭力的選擇。</p>
+<p>此更新確保了使用者空間實作的靈活性與開發者便利性，現在可以伴隨更少的效能權衡，鞏固了一個關鍵工具，用於從雲儲存後端到專用數據平台等各種應用場景的構建。</p>
+<p><a href="https://www.phoronix.com/news/FUSE-Large-Folios" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
