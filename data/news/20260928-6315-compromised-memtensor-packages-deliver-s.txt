@@ -1,0 +1,32 @@
+Date: 2026-09-28 18:40:00
+Author: HKLUG Team
+Title: Compromised MemTensor Packages Deliver sckit Credential Stealer via npm and PyPI
+Content:
+<p>A supply chain attack targeting the legitimate MemTensor project has come to light, with attackers successfully injecting malicious code into packages distributed through both npm and PyPI. The compromised packages delivered a credential-stealing implant dubbed "sckit," serving as a stark reminder of the vulnerabilities lurking in open-source ecosystems.</p>
+<p>According to a coordinated investigation by Aikido, SafeDep, Socket, and StepSecurity, the affected packages include the npm package <code>@memtensor/memos-cloud-openclaw-plugin</code> along with its corresponding PyPI library. Within these once-trusted packages, attackers embedded a cross-platform tool called "sckit," written in Go. The implant is capable of automatically detecting and compromising Windows, Linux, and macOS systems, with the specific aim of exfiltrating sensitive developer credentials.</p>
+<p>The attack method hinges on exploiting the inherent trust developers place in official package repositories. When a developer runs <code>npm install</code> or <code>pip install</code>, or when an automated CI/CD pipeline pulls in these tainted packages, "sckit" silently installs itself and operates in the background. It scans the system environment for API keys, access tokens, account credentials, and other secrets, then transmits them back to attacker-controlled servers. The threat extends well beyond individual machines—it can lead to full compromise of an organization's build pipelines, servers, and even production environments.</p>
+<p>Security teams have confirmed the attack and its mechanics, though critical questions remain unanswered. The precise method by which attackers gained control of the legitimate MemTensor packages—whether through a compromised maintainer account or a vulnerability in their CI/CD pipeline—has not been publicly disclosed. Additionally, the full scope of affected developers and organizations is still being assessed and is expected to be substantial.</p>
+<p><strong>Immediate Remediation Steps</strong></p>
+<p>If your project depends on any of the affected packages, take the following actions without delay:</p>
+<ol>
+<li><strong>Remove Compromised Packages</strong>: Inspect your <code>package.json</code> or <code>requirements.txt</code> files and remove <code>@memtensor/memos-cloud-openclaw-plugin</code> and any related MemTensor PyPI libraries.</li>
+<li><strong>Rotate All Credentials</strong>: Assume that every secret, token, and password stored on the affected system has been exposed. Immediately rotate all API keys, access tokens, and account credentials.</li>
+<li><strong>Conduct a Full Investigation</strong>: Perform security scans across all developer machines, build servers, and CI/CD environments to detect traces of the "sckit" malware and any suspicious outbound network connections.</li>
+<li><strong>Harden Defenses Going Forward</strong>: Adopt software composition analysis (SCA) tools, pin dependency versions, verify package integrity, and enable mandatory two-factor authentication (2FA) on all package repository accounts.</li>
+</ol>
+<p>This incident underscores the fragile nature of the open-source software supply chain. Trusting a package by name alone is no longer sufficient. Proactive dependency auditing, continuous monitoring, and rapid incident response have become essential security practices for modern software development. As reported by The Hacker News on September 28, 2026, the severity of this security event is now widely acknowledged across the industry.</p>
+<hr>
+<p>一場針對合法MemTensor專案的供應鏈攻擊已被揭露，攻擊者成功將惡意代碼注入透過npm與PyPI兩個主流套件庫分發的套件中。這些被入侵的套件投放了一個名為「sckit」的憑證竊取植入工具，再次凸顯了開源生態系統中潛藏的漏洞。</p>
+<p>根據Aikido、SafeDep、Socket及StepSecurity等團隊的協同調查，受影響的套件包括npm套件<code>@memtensor/memos-cloud-openclaw-plugin</code>及其對應的PyPI函數庫。攻擊者在這些曾被信任的套件中，嵌入了一個以Go語言編寫的跨平台工具「sckit」。該植入工具能夠自動偵測並入侵Windows、Linux及macOS系統，專門用於外洩開發者的敏感憑證。</p>
+<p>此攻擊手法利用了開發者對官方套件倉庫的固有信任。當開發者執行<code>npm install</code>或<code>pip install</code>命令，或自動化CI/CD管線拉取這些受汙染的套件時，「sckit」便會在背景靜默安裝並運作。它會掃描系統環境，竊取API密鑰、存取權杖、帳號密碼等機密資訊，然後將其傳回攻擊者控制的伺服器。此威脅遠不止於單台機器——它可能導致企業的建置管線、伺服器甚至生產環境全面失陷。</p>
+<p>安全團隊已確認此攻擊及其運作機制，但仍有關鍵問題懸而未決。攻擊者最初透過何種方式取得對合法MemTensor套件的控制權——無論是透過被入侵的維護者帳號或其CI/CD管線的漏洞——尚未公開披露。此外，受影響的開發者與組織的完整範圍仍在評估中，預期涉及面將相當廣泛。</p>
+<p><strong>緊急補救措施</strong></p>
+<p>若您的專案依賴上述任何受影響套件，請立即採取以下行動：</p>
+<ol>
+<li><strong>移除被入侵套件</strong>：檢查您的<code>package.json</code>或<code>requirements.txt</code>檔案，移除<code>@memtensor/memos-cloud-openclaw-plugin</code>及任何相關的MemTensor PyPI函數庫。</li>
+<li><strong>全面更換憑證</strong>：假定所有儲存在受影響系統上的機密、權杖和密碼均已外洩。立即更換所有API密鑰、存取權杖和帳號憑證。</li>
+<li><strong>進行全面調查</strong>：對所有開發機器、建置伺服器與CI/CD環境進行安全掃描，偵測「sckit」惡意軟體的蹤跡及任何可疑的外部網絡連線。</li>
+<li><strong>強化未來防禦</strong>：採用軟件組成分析工具、鎖定依賴版本、驗證套件完整性，並在所有套件倉庫帳號上強制啟用雙重認證。</li>
+</ol>
+<p>此事件突顯了開源軟件供應鏈的脆弱性。僅憑套件名稱已不足以建立信任。主動的依賴審計、持續監控和快速的事件響應能力，已成為現代軟件開發不可或缺的安全實踐。根據The Hacker News於2026年9月28日的報導，此安全事件的嚴重性已獲業界廣泛認同。</p>
+<p><a href="https://thehackernews.com/2026/09/compromised-memtensor-packages-deliver.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
