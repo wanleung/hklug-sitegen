@@ -1,0 +1,36 @@
+Date: 2026-09-28 14:35:00
+Author: HKLUG Team
+Title: Poisoned Placeholder: The Hijacking of 'third-party.com' Demands Immediate Developer Audits
+Content:
+<p>A foundational convention in software development has been weaponized. The domain <code>third-party.com</code>, a ubiquitous placeholder in code samples and documentation for years, has been hijacked to serve malicious payloads, creating a widespread and latent threat across thousands of projects.</p>
+<p>Security researchers at Manifold Security uncovered that the domain now operates a sophisticated, evasive campaign. Visitors using Windows browsers are redirected to a "ClickFix" lure, which tricks users into executing malware. Users on macOS, Linux, or automated scanners see a harmless decoy, allowing the threat to persist undetected by conventional tools.</p>
+<p>This attack fundamentally breaks a long-standing trust model. Developers have historically treated domains like <code>third-party.com</code> and <code>example.com</code> as inert, illustrative stubs. While <code>example.com</code> is permanently reserved by IANA for this purpose, <code>third-party.com</code> was not, allowing malicious actors to purchase it. The result is a dormant supply chain risk: any reference to this domain in a repository now points to a poisoned resource.</p>
+<p>The exposure is vast. Analysis shows <code>third-party.com</code> is referenced across more than 1,700 GitHub repositories. These references, embedded in comments, tutorials, and configuration templates, could be copied into active code or processed by automated build systems, injecting a malicious connection into development environments and, potentially, production infrastructure.</p>
+<p>This incident transforms a passive documentation element into an active component of the software supply chain attack surface, highlighting a critical erosion of trust in standard development practices.</p>
+<h4>Immediate Actions Required: Developer Audit Guide</h4>
+<p>To mitigate this risk, developers and security teams must act decisively. Follow these steps to audit and sanitize codebases:</p>
+<ol>
+<li><strong>Scan for Exposure:</strong> Search all repositories for the string <code>third-party.com</code>. Utilize <code>grep</code>, GitHub code search, or IDE-wide searches.</li>
+<li><strong>Assess the Risk:</strong> Classify each finding. References within illustrative code snippets or comments are lower risk, but any instance in configuration files, scripts, or executable code is a high-priority threat.</li>
+<li><strong>Sanitize and Replace:</strong> Replace all functional instances with a safe, canonical alternative. The IANA-reserved <code>example.com</code> (or <code>.org</code>/<code>.net</code>) is the correct standard. Do not simply remove the placeholder; replace it with a safe one to maintain documentation integrity.</li>
+<li><strong>Enforce Preventative Controls:</strong> Update project <code>.gitignore</code> files, linting rules, and contribution guidelines to explicitly block <code>third-party.com</code> and enforce the use of reserved example domains.</li>
+<li><strong>Spread Awareness:</strong> Circulate this advisory. This event is a lesson that all "safe" external resources in code must be re-evaluated for potential hijacking.</li>
+</ol>
+<p>The hijacking of <code>third-party.com</code> is more than a singular malware campaign; it is a stark reminder of the fragile underpinnings of digital trust. For the open-source ecosystem, it necessitates a re-examination of how we reference the external world in our code, prioritizing officially sanctioned resources over community conventions that can be turned against us.</p>
+<hr>
+<p>軟件開發中一個基礎性的慣例已被武器化。多年來在程式碼範例和文件中普遍使用的佔位域名 <code>third-party.com</code> 已被劫持，用於投放惡意載荷，在數以千計的專案中造成了廣泛且潛伏的威脅。</p>
+<p>Manifold Security 的安全研究人員發現，該域名目前正運行一個複雜且善於規避的攻擊行動。使用 Windows 瀏覽器的訪問者會被重定向到一個「ClickFix」誘騙頁面，該頁面會欺騙用戶執行惡意軟件。而 macOS、Linux 用戶或自動化掃描器則會看到一個無害的誘餌，這使得威脅能避開傳統工具的檢測而持續存在。</p>
+<p>此次攻擊從根本上打破了長期以來的信任模式。開發者過去一直將 <code>third-party.com</code> 和 <code>example.com</code> 這類域名視為惰性的、用於說明的佔位符。儘管 <code>example.com</code> 已由 IANA 永久保留用於此目的，但 <code>third-party.com</code> 並未被保留，這使得惡意行為者得以購買它。其結果是產生了一個休眠的供應鏈風險：程式碼倉庫中任何對此域名的引用，如今都指向了一個被毒化的資源。</p>
+<p>暴露範圍極為廣泛。分析顯示，<code>third-party.com</code> 在超過 1,700 個 GitHub 倉庫中被引用。這些嵌入於註釋、教學和配置範本中的引用，可能被複製到活躍的程式碼中，或被自動化建構系統處理，從而將惡意連結注入開發環境，並可能進入生產基礎設施。</p>
+<p>此事件將一個被動的文件元素轉變為軟件供應鏈攻擊面的一個主動組件，凸顯了標準開發實踐中信任的嚴重侵蝕。</p>
+<h4>立即行動要求：開發者審計指南</h4>
+<p>為了降低此風險，開發者和安全團隊必須果斷行動。請遵循以下步驟審計和清理程式碼庫：</p>
+<ol>
+<li><strong>掃描暴露情況：</strong> 在所有倉庫中搜索字串 <code>third-party.com</code>。可使用 <code>grep</code>、GitHub 程式碼搜尋或 IDE 全域搜尋。</li>
+<li><strong>評估風險：</strong> 對每項發現進行分類。位於說明性程式碼片段或註釋中的引用風險較低，但位於配置文件、腳本或可執行程式碼中的任何實例都屬於高優先級威脅。</li>
+<li><strong>清理並替換：</strong> 將所有功能性實例替換為安全的、符合規範的替代項。由 IANA 保留的 <code>example.com</code>（或 <code>.org</code>/<code>.net</code>）是正確的標準。請勿簡單地移除佔位符；應將其替換為安全的佔位符，以維護文件的完整性。</li>
+<li><strong>強制執行預防性控制：</strong> 更新專案的 <code>.gitignore</code> 文件、程式碼風格規範和貢獻指南，明確禁止使用 <code>third-party.com</code> 並強制使用保留的範例域名。</li>
+<li><strong>提升意識：</strong> 傳閱此安全公告。此次事件是一個教訓：程式碼中所有「安全」的外部資源都必須重新評估其被劫持的可能性。</li>
+</ol>
+<p><code>third-party.com</code> 的劫持不僅僅是一次單一的惡意軟件攻擊；它是數碼信任脆弱基礎的一個鮮明提醒。對於開源生態系統而言，它要求我們重新審視如何在程式碼中引用外部世界，並優先考慮官方認可的資源，而非可能被用來對付我們的社群慣例。</p>
+<p><a href="https://thehackernews.com/2026/09/placeholder-third-partycom-referenced.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
