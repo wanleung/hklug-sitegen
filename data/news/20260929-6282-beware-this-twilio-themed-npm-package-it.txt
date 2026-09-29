@@ -1,0 +1,22 @@
+Date: 2026-09-29
+Author: HKLUG Team
+Title: Beware This Twilio-Themed npm Package: It's Harvesting Your Secrets
+Content:
+<p>Cybersecurity researchers have identified a malicious npm package that masquerades as an official Twilio security probe, turning developer vigilance against itself to steal sensitive credentials. The package, <code>tw-pkgprobe-7731</code>, represents a sophisticated supply-chain attack that warns of greater risks within build pipelines.</p>
+<p>First uploaded to the npm registry in mid-August under the username <code>twdepprobe7731</code>, the package's description labels it a "bug-bounty probe." This framing is a deliberate social engineering tactic, designed to appeal to developers' security awareness and trust in the open-source ecosystem. By impersonating a tool from a well-known company like Twilio, it lowers the guard of those who might install it.</p>
+<p>The real danger is hidden in its code. Once included in a project, the package is engineered to quietly harvest secrets. It scans for environment variables, SSH keys, and credentials for cloud services and Twilio accounts, sending the data to the attacker. The threat escalates dramatically if such a dependency enters a CI/CD pipeline. A compromised build server could expose the secrets of an entire organization, providing attackers a direct route to production systems and cloud infrastructure.</p>
+<p>This incident is a clear reminder for development teams to scrutinize their dependencies. The attack underscores three essential practices:
+1.  <strong>Audit and Remediate:</strong> Teams must immediately search their <code>package.json</code> files and <code>node_modules</code> directories for <code>tw-pkgprobe-7731</code>. If found, it must be removed. Assume any potentially affected systems are compromised, and rotate all credentials—including API keys, cloud tokens, and SSH keys—with priority for Twilio-related accounts.
+2.  <strong>Pin Your Dependencies:</strong> The use of lock files (<code>package-lock.json</code> or <code>yarn.lock</code>) is critical. These files ensure consistent dependency versions across teams and environments, preventing silent updates that could introduce malicious code.
+3.  <strong>Automate Scanning:</strong> Integrate security scanning tools into development workflows. Automated checks for anomalous packages and known vulnerabilities provide an essential layer of defense before code reaches production.</p>
+<p>As attackers increasingly weaponize trust, the community must also consider how package registries can better verify publishers and protect established brand identities. For now, the strongest defenses remain vigilant development hygiene and a zero-trust approach to the tools we install.</p>
+<hr>
+<p>網絡安全研究人員已識別出一個惡意npm套件，它偽裝成Twilio的官方安全探測工具，利用開發者的警覺性反過來竊取敏感憑證。該套件名為<code>tw-pkgprobe-7731</code>，代表了一種精密的供應鏈攻擊，預警了構建管道內存在更大風險。</p>
+<p>該套件於八月中旬以用戶名<code>twdepprobe7731</code>首次上傳至npm倉庫，其描述標籤自稱為「漏洞賞金探測器」。這種包裝是蓄意的社會工程策略，旨在迎合開發者的安全意識及對開源生態系統的信任。透過模仿像Twilio這類知名公司的工具，它降低了潛在安裝者的戒心。</p>
+<p>真正的威脅隱藏在其程式碼中。一旦被納入專案，該套件便被設計為靜默收割機密資料。它會掃描環境變數、SSH密鑰以及雲端服務和Twilio帳戶的憑證，並將資料傳輸給攻擊者。若此類依賴套件進入CI/CD管道，威脅將急劇升級。被入侵的構建伺服器可能暴露整個組織的機密，為攻擊者提供直接入侵生產系統與雲端基礎設施的途徑。</p>
+<p>此事件為開發團隊帶來明確警示，必須審慎核查其依賴套件。此次攻擊突顯了三項基本措施：
+1.  <strong>審計與補救：</strong> 團隊必須立即搜查其<code>package.json</code>檔案與<code>node_modules</code>目錄中的<code>tw-pkgprobe-7731</code>。若發現，必須立即移除。應假設任何可能受影響的系統已被入侵，並輪替所有憑證——包括API金鑰、雲端權杖及SSH密鑰——優先處理與Twilio相關的帳戶。
+2.  <strong>鎖定依賴套件版本：</strong> 使用鎖定檔案（<code>package-lock.json</code>或<code>yarn.lock</code>）至關重要。這些檔案能確保團隊與環境間的依賴套件版本一致，防止可能引入惡意程式碼的靜默更新。
+3.  <strong>自動化掃描：</strong> 將安全掃描工具整合至開發流程。自動化檢查異常套件及已知漏洞，能在代碼進入生產環境前提供關鍵的防禦層。</p>
+<p>隨著攻擊者日益將信任武器化，社群也必須思考套件倉庫如何能更有效地驗證發佈者並保護既有的品牌身分。目前，最強大的防線仍是保持警覺的開發衛生習慣，以及對我們所安裝工具採取零信任態度。</p>
+<p><a href="https://thehackernews.com/2026/09/malicious-npm-package-poses-as-twilio.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
