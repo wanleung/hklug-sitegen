@@ -1,0 +1,30 @@
+Date: 2026-09-28 16:01:00
+Author: HKLUG Team
+Title: Malicious Takeover of Common Placeholder Domain Threatens 1,700+ Code Repositories
+Content:
+<p>A critical vulnerability has been exposed in the software supply chain: the commonly used placeholder domain <code>third-party[.]com</code> has been hijacked to deliver malware, putting thousands of open-source projects at risk. According to a report from The Hacker News, attackers are now weaponizing a domain long considered inert in documentation and code examples, creating an immediate threat across over 1,700 public repositories.</p>
+<p>For years, developers have used <code>third-party[.]com</code> as a generic placeholder in tutorials, code samples, and documentation, much like the officially reserved <code>example.com</code>. The danger, as highlighted by Ax Sharma, Head of Research at Manifold Security, stems from this informal trust. Unlike <code>example.com</code>, which is reserved by the IANA for documentation purposes, <code>third-party[.]com</code> was a registrable, unclaimed domain—an open door for malicious actors.</p>
+<p>The current attack is deliberately evasive. The hijacked site now executes a dual-personality scheme: Windows users are served a ClickFix social engineering lure designed to trick them into running malicious code, while visitors on macOS, Linux, and mobile devices see a harmless decoy. This selective targeting is a calculated move to avoid detection by security researchers not operating in Windows environments.</p>
+<p>The implications for developer security are profound. The domain's widespread presence in public code means it is trusted by both humans and automated tools. Linters checking for broken links, developers following example code, and automated scanners could all be led to this malicious endpoint. This marks a significant evolution in supply chain attacks, expanding the attack surface from compromised dependencies to include the very documentation and educational text that underpins development work.</p>
+<p>Immediate action is required from development teams. The threat is active and targets a high-value audience for credential theft and network compromise. The following steps are recommended for auditing and securing codebases:</p>
+<ol>
+<li><strong>Search Comprehensively:</strong> Use code search tools, <code>grep</code>, or IDE functions to scan all repositories, documentation, configuration files, and dependencies for every instance of <code>third-party[.]com</code>.</li>
+<li><strong>Replace with Safe Alternatives:</strong> All non-essential instances should be replaced. Use domains from the IANA-reserved range—<code>example.com</code>, <code>example.org</code>, <code>example.net</code>—for placeholder URLs. For non-HTTP contexts, use clear, bracketed labels like <code>[YOUR_THIRD_PARTY_API]</code>.</li>
+<li><strong>Extend Scrutiny:</strong> Investigate third-party libraries, templates, and documentation generators that may contain the placeholder. Automated tools may not catch all instances, requiring manual verification.</li>
+<li><strong>Implement Preventive Controls:</strong> To avoid future incidents, establish linting rules or pre-commit hooks to automatically flag unreserved placeholder domains, reinforcing documentation hygiene as a core security practice.</li>
+</ol>
+<p>This incident underscores a harsh reality: every part of the development ecosystem, including text once considered safe, can be weaponized. Proactive auditing and a shift toward treating documentation with the same security rigor as executable code are no longer optional but essential for modern software security hygiene.</p>
+<hr>
+<p>軟件供應鏈中暴露出一個嚴重漏洞：長期被廣泛用作佔位符號的域名 <code>third-party[.]com</code> 遭黑客劫持，用作散播惡意軟件，導致數千個開源項目面臨風險。據《黑客新聞》報道，攻擊者正利用這個在文檔及代碼範例中長期被視為無害的域名發動攻擊，對超過 1,700 個公共代碼儲存庫構成即時威脅。</p>
+<p>多年來，開發者在教程、代碼範例及文檔中普遍使用 <code>third-party[.]com</code> 作為通用佔位符號，類似由官方保留的 <code>example.com</code>。正如 Manifold Security 研究主管 Ax Sharma 所指出，危險正源於這種非正式的信任。與由 IANA 為文檔用途保留的 <code>example.com</code> 不同，<code>third-party[.]com</code> 是一個可註冊但未被領用的域名——為惡意攻擊者敞開了大門。</p>
+<p>當前的攻擊策略極具規避性。被劫持的網站現採用「雙重人格」方案：Windows 用戶會遭遇 ClickFix 社會工程誘騙，誘使其執行惡意代碼；而 macOS、Linux 及流動裝置訪問者則會看到無害的偽裝頁面。這種選擇性攻擊是蓄意迴避非 Windows 環境下安全研究人員偵測的策略。</p>
+<p>此事件對開發者保安影響深遠。該域名在公共代碼中的廣泛存在，意味著它同時受到人類開發者和自動化工具的信任。檢查斷鏈的代碼檢查工具、參照範例代碼的開發者，以及自動化掃描器，都可能被引導至這個惡意端點。這標誌著供應鏈攻擊的重大演變——攻擊面已從被入侵的依賴項，擴展至支撐開發工作的文檔與教學材料本身。</p>
+<p>開發團隊須立即採取行動。該威脅正處活躍狀態，並以高價值的憑證竊取及網絡入侵為目標。以下建議步驟可用於審計及加固代碼庫：</p>
+<ol>
+<li><strong>全面搜查</strong>：運用代碼搜索工具、<code>grep</code> 或 IDE 功能，掃描所有儲存庫、文檔、配置文件及依賴項中 <code>third-party[.]com</code> 的每個實例。</li>
+<li><strong>替換為安全選項</strong>：所有非必要實例均應替換。佔位網址應使用 IANA 保留域名範圍內的地址——<code>example.com</code>、<code>example.org</code>、<code>example.net</code>。對於非 HTTP 環境，請使用清晰的方括號標籤，例如 <code>[YOUR_THIRD_PARTY_API]</code>。</li>
+<li><strong>擴展審查範圍</strong>：調查可能包含該佔位符號的第三方函式庫、範本及文檔生成器。自動化工具未必能捕捉所有實例，仍需人工驗證。</li>
+<li><strong>實施預防性控制</strong>：為避免未來事件，應建立代碼檢查規則或預提交鉤子，自動標記未保留的佔位符號域名，將文檔整潔度視為核心保安實踐加以強化。</li>
+</ol>
+<p>此次事件突顯了一個殘酷現實：開發生態系統的每一個環節，包括曾被認為安全的文本內容，都可能被武器化。主動審計，以及以與可執行代碼同等的保安嚴謹度對待文檔，已不再是可選項，而是現代軟件保安衛生不可或缺的必要措施。</p>
+<p><a href="https://thehackernews.com/2026/09/placeholder-third-partycom-referenced.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
