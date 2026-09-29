@@ -1,0 +1,32 @@
+Date: 2026-09-29
+Author: HKLUG Team
+Title: Malicious npm Package indexed-btree Hid Its Loader in Runtime Code Before Removal
+Content:
+<p>A malicious npm package has been removed from the registry after researchers discovered it used an unconventional method to conceal its payload—hiding malicious behavior directly in application code rather than relying on the lifecycle scripts that security tools typically inspect.</p>
+<p>According to Checkmarx, the package <code>indexed-btree</code> mimicked the legitimate <code>sorted-btree</code> library, an ordinary B-tree and indexing utility. The discovery, reported by The Hacker News, indicates that threat actors are likely shifting their tactics in response to recent improvements in security controls targeting installation-time scripts.</p>
+<p>Rather than embedding payloads in <code>preinstall</code> or <code>postinstall</code> hooks—the traditional vector for npm-based supply chain attacks—<code>indexed-btree</code> placed its malicious logic within the package's core runtime functions. This means the code could pass standard security scans focused on manifest files and lifecycle scripts without raising flags. The malicious behavior would only activate when specific functions were called during application execution.</p>
+<p>This technique highlights a persistent blind spot in many development teams' security practices: the gap between when a dependency is installed and when its code actually runs. Packages that appear clean on the surface may still carry dormant threats that activate only under specific conditions in production.</p>
+<p>The incident underscores a broader evolution in supply chain attack methodology. As defensive tooling has improved at detecting malicious lifecycle scripts, adversaries appear to be moving payloads into harder-to-inspect areas of the codebase. A package with clean metadata and no suspicious scripts is no longer guaranteed to be safe.</p>
+<p>Security practitioners recommend several steps to address this class of threat:</p>
+<ol>
+<li><strong>Manual Review of Suspicious Packages:</strong> Packages that closely imitate popular libraries warrant direct source code inspection, especially when automated tools cannot fully trace execution paths.</li>
+<li><strong>Advanced Software Composition Analysis:</strong> SCA tools that analyze code execution paths and data flows provide deeper visibility than scanners that focus solely on manifests and known vulnerabilities.</li>
+<li><strong>Runtime Behavioral Monitoring:</strong> Observing application behavior in staging environments can reveal anomalies such as unexpected network connections that suggest a dependency is not functioning as expected.</li>
+<li><strong>Updated Developer Training:</strong> Teams should reinforce that the absence of lifecycle scripts does not confirm a package is safe. Verifying authenticity, checking publication history, and understanding typosquatting risks remain critical skills.</li>
+</ol>
+<p>The full scope and final objective of the <code>indexed-btree</code> payload were not detailed in the initial disclosure. Nevertheless, the technique itself marks a notable shift: as installation-time defenses improve, attackers are embedding malicious logic deeper into packages where it is less likely to be detected. Defending against this approach requires extending security scrutiny beyond the point of installation and throughout the runtime lifecycle of every dependency.</p>
+<hr>
+<p>一個惡意npm套件在研究人員發現其使用非常規方法隱藏有效載荷後，已從註冊表中被移除——該方法直接將惡意行為隱藏在應用程式代碼中，而非依賴安全工具通常檢查的生命週期腳本。</p>
+<p>根據Checkmarx的報告，套件<code>indexed-btree</code>模仿了合法的<code>sorted-btree</code>函數庫，後者是一個普通的B-tree及索引實用工具。這項由The Hacker News報導的發現指出，威脅行為者很可能正在調整其策略，以應對近期針對安裝時腳本的安全控制措施改進。</p>
+<p><code>indexed-btree</code>並未像傳統基於npm的供應鏈攻擊那樣將有效載荷嵌入<code>preinstall</code>或<code>postinstall</code>鉤子中，而是將其惡意邏輯放置於套件的核心運行時函數內。這意味著該代碼可以通過專注於清單文件和生命週期腳本的標準安全掃描而不被標記。惡意行為僅在應用程式執行期間調用特定函數時才會激活。</p>
+<p>這種技術凸顯了許多開發團隊安全實踐中一個持續存在的盲點：依賴項安裝時間與其代碼實際運行時間之間的差距。表面上看似乾淨的套件，仍可能攜帶僅在生產環境特定條件下才會被激活的潛在威脅。</p>
+<p>此事件凸顯了供應鏈攻擊方法論的更廣泛演進。隨著防禦工具在檢測惡意生命週期腳本方面有所改進，攻擊者似乎正在將有效載荷轉移到代碼庫中更難以檢查的區域。一個擁有乾淨中繼資料且無可疑腳本的套件，不再能保證其安全性。</p>
+<p>安全從業人員建議採取以下步驟來應對此類威脅：</p>
+<ol>
+<li><strong>人工審查可疑套件</strong>：那些高度模仿熱門函數庫的套件值得進行直接的原始碼檢查，特別是當自動化工具無法完全追蹤執行路徑時。</li>
+<li><strong>進階軟件成分分析</strong>：能分析代碼執行路徑和數據流的SCA工具，比僅關注清單和已知漏洞的掃描器提供更深層次的可見性。</li>
+<li><strong>運行時行為監控</strong>：在預发布環境中觀察應用程式的行為，可以揭示異常情況，例如暗示依賴項未按預期運行的非預期網絡連接。</li>
+<li><strong>更新開發人員培訓</strong>：團隊應強化一個觀念：生命週期腳本的缺失並不能確認套件是安全的。驗證真實性、檢查發布歷史以及理解搶注域名的風險，仍然是關鍵技能。</li>
+</ol>
+<p>在初步披露中，並未詳細說明<code>indexed-btree</code>有效載荷的完整範圍和最終目標。然而，該技術本身標誌著一個顯著的轉變：隨著安裝時防禦措施的改進，攻擊者正將惡意邏輯更深地嵌入套件中，使其更難被檢測。防禦這種方法需要將安全審查擴展到安裝點之外，並貫穿每個依賴項的整個運行時生命週期。</p>
+<p><a href="https://thehackernews.com/2026/09/malicious-npm-package-indexed-btree-hid.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
