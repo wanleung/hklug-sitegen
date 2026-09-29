@@ -1,0 +1,24 @@
+Date: 2026-09-29 08:06:00
+Author: HKLUG Team
+Title: MCP Python SDK Flaw Exposes OAuth Credentials to Malicious Server Takeover
+Content:
+<p>A critical authentication flaw in the official Model Context Protocol (MCP) Python SDK allows a malicious server to hijack OAuth flows and steal application credentials, potentially leading to the full compromise of connected services. The SDK maintainers have issued a patch in version 1.30.0, urging all users to upgrade immediately.</p>
+<p>The vulnerability, disclosed in a security advisory, enables an attacker impersonating an MCP server to trick vulnerable SDK versions into sending sensitive authentication details—specifically the client secret, authorization code, and PKCE proof key—to an endpoint the attacker controls. With these elements, a malicious actor can complete the OAuth handshake, effectively stealing the application's authorized identity.</p>
+<p>The impact is substantial, as it compromises the credentials for service integrations like cloud platforms, APIs, and databases that the affected application was permitted to access. Any secret used with a vulnerable SDK version must be considered compromised.</p>
+<p>The flaw is especially concerning within the burgeoning ecosystem of AI agent frameworks, which rely on MCP for establishing trust between AI models and external tools. This incident reveals a critical attack surface: a compromised tool server could silently harvest the credentials used to connect to other valuable services, undermining the security of agentic workflows.</p>
+<p>For developers building on this emerging infrastructure, the event highlights the necessity of rigorous dependency auditing, particularly for libraries handling authentication. A proactive security posture is essential.</p>
+<p><strong>Immediate Remediation Steps:</strong>
+1.  <strong>Update the SDK:</strong> Upgrade all instances of the MCP Python SDK to version 1.30.0 or later.
+2.  <strong>Rotate Credentials:</strong> Immediately revoke and regenerate every OAuth client secret, API key, or token that was issued or used by applications running a pre-1.30.0 SDK version.</p>
+<p>This security incident underscores the need for meticulous verification of both third-party dependencies and the server-client trust boundaries fundamental to modern AI agent architectures.</p>
+<hr>
+<p>官方 Model Context Protocol (MCP) Python SDK 中存在一個關鍵的認證漏洞，允許惡意伺服器劫持 OAuth 流程並竊取應用程式憑證，可能導致所連接服務被完全入侵。SDK 維護者已在 1.30.0 版本中發布修補程式，敦促所有用戶立即升級。</p>
+<p>該漏洞在安全公告中被披露，它使冒充 MCP 伺服器的攻擊者能夠欺騙有漏洞的 SDK 版本，將敏感的認證詳情——具體包括客戶端密鑰、授權碼和 PKCE 證明密鑰——發送至攻擊者控制的端點。透過這些元素，惡意行為者可以完成 OAuth 握手， effectively 竊取應用程式的授權身分。</p>
+<p>影響相當嚴重，因為它危及了受影響應用程式被允許訪問的服務整合憑證，例如雲端平台、API 和資料庫。任何使用有漏洞 SDK 版本的密鑰都必須視為已被入侵。</p>
+<p>該漏洞在新興的 AI 代理框架生態系中尤其令人擔憂，這些框架依賴 MCP 在 AI 模型與外部工具之間建立信任。此次事件揭示了一個關鍵的攻擊面：一個被入侵的工具伺服器可能悄無聲息地收集用於連接其他有價值服務的憑證，從而破壞代理工作流程的安全性。</p>
+<p>對於在此新興基礎設施上構建的開發者而言，此事件突顯了嚴格審計依賴項的必要性，尤其是處理認證的程式庫。採取主動的安全態勢至關重要。</p>
+<p><strong>立即補救步驟：</strong>
+1.  <strong>更新 SDK：</strong> 將所有 MCP Python SDK 實例升級至 1.30.0 或更高版本。
+2.  <strong>更換憑證：</strong> 立即撤銷並重新生成每個由運行 1.30.0 以前版本 SDK 的應用程式簽發或使用過的 OAuth 客戶端密鑰、API 密鑰或令牌。</p>
+<p>此次安全事件強調了對第三方依賴項以及現代 AI 代理架構基礎的伺服器-客戶端信任邊界進行細緻驗證的必要性。</p>
+<p><a href="https://thehackernews.com/2026/09/official-mcp-python-sdk-flaw-can-let.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
