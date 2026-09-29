@@ -1,0 +1,22 @@
+Date: 2026-09-25 15:17:00
+Author: HKLUG Team
+Title: Cloudflare Patches Critical Container Flaw That Enabled Cross-Tenant Data Leakage
+Content:
+<p>A significant logic error in Cloudflare's container orchestration platform has been patched after it was discovered that the flaw could allow one paying customer to read residual disk data left behind by a container belonging to a completely different, unrelated tenant.</p>
+<p>According to a disclosure from Cloudflare and the security researchers who identified the issue, the vulnerability resided in the system for allocating and deallocating disk blocks. An attacker could exploit this error to access "stale" data on the physical server's disk—a remnant of a previous workload that had been terminated but whose storage blocks had not yet been properly sanitized or reassigned.</p>
+<p>Cloudflare has stressed that the exposure was non-targeted. While a malicious actor could exploit the flaw to read this leftover data, they had no ability to choose which customer's information they accessed. The risk was not a direct breach of live, active workloads but a violation of the fundamental isolation promise in a multi-tenant cloud environment.</p>
+<p>The company indicated that the patch has been applied across its infrastructure. The remediation followed disclosure protocols with the researchers, though full technical details of the underlying fix have not been published.</p>
+<p>This incident highlights a persistent and complex challenge in cloud security: maintaining absolute isolation between tenants sharing the same physical hardware. Even minor defects in memory or storage management layers can inadvertently create pathways that bypass critical security boundaries. For organisations relying on cloud containers, the flaw serves as a stark reminder that provider-level controls are only one part of a comprehensive security posture.</p>
+<p>The event reinforces the critical importance of the shared responsibility model. While Cloudflare is responsible for securing its infrastructure and applying patches, customers must also implement rigorous data hygiene. Security experts consistently advise that sensitive data should be encrypted at rest and in transit. Crucially, applications and containers should be designed to actively purge sensitive information from memory and temporary storage before terminating, rather than relying on the underlying platform to do so automatically.</p>
+<p>For IT teams managing cloud-native workloads, the key operational takeaway is twofold. First, verify that any services relying on Cloudflare's container platform are covered by the applied patch. Second, it necessitates a review of internal data sanitization practices to ensure that sensitive information isn't being left behind in ephemeral storage by company-controlled workloads. This minimizes risk even within a properly secured provider environment.</p>
+<p>The flaw demonstrates that in the shared space of cloud computing, vigilance is required on both sides of the provider-customer divide.</p>
+<hr>
+<p>Cloudflare 容器編排平台中一個重大邏輯錯誤已獲修補，此前發現該漏洞可能允許一個付費客戶讀取屬於完全不同、無關租戶的容器所遺留的磁碟殘餘數據。</p>
+<p>根據 Cloudflare 與發現此問題的安全研究人員的披露，漏洞存在於磁碟區塊的分配與釋放系統中。攻擊者可利用此錯誤存取實體伺服器磁碟上的「過時」數據——那是先前已被終止的工作負載所留下的殘餘，但其儲存區塊尚未被妥善清理或重新分配。</p>
+<p>Cloudflare 強調此次暴露並非針對性攻擊。雖然惡意行為者可能利用此漏洞讀取這些殘留數據，但他們無法選擇存取哪個客戶的資訊。風險並非直接入侵即時、活躍的工作負載，而是違背了多租戶雲端環境中的基本隔離承諾。</p>
+<p>公司表示修補程式已套用至其整個基礎設施。此次補救遵循了與研究人員的披露協議，但底層修復的完整技術細節尚未公開。</p>
+<p>此次事件突顯了雲端安全中一個持續且複雜的挑戰：如何在共享相同實體硬體的租戶之間維持絕對隔離。即使是記憶體或儲存管理層中的輕微缺陷，也可能無意中創造出繞過關鍵安全邊界的路徑。對於依賴雲端容器的組織而言，該漏洞是一個嚴峻提醒：供應商層級的控制僅是整體安全態勢的一部分。</p>
+<p>此事件進一步凸顯了共享責任模式的至關重要性。雖然 Cloudflare 負責保護其基礎設施並套用修補程式，客戶也必須實施嚴格的數據衛生管理。安全專家一致建議，敏感數據應於靜止狀態及傳輸過程中加密。至關重要的是，應用程式和容器應設計為在終止前主動從記憶體和暫存儲存中清除敏感資訊，而非依賴底層平台自動完成。</p>
+<p>對於管理雲端原生工作負載的 IT 團隊，關鍵操作要點有兩方面。首先，需確認任何依賴 Cloudflare 容器平台的服務均已受現已套用的修補程式保護。其次，必須審查內部數據清理實踐，確保由公司控制的工作負載不會在暫存儲存中遺留敏感資訊。即使在供應商環境已妥善保護的情況下，此舉亦能將風險降至最低。</p>
+<p>該漏洞表明，在雲端運算的共享空間中，供應商與客戶雙方都需要保持警惕。</p>
+<p><a href="https://thehackernews.com/2026/09/cloudflare-fixes-flaw-that-let-one.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
