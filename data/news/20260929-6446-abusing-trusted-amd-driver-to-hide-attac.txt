@@ -1,0 +1,26 @@
+Date: 2026-09-29 16:55:00
+Author: HKLUG Team
+Title: Abusing Trusted AMD Driver to Hide Attacks Shifts Cybersecurity Focus
+Content:
+<p>A new malware campaign is turning legitimate system components into weapons, leveraging a vulnerable, signed AMD graphics driver to operate with near-invisibility and disable corporate security defenses. Security researchers highlight this as a critical evolution in attack methodology, moving away from hunting for software vulnerabilities to abusing the trust placed in pre-installed hardware drivers.</p>
+<p>The activity, uncovered by Ontinue and tied to the Lunex Malware-as-a-Service (MaaS) platform, shows a sophisticated chain that begins with user deception. Ukrainian-speaking users are lured to compromised websites that present a fake Cloudflare verification page. This page, part of a ClickFix social engineering scheme, prompts victims to copy and paste a seemingly innocuous PowerShell command, which in reality sets the attack in motion.</p>
+<p>Once executed, the malware installs itself and progresses to its core evasion mechanism: loading and exploiting the <code>amdgpu2k.sys</code> driver. This component is legitimately signed by AMD, allowing it to operate at the kernel level with a high degree of trust from the operating system and security tools. The malware abuses this privileged position to forcibly terminate processes belonging to endpoint detection and response (EDR) software.</p>
+<p>"This creates a significant blind spot for EDR solutions, as the malicious action is initiated by a trusted, signed component," Ontinue's researchers noted. With security monitoring neutralized, the final stage deploys the Lunex stealer to harvest credentials and data from browsers without alerting defenses.</p>
+<p>The use of a legitimate driver for defense evasion marks a pivotal shift. Attackers no longer need to rely on finding and exploiting rare zero-day kernel vulnerabilities. Instead, they can leverage flaws in trusted software already present on the target system. Offering this technique through a MaaS platform like Lunex further lowers the technical barrier, making advanced evasion tactics accessible to a wider range of cybercriminals.</p>
+<p>This campaign underscores the critical limitations of traditional signature-based detection. For IT security teams, effective defense now demands a mandatory shift toward monitoring software <em>behavior</em>. Key strategies include:
+*   <strong>Tracking Driver Actions:</strong> Implementing alerts for sequences where drivers like <code>amdgpu2k.sys</code> load modules or interact with critical security processes.
+*   <strong>Flagging Process Termination Anomalies:</strong> Creating rules to detect when system drivers directly terminate EDR or antivirus services—an activity highly irregular under normal operation.
+*   <strong>Identifying Suspicious User Execution:</strong> Spotting patterns of users pasting commands into terminals as prompted by web pages, the core of the ClickFix vector.</p>
+<p>The discovery is a stark reminder that threats can emerge from the very foundations of system stability. Defending against this class of attack requires moving beyond checking what software is, to rigorously observing how it acts.</p>
+<hr>
+<p>新型惡意軟件攻擊活動將合法系統組件轉化為武器，利用已簽署但存在漏洞的AMD顯示卡驅動程式運行，近乎隱形並癱瘓企業網絡安全防禦體系。安全研究人員強調，此現象代表攻擊方法論的關鍵演進——從搜尋軟件漏洞轉向濫用預裝硬件驅動程式所獲得的信任。</p>
+<p>這次由Ontinue揭露並與Lunex惡意軟件即服務（MaaS）平台相關的攻擊活動，展現了一個始於用戶欺騙的複雜攻擊鏈。烏克蘭語系使用者被誘導至受入侵網站，該網站偽裝成Cloudflare驗證頁面。此頁面屬於ClickFix社會工程學攻擊手段的一部分，引導受害者複製並貼上看似無害的PowerShell指令碼，實則啟動攻擊程序。</p>
+<p>惡意軟件執行後會安裝自身，並進入核心迴避機制：載入並利用<code>amdgpu2k.sys</code>驅動程式。該組件經AMD合法簽署，使其能在作業系統及安全工具高度信任下，以核心層級運行。惡意軟件濫用此特權位置強制終止端點偵測與回應（EDR）軟件的運行進程。</p>
+<p>Ontinue研究人員指出：「這為EDR解決方案製造了重大盲點，因為惡意行為是由受信任的簽署組件發起。」在安全監控被瓦解後，攻擊最終階段會部署Lunex竊取程式，在不觸發防禦警報的情況下，從瀏覽器收集憑證與數據。</p>
+<p>利用合法驅動程式進行防禦迴避，標誌著攻擊模式的關鍵轉變。攻擊者不再需要依賴搜尋並利用罕見的核心零日漏洞，而是能利用目標系統已存在的受信任軟件缺陷。透過Lunex等MaaS平台提供此技術，進一步降低技術門檻，使先進迴避策略能被更廣泛的網絡罪犯採用。</p>
+<p>此攻擊活動凸顯傳統特徵碼偵測技術的根本局限。對資訊科技安全團隊而言，有效防禦現已必須轉向監控軟件<em>行為</em>。關鍵策略包括：
+*   <strong>追蹤驅動程式行為：</strong> 針對<code>amdgpu2k.sys</code>等驅動程式載入模組或與關鍵安全進程互動的序列實施警報機制。
+*   <strong>標記異常進程終止：</strong> 建立規則以偵測系統驅動程式直接終止EDR或防毒軟件服務——此現象在正常運作中極不尋常。
+*   <strong>識別可疑用戶執行行為：</strong> 偵測用戶依照網頁提示將指令貼上終端機的行為模式，此乃ClickFix攻擊媒介的核心手法。</p>
+<p>此發現嚴正提醒：威脅可能源於系統穩定性的根本基礎。防禦此類攻擊，必須超越檢查軟件身分的層次，轉而嚴密觀察其運作行為。</p>
+<p><a href="https://thehackernews.com/2026/09/lunex-stealer-abuses-amd-driver.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
