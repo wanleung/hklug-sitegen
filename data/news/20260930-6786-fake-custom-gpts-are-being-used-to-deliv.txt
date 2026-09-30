@@ -1,0 +1,52 @@
+Date: 2026-09-30 17:14:00
+Author: HKLUG Team
+Title: Fake Custom GPTs Are Being Used to Deliver Malware via ClickFix Lures, Huntress Warns
+Content:
+<p>Security researchers have documented a fresh abuse pattern in which attackers build fake ChatGPT Custom GPTs that impersonate legitimate products, then funnel users to external sites using so-called ClickFix lures to deliver remote access trojans (RATs).</p>
+<p>The activity, observed by threat detection firm Huntress in late September 2026, marks the latest instance of threat actors weaponising features of trusted AI platforms — following earlier campaigns that abused ChatGPT's sharing and file-generation capabilities.</p>
+<h5>How the chain works</h5>
+<p>According to Huntress, the attack unfolds in a few deliberate steps. Attackers first create a Custom GPT styled to resemble a well-known product or service. Because Custom GPTs are shareable and discoverable through OpenAI's own directories, the fraudulent assistant inherits the platform's credibility — users encounter it inside a familiar, trusted interface rather than an unfamiliar website.</p>
+<p>The impostor GPT then directs the victim off-platform, typically to an attacker-controlled page. There, the user is presented with a mundane, plausible instruction: copy and paste a command, run a script in a terminal, or execute a fix to resolve some purported issue. This is the ClickFix technique — a social-engineering method that gets the victim to run the payload-delivering command themselves.</p>
+<p>Crucially, no malware file is attached, no macro is enabled, and nothing arrives through a suspicious email. The victim performs the execution in plain view of their own operating system, usually in a PowerShell window or the Run dialog — the same commands a legitimate administrator or developer might run on any given day.</p>
+<h5>Why endpoint tools miss it</h5>
+<p>That is precisely what makes ClickFix a human-factors problem rather than a purely malware one. Because execution is user-initiated and framed as a benign troubleshooting step, endpoint detection and response (EDR) tooling sees an ordinary, signed process launched from a terminal — nothing anomalous to flag. The technique defeats detection not by evading controls, but by never triggering them.</p>
+<p>Custom GPTs compound the risk in three structural ways, the researchers noted. First, the platform's reputation transfers to the impostor assistant. Second, distribution is frictionless — the link lives on an official, sanctioned channel rather than a phishing inbox, leaving no suspicious artefact behind. Third, the GPT can redirect users to arbitrary external destinations, so the actual malicious infrastructure never has to touch OpenAI's environment at all. The ChatGPT platform itself is never compromised; it is simply borrowed as camouflage.</p>
+<h5>What defenders should do</h5>
+<p>For enterprise environments, Huntress' findings point toward a familiar governance gap: enterprise AI assistant adoption is outpacing the controls meant to govern it. Organisations deploying generative AI tools at scale should treat unsolicited Custom GPT links exactly as they would treat links from unknown third parties. Any assistant that instructs a user to run a command should be verified against the vendor's sanctioned offering.</p>
+<p>Practically, that means:</p>
+<ul>
+<li>Applying the same scrutiny to Custom GPTs that you already apply to browser extensions and unvetted SaaS integrations;</li>
+<li>Refreshing awareness training so that "copy and paste this to fix the problem" is flagged as a red flag regardless of how credible the interface looks;</li>
+<li>Providing low-friction reporting channels for suspicious AI interactions;</li>
+<li>Tightening logging and alerting around user-initiated PowerShell invocations, Run dialog usage and shell commands — the execution path ClickFix depends on.</li>
+</ul>
+<h5>The broader lesson</h5>
+<p>Neither OpenAI nor Huntress has published a named malware family in connection with this activity; the delivery vehicle is described generically as a RAT, and no vendor statement on takedowns had been released at the time of reporting. No indicators of compromise were included in the published write-up.</p>
+<p>The durable lesson, however, is structural. Every new affordance AI platforms introduce — shared links, custom assistants, integrations, agents — doubles as a free camouflage channel for social engineers. As organisations lean further into conversational interfaces for productivity, the trust users place in those interfaces will be attacked with increasing sophistication. The weakest link is no longer the software; it is the instruction that says "just paste this."</p>
+<hr />
+<p><em>Source: The Hacker News, reporting on Huntress research disclosed in late September 2026.</em></p>
+<hr>
+<p>網絡安全研究人員記錄到一種新的濫用模式：攻擊者建立假冒的 ChatGPT Custom GPT，模仿合法產品，再將用戶引導至外部網站，透過所謂的 ClickFix 誘餌投放遠端存取木馬（RAT）。</p>
+<p>威脅偵測公司 Huntress 於 2026 年 9 月下旬觀察到這批活動，是威脅行為者再度武器化可信 AI 平台功能的最新案例——此前已有行動濫用 ChatGPT 的分享與檔案生成功能。</p>
+<h5>攻擊鏈如何運作</h5>
+<p>根據 Huntress 的描述，整個攻擊步驟十分刻意。攻擊者首先建立一個在視覺上模仿知名產品或服務的 Custom GPT。由於 Custom GPT 可以透過 OpenAI 自身的目錄被分享與搜尋，冒牌助理便「承襲」了平台的可信度——用戶是在熟悉、可信的介面內遇到它，而不是在陌生網站。</p>
+<p>接着，冒牌 GPT 將受害者引導至平台之外，通常是攻擊者控制的頁面。在那裡，用戶會看到一段看似合理、無害的指示：複製並貼上指令、在終端機執行腳本，或執行某項「修復」來解決一個子虛烏有的問題。這正是 ClickFix 手法——一種社會工程技術，讓受害者自行執行投放惡意 payload 的指令。</p>
+<p>關鍵在於：沒有惡意檔案附送、沒有巨集被啟用、也沒有可疑的電郵。受害者是在自己的作業系統上、在完全可見的情況下親自執行指令，通常是在 PowerShell 視窗或執行對話框——與任何合法管理員或開發人員日常會跑的指令無異。</p>
+<h5>為何終端工具偵測不到</h5>
+<p>正因如此，ClickFix 與其說是惡意軟件問題，不如說是人為因素問題。由於執行是由用戶自行發起、且包裝成正當的疑難排解步驟，終端偵測與回應（EDR）工具看到的只是一個從終端機啟動的普通、已簽署程序——沒有任何異常值得標記。這項手法之所以避過偵測，並非因為它躲過了防護，而是因為它從未觸發防護。</p>
+<p>研究人員指出，Custom GPT 從三個結構層面加劇了風險。第一，平台的聲譽會轉移到冒牌助理身上。第二，分發成本極低——連結是放在官方、經認可的通道，而非釣魚電郵收件箱，不會留下任何可疑痕跡。第三，GPT 可以將用戶重定向至任意外部目的地，因此實際的惡意基礎設施完全無須接觸 OpenAI 的環境。ChatGPT 平台本身從未被入侵；它只是被「借用」作為偽裝。</p>
+<h5>防禦方可以怎樣做</h5>
+<p>Huntress 的研究對企業環境的啟示，是指出一個熟悉的治理缺口：企業 AI 助理的採納速度，往往快過用以管治它們的控制措施。在企業規模部署生成式 AI 工具的機構，應將未經邀請的 Custom GPT 連結視為與任何來自第三方的未知連結無異。凡有指令要求用戶執行程式碼的助理，都必須與官方授權版本進行核對。</p>
+<p>具體而言，包括：</p>
+<ul>
+<li>對 Custom GPT 採用與你現行對瀏覽器擴充功能及未經審查的 SaaS 整合同樣的把關標準；</li>
+<li>重新強化意識培訓，令「複製貼上就能解決問題」無論在任何介面上看上去多可信，都一律視為危險訊號（紅旗）；</li>
+<li>提供低門檻的通報渠道，讓用戶可就可疑的 AI 互動通報；</li>
+<li>收緊圍繞用戶自行發起的 PowerShell 執行、執行對話框使用及終端指令的日誌記錄與警報——這正是 ClickFix 所依賴的執行路徑。</li>
+</ul>
+<h5>更深遠的啟示</h5>
+<p>OpenAI 與 Huntress 都尚未公布與這批活動相關的具名惡意軟件家族；投放載體只被通稱為 RAT，而在報道之時，官方亦未就下架行動發出任何聲明。已公開的報告亦未包含入侵指標（IOC）。</p>
+<p>然而，這件事帶來的深刻啟示是結構性的。AI 平台每引入一項新功能——分享連結、自訂義助理、整合、agent——都同時為社會工程師提供了一條免費的偽裝通道。隨着機構進一步擁抱對話式介面以提升生產力，用戶對這些介面所寄託的信任，將會被以日益精密的方式攻擊。最薄弱的一環不再是軟件本身，而是那句說着「直接貼上這個就好」的指示。</p>
+<hr />
+<p><em>資料來源：The Hacker News，報道 Huntress 於 2026 年 9 月下旬披露的研究。</em></p>
+<p><a href="https://thehackernews.com/2026/09/attackers-abuse-chatgpt-custom-gpts-to.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
