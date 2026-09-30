@@ -1,0 +1,36 @@
+Date: 2024-10-08 12:25:00
+Author: HKLUG Team
+Title: Threat Actors Pivot Malicious Custom GPTs Into RAT Delivery, Huntress Finds
+Content:
+<p>Threat actors are impersonating popular ChatGPT Custom GPTs to lure users into running commands that install a full-featured remote access trojan (RAT), according to research from cybersecurity firm Huntress reported by Security Affairs. Huntress researchers have traced the campaign across at least 40 incidents, making it one of the more widely documented cases of a mainstream AI platform being turned into a malware delivery channel.</p>
+<p>For Hong Kong IT teams, the campaign lands at a sensitive moment: enterprise AI assistant adoption is accelerating across sectors, and this is a reminder that these tools need to be governed with the same access, monitoring, and awareness discipline applied to any other external service employees are permitted to connect to.</p>
+<h4>Borrowed trust from a mainstream platform</h4>
+<p>The technique targets a surface that carries implicit trust. A Custom GPT — now simply called a GPT — is a user-configured version of ChatGPT published to a shared discovery layer, where users browse and select assistants by name, description, and apparent purpose. Attackers are creating convincing impostors of well-known, plausible tools. Because these entries sit inside a platform marketed around curated, user-built assistants, users treat them as vetted products rather than untrusted third-party content.</p>
+<p>Crucially, the campaign exploits no vulnerability in ChatGPT itself. Nothing in the platform needs to be broken. What is being abused is the perception of trust that comes with being hosted on a popular, mainstream service.</p>
+<h4>From assistant to instruction giver</h4>
+<p>Once a victim opens a conversation with an impersonator GPT, the interaction shifts. Instead of answering questions the way a legitimate assistant would, the malicious GPT pivots to delivering ClickFix-style instructions: it tells the user to download a file, copy a command, paste it into a command prompt or terminal, and run what it frames as a fix or a necessary setup step.</p>
+<p>ClickFix has become a recurring social-engineering pattern in recent campaigns because it converts the user into the delivery mechanism. There is no malicious attachment for mail filtering to quarantine, no exploit for controls to block, and — depending on what is pasted — often little for endpoint tooling to match against a static signature. The payload does not arrive automatically; the victim actively runs it, believing they are following routine instructions from a tool they chose to use.</p>
+<p>The command itself is a multi-stage loader. It retrieves additional components and ultimately installs a RAT with capabilities attackers have used for follow-on intrusions: persistence mechanisms, credential theft, data exfiltration, and the ability to pull in further tooling for lateral movement or additional exploitation.</p>
+<h4>Why signature-based controls fall short</h4>
+<p>For defenders, the structural problem is that this kill chain looks nothing like a conventional phishing attack. The sequence is a trusted platform, a human-assisted execution step, and a staged payload. Traditional phishing filters and file-reputation controls are, by design, largely blind to that shape.</p>
+<p>Huntress findings point to several practical takeaways for security teams, broadly grouped into policy-and-awareness measures and technical controls.</p>
+<p><strong>Policy and awareness:</strong> Security awareness training should explicitly cover the moment of pivot — a chatbot that starts answering questions, then tells the user to download, paste, or run something. That pattern is trainable, and it is largely absent from most current programmes. Organisations should also set access policy around third-party GPT links and assistants: what employees may connect to, and what they may assume about the review status of a marketplace listing. Equally important is recognising that platform-side moderation cannot fully close this gap. An assistant answering a legitimate question can be indistinguishable from one that later steers a user toward malicious instructions, and attackers deliberately rely on that ambiguity.</p>
+<p><strong>Technical controls:</strong> Restrict or at least monitor script execution where it is not a business requirement. Deploy EDR detections for the operational pattern this campaign relies on — terminal or Run-dialog activity initiated shortly after a browser session with a third-party chat assistant. Where the environment permits, treat unsanctioned command execution from user-driven workflows as an anomaly to be investigated rather than a routine IT task.</p>
+<p>The full report was published by Security Affairs and is based on research conducted by Huntress. OpenAI has not publicly detailed additional anti-impersonation measures against malicious GPTs since the campaign was reported.</p>
+<hr>
+<p>據網絡安全公司Huntress的研究（由Security Affairs報道）指出，惡意攻擊者正仿冒熱門的ChatGPT Custom GPT，引誘用戶執行指令，從而安裝具完整功能的遠端存取木馬（RAT）。Huntress研究人員已追蹤至少40宗事件，令此成為主流AI平台被轉化為惡意軟件投放渠道中，記錄最廣泛的案例之一。</p>
+<p>對於香港的IT團隊而言，這個攻擊行動來得正是時候：企業採用AI助理的速度正於各行各業加快，這提醒所有機構，必須以同樣的存取管制、監控及認知培訓標準，管治這些工具——一如管治任何其他獲准連接的外部服務。</p>
+<h4>借用主流平台的信任</h4>
+<p>這手法針對的是具有隱含信任的界面。Custom GPT（現簡稱GPT）是用戶設定的ChatGPT版本，會發佈至共享的探索層，用戶在該處按名稱、描述及表面用途瀏覽及選取各類助理。攻擊者正在製造令人信服的仿冒品，冒充知名且看似合理的工具。由於這些條目置身於一個以「策劃式、用戶自建助理」為賣點的平台之內，用戶會視之為已經審查的產品，而非不可信任的第三方內容。</p>
+<p>至關重要的是，這次攻擊並未利用ChatGPT本身的任何漏洞。平台不須被攻破。真正被濫用的，是這個工具因託管於熱門主流服務之上而獲得的信任觀感。</p>
+<h4>從助理變成指令下達者</h4>
+<p>一旦受害者與仿冒GPT展開對話，互動模式便會轉變。惡意GPT不再像合法助理般回答問題，而是轉而提供ClickFix式的指示：它會要求用戶下載檔案、複製指令、貼入command prompt或terminal執行，並聲稱這是修復程序或必要的設定步驟。</p>
+<p>ClickFix在近期攻擊行動中已成為反覆出現的社交工程模式，因為它把用戶本身轉化為投放機制。郵件過濾系統沒有惡意附件可以隔離，保安控制亦沒有漏洞可以攔截——而且視乎用戶貼入的內容而定，端點保安工具往往亦難以比對靜態特徵碼加以攔截。惡意載荷並非自動送達；受害者會主動執行它，以為自己只是遵循所選用工具的常規指示。</p>
+<p>該指令本身是一個多階段loader（載入器）。它會下載額外的元件，最終安裝具備多種能力的RAT，包括持續性機制（persistence mechanism）、憑證竊取、數據外洩，以及引入更多工具以進行橫向移動或額外入侵——這些能力均為攻擊者用於後續入侵行動。</p>
+<h4>為何以特徵碼為基礎的控制不夠用</h4>
+<p>對防禦方而言，問題的核心在於這條kill chain（殺傷鏈）完全不像傳統釣魚攻擊。其結構是：一個受信任的平台、一個人類協助的執行步驟，以及一個分階段投放的載荷。傳統釣魚過濾器及檔案信譽評級控制，就設計而言，對這種結構基本上視而不見。</p>
+<p>Huntress的發現為保安團隊帶來幾項實務啟示，大致可歸納為政策與認知措施，以及技術控制兩類。</p>
+<p><strong>政策與認知：</strong> 資訊保安認知培訓應明確涵蓋「轉向」的那一刻——聊天機械人開始回答問題，隨後卻要求用戶下載、貼入或執行某些內容。這個模式是可培訓的，但現時絕大多數培訓計劃均未涉及。機構亦應就第三方GPT連結及助理訂立存取政策：員工可以連接什麼，以及他們可以對marketplace（應用商店）上架條目的審查狀態作出哪些假設。同樣重要的是要認識到，平台方的內容審核無法完全彌補這個漏洞。一個回答合法問題的助理，可能與日後引導用戶走向惡意指令的助理難以分辨，而攻擊者正是刻意利用這種模糊性。</p>
+<p><strong>技術控制：</strong> 對於非業務必需的腳本執行，應予以限制，或至少加以監控。部署EDR偵測，針對此攻擊行動所倚賴的操作模式——即用戶在使用第三方聊天助理後不久，隨即啟動terminal或Run對話方塊的活動。在環境許可的情況下，應將源自用戶操作流程的未經批准指令執行視為需要調查的異常事件，而非例行的IT工作。</p>
+<p>完整報告由Security Affairs刊載，內容基於Huntress的研究。自該攻擊行動被報道以來，OpenAI尚未公開說明針對惡意GPT會採取哪些額外的防仿冒措施。</p>
+<p><a href="https://securityaffairs.com/200079/ai/attackers-abuse-chatgpt-custom-gpts-to-deploy-a-full-featured-rat.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
