@@ -1,0 +1,60 @@
+Date: 2026-09-30 16:12:00
+Author: HKLUG Team
+Title: AI 'Coworkers' With Standing Access Are Breaking Identity Controls Built for Short-Lived Agents, Vendor Warns
+Content:
+<p>Persistent AI systems that run continuously — rather than short-lived agents launched for a single task — are straining the identity and permission models that security teams built for ephemeral workloads, according to an analysis carried by BleepingComputer from security vendor Token Security.</p>
+<p>The operational claim is straightforward: when an AI "coworker" operates around the clock with standing access to business systems, the credentials, tokens and permissions it accumulates are no longer temporary. Existing agent-era controls assumed a short lifecycle — grant access, run the task, revoke. That assumption breaks down, the firm argues, when the workload never ends.</p>
+<h4>The policy checklist to write now</h4>
+<p>For IT managers drafting always-on AI deployment policies, the practical recommendations — reported by BleepingComputer and attributed to Token Security — fall into four points that can be lifted directly into a policy document. Each, however, fails in a predictable way if it is stated only as a principle:</p>
+<ol>
+<li><strong>A named human owner.</strong> Every persistent AI identity has a responsible human accountable for its access and behaviour. Ownership problems in practice are stale inventory problems: the agent exists somewhere, but its permissions have drifted and no one has checked them in months. The first control is an agent register — owners, effective permissions and a last-verified status field, reviewed on a fixed cadence.</li>
+<li><strong>Scoped, expiring permissions.</strong> Access should be limited to what the role needs and granted for a defined period, not left standing. Scoping at the credential layer is necessary but insufficient: tool chaining lets an agent compose calls across otherwise scoped credentials to achieve more than any single grant permits. Enforcement has to move to the action layer — invocation-time policy checks and human approval gates on high-risk actions.</li>
+<li><strong>Logging and attribution.</strong> Actions taken by AI identities must be attributable and auditable, distinct from the actions of human staff. Attribution collapses wherever an MCP server or a pooled service account aggregates calls from many agents into a single trace. Per-agent identity has to propagate through the whole tool chain, or the audit trail will not tell you which agent did what.</li>
+<li><strong>A vendor-independent kill switch.</strong> Organisations should be able to terminate a persistent agent's access without depending on the vendor's own controls remaining available. It is worth stating the semantics precisely: a kill switch does not revert side effects already committed, it does not reliably reach identities persisted in memory or configuration elsewhere in the estate, and the kill control itself needs an owner and an audit trail — otherwise the last-resort control is unaudited shadow admin.</li>
+</ol>
+<p>Token Security frames this as a lifecycle problem: AI identities need provisioning, monitoring and offboarding in the same way human and machine identities do.</p>
+<h4>The credential chain is the real gap</h4>
+<p>The technical centre of the argument is not token lifetime but what happens after the token is issued. Agents delegate to tool servers — increasingly MCP-style — that hold their own secrets and credentials to backend systems. The resulting identity is a chain, not a single principal: the agent authenticates to the tool server, which authenticates somewhere else, possibly several more times.</p>
+<p>Security decisions, then, sit mid-chain, not at the agent boundary. Short-lived, scoped tokens at the front of the chain do not constrain what an agent achieves by composing calls down the rest of it. Identity-aware gateways and tool-server-level authorisation checks are where the policy has to bite.</p>
+<h4>Why standing access is the hard part</h4>
+<p>The accountability gap is arguably the more serious issue. If a persistent agent accumulates permissions over weeks or months, it becomes difficult to establish what it could do, what it actually did, and who authorised the scope. Security models built on time-bounded, task-scoped tokens are poorly suited to that environment.</p>
+<h4>The compliance angle</h4>
+<p><em>The analysis below is this desk's own framing for Hong Kong readers; the source material itself does not address Hong Kong law.</em></p>
+<p>Persistent AI agents processing customer, employee or partner data raise questions familiar to any organisation operating under Hong Kong's Personal Data (Privacy) Ordinance — and the actionable one is narrower than "who is the data user". Agent memory stores — conversation transcripts, vector and RAG stores, retrieval logs, feedback datasets — accumulate personal data continuously and sit outside most organisations' data inventories. These are shadow data stores. They need to be inventoried, assigned retention rules and folded into existing PDPO compliance obligations now, not reconstructed after an audit finds them.</p>
+<h4>A note of caution: the gap may be adoption, not technology</h4>
+<p>It is worth flagging that the "third wave" framing and the identity-control recommendations are the vendor's own thesis, not an industry or regulatory standard. Token Security sells AI identity tooling, so it has a commercial interest in positioning the problem as unsolved.</p>
+<p>Much of the required infrastructure, however, already exists — particularly for organisations running workloads on Kubernetes. Workload identity projects such as SPIFFE and SPIRE, HashiCorp Vault and Kubernetes service accounts cover the identity layer. eBPF-based audit tooling and OpenTelemetry GenAI semantic conventions cover the attribution telemetry layer. And the authorisation-and-policy layer — increasingly the most relevant for agentic systems — has mature open-source options: OpenFGA and SpiceDB for relationship-based access control, Cedar and OPA for invocation-time policy evaluation at the tool-call boundary. Non-human identity (NHI) management is an established discipline, not an emerging category.</p>
+<p>One sharper counter-position deserves stating plainly: no identity tooling can govern the inside of a closed agent platform that exposes no action-level policy hooks. If a vendor's agent runtime will not let you inspect or gate individual actions, the control is not yours to enforce. That is a procurement question — ask for those hooks before signing, not after.</p>
+<p>That does not make the vendor's framing wrong. It does suggest the gap for many organisations is adoption and operational discipline rather than a missing technology category — which, for a reader evaluating tooling, matters commercially.</p>
+<h4>Bottom line</h4>
+<p>If your organisation is moving from task-scoped AI tools to persistent AI staff, the identity model needs to move too. Whether you adopt a commercial platform or assemble the answer from open-source components, the policy questions are the same: who owns the identity, what can it access, for how long, and can you switch it off independently of the vendor. And once the identity chains through tool servers and lands in memory stores, those questions multiply down the chain rather than resolving at the agent boundary.</p>
+<p>The recommendations reported by BleepingComputer are a reasonable starting point for that policy — with the usual caution that the source is a vendor making its own case.</p>
+<hr>
+<p>持續運作、而非每次為單一任務啟動的 AI 系統，正衝擊安全團隊為短生命週期工作負載建立的身分及權限模型——這來自安全廠商 Token Security 的分析，經 BleepingComputer 報導。</p>
+<p>操作層面的論點很直接：當 AI「同事」全年無休、對業務系統持有常駐權限時，它所累積的憑證、token 及權限便不再是暫時性的。既有的代理時代控制機制假設短生命週期——授權、執行、撤銷。廠商指，當工作永不結束時，這假設便失效。</p>
+<h4>現在就該寫進政策的檢查清單</h4>
+<p>對於正在草擬常駐 AI 部署政策的 IT 主管，BleepingComputer 報導、歸於 Token Security 的建議可歸納為四點，可直接納入政策文件。但若只停留在原則層面，每一點都會以可預測的方式失效：</p>
+<ol>
+<li><strong>指定的負責人。</strong> 每個持久 AI 身分都要有負責的自然人，對其權限及行為負責。實務上，責任問題往往就是資產清冊過時的問題：agent 存在於某處，權限已經漂移，但數個月無人覆核。第一道控制是 agent 登記冊——負責人、有效權限、最後覆核狀態欄位，按固定節奏覆核。</li>
+<li><strong>已界定範圍且會過期的權限。</strong> 存取應限定於角色所需，並在指定期間內授出，而非長期保留。憑證層面的範圍限定是必要但不充分的：工具鏈式串接（tool chaining）可讓 agent 組合跨憑證的呼叫，達成任何單一授權範圍之外的成果。控制必須落到「動作層」——每次呼叫時的政策檢查（invocation-time policy checks），以及高風險動作的人手審批關卡。</li>
+<li><strong>記錄及歸因。</strong> AI 身分的動作必須可歸因、可審計，與人手員工的動作清楚區分。一旦 MCP server 或共用服務帳戶把多個 agent 的呼叫匯聚成單一 trace，歸因便告失效。per-agent 身分必須貫穿整條工具鏈，否則審計日誌無法告訴你哪個 agent 做了什麼。</li>
+<li><strong>不依賴供應商的緊急停止機制。</strong> 組織應能在不依賴供應商自身控制仍可用的情況下，終止持久 agent 的存取。其語義值得寫清楚：緊急停止不會回復已提交的副作用，也無法可靠觸及在記憶體或系統其他配置中已持久化的身分，而停止控制本身亦需要負責人及審計軌跡——否則這道最後手段只會成為不受審計的影子管理權。</li>
+</ol>
+<p>Token Security 將此定義為生命週期問題：AI 身分需要與人手及機器身分一樣，經過開通、監察及離職（offboarding）流程。</p>
+<h4>真正的缺口在憑證鏈</h4>
+<p>論點的技術核心不是權限有效期，而是權限發出之後發生了什麼。Agent 會委派給工具伺服器——越來越多是 MCP 式——而這些伺服器自身持有通往後端系統的密鑰及憑證。由此產生的身分是一條鏈，而非單一主體：agent 認證到工具伺服器，工具伺服器再認證到其他地方，可能重複多次。</p>
+<p>因此安全決策的落點在鏈的中段，而非 agent 邊界。鏈首那些短期、範圍限定的權限，並不能約束 agent 沿著鏈向下組合呼叫所達成的成果。身分感知閘道（identity-aware gateway）及工具伺服器層級的授權檢查，才是政策真正要咬合的位置。</p>
+<h4>為何常駐存取是難點</h4>
+<p>問責缺口大概是更嚴重的問題。如果一個持久 agent 在數週或數月間不斷累積權限，就難以釐清它可以做什麼、實際做了什麼、以及由誰授權了這個範圍。建立在有時限、任務範圍 token 上的安全模型，很難適應這種環境。</p>
+<h4>合規角度</h4>
+<p><em>以下為本刊就香港讀者所作的編輯整理；來源材料本身並未涉及香港法例。</em></p>
+<p>處理客戶、員工或合作夥伴資料的持久 AI 代理，會引出香港《個人資料（私隱）條例》（PDPO）下熟悉的問題——而更可操作的一問，比「誰是資料使用者」更窄：agent 記憶體——對話記錄、向量／RAG 資料庫、檢索日誌、回饋資料集——持續累積個人資料，卻不屬於多數組織的資料清冊之內。這些是影子資料儲存。它們現在就需要被盤點、設定保留規則，並納入現有的 PDPO 合規責任範圍——而不是在審計發現它們之後才補做。</p>
+<h4>小心：缺口可能是採用度，而非技術</h4>
+<p>值得一提的是，「第三波」的定性及身分控制建議本身是廠商的論述，不是業界或監管標準。Token Security 販售 AI 身分工具，因此有商業動機把問題定位成尚未解決。</p>
+<p>不過，所需的基建其實大體已存在——特別是跑在 Kubernetes 上的工作負載。SPIFFE 和 SPIRE 等 workload identity 專案、HashiCorp Vault 及 Kubernetes service accounts 覆蓋身分層。eBPF 審計工具及 OpenTelemetry GenAI 語意約定覆蓋歸因遙測層。而在授權與政策層——對 agentic 系統越來越關鍵——也有成熟的開源選擇：OpenFGA 及 SpiceDB 用於關係型存取控制（ReBAC），Cedar 及 OPA 用於 tool call 邊界的呼叫時政策評估。非人類身分（NHI）管理已是成熟學科，並非新興領域。</p>
+<p>有一個更尖銳的反方立場值得直說：任何身分工具都無法管治一個閉源 agent 平台的內部——如果該平台不提供動作層級的政策介入點。若供應商的 agent runtime 不讓你檢視或攔截個別動作，這道控制權就不在你手上。這是採購問題：簽約之前，就先要對方交出這些介入點。</p>
+<p>這不代表廠商的定性錯誤。只是對多數組織而言，缺口更可能是採用度與營運紀律，而非缺少一個技術類別——對正在評估工具的讀者來說，這在商業上意味著什麼。</p>
+<h4>結論</h4>
+<p>如果貴機構正由任務範圍的 AI 工具，轉向常駐的 AI 同事，身分模型也必須同步轉變。無論你採用商用平台，還是以開源元件自行組合，政策問題始終相同：這個身分由誰擁有、它可以存取什麼、有效多久、以及能否獨立於供應商將它關閉。而當身分透過工具伺服器串接、最終落入記憶體儲存時，這些問題會沿著鏈條倍增，不會在 agent 邊界就解決。</p>
+<p>BleepingComputer 報導的建議，是這份政策合理的起點——一如既往地保留常見的提醒：來源是一個為自己立論的廠商。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/ais-third-wave-coworkers-break-the-security-model-that-worked-for-agents/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
