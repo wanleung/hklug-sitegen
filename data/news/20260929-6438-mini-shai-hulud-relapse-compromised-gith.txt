@@ -1,0 +1,36 @@
+Date: 2026-09-29 17:27:00
+Author: HKLUG Team
+Title: Mini Shai-Hulud Relapse: Compromised GitHub Actions Re-Enabled, Triggering Urgent Developer Audits
+Content:
+<p>A concerning relapse in the Mini Shai-Hulud supply chain attack has unfolded on GitHub. Two third-party GitHub Actions, previously flagged and mitigated, were re-enabled by their maintainer and remained accessible for over a week, with their malicious payloads still active. This incident demands an immediate security audit from development teams relying on CI/CD pipelines.</p>
+<p>The affected Actions, <code>tj-actions/changed-files</code> and <code>reviewdog/action-setup</code>, were earlier identified as vectors in a campaign designed to exfiltrate secrets from GitHub's continuous integration environments. Despite widespread community efforts to isolate the threat, the maintainer's subsequent action to re-publish the compromised versions reinstated the vulnerability for any project using them.</p>
+<p>This event starkly illustrates that supply chain trust is not a one-time verification. A single manual action by a maintainer can instantly reintroduce a known threat, bypassing prior community-driven fixes. For developers, it underscores that dependencies in build pipelines must be treated as potentially volatile assets requiring continuous scrutiny.</p>
+<h5>The High-Stakes Target: CI/CD Pipelines</h5>
+<p>GitHub Actions operate with significant privileges within a repository, handling code compilation, testing, and deployment. A compromise at this stage grants attackers access to sensitive build secrets, API keys, and deployment credentials. The theft of these secrets can lead to further breaches across connected infrastructure, turning a single vulnerability into a cascading failure.</p>
+<p>Attackers increasingly target CI/CD systems precisely for this scalable, high-impact access point. The relapse of the Mini Shai-Hulud payload confirms the persistent and evolving nature of this threat.</p>
+<h5>Mandatory Steps: Audit and Harden Your Workflows</h5>
+<p>Given the active danger, developers must treat this as a critical security incident. Security researchers recommend the following steps be executed immediately:</p>
+<ol>
+<li><strong>Pin All Actions by Hash:</strong> This is the most effective immediate mitigation. For <em>every</em> third-party Action in your workflows, replace mutable version tags (e.g., <code>v3</code>, <code>v1.2.0</code>) with the full, immutable SHA hash of a known-clean version. This is especially critical for <code>tj-actions/changed-files</code> and <code>reviewdog/action-setup</code>. Adopt this as a permanent organizational policy.</li>
+<li><strong>Conduct a Comprehensive Workflow Audit:</strong> Systematically review all <code>.github/workflows/*.yml</code> files across all repositories. Identify any direct or indirect dependencies on the two flagged Actions and scrutinize other third-party dependencies for signs of compromise.</li>
+<li><strong>Establish Monitoring and Alerts:</strong> Enable repository or organization-level alerts for dependency changes. Actively subscribe to security advisories for your critical tools and dependencies to ensure rapid response to future disclosures.</li>
+<li><strong>Rethink Your Trust Model:</strong> For critical build and deployment steps, evaluate Actions from verified, trusted publishers or consider self-hosting components. This reduces exposure to the volatility of the open supply chain.</li>
+</ol>
+<p>The incident also raises critical questions for platforms like GitHub. What automated safeguards could prevent the reintroduction of publicly flagged malicious code? Until such platform-level governance exists, the burden of continuous verification rests with developers and their teams. In the modern open-source ecosystem, layered, ongoing defense is the only viable posture against a persistent and adaptive adversary.</p>
+<hr>
+<p>Mini Shai-Hulud 供應鏈攻擊在 GitHub 上令人擔憂地復發。兩個先前已被標記和緩解的第三方 GitHub Actions，被其維護者重新啟用，並持續可訪問超過一星期，其惡意載荷仍處於活躍狀態。這一事件需要依賴 CI/CD 管道的開發團隊立即進行安全審計。</p>
+<p>受影響的 Actions——<code>tj-actions/changed-files</code> 和 <code>reviewdog/action-setup</code>——早前被識別為旨在從 GitHub 持續集成環境中竊取機密信息的攻擊活動的載體。儘管社區廣泛努力隔離威脅，但維護者隨後重新發布受入侵版本的行為，為任何使用它們的項目重新引入了漏洞。</p>
+<p>此事件清楚地表明，供應鏈信任並非一次性驗證。維護者的一個手動操作就能立即重新引入已知威脅，繞過先前社區驅動的修復。對開發者而言，這強調了構建管道中的依賴項必須被視為可能不穩定的資產，需要持續審查。</p>
+<h5>高風險目標：CI/CD 管道</h5>
+<p>GitHub Actions 在倉庫中以顯著權限運行，處理代碼編譯、測試和部署。在此階段被入侵，會讓攻擊者訪問敏感的構建機密、API 密鑰和部署憑證。這些機密被竊取可能導致連接基礎設施的進一步入侵，將單一漏洞轉化為連鎖故障。</p>
+<p>攻擊者越來越多地針對 CI/CD 系統，正是因為這個可擴展、高影響力的訪問點。Mini Shai-Hulud 載荷的復發證實了此威脅的持續性和演變性質。</p>
+<h5>必須採取的步驟：審計和強化你的工作流程</h5>
+<p>鑒於存在活躍危險，開發者必須將此視為嚴重安全事件。安全研究人員建議立即執行以下步驟：</p>
+<ol>
+<li><strong>以雜湊值固定所有 Actions：</strong>這是最有效的即時緩解措施。對你工作流程中的<em>每一個</em>第三方 Action，將可變的版本標籤（例如 <code>v3</code>、<code>v1.2.0</code>）替換為已知乾淨版本的完整、不可變的 SHA 雜湊值。這對 <code>tj-actions/changed-files</code> 和 <code>reviewdog/action-setup</code> 尤為關鍵。將此作為永久的組織策略採用。</li>
+<li><strong>進行全面的工作流程審計：</strong>系統性地審查所有倉庫中的所有 <code>.github/workflows/*.yml</code> 文件。識別對兩個被標記 Actions 的直接或間接依賴，並仔細檢查其他第三方依賴是否存在被入侵的跡象。</li>
+<li><strong>建立監控和警報：</strong>啟用倉庫或組織級別的依賴變更警報。積極訂閱你關鍵工具和依賴的安全公告，以確保對未來披露信息的快速響應。</li>
+<li><strong>重新思考你的信任模型：</strong>對於關鍵的構建和部署步驟，評估來自經認證、可信任發佈者的 Actions，或考慮自託管組件。這減少了對公開供應鏈波動性的暴露。</li>
+</ol>
+<p>此事件也為 GitHub 等平台提出了關鍵問題。哪些自動化保障措施可以防止公開標記的惡意代碼被重新引入？在這種平台級治理存在之前，持續驗證的責任落在開發者及其團隊身上。在現代開源生態系統中，層層設防、不間斷的防禦是對抗持久且適應性強的對手的唯一可行姿態。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/github-actions-re-enabled-with-mini-shai-hulud-payload-still-active/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
