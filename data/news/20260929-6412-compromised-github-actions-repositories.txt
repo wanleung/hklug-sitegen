@@ -1,0 +1,18 @@
+Date: 2026-09-29 19:00:00
+Author: HKLUG Team
+Title: Compromised GitHub Actions Repositories Come Back Online, Resuming Malware Execution
+Content:
+<p>According to a report from The Hacker News, the repositories for two GitHub Actions have become accessible again, allowing attackers to resume distributing malware months after the components were initially disabled.</p>
+<p>The affected actions, <code>actions-cool/issues-helper</code> and <code>actions-cool/maintain-one-comment</code>, were compromised during a campaign discovered in May 2026. The attackers injected the "Mini Shai-Hulud" malware to target CI/CD pipelines. While the repositories were taken offline following the incident, they reappeared last week, triggering a second round of malicious activity before being disabled once more.</p>
+<p>This reactivation underscores a fundamental weakness in how many developers reference dependencies. Using mutable tags (e.g., <code>uses: action@v1.0</code>) allows silent updates; if an attacker gains control of a repository, they can push malicious code to an existing tag, automatically affecting all projects that reference it.</p>
+<p>The primary defense against this persistent threat is to pin dependencies to immutable commit SHAs (e.g., <code>uses: action@sha256:a1b2c3d...</code>). This locks a workflow to a specific, verified version of the code that cannot be altered without explicit developer intervention.</p>
+<p>However, pinning is only one layer of defense. The incident demonstrates that simply disabling a compromised component is insufficient if underlying repository or account access remains insecure. A robust security posture requires assuming breach and implementing continuous measures: regular audits of all third-party actions, automated vulnerability scanning of dependencies, and strict access controls for critical CI/CD resources.</p>
+<p>For development teams, this is an active and repeating pattern. Securing the software supply chain demands moving beyond basic references to practices that limit both the initial compromise and its potential for persistence.</p>
+<hr>
+<p>據The Hacker News報道，兩個GitHub Actions的倉庫已重新恢復可訪問，使攻擊者得以在這些組件最初被禁用數月後，重新開始分發惡意軟件。</p>
+<p>受影響的actions <code>actions-cool/issues-helper</code> 和 <code>actions-cool/maintain-one-comment</code> 於2026年5月發現的一次攻擊行動中遭到入侵。攻擊者注入了名為「Mini Shai-Hulud」的惡意軟件，以CI/CD pipeline為目標。儘管事件發生後這些倉庫曾被下架，但它們於上週重新出現，引發了第二輪惡意活動，隨後再度被禁用。</p>
+<p>此次重新出現凸顯了許多開發者引用dependencies時的一個根本弱點。使用可變標籤（例如 <code>uses: action@v1.0</code>）容許靜默更新；若攻擊者取得倉庫控制權，便可將惡意代碼推送至現有標籤，自動影響所有引用該標籤的項目。</p>
+<p>對抗此持續威脅的首要防禦措施，是將dependencies固定至不可變的提交SHA哈希值（例如 <code>uses: action@sha256:a1b2c3d...</code>）。此做法將workflow鎖定至一個經特定驗證的代碼版本，除非開發者明確介入，否則無法被更改。</p>
+<p>然而，固定版本僅是防禦的一環。本次事件表明，若底層倉庫或帳戶存取權限仍不安全，僅僅禁用受入侵的組件並不足夠。穩健的安全姿態需要假定已被入侵，並實施持續性措施：定期審計所有第三方actions、對dependencies進行自動化漏洞掃描，以及對關鍵CI/CD資源實施嚴格的存取控制。</p>
+<p>對開發團隊而言，這是一個活躍且反覆出現的模式。保護軟件供應鏈需要超越基本引用，採用能同時限制初始入侵及其持續潛在風險的實踐方式。</p>
+<p><a href="https://thehackernews.com/2026/09/compromised-github-actions-came-back.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
