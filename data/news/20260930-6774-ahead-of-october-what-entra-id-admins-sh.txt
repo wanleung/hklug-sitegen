@@ -1,0 +1,102 @@
+Date: 2026-09-30 15:05:00
+Author: HKLUG Team
+Title: Ahead of October: What Entra ID Admins Should Audit Before Microsoft Tightens Sign-In Script Controls
+Content:
+<p>Microsoft has told customers that its Entra ID identity platform will begin applying stronger protection against external script injection attacks in October, according to a report by BleepingComputer. For Hong Kong-based Azure and Entra ID administrators, the question that matters more than "what is Microsoft announcing?" is "what breaks, and where do I look before the date lands?"</p>
+<p>This is not a licence-terms change or a pricing notice — it is a behavioural change in how the sign-in journey is protected. Microsoft's reminder, as reported by BleepingComputer, concerns scripts smuggled into the authentication flow, not the platform's sanctioned customisation features. The practical difficulty is that no definitive public list of blocked behaviours has been published. That means the likely sources of breakage are precisely the integrations where custom code and authentication glue blur together.</p>
+<h5>Pre-cutover audit checklist</h5>
+<p>The following checklist is editorial guidance from HKLUG, built from the categories admins should be able to answer before enforcement begins. Use it as a scoping tool for your own review.</p>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>What to verify before the deadline</th>
+<th>Why it is in scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Script inventory</td>
+<td>Any custom scripts, extensions, or JavaScript running on sign-in or MFA flows; whether they are sourced from Microsoft or written internally</td>
+<td>Non-Microsoft-origin script in the auth path is the category the change targets</td>
+</tr>
+<tr>
+<td>Legacy PowerShell modules</td>
+<td>ADAL-era modules, older Microsoft Graph/AzureAD SDK versions still calling authentication endpoints, and scripts that patch token acquisition</td>
+<td>Legacy modules frequently wrap deprecated token flows</td>
+</tr>
+<tr>
+<td>Deprecated OAuth flows</td>
+<td>Residual use of implicit grant or resource-owner password credentials in apps, SPAs, and internal tools</td>
+<td>Deprecated flows have long been discouraged and are the most likely to be restricted</td>
+</tr>
+<tr>
+<td>App registrations &amp; consents</td>
+<td>Tenant app registrations with high-privilege delegated permissions, expired owners, or admin consent granted years ago without review</td>
+<td>Broad consent quietly widens what can be injected into or beside the auth journey</td>
+</tr>
+<tr>
+<td>Non-Microsoft identity paths</td>
+<td>Third-party SSO frontends, reverse proxies, and robotic-process-automation tools that scrape or submit login forms</td>
+<td>If these are inferred sources of trouble, discovery should be early rather than at cutover</td>
+</tr>
+</tbody>
+</table>
+<h5>House analysis disclaimer</h5>
+<p>To be explicit about sourcing: the checklist above reflects HKLUG editorial analysis, not Microsoft-published guidance. Microsoft has not, to the best of our knowledge as of publication, published a definitive list of blocked patterns. Items on script placement, SSO reverse proxies, and form-scraping automation are our team's inference from how these integrations typically touch the sign-in journey. Treat each as a hypothesis to test in your own tenant, not as a confirmed prohibition. Before acting on any item, verify it against Microsoft's current Entra ID documentation.</p>
+<h5>Why this matters now, not in October</h5>
+<p>The value of an audit done in the next few weeks is not compliance theatre; it is diagnosis. If a legacy module or an undocumented sign-in script is going to be affected, finding out now means you can migrate while keeping a rollback path in place. Finding out during enforcement week means an unexplained login failure in production.</p>
+<p>That timing argument also applies to firms with heavier internal-governance cycles. Organisations that run periodic access reviews, application inventories, or internal audit exercises should expect this change to surface as a control-evidence item — an identity-platform change with a known date, a known behavioural target, and an auditable record of what was reviewed before it took effect. The source report does not address supervisory or regulatory expectations, and organisations in regulated sectors should set their own positions internally rather than assume them.</p>
+<h5>What we do not yet know</h5>
+<p>Two items remain open on our side. First, Microsoft's live Entra ID documentation should be re-checked before you rely on any single inference in the table above; if specifics have since been published, the checklist can move from hypothesis toward fact. Second, the enforcement scope itself remains unsettled: Microsoft's stated target is script injection into the sign-in journey, but which behaviours the platform will actively block versus merely flag has not been established in the source material.</p>
+<p>The deadline, however, is not hedged. Inventory the scripts touching your Entra ID sign-in flow, and migrate the legacy pieces first.</p>
+<hr>
+<p>Microsoft 已告知客戶，其 Entra ID 身分平台將於十月起對外部腳本注入攻擊加強防護，據 BleepingComputer 報道。對香港的 Azure 及 Entra ID 管理員而言，比「Microsoft 宣布了什麼？」更值得追問的問題是：「什麼會失效？日期來臨前我應往哪裏查找？」</p>
+<p>這並非授權條款或定價上的變更，而是登入流程保護方式的行為改變。據 BleepingComputer 報道，Microsoft 的提醒針對的是被夾帶進入認證流程的腳本，而非平台認可的自訂功能。困難在於，目前並未公布一份明確的受阻行為清單——這意味著最可能出問題的，正是自訂代碼與認證黏合層渾然一體的整合項目。</p>
+<h5>限期前審計清單</h5>
+<p>以下清單屬 HKLUG 的編輯指引，整理自管理員在強制執行開始前應能回答的各類別問題，可作為你自行審計時的範圍工具。</p>
+<table>
+<thead>
+<tr>
+<th>範圍</th>
+<th>限期前須核實的事項</th>
+<th>為何屬本次範圍</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>腳本盤點</td>
+<td>在登入或 MFA 流程中運作的任何自訂腳本、擴充功能或 JavaScript；其來源是 Microsoft 還是內部撰寫</td>
+<td>認證路徑中的非 Microsoft 來源腳本，正是本次變更針對的類別</td>
+</tr>
+<tr>
+<td>舊版 PowerShell 模組</td>
+<td>ADAL 時代的模組、仍會呼叫認證端點的舊版 Microsoft Graph／AzureAD SDK 版本，以及修改 token 取得方式的腳本</td>
+<td>舊版模組經常包裝著已棄用的 token 流程</td>
+</tr>
+<tr>
+<td>已棄用的 OAuth 流程</td>
+<td>應用程式、SPA 及內部工具中殘留的隱式授權（implicit grant）或資源擁有者密碼憑證（ROPC）使用</td>
+<td>這些流程早已不獲推薦，最可能被限制</td>
+</tr>
+<tr>
+<td>應用程式註冊與同意</td>
+<td>租戶中具高權限委託權限的應用程式註冊、負責人已過期或已離職失效的項目，以及多年前授予但從未覆核的管理員同意</td>
+<td>寬泛的同意會悄然擴大可被注入或嵌入登入流程的範圍</td>
+</tr>
+<tr>
+<td>非 Microsoft 身分路徑</td>
+<td>第三方 SSO 前端、反向代理（reverse proxies），以及抓取或提交登入表單的 RPA 工具</td>
+<td>若這些是推測中的問題來源，應盡早發現，而非等到限期當日</td>
+</tr>
+</tbody>
+</table>
+<h5>HKLUG 編輯部分析聲明</h5>
+<p>要明確交代資料來源：上述清單屬 HKLUG 的編輯分析，並非 Microsoft 發布的指引。截至本文刊出時，據我們所知，Microsoft 並未發布一份明確的受阻模式清單。清單中關於腳本位置、SSO 反向代理及表單抓取自動化的項目，是我們團隊從這些整合方式如何接觸登入流程所作的推斷。請將每一項視為需要在自身租戶中測試的假設，而非已確認的禁令。在採取行動前，請先對照 Microsoft 現行的 Entra ID 文件加以核實。</p>
+<h5>為何是現在，而不是十月</h5>
+<p>未來數週內完成審計的價值不在於為合規而合規，而在於診斷。若某個舊版模組或未記錄在案的登入腳本將受影響，現在查明，即可在保留回滾方案的前提下遷移；若到強制執行週才發現，則意味著生產環境中出現無法解釋的登入失敗。</p>
+<p>這一點攸關時機，對治理週期較長的公司同樣適用。舉行週期性存取審查、應用程式盤點或內部審計的機構，應預期這次變更會浮現為一項控制證據事項——一個身分平台變更，具備已知日期、已知的行為目標，以及可審計的覆核紀錄，記錄變更生效前曾覆核過什麼。原始報道並未涉及監管或規管期望，受規管行業的機構應自行在內部訂立立場，而非假設外部已有既定預期。</p>
+<h5>目前尚不明朗的事項</h5>
+<p>有兩點仍待釐清。第一，Microsoft 的現行 Entra ID 文件應在你依賴上表任何一項推斷前重新核對；若已公布具體內容，清單便可由假設邁向事實。第二，強制執行的範圍本身仍屬未定——Microsoft 陳明的目標是登入流程中的腳本注入，而平台將會主動封鎖哪些行為、僅會標記哪些行為，其範圍在原始報道中並未界定。</p>
+<p>然而，限期本身並沒有任何含糊之處。盤點觸及 Entra ID 登入流程的腳本，並優先遷移舊版項目。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/microsoft-to-block-entra-id-script-injection-attacks-starting-october/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
