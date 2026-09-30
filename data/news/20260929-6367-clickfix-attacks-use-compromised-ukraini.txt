@@ -1,0 +1,46 @@
+Date: 2026-09-29 06:24:00
+Author: HKLUG Team
+Title: ClickFix Attacks Use Compromised Ukrainian Sites to Trick Users into Installing Psychedelic Stealer
+Content:
+<p>A new campaign leveraging the ClickFix social engineering technique has compromised legitimate Ukrainian business websites to distribute a previously undocumented information stealer, shifting the attack surface from software vulnerabilities to human trust.</p>
+<p>Security researchers tracking the campaign, as reported by The Hacker News, observed attackers injecting fake Cloudflare verification pages into hacked sites. This lure uses a familiar security prompt to deceive visitors into manually executing a malicious Windows command, bypassing many automated defenses that rely on detecting traditional exploit chains.</p>
+<h4>Anatomy of a Trust-Based Attack</h4>
+<p>The attack begins not with a download, but with compromise. Attackers gain control of real business websites and replace their content with bogus Cloudflare "checking your browser" challenge pages. The page appears standard, but its true purpose is social engineering.</p>
+<p>When a visitor interacts with the fake page, it copies a Windows Installer command (<code>msiexec.exe</code>) to the user's clipboard. The on-screen instructions then tell the user to open a command prompt and paste the command to "complete verification." This is the critical ClickFix step: convincing the user to become the attacker's willing accomplice.</p>
+<p>By framing the malicious command as a routine system check, the technique weaponizes everyday user actions. It evades security tools designed to block unsolicited downloads or suspicious file attachments, as the user initiates the execution themselves.</p>
+<h4>Compromised Sites as a Launchpad</h4>
+<p>The use of legitimate, compromised Ukrainian domains is a key force multiplier. Users inherently trust domains they recognize or arrive at via search engines. A Cloudflare challenge on a known site triggers far less scrutiny than the same page on a suspicious new domain.</p>
+<p>For attackers, this provides "reputation laundering." The compromised sites already have established domain trust, SSL certificates, and normal traffic patterns. This makes the malicious injection harder for both users and security tools to detect, emphasizing the critical need for integrity monitoring on public-facing infrastructure.</p>
+<h4>Psychedelic Stealer: A New Name, A Familiar Goal</h4>
+<p>The payload delivered through this scheme is a new information stealer named Psychedelic. While its full capabilities and infrastructure remain under analysis, its purpose appears consistent with stealer-type malware that typically targets browser credentials, cryptocurrency wallets, session cookies, and system information for monetization.</p>
+<p>The primary takeaway for defenders, however, is that the Psychedelic payload itself may be interchangeable. The ClickFix delivery template — compromised legitimate sites serving fake verification prompts — represents the reusable, scalable threat that defenders should actively hunt for in their environments.</p>
+<h4>Role-Specific Defenses Are Crucial</h4>
+<p>The campaign demands a two-pronged defense targeting both the compromised site and the deceived user.</p>
+<p><strong>For Web Administrators and Security Teams:</strong>
+Integrity is non-negotiable. Implement real-time monitoring for unauthorized changes to web content, particularly injected scripts, iframes, or redirects. Regular file integrity checks and alerting on unexpected processes spawned from web servers are essential. Verify that your CDN or hosting provider's security services are actively configured, not just present. Actively hunt for indicators of compromise, such as unusual outbound connections from servers.</p>
+<p><strong>For End Users and General Staff:</strong>
+The defense is a simple behavioral rule: <strong>Never paste commands into a terminal or command prompt based on instructions from a web page.</strong> Legitimate services like Cloudflare do not require users to manually execute system commands for verification. If a site suddenly asks for this, close the tab and report the issue. Security teams should also monitor endpoints for anomalous <code>msiexec.exe</code> processes making external connections.</p>
+<h4>The Evolving Threat Landscape</h4>
+<p>This ClickFix campaign is a case study in modern social engineering. It exploits the gap between technical security controls and human psychology. As hardening of systems makes traditional exploits more difficult, attackers will increasingly target the user's willingness to follow instructions they believe are legitimate. Defending against this requires not just better tools, but also continuous user education and a zero-trust mindset applied to both code and commands.</p>
+<hr>
+<p>一場運用ClickFix社會工程學技巧的新攻擊行動，已入侵多個合法的烏克蘭商業網站，以分發先前未有紀錄的資訊竊取程式，將攻擊面從軟件漏洞轉向人性信任。</p>
+<p>據《黑客新聞》報導，追蹤此行動的安全研究人員觀察到，攻擊者在被入侵的網站中注入偽造的Cloudflare驗證頁面。這個誘餌利用常見的安全提示欺騙訪問者，手動執行惡意Windows命令，從而繞過許多依賴偵測傳統漏洞利用鏈的自動化防禦系統。</p>
+<h4>基於信任的攻擊剖析</h4>
+<p>攻擊並非始於下載，而是始於入侵。攻擊者取得真實商業網站的控制權，並將其內容替換為偽造的Cloudflare「檢查瀏覽器」挑戰頁面。該頁面看似標準，但其真正目的是進行社會工程學攻擊。</p>
+<p>當訪問者與偽造頁面互動時，它會將一個Windows Installer命令（<code>msiexec.exe</code>）複製到用戶的剪貼簿。螢幕上的指示隨後會要求用戶開啟命令提示字元，貼上命令以「完成驗證」。這是關鍵的ClickFix步驟：說服用戶成為攻擊者的自願共犯。</p>
+<p>透過將惡意命令包裝成例行系統檢查，此技巧將日常用戶操作武器化。它能規避旨在阻止未經請求的下載或可疑檔案附件的安全工具，因為是由用戶主動執行操作。</p>
+<h4>被入侵的網站作為攻擊跳板</h4>
+<p>使用合法的、被入侵的烏克蘭域名是一個關鍵的力量倍增器。用戶本能地信任他們認識的域名或透過搜尋引擎到達的網站。在知名網站上出現的Cloudflare挑戰頁面，所引發的質疑遠少於在可疑的新域名上出現相同頁面。</p>
+<p>對攻擊者而言，這提供了「聲譽洗白」。被入侵的網站已具備既有的域名信任、SSL證書及正常流量模式。這使得惡意注入更難被用戶和安全工具偵測，突顯了對公開基礎設施進行完整性監控的迫切需求。</p>
+<h4>Psychedelic竊取程式：新名稱，舊目標</h4>
+<p>此方案傳遞的有效載荷是一款名為Psychedelic的新資訊竊取程式。雖然其完整功能和基礎設施仍在分析中，但其目的似乎與典型的竊取類型惡意軟件一致，這類軟件通常針對瀏覽器憑證、加密貨幣錢包、會話Cookie及系統資訊以實現變現。</p>
+<p>然而，防禦者的主要要點在於，Psychedelic有效載荷本身可能是可替換的。ClickFix傳遞模板——被入侵的合法網站提供偽造驗證提示——代表了可重用、可擴展的威脅，防禦者應在環境中積極搜尋此類威脅。</p>
+<h4>針對角色的防禦至關重要</h4>
+<p>此攻擊行動需要雙管齊下的防禦，同時針對被入侵的網站和被欺騙的用戶。</p>
+<p><strong>針對網絡管理員和安全團隊：</strong>
+完整性不容妥協。對未經授權的網頁內容更改實施即時監控，特別是注入的腳本、iframe或重定向。定期的檔案完整性檢查及對網頁伺服器產生的異常程序發出警報至關重要。確認您的CDN或託管提供商的安全服務已主動配置，而不僅僅是存在。積極搜尋入侵指標，例如來自伺服器的異常出站連接。</p>
+<p><strong>針對終端用戶和一般員工：</strong>
+防禦是一條簡單的行為規則：<strong>切勿根據網頁上的指示，將命令貼到終端或命令提示字元中。</strong> Cloudflare等合法服務並不要求用戶手動執行系統命令進行驗證。如果網站突然提出此類要求，請關閉分頁並報告問題。安全團隊也應監控終端設備上進行外部連接的異常<code>msiexec.exe</code>程序。</p>
+<h4>不斷演變的威脅形勢</h4>
+<p>這場ClickFix攻擊行動是現代社會工程學的典型案例。它利用了技術安全控制與人類心理之間的差距。隨著系統加固使傳統漏洞利用更加困難，攻擊者將越來越多地針對用戶願意執行他們認為是合法的指令這一點。防禦此類攻擊不僅需要更好的工具，還需要持續的用戶教育，以及將零信任思維應用於程式碼和命令兩方面。</p>
+<p><a href="https://thehackernews.com/2026/09/hacked-ukrainian-sites-serve-fake.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
