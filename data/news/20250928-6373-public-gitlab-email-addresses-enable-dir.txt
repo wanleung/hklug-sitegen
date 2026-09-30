@@ -1,0 +1,32 @@
+Date: 2025-09-28
+Author: HKLUG Team
+Title: Public GitLab Email Addresses Enable Direct Code Injection, Posing Supply Chain Risk
+Content:
+<p>A common GitLab feature meant to streamline project management has become an attack vector. Developers are inadvertently exposing unique, project-specific email addresses in public documentation, which can allow malicious actors to directly inject code into a repository, creating a serious supply chain vulnerability.</p>
+<p>According to analysis from BleepingComputer, the flaw centers on GitLab's "email-to-commit" functionality. Each project can generate a private email address that, when used, allows issues, merge requests, or commits to be created via email. These addresses are typically intended for internal automation.</p>
+<p>The risk emerges when developers publicly list these sensitive addresses in files like <code>README.md</code>, <code>CONTRIBUTING.md</code>, or support pages to collect feedback. This practice effectively exposes a powerful credential. If the project's "Emails on push" settings are not strictly configured, an attacker who discovers the address can use it to push arbitrary, including malicious, commits directly to the codebase.</p>
+<p>The core problem lies in a misunderstood security profile. Teams often treat these addresses as simple collaboration tools, not realizing that with default settings, they can function as a direct pipeline to the repository.</p>
+<p>This creates a potent and easily exploitable attack vector. An attacker could scan open-source projects for these exposed addresses within their documentation. Upon finding one, they could craft a malicious email payload to commit and push a change. A successful exploit could introduce backdoors or malware into a trusted project, potentially compromising all downstream users who pull updates.</p>
+<p>Mitigation requires immediate administrative action. DevOps teams and maintainers should:</p>
+<ol>
+<li><strong>Audit Public Documentation:</strong> Search all public-facing project files for instances of GitLab-generated email addresses (often matching a pattern like <code>projectname+issuekey@domain.com</code>). Remove or redact these addresses.</li>
+<li><strong>Review Push Permissions:</strong> In GitLab project settings, audit the "Emails on push" configuration. Tighten which integrations or groups are permitted to push code via email to the least privilege necessary.</li>
+<li><strong>Enforce Branch Protection:</strong> Protect critical branches like <code>main</code> or <code>master</code> to require merge requests and approvals, preventing direct commits even if an email address is exploited.</li>
+<li><strong>Enable Email Verification:</strong> Activate GitLab's cryptographic verification for incoming emails, creating a strong barrier that only accepts digitally signed, trusted messages.</li>
+</ol>
+<p>This vulnerability underscores a recurring security theme: convenient features often hide significant risks when misconfigured. For the open-source community and all GitLab users, it highlights the need to scrutinise not only code for vulnerabilities but also the configuration and documentation that surround it. A single publicly listed email address can become the entry point for a damaging compromise.</p>
+<hr>
+<p>一項旨在簡化項目管理的常見GitLab功能，已成為攻擊途徑。開發者無意中將獨特、項目專用的電郵地址暴露於公開文件中，這可能允許惡意行為者直接將代碼注入代碼庫，構成嚴重的供應鏈漏洞。</p>
+<p>根據BleepingComputer的分析，該漏洞的核心在於GitLab的「電郵轉代碼提交」功能。每個項目均可生成一個私密電郵地址，使用該地址可透過電郵建立議題、合併請求或提交。這些地址通常用於內部自動化流程。</p>
+<p>當開發者在<code>README.md</code>、<code>CONTRIBUTING.md</code>或支援頁面等文件中公開列出這些敏感地址以收集回饋時，風險便隨之產生。此做法實際上暴露了強大的憑證。若項目的「推送時傳送電郵」設定未經嚴格配置，發現該地址的攻擊者便可利用它直接推送任意（包括惡意的）提交至代碼庫。</p>
+<p>核心問題在於被誤解的安全設定。團隊常將這些地址視為簡單的協作工具，未察覺在預設設定下，它們可作為連接代碼庫的直接管道。</p>
+<p>這創造了一個強大且易於利用的攻擊途徑。攻擊者可掃描開源項目文件中的這些暴露地址。一旦發現，便可製作惡意電郵載荷以提交並推送更改。成功的攻擊可能將後門或惡意軟件引入可信項目，潛在地危害所有拉取更新的下游用戶。</p>
+<p>緩解措施需要立即的管理行動。DevOps團隊及項目維護者應：</p>
+<ol>
+<li><strong>審查公開文件</strong>：搜索所有公開項目文件中GitLab生成的電郵地址（通常符合類似<code>projectname+issuekey@domain.com</code>的模式）。移除或遮蔽這些地址。</li>
+<li><strong>檢查推送權限</strong>：在GitLab項目設定中，審查「推送時傳送電郵」配置。嚴格限制允許透過電郵推送代碼的整合或群組至最小必要權限。</li>
+<li><strong>強制實施分支保護</strong>：保護如<code>main</code>或<code>master</code>等關鍵分支，要求必須通過合併請求與審批，防止即使電郵地址被利用時的直接提交。</li>
+<li><strong>啟用電郵驗證</strong>：啟動GitLab對傳入電郵的加密驗證，建立強大屏障，僅接受經過數碼簽署的可信訊息。</li>
+</ol>
+<p>此漏洞突顯了反覆出現的安全主題：便利功能在配置不當時，往往隱藏重大風險。對開源社群及所有GitLab用戶而言，這強調了不僅需要審查代碼中的漏洞，亦需審視圍繞其的配置與文件。一個單一公開列出的電郵地址，可能成為導致嚴重危害的入侵點。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/exposed-gitlab-project-email-addresses-let-attackers-push-code/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>

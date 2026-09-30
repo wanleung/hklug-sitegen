@@ -1,0 +1,34 @@
+Date: 2026-09-28 18:05:00
+Author: HKLUG Team
+Title: Publicly Listed GitLab Project Emails Create Backdoor for Code Injection
+Content:
+<p>A convenient feature for managing GitLab projects is now a documented attack vector. Security researchers have highlighted how auto-generated project email addresses, when publicly listed in repositories, can become an authenticated gateway for attackers to inject code directly.</p>
+<p>GitLab assigns a unique, private email address to each project, designed to let developers submit issues or merge requests via a simple email. The problem arises when teams list these emails in public documentation like <code>README.md</code>, <code>CONTRIBUTING.md</code>, or support pages to streamline bug reports. According to a report from BleepingComputer, this practice inadvertently creates a backdoor.</p>
+<p>Anyone with the exposed email address can craft a specially formatted message that GitLab interprets as a command to create a new branch and push code changes. This method bypasses the standard authentication and audit trails of the GitLab web interface or Git protocols.</p>
+<p>The attack is straightforward and highly automatable, requiring no advanced exploits. The core issue is a configuration vulnerability born from sacrificing security for contributor convenience. The implications for the software supply chain are significant. An attacker could inject malicious code directly into a repository's main development branch, potentially compromising all downstream users who pull the project.</p>
+<p>For development and DevOps teams, particularly those managing open-source projects, this necessitates an immediate review. The following mitigation steps are recommended:</p>
+<ol>
+<li><strong>Audit and Clean Public Documentation:</strong> Immediately review all public repository files to find and remove any instances of the auto-generated GitLab project email.</li>
+<li><strong>Mandate Web Interface Use:</strong> Direct all contributions exclusively to the official GitLab web interface, ensuring every action is fully authenticated and logged.</li>
+<li><strong>Implement Strict Branch Protection:</strong> Enable protection rules on critical branches like <code>main</code> or <code>master</code>, requiring merge requests and maintainer approvals for all changes.</li>
+<li><strong>Establish Secure Alternative Workflows:</strong> If an email address is essential, use a generic, publicly listed address (e.g., <code>feedback@your-project.org</code>) managed by a secure automation system that translates emails into tracked issues or merge requests without push permissions.</li>
+<li><strong>Monitor and Rotate:</strong> Enable repository activity log monitoring. If a project email has been exposed, rotate it immediately in the GitLab project settings.</li>
+</ol>
+<p>This incident underscores that a project's security perimeter includes its metadata and documentation. The ease of automating this attack makes it a scalable threat for supply chain compromise. It also raises questions about platform responsibility—whether GitLab should change default email visibility or provide stronger in-product warnings about these risks.</p>
+<p>For Hong Kong's development community, this is a prompt to audit repository settings and contribution guidelines. Proactive review of public assets is fundamental to defending against simple yet high-impact attack vectors.</p>
+<hr>
+<p>管理GitLab項目的便捷功能，如今已成為有據可查的攻擊向量。保安研究人員指出，當自動生成的項目電郵地址在儲存庫中公開列出時，可能成為攻擊者直接注入代碼的認證通道。</p>
+<p>GitLab為每個項目分配獨特的私有電郵地址，旨在讓開發者透過簡單的電郵提交議題或合併請求。問題在於，當團隊在<code>README.md</code>、<code>CONTRIBUTING.md</code>或支援頁面等公開文件中列出這些電郵以簡化錯誤報告流程時，根據BleepingComputer的報告，此做法無意間創造了一個後門。</p>
+<p>任何取得該公開電郵地址的人，均可構造特定格式的訊息，使GitLab將其解讀為建立新分支及推送代碼更改的指令。此方法繞過了GitLab網頁介面或Git協定的標準認證與審計軌跡。</p>
+<p>該攻擊操作簡單且高度自動化，無需高級漏洞利用。核心問題源於為遷就貢獻者便利而犧牲保安所產生的配置漏洞。其對軟件供應鏈的影響重大。攻擊者可能直接向儲存庫的主要開發分支注入惡意代碼，進而可能危害所有拉取該項目的下游使用者。</p>
+<p>對開發及DevOps團隊，尤其是管理開源項目的團隊而言，此情況需要立即進行審查。建議採取以下緩解措施：</p>
+<ol>
+<li><strong>審查及清理公開文件：</strong>立即檢查所有公開儲存庫檔案，找出並移除任何自動生成的GitLab項目電郵。</li>
+<li><strong>強制使用網頁介面：</strong>將所有貢獻引導至官方GitLab網頁介面，確保每項操作均經完整認證及記錄。</li>
+<li><strong>實施嚴格分支保護：</strong>在<code>main</code>或<code>master</code>等關鍵分支啟用保護規則，要求所有更改須經合併請求及維護者批准。</li>
+<li><strong>建立安全替代工作流程：</strong>若電郵地址屬必需，應使用通用且公開列出的地址（例如<code>feedback@your-project.org</code>），由安全的自動化系統管理，將電郵轉化為受追蹤的議題或合併請求，且不具推送權限。</li>
+<li><strong>監察及輪換：</strong>啟用儲存庫活動日誌監察。若項目電郵已遭暴露，應立即在GitLab項目設定中進行輪換。</li>
+</ol>
+<p>此次事件強調，項目的保安範圍包括其元數據及文件。該攻擊易於自動化的特性，使其成為供應鏈入侵的可擴展威脅。同時亦引發對平台責任的疑問——GitLab是否應更改電郵地址的預設可見性，或在產品內就這些風險提供更強有力的警告。</p>
+<p>對香港的開發界而言，這是審查儲存庫設定及貢獻指南的及時提醒。主動審查公開資產，是抵禦簡單但影響深遠攻擊向量的基本措施。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/exposed-gitlab-project-email-addresses-let-attackers-push-code/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>

@@ -1,0 +1,36 @@
+Date: 2026-09-28 15:51:00
+Author: HKLUG Team
+Title: Exposed GitLab Project Emails Act as Backdoor Keys for Supply Chain Attacks
+Content:
+<p>A security flaw in GitLab's convenience features is allowing attackers to inject malicious code directly into repositories, creating a significant software supply chain risk. The issue stems from the exposure of private project email addresses, which are now being understood not as contact details but as potent authentication credentials.</p>
+<p>Each GitLab project can generate a unique, private email address. When emails are sent to this address with a specific subject line, GitLab processes the content as a new issue or merge request. More critically, attached code patches can be pushed directly into the repository's codebase, bypassing normal review processes.</p>
+<p>Security researchers, as reported by BleepingComputer, have found these sensitive email addresses being inadvertently published in public documentation such as <code>README.md</code>, <code>CONTRIBUTING.md</code>, and project wikis. This exposes the backdoor to anyone on the internet.</p>
+<p>An attacker with access to this email can craft a malicious commit, attach it to an email targeting the exposed address, and have it merged into the repository. This provides a direct pathway for supply chain poisoning, where compromised code can silently propagate to all forks and downstream users of the project.</p>
+<p>The incident forces a critical change in perspective for DevOps and security teams. Project-specific email addresses must be reclassified as authentication secrets, alongside deploy keys and access tokens. Treating them as public-facing information represents a dangerous misconfiguration that circumvents core security controls.</p>
+<p>While the immediate threat is focused on GitLab, the pattern of using email triggers for automated actions exists on other collaboration platforms. Organizations should consider this a prompt to review similar "email-to-action" features across their entire toolchain.</p>
+<p>Teams using GitLab must take immediate steps to mitigate this risk.</p>
+<h5><strong>Immediate Action Checklist for DevOps Teams</strong></h5>
+<ol>
+<li><strong>Audit and Remove:</strong> Systematically search all public-facing repository files (<code>README.md</code>, <code>CONTRIBUTING.md</code>, wikis, support pages) for any exposed project-specific email addresses.</li>
+<li><strong>Rotate Credentials:</strong> For any email address found to be compromised, immediately generate a new one in the project settings and revoke the leaked credential.</li>
+<li><strong>Disable Vulnerable Feature:</strong> Review and disable the "project email" push feature (for submitting merge requests or issues via email) on non-critical projects.</li>
+<li><strong>Enforce Secure Workflows:</strong> Require all code changes to be submitted via protected merge requests that mandate maintainer approval. Enable commit signature verification where possible.</li>
+</ol>
+<p>This event highlights the ongoing tension between collaborative convenience and robust security. Development teams must routinely audit project configurations to ensure that essential credentials are not accidentally exposed in public view, creating an open door for attackers.</p>
+<hr>
+<p>GitLab 便利功能中的一項安全漏洞，正允許攻擊者直接向儲存庫注入惡意程式碼，造成重大的軟件供應鏈風險。問題根源在於私密項目電郵地址的暴露，這些地址現時已被理解為並非聯絡資料，而是強大的認證憑證。</p>
+<p>每個 GitLab 項目均可生成一個獨特的私密電郵地址。當電郵以特定主旨發送至此地址時，GitLab 會將內容處理為新的議題或合併請求。更關鍵的是，附帶的程式碼補丁能直接推送至儲存庫的程式碼庫，繞過正常的審查流程。</p>
+<p>正如 BleepingComputer 報導，安全研究人員發現這些敏感電郵地址已被無意間發佈於公開文件中，例如 <code>README.md</code>、<code>CONTRIBUTING.md</code> 及項目維基。這使任何人都能在網上接觸到這個後門。</p>
+<p>攻擊者若能存取此電郵，便可製作惡意提交，將其附加至寄往暴露地址的電郵中，並使其合併至儲存庫。這為供應鏈投毒提供了直接途徑，受損的程式碼可靜默傳播至項目所有分支及下游使用者。</p>
+<p>此事件迫使 DevOps 及安全團隊必須改變關鍵認知。項目專屬電郵地址應與部署金鑰及存取權杖一同重新歸類為認證機密。將其視為公開資訊，乃危及核心安全控制的危險錯誤配置。</p>
+<p>雖然即時威脅集中於 GitLab，但利用電郵觸發自動操作的模式亦存在於其他協作平台。組織應將此視為契機，全面審視整個工具鏈中類似的「電郵觸發操作」功能。</p>
+<p>使用 GitLab 的團隊必須立即採取措施降低此風險。</p>
+<h5><strong>DevOps 團隊即時行動清單</strong></h5>
+<ol>
+<li><strong>審計與清除</strong>：系統性搜尋所有公開儲存庫檔案（<code>README.md</code>、<code>CONTRIBUTING.md</code>、維基、支援頁面），查找任何暴露的項目專屬電郵地址。</li>
+<li><strong>輪換憑證</strong>：對於任何已被入侵的電郵地址，立即於項目設定中生成新地址，並撤銷已洩露的憑證。</li>
+<li><strong>停用漏洞功能</strong>：審視並停用非關鍵項目的「項目電郵」推送功能（用於透過電郵提交合併請求或議題）。</li>
+<li><strong>強制安全流程</strong>：要求所有程式碼變更必須透過受保護的合併請求提交，並強制要求維護者批准。盡可能啟用提交簽名驗證。</li>
+</ol>
+<p>此事件突顯了協作便利性與強健安全性之間的持續張力。開發團隊必須定期審計項目配置，確保必要憑證不會意外暴露於公眾視野，從而為攻擊者敞開大門。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/exposed-gitlab-project-email-addresses-let-attackers-push-code/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
