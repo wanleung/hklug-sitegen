@@ -1,0 +1,34 @@
+Date: 2026-09-30 19:24:00
+Author: HKLUG Team
+Title: The EDG C++ Front-End Is Public Now — Whether It's Open Source Is Still the Open Question
+Content:
+<h4>Edison Design Group has released source code that has powered commercial C++ tooling for decades. The announcement is easy to misread: publicly visible source and open source are not the same thing.</h4>
+<p>One of the least-seen components in the C++ ecosystem is now publicly inspectable. Edison Design Group, which supplies a complete C/C++ front-end to other toolmakers under private licensing agreements, has released its EDG source code, according to Phoronix.</p>
+<p>EDG is not a new compiler competing for attention. It is something rarer: a production-grade, decades-old commercial front-end — the code that parses C++, builds an abstract syntax tree, and performs semantic analysis — pulled out of the licensing arrangements that kept it effectively invisible to most developers.</p>
+<p>The name behind it matters more than the release format. Intel's classic C++ compiler was built on EDG. NVIDIA's CUDA compiler (nvcc) uses it to parse device code. Microsoft has drawn on it for IntelliSense support in Visual Studio. In short, if you have written C++ in any of those tools, EDG has parsed your code.</p>
+<h5>Read the license, not the announcement</h5>
+<p>Making source code public and releasing it under terms that permit modification, redistribution, and integration are different acts, and the second is the one developers actually care about. The license text has not been independently verified — a caution that is not pedantic here: vendors in this space have a history of bespoke or research-style terms with non-commercial and redistribution restrictions.</p>
+<p>If the license turns out to be permissive — MIT, BSD, or Apache class — the release is genuinely valuable to anyone building compilers, static analyzers, or IDE tooling. A second, battle-tested independent implementation is something to compare against, correct against, and learn from. If the terms are restricted, the value narrows to transparency: developers can study how a serious production front-end handles the messy reality of C++, but they may not be able to build on it, redistribute it, or ship it in their own products.</p>
+<p>One point of common misunderstanding deserves correcting. A permissively licensed EDG is not legally barred from GCC: permissive licenses are compatible with GPL distribution in principle. The obstacles are structural rather than legal. GCC's front-end is tightly integrated with its middle and back ends, the Free Software Foundation (FSF) requires copyright assignment for contributions, and GCC maintainers decide what enters the compiler. The realistic path for GCC-adjacent work is study and reimplementation — the same route Clang and GCC teams have taken before — not wholesale code reuse.</p>
+<h5>What it offers regardless</h5>
+<p>EDG was designed to do something Clang and GCC are not built to prioritize: accept the code customers actually run. Those compilers optimize for standards conformance; EDG's design goal has been breadth — vendor extensions, legacy dialects, and non-standard constructs that exist in large real-world codebases.</p>
+<p>That makes it a useful independent reference for code-transformation tooling, conformance harnesses, cross-compiler compatibility work, and the static analysis underpinning modern developer tools. It is not a challenger to Clang or GCC, which remain the right defaults for most users and most use cases — and hype framing it as one should be treated with skepticism.</p>
+<h5>Still unanswered</h5>
+<p>Three questions decide whether this is a living project or a reference archive: what the license permits, whether third-party patches are accepted and on what terms, and whether the code builds cleanly outside the environments of its existing licensees. For enterprises maintaining standards-diverse C++ codebases, richer compiler front-ends eventually feed better static analysis, code completion, and AI-assisted code understanding — quality questions that show up as productivity costs. This story will be updated once the license text has been read end to end.</p>
+<p><strong>Source:</strong> Phoronix, "EDG C/C++ Front-End Open-Sourced" — https://www.phoronix.com/news/EDG-CPP-Open-Sourced</p>
+<hr>
+<h4>Edison Design Group 已將數十年來支撐商業 C++ 工具的源碼公開。這項公告很容易被誤讀：源碼公開（publicly visible source）與 open source 並不是同一回事。</h4>
+<p>C++ 生態系中最少人見到的元件之一，如今終於可以公開檢視。據 Phoronix 報道，以私下授權協議向其他工具廠商提供完整 C/C++ 前端的 Edison Design Group，已公開其 EDG 源碼。</p>
+<p>EDG 並不是一款競逐關注度的新編譯器，而是更罕見的存在：一個成熟度達生產級、已有數十年歷史的商業前端 —— 即負責解析 C++、建立 abstract syntax tree（抽象語法樹）及執行 semantic analysis（語義分析）的程式碼 —— 首度脫離了令其對大多數開發者實際上隱形的授權安排。</p>
+<p>其背後的份量，遠比發布形式更重要。Intel 的經典 C++ 編譯器建基於 EDG 之上；NVIDIA 的 CUDA 編譯器（nvcc）使用它來解析 device code；Microsoft 亦借助它在 Visual Studio 中提供 IntelliSense 支援。簡而言之，只要你曾用上述任何一款工具寫過 C++，EDG 就曾經解析過你的程式碼。</p>
+<h5>應閱讀授權條款，而非公告本身</h5>
+<p>將源碼公開，與以允許修改、再分發及整合的條款發布，是兩種截然不同的行為，而開發者真正關心的是後者。目前授權條款文本尚未經獨立核實 —— 在此處這一審慎態度絕非學究式的挑剔：這個領域的廠商一向有採用自訂或研究性質條款的歷史，當中往往附帶 non-commercial 及再分發限制。</p>
+<p>倘若授權條款最終屬寬鬆類型 —— 例如 MIT、BSD 或 Apache 級別 —— 這項發布對任何正在打造編譯器、static analyzer 或 IDE 工具的人而言都確實有價值。一個經歷過實戰考驗的獨立實現，可以作為比較、修正及學習的對象。若條款屬受限類型，其價值便收窄至透明度：開發者可以研究一個嚴肅的生產級前端如何應對 C++ 真實世界的混亂狀況，但未必可以據此建立衍生項目、再分發，或將其整合到自己的產品中推出。</p>
+<p>有一項常見的誤解值得釐清：獲得寬鬆授權的 EDG 在法律上並不受限於 GCC —— 寬鬆授權原則上與 GPL 的分發方式相容。真正的障礙是結構性的，而非法律性的。GCC 的前端與其中端及後端緊密整合；自由軟件基金會（Free Software Foundation, FSF）要求貢獻者將版權轉讓予基金會；而由 GCC 維護者決定何種改動可以進入編譯器。對於 GCC 相關的工作，較現實的路徑是研究與重新實現 —— 這正是 Clang 和 GCC 團隊過去走過的同一條路 —— 而非整批程式碼照搬。</p>
+<h5>無論如何，它都能帶來的東西</h5>
+<p>EDG 的設計初衷，是做到 Clang 和 GCC 並未以之為優先的事：接納客戶實際執行的程式碼。那些編譯器以符合標準程度為優先；EDG 的設計目標則是廣度 —— 包括 vendor extension、legacy dialect，以及大量真實世界程式碼庫中存在的 non-standard 構造。</p>
+<p>這使它成為一個有用的獨立參考，適用於程式碼轉換工具、一致性測試框架（conformance harnesses）、跨編譯器相容性工作，以及支撐現代開發者工具的 static analysis。它不是 Clang 或 GCC 的挑戰者 —— 對大多數用戶和大多數使用場景而言，後兩者仍然是正確的預設選項 —— 而任何將它炒作為挑戰者的報導角度，都應審慎看待。</p>
+<h5>仍未有答案</h5>
+<p>三個問題決定了這是一個持續運作的項目，還是一份參考存檔：授權條款允許什麼、是否接受第三方 patch 及接受的條件為何，以及程式碼能否在其現有被授權方之外的環境中乾淨地編譯。對於維護標準混雜的 C++ 程式碼庫的企業而言，更完善的編譯器前端最終會帶來更好的 static analysis、code completion，以及 AI 輔助的程式碼理解能力 —— 這些都是以生產力成本形式呈現的質素問題。待授權條款全文閱讀完畢後，本篇報導將會更新。</p>
+<p><strong>來源：</strong> Phoronix，"EDG C/C++ Front-End Open-Sourced" — https://www.phoronix.com/news/EDG-CPP-Open-Sourced</p>
+<p><a href="https://www.phoronix.com/news/EDG-CPP-Open-Sourced" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
