@@ -1,0 +1,44 @@
+Date: 2026-09-30 13:38:00
+Author: HKLUG Team
+Title: Cloudflare Plans Quantum-Safe TLS Certificates as PKI Prepares for a Harder Migration
+Content:
+<h3>Cloudflare Plans Quantum-Safe TLS Certificates as PKI Prepares for a Harder Migration</h3>
+<p>Cloudflare intends to issue TLS certificates resistant to attacks from future quantum computers — part of what the company describes as a broad overhaul of the ecosystem underpinning website authentication, according to Ars Technica.</p>
+<p>What matters most about the announcement is not what has shipped, but what it signals. Handshake-level protections against quantum attacks, built around hybrid ML-KEM key exchange, are already deployed across the industry, including Cloudflare's own edge. The certificate layer, by contrast, has barely moved. TLS certificates today are still signed almost exclusively with classical algorithms such as ECDSA and RSA. That is the gap Cloudflare's plan would address.</p>
+<h4>Why certificates are the harder problem</h4>
+<p>Certificates are harder to migrate than key exchange for structural reasons. They are long-lived relative to handshake keys, widely cached across intermediaries and enterprise networks, and validated by an enormous, uncontrolled tail of clients — legacy embedded devices, outdated libraries, corporate middleboxes — that nobody can upgrade on a deadline.</p>
+<p>That asymmetry sharpens the threat model. Traffic recorded today can be decrypted later, a technique often described as "harvest now, decrypt later." While harvested TLS sessions have a bounded shelf life, other artifacts signed with classical algorithms may need to remain verifiable far into the next decade: code-signing certificates, long-lived document signatures, and machine-to-machine credentials. For operators, that is the strongest reason to start planning now rather than wait for a general-availability announcement.</p>
+<p>Cloudflare's position in the ecosystem means even a non-committal plan carries weight. The company both terminates TLS at massive scale and operates as a certificate authority, which gives certificate authorities, browser root programmes, and open-source crypto libraries — OpenSSL, mbedTLS, the Go standard library, Java's security stack — a strong incentive to prioritise post-quantum certificate support in anticipation of demand, regardless of Cloudflare's own timeline.</p>
+<h4>Sequencing may be the real constraint</h4>
+<p>The binding constraint on post-quantum certificates is likely to be logistics rather than cryptography. Post-quantum signature schemes produce substantially larger keys and signatures than ECDSA or RSA, and those larger certificates cascade through the PKI stack: X.509 size limits, handshake payload sizes, OCSP and CRL revocation infrastructure, and Certificate Transparency log capacity all need to accommodate the change. Profile definitions, not algorithms, will determine when real deployments begin — and those profiles have not been published yet.</p>
+<h4>Three tiers, one takeaway</h4>
+<p>It helps to keep three tiers distinct when evaluating any announcement in this space:</p>
+<ul>
+<li><strong>Research prototype:</strong> a demonstration that the technology works, with no operational path.</li>
+<li><strong>Limited pilot:</strong> early testing under controlled conditions, still not broadly interoperable.</li>
+<li><strong>Generally available:</strong> the only tier that should influence production roadmaps.</li>
+</ul>
+<p>Cloudflare's certificate plan currently sits at the first two levels. The company has not committed to a general-availability date, selected a signature scheme — ML-DSA, SLH-DSA, or a hybrid combination — or described how certificate requests and issuance flows will work. Those details remain open questions, as they do across the wider industry, where the CA/Browser Forum and Certificate Transparency log operators have yet to publish profiles for post-quantum certificates.</p>
+<p>For Hong Kong's web and DevOps community — which operates largely on the same shared infrastructure and library ecosystem as international peers — the actionable item is agility rather than adoption. Now is the time to inventory cryptographic dependencies, audit certificate-pinning configurations, verify library upgrade readiness, and check that certificate renewal pipelines are clean. Actual migration should wait for a generally-available offering.</p>
+<p>The sensible trigger for revisiting this story is when Cloudflare moves from "plans" to a pilot or general-availability announcement, or when a major certificate authority or browser vendor commits to a post-quantum certificate profile. Until then, this is a direction of travel, not a deadline.</p>
+<hr>
+<h3>Cloudflare 計劃推出抗量子運算攻擊的 TLS 憑證，PKI 面臨更艱難的遷移工程</h3>
+<p>據 Ars Technica 報道，Cloudflare 打算簽發能抵抗未來量子電腦攻擊的 TLS 憑證——該公司形容這是對網站身份驗證背後整個生態系統進行大規模改造的一部分。</p>
+<p>是次公告最重要的，與其說是已經推出的產品，不如說是它釋放出的訊號。以 hybrid ML-KEM key exchange 為核心、抵抗量子攻擊的 handshake 層面保護措施，已廣泛部署於業界，包括 Cloudflare 自己的 edge。相較之下，憑證層幾乎毫無進展。今天的 TLS 憑證，簽署方式仍然幾乎完全依賴 ECDSA 和 RSA 等傳統演算法。這正是 Cloudflare 計劃要填補的缺口。</p>
+<h4>為何憑證是更難解決的問題</h4>
+<p>憑證之所以比 key exchange 更難遷移，有其結構性原因。相對於 handshake key，憑證的壽命長得多，被中介機構和企業網絡廣泛緩存，而且需要由一群龐大而不受控制的客戶端來驗證——包括舊式嵌入式設備、過時的函式庫、企業 middlebox——任何人都無法按時間表逐戶升級。</p>
+<p>這種不對稱令威脅模型更加尖銳。今天記錄下來的流量，日後可以被解密，這種手法常被稱為「先收割，後解密」（harvest now, decrypt later）。被收割的 TLS session 的有效期有限，但其他以傳統演算法簽署的文件，可能需要在下一個十年持續保持可驗證狀態：code-signing certificates、長期文件簽名，以及機器對機器的憑證。對營運商而言，這是現在就開始規劃、而非等待 general availability 公告的最強理由。</p>
+<p>Cloudflare 在生態系統中的地位，即使是一份未作明確承諾的計劃也具有份量。該公司既以巨大規模終結（terminate）TLS，同時又以 certificate authority 的身分運作，這令 certificate authorities、browser root programmes，以及開源 crypto libraries——OpenSSL、mbedTLS、Go 標準函式庫、Java 的 security stack——無論 Cloudflare 自身的時間表如何，都更有動機為應對未來需求而優先提供後量子憑證支援。</p>
+<h4>排程次序可能是真正的限制因素</h4>
+<p>後量子憑證的最大限制，很可能來自後勤而非密碼學本身。後量子簽署方案產生的 keys 和 signatures，體積遠比 ECDSA 或 RSA 大，而這些較大的憑證會在整個 PKI stack 中連鎖擴散：X.509 size limits、handshake payload sizes、OCSP 和 CRL 撤銷基礎設施、以至 Certificate Transparency log 的容量，全部都需要作出配合。決定實際部署何時開始的，是 profile definitions 而非演算法本身——而這些 profiles 至今仍未公布。</p>
+<h4>三個層次，一個結論</h4>
+<p>在評估這領域的任何公告時，將三個層次清楚區分會有幫助：</p>
+<ul>
+<li><strong>Research prototype：</strong>證明技術可行，但沒有任何 operational path。</li>
+<li><strong>Limited pilot：</strong>在受控條件下的初步測試，仍未能廣泛互操作。</li>
+<li><strong>Generally available：</strong>唯一應該影響 production roadmaps 的層次。</li>
+</ul>
+<p>Cloudflare 的憑證計劃目前處於最初兩個層次。該公司尚未承諾 general-availability 日期，未有選定簽署方案——ML-DSA、SLH-DSA，抑或 hybrid 組合——亦未說明 certificate requests 和簽發流程將如何運作。這些細節仍是未解之謎，整個業界亦然：CA/Browser Forum 和 Certificate Transparency log 營運商同樣尚未公布後量子憑證的 profiles。</p>
+<p>對香港的 web 和 DevOps 社群而言——他們運作所依賴的基礎設施和 library 生態系統，與國際同行大同小異——當務之急是保持敏捷，而非急於採納。現在正是盤點 crypto dependencies、審視 certificate-pinning 配置、確認函式庫升級準備就緒，以及檢查 certificate renewal pipelines 是否暢順的時候。實際遷移，則應等待真正 general-available 的產品推出。</p>
+<p>重新關注這則消息的合理時機，是當 Cloudflare 由「計劃」進入 pilot 或 general-availability 公告，或當某間主要 certificate authority 或 browser vendor 承諾採用後量子憑證 profile。在那之前，這只是一個方向，而非限期。</p>
+<p><a href="https://arstechnica.com/security/2026/09/cloudflare-plans-to-issue-quantum-safe-tls-certificates/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
