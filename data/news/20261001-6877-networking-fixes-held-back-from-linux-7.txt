@@ -1,0 +1,40 @@
+Date: 2026-10-01 18:23:00
+Author: HKLUG Team
+Title: Networking Fixes Held Back From Linux 7.3 as Maintainers Route Work to 7.4
+Content:
+<h3>Networking Fixes Held Back From Linux 7.3 as Maintainers Route Work to 7.4</h3>
+<p>Linux kernel networking maintainers are pulling fixes out of the 7.3 cycle and targeting them at 7.4 — a deferral made at the rc stage, roughly three weeks before the 7.3 stable release, that reads less like a schedule slip than a deliberate act of release triage by one of the kernel's largest subsystems.</p>
+<p>According to reporting by Phoronix, the networking tree has enough pending work that maintainers have begun choosing which fixes clear the bar for 7.3 and which wait for the next cycle. The deferral window — arriving well ahead of a stable release that is still several weeks out — is the clearest signal yet that the <code>-net</code> maintainers are reshaping an incoming release for stability rather than letting a queue drain on its own terms.</p>
+<h4>Why the networking subtree is being split</h4>
+<p>The Linux kernel's networking codebase spans an enormous surface area: wired and wireless drivers, an expanding stack of protocols, and a constant stream of fixes and hardening work. That makes it, as Phoronix frames it, particularly exposed to the volume of patch activity now flowing from AI and LLM agents. The publication describes networking developers as "completely overwhelmed" by AI/LLM-driven patch submissions and bug reports, and as working through a steady intake of what they characterise as AI slop — low-value or outright incorrect contributions that nonetheless arrive at scale.</p>
+<p>The framing matters for anyone reading this as an industry signal. The deferral decision is not being presented as a backlog complaint or a staffing gripe. It is being made by maintainers who are actively splitting incoming work across two release cycles in order to keep each one defensible.</p>
+<h4>Triage is the bottleneck, not the calendar</h4>
+<p>The mechanism behind the deferral is review bandwidth, not arithmetic. Distinguishing a valid fix from a plausible-looking machine-generated patch is itself expensive work, and Phoronix's account suggests that bandwidth is being consumed by that sorting process rather than by reviewing substantive changes. The practical consequence is that even correct patches can slip into 7.4 simply because validating them took longer than the cycle allowed.</p>
+<p>That distinction is worth drawing out for downstream consumers. A subsystem that ships a thinner 7.3 networking fix set because maintainers spent the review cycle filtering noise is not a subsystem in failure — it is a subsystem applying quality control under load.</p>
+<blockquote>
+<h5>Backport implications for enterprise distributions</h5>
+<p>Distributions that track closely to stable releases will face a thinner set of networking fixes in 7.3 than a typical cycle would deliver, with more of that work deferred to 7.4. In practice, that shifts backporting and validation work downstream: administrators who normally cherry-pick networking fixes into a supported enterprise base will need to source some of that material from 7.4 or wait for it to propagate through their vendor's queue. Teams running networking-heavy workloads should expect patch-planning windows to stretch slightly, and should budget review time accordingly rather than assuming a fix landed simply because a cycle closed.</p>
+</blockquote>
+<h4>What this says about AI tooling in the cycle</h4>
+<p>The AI/LLM angle here is causal context rather than the headline story. The connection being drawn in Phoronix's reporting is straightforward: increased machine-generated patch and bug-report volume has changed the workload of the people who review it, and that changed workload is now visible in release planning. The kernel's networking developers are, on this account, indicating that they currently have no established filtering mechanism capable of triaging that influx before it reaches maintainers — though that observation appears to apply to the networking subtree's experience rather than as a general claim about how every kernel subsystem handles machine-generated contributions.</p>
+<p>For open-source maintainers more broadly, the 7.3→7.4 split is the kind of precedent worth watching: release-management decisions that would once have been invisible to anyone outside a mailing list are now visible in the shape of a stable release, and the reasons behind them are increasingly about input quality as much as patch volume.</p>
+<p><em>Source: Phoronix — "Some Networking Fixes Being Diverted To Linux 7.4, AI/LLM Activity Still Increasing."</em></p>
+<hr>
+<h3>網絡修復未能進入 Linux 7.3：維護者將工作改投 7.4</h3>
+<p>Linux 核心的網絡維護者正從 7.3 周期中撤出部分修復，改為投放至 7.4——這項推遲在 rc（Release Candidate）階段作出，距離 7.3 穩定版發佈尚有約三星期；與其說這是一次進度延誤，不如視作核心其中一個最大子系統主動進行的版本分流處理（triage）。</p>
+<p>根據 Phoronix 的報導，networking tree（網絡代碼樹）積壓的待處理工作相當多，維護者已開始挑選哪些修復足以通過 7.3 的關口，哪些則要留待下一個周期。推遲的時機——遠早於仍需數星期才發佈的穩定版——是迄今最清楚的信號，顯示 <code>-net</code> 維護者正主動重塑即將發佈的版本以確保穩定性，而非任由 queue 按自身節奏消化。</p>
+<h4>為何 networking subtree 要一分為二</h4>
+<p>Linux 核心的網絡代碼覆蓋範圍極為龐大：有線及無線驅動、不斷擴展的協定堆疊，以及源源不斷的修復與加固工作。因此用 Phoronix 的說法，這個子系統尤其容易受到目前來自 AI 及 LLM agent 的大量 patch 活動衝擊。該刊物形容網絡開發者「完全被淹沒」（completely overwhelmed），面對 AI／LLM 驅動的 patch 提交與 bug 報告應接不暇，要持續處理他們稱之為「AI slop」的內容——即低價值甚至完全錯誤、但仍然大量湧來的貢獻。</p>
+<p>這個角度對任何視之為行業信號的人而言都很重要。推遲的決定並非以積壓投訴或人手不足的怨言形式提出，而是由維護者主動將 incoming work 分散至兩個 release cycle，以確保每個版本都站得住腳。</p>
+<h4>瓶頸在於分流（triage），不在於時間表</h4>
+<p>推遲背後的機制是 review bandwidth，而非簡單的算術問題。分辨一個有效修復與一個貌似合理的機器生成 patch，本身就是耗時的工作；Phoronix 的描述顯示，bandwidth 正被這個分類過程消耗，而非用於審閱實質性的變更。實際後果是：即使是正確的 patch，也可能因為驗證所需的時間超出周期容許而流入 7.4。</p>
+<p>這個區別對下游使用者尤為重要。一個子系統因維護者將整個 review 周期用於過濾噪音，而在 7.3 推出較少的網絡修復，並不代表該子系統出現問題——而是它在高負載下仍堅持品質控制。</p>
+<blockquote>
+<h5>對企業發行版的 backport 影響</h5>
+<p>緊貼穩定版跟進的 Linux 發行版，在 7.3 可用的網絡修復將會比一般周期為少，更多工作會推遲至 7.4。在實踐上，這會令 backport（向下移植）及驗證工作轉移至下游：一般會將網絡修復 cherry-pick 到已支援企業版本的系統管理員，將需要部分從 7.4 取得素材，或等待其經由供應商的 queue 傳播。運行大量網絡負載工作的團隊，應預期 patch 規劃時間會略微延長，並相應預留 review 時間，而非假設某個周期結束便代表修復已經落地。</p>
+</blockquote>
+<h4>這對本周期內的 AI 工具意味著甚麼</h4>
+<p>當中 AI／LLM 的角度，只是因果脈絡，而非報導主體。Phoronix 報導提出的關聯十分直接：機器生成的 patch 及 bug 報告數量增加，改變了負責審閱的人員工作量，而這個改變了的工作量如今已在 release planning 中顯現出來。按此說法，核心的網絡開發者表明，目前並無任何既有的過濾機制，能在這批內容湧至維護者前完成分流——不過這項觀察看來只適用於 networking subtree 的實際經驗，並非關於所有核心子系統處理機器生成貢獻的普遍結論。</p>
+<p>對更廣泛的 open source 維護者而言，7.3→7.4 的分流是值得留意的先例：以往只在 mailing list 內部才會看見的 release management 決定，如今在穩定版的形態上清楚可見，而背後的理由亦愈來愈涉及輸入品質，而不只是 patch 數量。</p>
+<p><em>來源：Phoronix —「Some Networking Fixes Being Diverted To Linux 7.4, AI/LLM Activity Still Increasing.」</em></p>
+<p><a href="https://www.phoronix.com/news/Linux-Networking-Linux-7.3-rc6" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
