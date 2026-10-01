@@ -1,0 +1,36 @@
+Date: 2026-10-01 13:30:00
+Author: HKLUG Team
+Title: Windows 11 26H2 Enables Settings Backup by Default Across Entra-Enrolled Enterprise Fleets
+Content:
+<p>Windows settings backup and restore is being switched on by default for enterprise machines, according to reporting by BleepingComputer. Any Entra-joined or Entra hybrid-joined system running Windows 11 26H2 inherits the feature automatically — administrators no longer need to turn it on through policy. The burden of the configuration decision has inverted: doing nothing no longer keeps backup off, it enables it.</p>
+<p>That inversion is the part that should concern teams running large M365 estates. Until now, backing up the user environment was an explicit, admin-controlled act. Under 26H2, silence equals configuration — and estates that had assumed a default-off posture will need to decide what they actually want backed up, deliberately, rather than by omission.</p>
+<p><strong>What the Backup Covers</strong></p>
+<p>Reporting indicates the feature captures user-environment settings and installed applications — the profile material that follows a user from machine to machine. Administrators should treat the precise envelope as something to verify against their own tenant rather than accept as settled. Before 26H2 reaches production rings, it is worth putting the coverage boundary to Microsoft directly: exactly which categories are captured by default on Entra-joined devices, and where the boundary sits between user-settings backup and other Microsoft backup services. A feature announcement is not documentation; confirm the scope against current Microsoft material for your tenant type.</p>
+<p><strong>Checking the Override Path</strong></p>
+<p>The feature is a platform default, not a mandate. In principle, administrators retain policy controls over whether backup is enabled, which categories are captured, and which groups of users it applies to — so the control surface has not disappeared, it has shifted from "enable" to "opt out." That shift is manageable, but only if the specific mechanisms are understood before rollout, not after. Administrators should open current Microsoft documentation for their build channel and confirm which policy settings, group-targeting options and per-category exclusions are actually available in their tenant configuration — several commonly cited override mechanisms are still circulating in commentary without documentation backing. Establish what your estate can actually enforce, in writing, from Microsoft's own references.</p>
+<p><strong>Where the Data Lands</strong></p>
+<p>One governance question deserves explicit mention: where does the backup go? For organisations whose Microsoft tenancy is hosted or replicated outside Hong Kong, settings data that moves with a user to a Microsoft-managed backup location has a residency posture that may not match what the organisation assumed. This is not a statutory question — it is an operational one — and the answer varies by tenant configuration. Put it to your Microsoft tenant team directly: where is the data stored, which region, and which backup categories can be excluded. A written answer from Microsoft is worth more than an inference drawn from a feature list.</p>
+<p><strong>Three Checks to Run Before Rollout</strong></p>
+<ol>
+<li><strong>Decide your target state.</strong> Which settings categories, if any, should be in scope for backup across your Entra-joined and hybrid-joined estate, and which should be excluded? If the decision has not been made yet, make it now, deliberately — because after 26H2 reaches production rings, the default has already made it for you.</li>
+<li><strong>Confirm the data handling in writing.</strong> Where backup data is stored, in which region, and under what terms — get this from Microsoft, not from feature pages or forum posts.</li>
+<li><strong>Plan the rollout timing.</strong> 26H2 will reach estates on Microsoft's build schedule, not yours. Identify which of your rings will receive the change first, and ensure the configuration you intend to enforce is in place before that ring moves — not after.</li>
+</ol>
+<p>The feature itself is unremarkable. What matters is that for Entra-enrolled fleets, a decision that used to be an administrative action is now a default that acts on the estate unless explicitly addressed.</p>
+<hr>
+<p>根據 BleepingComputer 的報導，Windows 設定備份與還原功能將在企業裝置上預設啟用。任何執行 Windows 11 26H2 的 Entra 裝置（Entra-joined）或 Entra 混合式裝置（Entra hybrid-joined）系統，均會自動擁有此功能——系統管理員不再需要透過 policy 手動啟用。配置決策的責任已經倒轉：不作任何處置，不再是維持備份關閉的做法，而是等同於啟用備份。</p>
+<p>這種倒轉正是管理龐大 M365 環境的團隊需要關注之處。在此之前，備份使用者環境一直是一項由系統管理員明確控制的操作。在 26H2 之下，沉默即等同於配置——曾經假設備份預設關閉的環境，如今必須刻意決定實際需要備份的內容，而非由預設值替他們決定。</p>
+<p><strong>備份涵蓋的範圍</strong></p>
+<p>報導指出，此功能會擷取使用者環境設定及已安裝的應用程式——即隨使用者由一部機器轉移到另一部機器的 profile 資料。系統管理員應將具體涵蓋範圍視為需自行向 tenant 核實的項目，而非視作已有定論。在 26H2 推進至 production rings 之前，值得直接向 Microsoft 查詢覆蓋範圍：預設情況下 Entra 裝置會擷取哪些類別的設定，以及使用者設定備份與其他 Microsoft 備份服務之間的界線何在。功能發佈公告並不等同於技術文件；請根據貴公司 tenant 類型，對照 Microsoft 現行文件核實涵蓋範圍。</p>
+<p><strong>檢查停用機制</strong></p>
+<p>此功能屬平台預設值，而非強制指令。原則上，系統管理員仍然保留 policy 層面的控制權，包括是否啟用備份、擷取哪些類別，以及適用於哪些用戶群組——換言之，控制面並未消失，只是由「啟用」轉變為「選擇退出」。這項轉變並非難以應付，但前提是必須在推行之前而非之後了解具體機制。系統管理員應查閱適用於自身 build channel 的 Microsoft 現行文件，確認在其 tenant 配置下，實際可用的 policy 設定、群組目標選項及逐類別排除選項有哪些——目前有多個常被提及的停用機制仍然只見於評論文章，背後並無技術文件支持。請根據 Microsoft 官方參考資料，以書面形式確認貴公司環境實際上可以執行哪些配置。</p>
+<p><strong>資料最終儲存於何處</strong></p>
+<p>有一項 governance 問題必須明確提出：備份資料究竟存放在哪裡？對於 Microsoft tenancy 托管或複製於香港境外的機構而言，隨使用者轉移至 Microsoft 管理的備份位置的設定資料，其資料駐留（data residency）狀態可能並不符合機構原本的假設。這不是一個法定問題，而是一個營運問題——答案因 tenant 配置而異。請直接向 Microsoft tenant 團隊查詢：資料儲存於哪個地區，以及哪些備份類別可以排除。Microsoft 出具的書面答覆，遠比從功能清單中自行推斷更有價值。</p>
+<p><strong>推行前必須完成的三項檢查</strong></p>
+<ol>
+<li><strong>決定目標狀態。</strong> 在貴公司的 Entra 裝置及混合式裝置環境中，哪些設定類別（如有）應納入備份範圍，哪些應予排除？若尚未作出決定，請現在刻意決定——因為 26H2 推進至 production rings 之後，預設值已代為決定。</li>
+<li><strong>以書面形式確認資料處理安排。</strong> 備份資料儲存於哪裡、位於哪個地區、根據甚麼條款處理——請向 Microsoft 直接取得，而非依賴功能頁面或論壇帖文。</li>
+<li><strong>規劃推行時間表。</strong> 26H2 將按照 Microsoft 的 build 時間表推進至各個環境，而非貴公司的時間表。先確定哪些 rings 會率先收到此變更，並確保擬執行的配置在該 ring 變更之前而非之後已經就位。</li>
+</ol>
+<p>此功能本身並無特別之處。關鍵在於，對於 Entra 註冊的裝置 fleet 而言，一項以往屬於行政操作的決策，如今已成為一項預設值——除非明確處理，否則便會自動套用至整個環境。</p>
+<p><a href="https://www.bleepingcomputer.com/news/microsoft/microsoft-enables-windows-settings-backup-by-default-for-orgs/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
