@@ -1,0 +1,34 @@
+Date: 2026-10-01 15:39:00
+Author: HKLUG Team
+Title: Rust 1.99.0 Ships Variadic extern "C" FFI Support Alongside New Raw-Pointer Layout APIs
+Content:
+<h3>Rust 1.99.0 Ships Variadic extern "C" FFI Support Alongside New Raw-Pointer Layout APIs</h3>
+<p>Rust 1.99.0 has been released. According to LWN.net's coverage, the release adds support for extern "C" variadic functions, new functions for obtaining the size and alignment of raw pointers, and a number of stabilized APIs.</p>
+<p>For teams maintaining systems written partly in C and partly in Rust, the addition of variadic extern "C" support is the change most likely to have real impact on day-to-day engineering work. As with any newly exposed FFI surface, however, teams should consult the official documentation to verify how variadic calls behave on each target platform before depending on them in critical code paths.</p>
+<h4>Analysis: What variadic extern "C" support may change for mixed-language systems</h4>
+<p>Variadic functions are pervasive in C — <code>printf</code>, <code>open</code>, and many other system APIs use this pattern. Rust code has historically been unable to declare variadic extern "C" functions directly; teams maintaining a C core have typically had two options: hand-written assembly trampolines to emulate variadic calls, or a C glue layer added to the build pipeline so that the C side wraps functions before Rust calls them. The following discussion reflects our own engineering analysis, not statements drawn from the release notes.</p>
+<p>Both approaches carry failure modes of their own: hand-written trampolines do not fail at compile time, and errors tend to surface later as memory corruption; C glue layers, meanwhile, complicate cross-platform CI toolchains and add platform-specific build-host dependencies. With language-level support for variadic extern "C" declarations now in place, these intermediate layers may no longer be necessary — though whether they can actually be removed in a given codebase will depend on the platform behaviour that code relies on.</p>
+<h4>Secondary item: explicit raw-pointer size and alignment queries</h4>
+<p>This release also adds functions for obtaining the size and alignment of raw pointers. For developers writing layout-sensitive code — allocators, arenas, intrusive data structures — having this information available as a first-class API turns previously implicit assumptions into explicit ones and makes the code easier to audit. Layout bugs have long been among the most difficult classes of defects to diagnose, so clearer APIs in this area are a genuine improvement for teams working with unsafe code.</p>
+<h4>What the LWN summary does — and does not — claim</h4>
+<p>The LWN summary lists the changes above plus a number of stabilized APIs, and points readers to the official Rust blog announcement for full details. The complete list of stabilized APIs is outside the scope of this report; teams planning upgrades should consult the official release notes linked from the source article directly. The summary makes no statement either way about source-level breaking changes, so this article deliberately draws no conclusions about upgrade risk.</p>
+<p>What can be confirmed from the source, though, is that a class of workarounds — assembly trampolines and C glue layers around variadic calls — may no longer be needed in new code. Each intermediate layer that can be removed reduces the surface area requiring unsafe-code auditing and the number of platform-specific build dependencies, and that compounding effect tends to outlast the novelty of any single new API.</p>
+<h4>Who this change is most likely to affect</h4>
+<p>From a general engineering standpoint, Rust is often introduced incrementally into organisations that must maintain legacy C codebases; embedded systems, systems infrastructure, and long-lived financial technology platforms are commonly cited as the kinds of environments where this pattern appears. Support for variadic extern "C" functions addresses one of the recurring friction points in exactly these mixed-language setups. Teams still relying on assembly trampolines or C glue layers to connect Rust to existing system APIs may find Rust 1.99.0 a reasonable point at which to reassess whether those workarounds remain necessary — though they should first confirm that the variadic FFI behaviour on their target platforms matches expectations before any full migration.</p>
+<p><em>Source: LWN.net, "Rust 1.99.0 released" (https://lwn.net/Articles/1098068/); official Rust release notes linked from that article.</em></p>
+<hr>
+<h3>Rust 1.99.0 推出變參 extern "C" FFI 支援，同時加入新的 raw pointer layout API</h3>
+<p>Rust 1.99.0 已正式發布。據 LWN.net 報道，此版本新增 extern "C" 變參（variadic）函數支援、用以取得 raw pointer 大小與對齊（alignment）的新函數，以及一批已穩定化的 API。</p>
+<p>對須維持部分以 C 編寫、部分以 Rust 編寫的系統的團隊而言，變參 extern "C" 的支援最有可能在日常開發工作中產生實際影響。不過，與任何新推出的 FFI 介面一樣，團隊應先查閱官方文件，核實變參呼叫在各目標平台上的行為，然後才於關鍵程式碼路徑中採用。</p>
+<h4>分析：變參 extern "C" 支援對混合語言系統可能帶來的改變</h4>
+<p>變參函數在 C 語言中十分普遍，<code>printf</code>、<code>open</code> 等眾多系統 API 均採用此模式。過往 Rust 程式碼無法直接宣告變參 extern "C" 函數；維持 C 核心的團隊通常有兩種選擇：一是手寫 assembly trampoline 模擬變參呼叫，二是在建置流程（build pipeline）中加入一層 C 膠水層，由 C 端先包裝函數，再供 Rust 呼叫。以下討論為本團隊的工程分析，並非 release notes 的陳述。</p>
+<p>兩種做法各有其失效模式：手寫 trampoline 的失敗不會在編譯期出現，而是日後以記憶體損毀的形式浮現；C 膠水層則會令跨平台 CI 工具鏈變得複雜，並增加平台專屬的建置主機（build host）依賴。隨著語言層面已加入變參 extern "C" 宣告的支援，這些中間層可能不再必要——惟實際上能否在既有程式碼庫中移除，仍取決於該程式碼所依賴的平台行為。</p>
+<h4>次要項目：明確的 raw pointer 大小與對齊查詢</h4>
+<p>此版本另加入用以取得 raw pointer 大小與對齊的函數。對撰寫 layout-sensitive 程式碼的開發者而言——例如 allocator、arena、intrusive data structure——將這類資訊作為 first-class API 提供，令以往隱含的假設變得明確，程式碼亦更易於審計。Layout bug 一直是難以診斷的缺陷類別，因此此領域的 API 得以清晰化，對處理 unsafe 程式碼的團隊而言確是一項實質改進。</p>
+<h4>LWN 摘要提及與未提及的內容</h4>
+<p>LWN 摘要列出了上述改動，以及一批已穩定化的 API，並引導讀者查閱 Rust 官方 blog 的完整公告。完整的已穩定化 API 名單超出本文範圍；計劃升級的團隊應直接查閱原文所連結的官方 release notes。該摘要並未就 source-level breaking changes 作出任何正面或負面的陳述，因此本文刻意不對升級風險下結論。</p>
+<p>不過，從原文可以確認的是：一類 workaround——變參呼叫周邊的 assembly trampoline 與 C 膠水層——在新程式碼中可能不再需要。每移除一層中間結構，即意味需要審計 unsafe 程式碼的介面面積有所縮減，平台專屬建置依賴的數量亦相應減少；這種複利效應往往比任何單一新 API 的新鮮感更為持久。</p>
+<h4>這項改動最可能影響哪些團隊</h4>
+<p>從一般工程角度而言，Rust 常以漸進方式引入須維護 legacy C 程式碼庫的組織；嵌入式系統、系統基建，以及長期運作的金融科技平台，常被視為會出現此類模式的環境。變參 extern "C" 函數的支援，正好針對這類混合語言設定中其中一個反覆出現的摩擦點。目前仍依賴 assembly trampoline 或 C 膠水層連接 Rust 與既有系統 API 的團隊，或會認為 Rust 1.99.0 是重新評估這些 workaround 是否仍有保留必要的合理時機——惟在全面遷移之前，應先確認其目標平台的變參 FFI 行為符合預期。</p>
+<p><em>資料來源：LWN.net「Rust 1.99.0 released」（https://lwn.net/Articles/1098068/）；官方 Rust release notes 連結載於原文。</em></p>
+<p><a href="https://lwn.net/Articles/1098068/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
