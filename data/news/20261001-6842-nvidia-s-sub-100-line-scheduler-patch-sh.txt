@@ -1,0 +1,38 @@
+Date: 2026-10-01 11:22:00
+Author: HKLUG Team
+Title: NVIDIA's Sub-100-Line Scheduler Patch Shows 3–6% SMT Gains on Vera CPU's Olympus Cores
+Content:
+<h3>NVIDIA's Sub-100-Line Scheduler Patch Shows 3–6% SMT Gains on Vera CPU's Olympus Cores</h3>
+<p>A compact Linux scheduler patch series NVIDIA has been developing for its upcoming Vera CPU is reporting promising early results: gains of roughly 3 to 6 percent on the chip's Olympus cores when simultaneous multithreading (SMT) is engaged — a figure that comes from NVIDIA's own testing rather than any independent benchmark. The work, first brought to light in August and detailed again by Phoronix on 1 October, is still in progress, and what stands out is just how little code appears to be needed to achieve it: the entire series fits in well under 100 lines.</p>
+<p>For the open-source community, the more interesting question is not the number itself but what it reveals about where performance now comes from in modern ARM server silicon. As Hong Kong's data-center operators and enterprise IT teams weigh the economics of ARM-based AI infrastructure, small, vendor-supplied kernel changes of exactly this kind are increasingly where performance-per-watt gains are actually made.</p>
+<h4>What the Patch Does</h4>
+<p>SMT — simultaneous multithreading — is a processor technique in which a single physical core exposes two or more hardware threads to the operating system, allowing the kernel to dispatch work onto a second logical context whenever the first is stalled on memory or other latency. In theory this lifts throughput without consuming additional silicon; in practice it only helps if the scheduler understands how to exploit it, and if the second thread is genuinely worth competing for the core's shared resources.</p>
+<p>That is the gap NVIDIA's patch addresses. The series adjusts how the Linux scheduler handles SMT on Vera's Olympus cores, tuning task dispatch between sibling threads so the second context is activated when it actually adds throughput rather than merely adding contention. It is a targeted, per-architecture change — not a scheduler redesign — which is precisely why the diff is so small.</p>
+<p>The 3–6% figures, however, are NVIDIA's internal test results and should be read as a directional signal that the approach works on the company's own silicon, not as an externally verified measurement. Phoronix, which has tracked the series since August, has likewise flagged that the work is ongoing and that final numbers may shift before merge.</p>
+<h4>Why Upstreamability Is the Real Story</h4>
+<p>Maintainers reviewing a vendor patch will weigh more than the reported gains. A diff of fewer than 100 lines is comparatively straightforward to audit for regressions, and small, well-scoped scheduler changes have historically been easier to merge than broad reworks — a lesson many ARM-focused developers have learned the hard way.</p>
+<p>Acceptance will still hinge on whether the optimization generalizes. If the patch only benefits Olympus cores and offers nothing to other ARM processors with SMT, it may land as a vendor-specific quirk — or, less likely, be declined as not worth carrying. If the underlying reasoning applies more widely — that the default scheduler policy misjudges the value of the second SMT context on high-performance ARM cores — the case for upstream merge strengthens considerably.</p>
+<p>The patch series has been posted openly on the Linux Kernel Mailing List, putting it in front of maintainers and other developers working on ARM64 scheduling behaviour.</p>
+<h4>The Economics Angle</h4>
+<p>For anyone evaluating AI data-center hardware, the details matter more than the headline figure. AI clusters run on tight performance-per-watt budgets, where a few percentage points of scheduler efficiency compound across thousands of nodes over a multi-year deployment. NVIDIA's core argument is that Vera's headroom is not purely a function of clock speed or core count — some of it can be recovered in software.</p>
+<p>That carries a practical implication beyond NVIDIA's own customers: it reinforces the case that Linux-on-ARM deployment planning should account for kernel-level tuning, not just hardware selection. Vendors shipping ARM servers are increasingly expected to contribute their scheduler and memory-management work upstream rather than pushing operators to patch locally — a trend that benefits the wider ARM ecosystem even when a given patch does not ultimately land.</p>
+<p>Whether the reported gains hold up under independent verification, and whether the series is accepted upstream, remain open questions worth tracking as follow-ups. For now, the episode serves as a useful case study: on modern ARM silicon, a small, auditable, vendor-informed kernel change can deliver measurable efficiency gains — and the open review process, public on LKML where anyone can read and critique the diff, remains the mechanism that decides which such changes get to stay.</p>
+<p><em>Source: <a href="https://www.phoronix.com/news/NVIDIA-Olympus-SMT-Better">Phoronix — NVIDIA Olympus SMT Optimizations For Vera CPU Showing 3~6% Performance Gains</a></em></p>
+<hr>
+<h3>NVIDIA 低於百行的排程器補丁 在 Vera CPU 的 Olympus 核心上實現 3–6% SMT 提升</h3>
+<p>NVIDIA 為其即將推出的 Vera CPU 開發的一系列精簡 Linux 排程器補丁，正報告可觀的初步結果：當啟用同步多線程（SMT）時，晶片的 Olympus 核心效能提升約 3% 至 6%——這個數字來自 NVIDIA 自身的測試，而非任何獨立基準測試。相關工作於八月首次曝光，Phoronix 於 10 月 1 日再度詳細報道；目前仍在進行中，而最引人注目之處在於所需的代碼量少得驚人：整個補丁系列遠低於 100 行。</p>
+<p>對開源社群而言，更具趣味性的問題並非數字本身，而是它揭示了現代 ARM 服務器晶片的效能如今源自何處。隨著香港的數據中心營運商和企業 IT 團隊評估 ARM 架構 AI 基礎設施的經濟效益，正是這一類型的供應商所提供的 Linux 核心小改動，越來越成為每瓦效能實際提升的來源。</p>
+<h4>補丁的作用</h4>
+<p>SMT——同步多線程——是一項處理器技術，讓單一物理核心向作業系統呈現兩個或以上的硬件線程，使 Linux 核心得以在第一個線程因記憶體或其他延遲而阻塞時，將工作派發到第二個邏輯上下文。理論上，這能在不消耗額外晶體管的前提下提升吞吐量；實際上，唯有排程器懂得如何利用這一機制，且第二個線程確實值得與第一個線程競爭核心的共享資源時，SMT 才會有所幫助。</p>
+<p>NVIDIA 的補丁正是針對這個缺口。該系列改動調整了 Linux 排程器處理 Vera Olympus 核心上 SMT 的方式，優化各同級（sibling）線程之間的工作派發，使第二個上下文在真正能增加吞吐量時才被啟用，而非僅僅增加資源競爭。這是針對特定架構的定向改動——並非重新設計排程器——這正是 diff 如此短小的原因。</p>
+<p>然而，3–6% 的數字來自 NVIDIA 的內部測試結果，應視為此方法在公司自家晶片上行之有效的方向性指標，而非經外部驗證的測量數據。Phoronix 自八月起跟進此系列，同樣已指出相關工作仍在進行，最終數字在合併前可能有所變動。</p>
+<h4>為何「進入上游」才是真正的故事</h4>
+<p>審核供應商補丁的維護者所考量的，不止於報告中的提升幅度。低於 100 行的 diff 相對容易審查回歸問題，而規模小、範圍明確的排程器改動，歷來比大規模重構更容易被合併——這是許多專注 ARM 的開發者以慘痛代價換來的教訓。</p>
+<p>補丁能否被接受，仍取決於優化能否推而廣之。如果補丁僅惠及 Olympus 核心，對其他具備 SMT 的 ARM 處理器毫無幫助，它可能只會以供應商專屬特性的形式落地——或者，較少出現的情況是，被拒絕收錄，因為不值得長久維護。若背後的思路具有更廣泛的適用性——即預設排程器策略誤判了高效能 ARM 核心中第二個 SMT 上下文的價值——那麼進入上游合併的理據將大大增強。</p>
+<p>該補丁系列已在 Linux 核心郵件列表（LKML）上公開發表，讓從事 ARM64 排程行為開發的維護者和其他開發者都能審閱。</p>
+<h4>經濟效益角度</h4>
+<p>對任何評估 AI 數據中心硬件的人來說，細節比標題數字更為重要。AI 集群在嚴格的每瓦效能預算下運行，數個百分點的排程器效率提升，會在多年部署週期中跨越數千個節點不斷複利放大。NVIDIA 的核心論點是：Vera 的效能提升空間並非單純取決於時脈頻率或核心數量——其中一部分可以透過軟件追回。</p>
+<p>這對 NVIDIA 自身客戶以外的營運商同樣具有實際意義：它強化了一個觀點——Linux-on-ARM 部署規劃應把 Linux 核心層面的調校納入考量，而不僅僅是硬件選擇。出貨 ARM 服務器的供應商正越來越多被期望將其排程器和記憶體管理工作貢獻到上游，而非迫使營運商自行打補丁——這一趨勢即使某個具體補丁最終未能合併，依然惠及整個 ARM 生態系統。</p>
+<p>相關提升能否經獨立驗證，以及該系列能否獲上游接納，仍是值得持續跟進的開放性問題。目前而言，這個事件構成了一個有用的案例研究：在現代 ARM 晶片上，一個規模小、可審查、有供應商數據支持的 Linux 核心改動，足以帶來可量化的效能提升——而公開審核機制，在 LKML 上任何人皆可閱讀和批評 diff，依然是決定這類改動能否最終留下的關鍵機制。</p>
+<p><em>資料來源：<a href="https://www.phoronix.com/news/NVIDIA-Olympus-SMT-Better">Phoronix — NVIDIA Olympus SMT Optimizations For Vera CPU Showing 3~6% Performance Gains</a></em></p>
+<p><a href="https://www.phoronix.com/news/NVIDIA-Olympus-SMT-Better" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
