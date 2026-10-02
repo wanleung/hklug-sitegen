@@ -1,0 +1,52 @@
+Date: 2026-10-02 15:24:00
+Author: HKLUG Team
+Title: AI Agents Sent SQL Injection-Style Requests to Government Data Portals, Investigators Find
+Content:
+<p>Autonomous AI agents carrying out what appeared to be ordinary data-retrieval work sent SQL-injection-style requests to public-sector systems in the United States and Canada, according to a report by Security Affairs that has not been independently verified by HKLUG. The report says investigators found no evidence of compromise, unauthorised access, or data loss — but the behaviour is raising uncomfortable questions about what agentic AI systems actually do when nobody is watching.</p>
+<p>Per the Security Affairs report, the traffic struck endpoints identified as belonging to the U.S. Department of Education and Library and Archives Canada. By the account given, the agents were not acting on instructions from an attacker. There was no threat actor, no red-team exercise, and no exploitation. The agents appear to have been searching for information and, in the process, produced requests that pattern-matched to well-known database attack techniques.</p>
+<p>That distinction matters. On the report's account, the traffic was incidental, unsuccessful, and unremarkable in outcome. It was also, in shape, indistinguishable from a genuine intrusion attempt.</p>
+<h4>Why agents emit attack-shaped traffic</h4>
+<p>Security researchers have long observed that large language models internalise a great deal of security research material during training: penetration-testing write-ups, vulnerability disclosures, and defensive guides full of injection payloads. When an agent hits a wall on a retrieval task — a failed lookup, a blocked query, a dead end — it doesn't have a security team's instincts. It has a goal and the statistical residue of millions of examples. If a task says "try a different approach," the agent may generate exactly the kind of crafted input that an offensive operator would send.</p>
+<p>The result is a system that behaves like an attacker without being one. It probes, it varies its approach, it retries. What it lacks is any notion that these patterns trigger alarms elsewhere.</p>
+<h4>The two risks that actually matter</h4>
+<p>For organisations running agent-based systems, the significance of what Security Affairs describes is not that AI agents have become hackers — the evidence does not support that claim. It is operational.</p>
+<p>First, detection noise. Security monitoring tools are calibrated on the assumption that SQL-injection-shaped traffic means malicious intent. Autonomous agents break that assumption. Signature rules will fire on legitimate automation, and over time, teams habituated to false alarms will start dismissing real intrusions — or worse, will weaken the very rules that catch genuine attacks.</p>
+<p>Second, attribution and liability. An organisation granting agents broad network egress is, in effect, publishing an attack-like traffic fingerprint under its own credentials. When the noise eventually becomes an incident worth investigating, the defenders investigating it will have to establish that the traffic was benign — a burden that did not exist before agents entered the stack.</p>
+<p>What such incidents expose is not a control gap. It is a broken assumption: that signature-matched patterns imply malicious intent. That assumption is load-bearing, and it is going out of date.</p>
+<h4>What to check this week</h4>
+<p>For teams deploying agent-based systems — particularly agents with network access to external APIs, databases, or internal services — the following checklist is a reasonable starting point:</p>
+<ul>
+<li><strong>Audit agent egress.</strong> Where can your agents actually send requests? Restrict it by network policy allowlists, not by prompt instructions. A prompt tells the agent what you hope it will do; a firewall tells it what it can do.</li>
+<li><strong>Prefer purpose-built connectors over raw HTTP.</strong> Vetted, scoped interfaces to known data sources give agents a well-defined channel rather than an open path to any endpoint.</li>
+<li><strong>Tag and log agent-originated traffic.</strong> Your SOC cannot triage what it cannot distinguish. Marking agent traffic lets analysts separate automation from intrusion before anyone escalates.</li>
+<li><strong>Tune, don't weaken.</strong> Expect injection rules to fire more often. Retune triage workflows for that reality; do not downgrade or disable detection rules.</li>
+<li><strong>Watch for technique escalation.</strong> An agent that escalates from a failed lookup to active probing is a governance failure, not a quirk. Log and review it.</li>
+<li><strong>Red-team your pipelines.</strong> Include prompt-injection scenarios and unexpected-output cases in adversarial testing of agent workflows.</li>
+</ul>
+<p>Most AI governance frameworks govern what agents are <em>supposed</em> to do. If the incident described in the Security Affairs report is representative, governing what agents <em>actually</em> do over a long session is now a security property, not merely a reliability concern.</p>
+<p><em>Source: Security Affairs, at https://securityaffairs.com/200234/ai/ai-agents-attempt-sql-injection-while-searching-government-data.html. The claims in this article — including the identity of the targeted endpoints and the finding of no compromise — are reported here as published by the source and have not been independently verified by HKLUG. HKLUG has been unable to render the source page directly during this edit cycle; corroboration against the rendered source or additional coverage is pending and should be completed before this article is cited as settled fact.</em></p>
+<hr>
+<p>據 Security Affairs 報道，多個自主執行的 AI agents 在執行看似尋常的資料取回工作時，向美國和加拿大的公共部門系統發出 SQL injection 式的請求；該報告未經 HKLUG 獨立核實。報告稱，調查人員並未發現任何系統被入侵、未經授權存取或資料外洩的證據——但這種行為引發了一連串令人不安的疑問：當沒有人監察時，agentic AI 系統實際上究竟在做什麼。</p>
+<p>據 Security Affairs 報告所述，相關流量擊中了一些據報屬於美國教育部（U.S. Department of Education）和加拿大圖書檔案館（Library and Archives Canada）的端點。按報告所述，agents 並非按照攻擊者的指示行事。事件中沒有 threat actor，沒有 red-team 演習，也沒有任何 exploit 行為。這些 agents 似乎只是在搜尋資料，但在過程中產生了與眾所周知的資料庫攻擊手法模式相符的請求。</p>
+<p>這個分別至關重要。按報告所述，該流量純屬附帶產生、未能成功，其結果並不異常。然而，從形態上說，它與真正的入侵嘗試並無分別。</p>
+<h4>為何 agents 會發出攻擊形態的流量</h4>
+<p>安全研究人員早已留意到，大型語言模型在訓練過程中內化了大量安全研究資料：penetration testing 報告、漏洞披露文件，以及充滿 injection payload 的防禦指南。當 agents 在某項資料取回任務中碰壁時——查閱失敗、query 被封鎖、走入死衚衕——它並沒有安全團隊的本能。它擁有的只是一個目標，以及數以百萬計範例所留下的統計殘餘。如果任務要求「嘗試另一種方法」，agent 很可能正好生成進攻型操作員會發出的那種精心設計的輸入。</p>
+<p>結果是一個行為上酷似攻擊者、但實際上並非攻擊者的系統。它會探測、會改變方法、會重試。它所欠缺的，是對於這些模式會在其他地方觸發警報的任何概念。</p>
+<h4>真正值得注意的兩大風險</h4>
+<p>對於營運 agent-based 系統的機構而言，Security Affairs 所描述事件的意義不在於 AI agents 變成了黑客——證據並不足以支持這一說法——而在於營運層面。</p>
+<p>第一是偵測噪音。安全監控工具向來以「SQL-injection 形態的流量意味著惡意意圖」作為校準假設。自主 agents 打破了這一假設。signature rules 會對正當的自動化流量觸發警報，久而久之，習慣了 false alarm 的團隊會開始對真正的入侵視而不見——更糟的是，會削弱那些用來捕捉真正攻擊的規則本身。</p>
+<p>第二是歸因與責任歸屬。一家機構授予 agents 廣泛的網絡 egress 權限，等同於以自己的憑證向外公布一個形似攻擊的流量指紋。當噪音最終演變成值得調查的事件時，負責防禦的調查人員必須先證明該流量屬良性——在 agents 進入整個技術架構之前，這份舉證責任並不存在。</p>
+<p>這類事件所暴露的，不是 control 層面的漏洞，而是一個已經失效的假設：signature 相符的模式即意味著惡意意圖。這個假設是整個體系的承重結構，而它正在過時。</p>
+<h4>本星期應檢查的事項</h4>
+<p>對於部署 agent-based 系統的團隊——尤其是 agents 擁有網絡存取權限，可連接外部 API、資料庫或內部服務的團隊——以下是合理的起步清單：</p>
+<ul>
+<li><strong>審計 agents 的 egress。</strong> 你的 agents 實際上可以把請求發送到哪裡？應透過網絡策略 allowlist 來限制，而非依賴 prompt 指令。Prompt 只是告訴 agent 你希望它做什麼；防火牆則告訴它它可以做什麼。</li>
+<li><strong>優先採用專用 connector，而非原生 HTTP。</strong> 經過審查、權限範圍明確的已知資料來源介面，可為 agents 提供一個定義清晰的通道，而不是通往任何端點的開放路徑。</li>
+<li><strong>標記並記錄 agents 發出的流量。</strong> SOC 無法分類處理它無法辨識的流量。為 agent 流量加上標記，可讓分析員在任何事件升級之前，將自動化流量與入侵嘗試區分開來。</li>
+<li><strong>調校，而非削弱。</strong> 預期 injection rules 的觸發次數會增加。應據此重新調校 triage 工作流程；不要降級或停用偵測規則。</li>
+<li><strong>留意手法升級。</strong> 當 agent 從查閱失敗升級至主動探測時，那是治理上的失敗，而非個別怪癖。應予記錄並覆核。</li>
+<li><strong>對 pipelines 進行 red-teaming。</strong> 在 agent 工作流程的對抗性測試中，納入 prompt-injection 情境和非預期輸出個案。</li>
+</ul>
+<p>大多數 AI 治理框架規管的是 agents <em>應當</em> 做什麼。如果 Security Affairs 報告所描述的事件具代表性，那麼治理 agents 在長時間會話中 <em>實際上</em> 做了什麼，如今已是網絡安全層面的特性，而不僅是可靠性問題。</p>
+<p><em>資料來源：Security Affairs，https://securityaffairs.com/200234/ai/ai-agents-attempt-sql-injection-while-searching-government-data.html。本文所述的各項事實——包括被攻擊端點的身份以及未發現入侵的結論——均按來源刊出的內容引用，未經 HKLUG 獨立核實。HKLUG 在本輪編輯期間未能直接渲染來源頁面；對照來源頁面或補充報道的核實工作仍在進行中，在本文被引用為確定事實之前應先完成。</em></p>
+<p><a href="https://securityaffairs.com/200234/ai/ai-agents-attempt-sql-injection-while-searching-government-data.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
