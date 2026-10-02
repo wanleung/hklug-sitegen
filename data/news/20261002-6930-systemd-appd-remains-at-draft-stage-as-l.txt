@@ -1,0 +1,40 @@
+Date: 2026-10-02 15:32:00
+Author: HKLUG Team
+Title: systemd-appd Remains at Draft Stage as Linux Weighs Centralised App Tracking
+Content:
+<p>A new systemd component called <strong>systemd-appd</strong> is being drafted for an initial pull request, according to Phoronix, with the stated goal of centralising the tracking of a user's applications within the systemd stack. The proposal would give the low-level system manager a central role in recording which applications a user runs — a shift that, if it proceeds as envisaged, would move app-visibility data out of individual desktop components and into a shared, system-level service.</p>
+<p>The word to keep in mind is <em>drafting</em>. systemd-appd is not merged, not released, and not present in any distribution package. It exists at the pull-request stage, where design decisions are still fluid and the final data model — including exactly what gets recorded about an application's launches, activity, and services — is not yet settled. Operators and packagers should treat any description of its behaviour, including early reporting, as provisional until the actual patch series lands and is reviewed upstream.</p>
+<h4>What the component is meant to do</h4>
+<p>Phoronix's account describes systemd-appd as the newest component being worked on under the systemd umbrella, built as a mechanism for centralising user application tracking. The practical attraction for developers is obvious: today, application-level telemetry is scattered across desktop environments, shells, session managers, and third-party tools, each with its own data format, retention policy, and access controls. A single systemd-owned tracker could offer consistency, cross-desktop interoperability, and a stable interface for features such as application usage summaries, session analytics, or better per-application lifecycle management.</p>
+<p>That consistency is also what makes the proposal contentious. A centralised tracker is, by definition, a persistent record of what a user has run on a machine. When that record lives at the system layer rather than inside a per-user desktop session, the questions multiply: who can read it, what exactly it contains, how long it survives, whether it persists across logouts, and whether it is scoped to interactive sessions or extends to system services and background processes.</p>
+<h4>The enterprise and shared-host angle</h4>
+<p>For administrators running multi-user systems, bastion hosts, jump boxes, or shared development servers, those questions are operational rather than abstract. On a workstation, an app-usage record describes one person's desktop habits. On a shared server, an equivalent record becomes an inventory of which users invoked which tools and when — useful for auditing, potentially intrusive to maintain, and a meaningful surface to secure. The difference between a per-session log and an always-on user-activity inventory is precisely the kind of design detail that should be scrutinised before any adoption decision, not after.</p>
+<h4>What to watch when the PR lands</h4>
+<p>The current guidance for enterprise Linux administrators is awareness rather than action. There is nothing to deploy, nothing to configure, and no distribution to configure it against. The useful work now is to decide in advance what you would need to see before trusting a system-level app tracker:</p>
+<ul>
+<li><strong>Permission defaults</strong> — whether reading the tracker requires elevated privileges, and whether it is opt-in per user.</li>
+<li><strong>Data scope and retention</strong> — what is recorded, whether the data clears at logout, and whether services and background processes are included alongside interactive application launches.</li>
+<li><strong>Distribution posture</strong> — whether major distributions enable the component by default, behind a feature flag, or not at all.</li>
+</ul>
+<p>One broader point deserves attention beyond this specific proposal. App-visibility features — process telemetry, session analytics, application usage reporting — are spreading through the Linux desktop and system stack from several directions, driven by both desktop environments and vendor tooling. Even if systemd-appd is revised, renamed, or abandoned, the trend toward more centralised visibility of application activity is unlikely to disappear with it.</p>
+<p>The pull request stage is where open-source projects are most easily steered. For those who find centralised app tracking objectionable in principle, that is where the discussion belongs.</p>
+<p><em>Source: <a href="https://www.phoronix.com/news/systemd-appd">Phoronix — systemd-appd Out For Review To Centralize Tracking Of User's Apps</a>.</em></p>
+<hr>
+<p>據 Phoronix 報導，一個名為 <strong>systemd-appd</strong> 的新 systemd 元件目前正在起草首個 pull request，其公開目標是在 systemd stack 內集中追蹤用戶的應用程式。該提案將讓這個低層系統管理器在記錄用戶執行了哪些應用程式方面擔當核心角色——若按預期推進，這將把應用程式可見性資料從個別桌面元件移出，納入一個共用的系統層服務。</p>
+<p>必須緊記的一詞是「起草」。systemd-appd 尚未合併、尚未發布，亦未出現在任何發行版套件之中。它目前仍處於 pull request 階段，設計決策尚未定案，最終的資料模型——包括對應用程式的啟動、活動及服務究竟記錄哪些內容——亦未塵埃落定。系統管理員及打包者應將任何對其行為的描述（包括早期報導）視為暫定資訊，直至實際 patch series 落地並經上游審閱為止。</p>
+<h4>該元件的定位與用途</h4>
+<p>Phoronix 的描述指，systemd-appd 是目前在 systemd 旗下開發的最新元件，構建目的是集中追蹤用戶的應用程式。對開發者而言，實際吸引力顯而易見：目前，應用程式層面的 telemetry 散落於桌面環境、shell、session manager 及第三方工具之中，各自採用不同的資料格式、保留政策及存取控制。一個由 systemd 統一管理的追蹤器，可提供一致性、跨桌面互通性，以及一個穩定的介面，支援應用程式使用摘要、session 分析或更完善的逐應用程式生命週期管理等功能。</p>
+<p>這種一致性，同樣正是該提案引起爭議之處。集中式追蹤器就其定義而言，就是一份持久記錄，記載用戶曾在機器上執行甚麼。當這份記錄存放在系統層而非個別用戶的桌面 session 內時，疑問便接踵而至：誰可以讀取？其中究竟包含甚麼內容？資料會保留多久？登出後是否仍然存在？以及它是否僅限於互動式 session，抑或延伸至系統服務及背景程序？</p>
+<h4>企業與共用主機的角度</h4>
+<p>對於管理多用戶系統、bastion host、jump box 或共用開發伺服器的管理員來說，這些問題是實務性質，而非純粹抽象概念。在工作站上，應用程式使用記錄描述的是一個人的桌面習慣；在共用伺服器上，同等的記錄便成為一份清單，記載哪些用戶何時呼叫了哪些工具——對審計有用，維護起來可能具有侵入性，同時也是一個需要設防的重要攻擊面。逐 session 日誌與常開式用戶活動清單之間的差異，正是那種應在任何採納決定之前、而非事後，加以細審的設計細節。</p>
+<h4>PR 落地時要留意甚麼</h4>
+<p>目前給企業級 Linux 管理員的建議是關注而非行動。沒有任何東西需要部署，沒有任何配置需要設定，亦沒有任何發行版可供配置。現在有用的工作，是事先決定你需要看到哪些條件，才會信任一個系統層的應用程式追蹤器：</p>
+<ul>
+<li><strong>權限預設值</strong>——讀取追蹤器是否需要提升權限，以及是否按用戶選擇加入（opt-in）。</li>
+<li><strong>資料範圍與保留</strong>——記錄甚麼內容，資料在登出時是否清除，以及服務與背景程序是否與互動式應用程式啟動一併納入。</li>
+<li><strong>發行版立場</strong>——主要發行版是否預設啟用該元件、以 feature flag 形式啟用，抑或完全不啟用。</li>
+</ul>
+<p>有一個更廣泛的觀點，值得在此特定提案以外留意。應用程式可見性功能——process telemetry、session 分析、應用程式使用報告——正從多個方向蔓延至 Linux 桌面及系統 stack，背後推動力既來自桌面環境，亦來自廠商工具。即使 systemd-appd 被修訂、更名或棄置，應用程式活動可見性日益集中化的趨勢，也不會隨之消失。</p>
+<p>Pull request 階段是開源項目最容易被左右的時候。對於認為集中式應用程式追蹤在原則上有問題的人而言，討論就應該在此發生。</p>
+<p><em>資料來源：<a href="https://www.phoronix.com/news/systemd-appd">Phoronix — systemd-appd Out For Review To Centralize Tracking Of User's Apps</a>。</em></p>
+<p><a href="https://www.phoronix.com/news/systemd-appd" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
