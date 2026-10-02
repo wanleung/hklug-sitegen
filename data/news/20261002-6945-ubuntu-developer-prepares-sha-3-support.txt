@@ -1,0 +1,31 @@
+Date: 2026-10-02 19:23:00
+Author: HKLUG Team
+Title: Ubuntu Developer Prepares SHA-3 Support in Debian's APT as a Hedge Against SHA-2 Weakness
+Content:
+<p>Canonical engineer Gianpiero Carpinelli has been developing a patch series to add SHA3-256 and SHA3-384 support to Debian's APT packaging tool, according to Phoronix. The work is explicitly forward-looking: it is intended to keep an upgrade path open in the event that the SHA-2 hash family is ever weakened, not because anything is broken today.</p>
+<p>The patch series is still in progress at Canonical and has not landed in APT. For operators, that caveat matters. This is tooling readiness, not a migration.</p>
+<h4>What the change would actually do</h4>
+<p>At present, Debian and Ubuntu package archives publish and verify archives using SHA-2 digests. Carpinelli's work would teach APT to recognise and verify SHA3-256 and SHA3-384 digests when they appear in archive metadata.</p>
+<p>Critically, no repository is expected to start publishing SHA-3 digests as a matter of course. Making that happen would require coordination across the Debian archive infrastructure, mirror operators and downstream tooling — a far larger change than the APT patch itself. In other words, the point of the exercise is not to switch hash functions now; it is to ensure the client side would not be the bottleneck if a switch ever became necessary.</p>
+<h4>Why this is crypto-agility, not a reaction</h4>
+<p>The framing here is best understood as insurance. Cryptographic agility — the ability to swap out a primitive like a hash function without a fleet-wide rebuild — is cheap to maintain when it is done in advance and ruinously expensive to retrofit under deadline.</p>
+<p>SHA-2 remains a sound, widely trusted family of algorithms, and there is no public evidence of a practical break against it. But security roadmaps are usually written on ten- to fifteen-year horizons, and the history of the field is that migrations happen with far less notice than anyone would like.</p>
+<p>On the quantum front, the picture is more nuanced than headlines suggest. Grover's algorithm offers a quadratic speed-up on brute-force search, which effectively halves the security margin of a hash function rather than eliminating it — SHA3-256 would drop from roughly 128-bit preimage security to roughly 64-bit, not to zero. That is a meaningful erosion over the long term, and one of the reasons SHA-3 (based on the Keccak sponge construction, and standardized by NIST with a different construction to SHA-2) exists at all. But it is not a trigger for emergency action, and no post-quantum threat model has yet forced a hash-function migration across the Debian or Ubuntu ecosystems.</p>
+<h4>What it means for your estate</h4>
+<p>Nothing changes today for anyone running Ubuntu or Debian servers: no configuration, no package updates, no action required. What the story highlights is a general principle that applies well beyond APT. For Hong Kong IT teams that maintain long-lived Ubuntu LTS estates — where upgrade cycles are tied to long procurement, audit and certification windows — the relevant question is less about SHA-3 specifically and more about whether your cryptographic dependencies have cheap upgrade paths built in.</p>
+<p>The practical test is simple: if a hash function you depend on had to be replaced next year, would your tooling permit that swap without a forklift upgrade? APT's developers are working on the answer for the Debian ecosystem. Whether your own management, deployment and verification stack could absorb the same change is a question worth putting on the roadmap now, while nothing is on fire.</p>
+<hr>
+<p>```</p>
+<p>據 Phoronix 報道，Canonical 工程師 Gianpiero Carpinelli 一直開發一系列 patch，為 Debian 的 APT 打包工具加入 SHA3-256 及 SHA3-384 支援。該工作明確著眼於未來：目的是在 SHA-2 雜湊系列日後一旦出現弱化時，保留升級路徑，而非因為現時有任何系統出了問題。</p>
+<p>該系列 patch 目前仍在 Canonical 內部開發中，尚未納入 APT。對系統營運人員而言，這一點十分重要：這是工具層面的準備工作，而非正式遷移。</p>
+<h4>變更內容實際會做什麼</h4>
+<p>目前 Debian 及 Ubuntu 的軟件庫存檔，均使用 SHA-2 摘要來發佈及驗證存檔。Carpinelli 的工作會令 APT 在存檔 metadata 出現相關摘要時，識別及驗證 SHA3-256 及 SHA3-384 摘要。</p>
+<p>關鍵在於，並無任何軟件庫預計會隨即開始發佈 SHA-3 摘要。若要實現此點，需要 Debian 存檔基建、mirror 營運者及下游工具之間全面協調——變動規模遠超 APT patch 本身。換言之，此舉的重點並非即時改用雜湊函數，而是確保一旦日後真的需要轉換，客戶端不會成為瓶頸。</p>
+<h4>這是密碼敏捷性，而非應急反應</h4>
+<p>此事宜最佳的理解方式是「保險」。密碼敏捷性（crypto-agility）——即在毋須全面重組整個系統的情況下，更換雜湊函數等密碼學基本元件的能力——事先準備的維護成本很低；臨陣抱佛腳、限期改裝則代價慘重。</p>
+<p>SHA-2 依然是穩健且廣泛獲信任的算法系列，目前並無任何公開證據顯示其實用破解已被攻破。然而，安全路線圖通常以十至十五年為規劃周期，而此領域的歷史一再表明：遷移往往在遠低於各方預期的通知期內發生。</p>
+<p>在量子運算方面，情勢比標題所暗示的更為細緻。Grover 演算法為暴力搜尋提供二次方加速，實際效果是將雜湊函數的安全餘量減半，而非使其歸零——SHA3-256 的 preimage security 會由大約 128-bit 降至大約 64-bit，而非 0。從長遠而言，這確實是有意義的安全折損，也是 SHA-3（基於 Keccak sponge 構造，並由 NIST 以與 SHA-2 不同的構造標準化）之所以存在的重要原因之一。但這並非需要應急行動的引信，目前亦無任何後量子威脅模型迫使 Debian 或 Ubuntu 生態系統全面遷移雜湊函數。</p>
+<h4>對你的系統資產有何影響</h4>
+<p>今日所有 Ubuntu 或 Debian 伺服器使用者均不會有任何改變：毋須調整設定、毋須更新軟件包、毋須採取任何行動。此報導凸顯的是一項適用範圍遠超 APT 的一般原則。對於維護長期運作 Ubuntu LTS 系統資產的香港 IT 團隊——此類資產的升級周期往往與長達多年的採購、審計及認證窗口掛鈎——真正相關的問題與其說是 SHA-3 本身，不如說是你的密碼學依賴項目是否已內建成本低廉的升級路徑。</p>
+<p>實質測試很簡單：假如你所依賴的雜湊函數明年必須更換，你的工具鏈能否在毋須全面更換硬體的情況下完成替換？APT 開發人員正為 Debian 生態系統尋找答案。至於你自身的管理、部署及驗證基建能否承受同一變動，則是值得現時就納入路線圖的問題——趁現時一切風平浪靜。</p>
+<p><a href="https://www.phoronix.com/news/Ubuntu-SHA3-For-Debian-APT" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
