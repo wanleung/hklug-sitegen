@@ -1,0 +1,34 @@
+Date: 2026-10-03 02:23:00
+Author: HKLUG Team
+Title: Apple re-scopes Full Disk Access as AI agents force a rewrite of macOS permission design
+Content:
+<p>Apple has restructured how Full Disk Access (FDA) works on macOS, moving away from a single broad grant toward a model in which each action an agent wants to take is evaluated and scoped individually. The change, reported by Ars Technica, is aimed squarely at the way AI agents — including Meta's Muse assistant — have come to lean on FDA as a shortcut to capabilities the operating system never intended a storage permission to unlock.</p>
+<h4>What actually changed</h4>
+<p>The mechanism matters more than the headline. Apple is not simply tightening an existing switch. It is splitting what had been one entitlement into capability-level, resource-scoped permissions, so that holding FDA no longer automatically confers every action a process behind it might exercise. A workflow that previously cleared with one approval may now surface as a series of revocable, separately logged decisions.</p>
+<p>That distinction has consequences for anyone writing configuration profiles. Existing MDM-deployed FDA grants may not mean what the documentation says they mean at runtime. Depending on how a given deployment behaves when the new model engages, an agent could fail outright, degrade silently, or fall back to prompting the user — and administrators may not be able to tell which until something breaks.</p>
+<h4>Apple's argument</h4>
+<p>Apple's position, as characterised in the Ars Technica report, is that reading a user's messages and reading an entire disk are simply different permissions. Private communications should not arrive as a side effect of granting an application storage access. The company is also confronting a structural mismatch: permission models were designed around humans, who get tired of approving things and who can see what they're approving. Agents act repeatedly, without prompt fatigue or visible signals, which turns a one-off approval into a standing capability.</p>
+<h4>Meta's case — and where it runs out</h4>
+<p>Meta's objection is legitimate on its face. Muse needs message access as a product feature, and for now FDA is effectively the only path available to it. If Apple does not ship a narrower, Messages-scoped entitlement for agents, Meta's use case remains unaddressable within the platform's own rules — and vendors will continue to argue for the broad grant regardless.</p>
+<p>The question to watch is precisely that: is Apple planning a scoped Messages-style entitlement for agents, or does FDA remain the only (and, in Meta's view, insufficient) route? The answer determines both whether Muse's intended behaviour becomes viable and whether other assistant vendors follow. Release notes for Apple's Transparency, Consent, and Control (TCC) framework, and vendor documentation updates, are the places to watch. Administrators should also confirm which release line carries the change affecting their own fleet, rather than assuming a single upcoming version.</p>
+<h4>What IT teams should do now</h4>
+<p>First, audit FDA grants across the estate. Inventory what currently holds broad disk access, and for what purpose. Second, move to capability-based permissioning for agents: grant each assistant only the resources and actions its declared function requires, rather than defaulting to disk-wide access for convenience. Third, pre-define what happens when an agent hits a permission wall — blocked, degraded, or prompting — and communicate it in advance.</p>
+<p>That last step is a communications problem as much as a technical one. In large estates, silent scope changes tend to surface as failed automations rather than policy events. Staff will file bug tickets for what is actually a permission change, and IT will be troubleshooting symptoms instead of explaining causes. Setting expectations before the first failure saves a great deal of wasted diagnostic work.</p>
+<h4>The precedent question</h4>
+<p>The wider significance is that Apple is rewriting its permission model around autonomous agents rather than retrofitting old assumptions. If other platform vendors adopt resource-scoped permissioning for AI, this becomes a durable industry shift in how machine assistants are governed. If not, it remains a one-vendor boundary — and pressure for broad grants will resurface quickly.</p>
+<hr>
+<p>Apple已重構macOS上Full Disk Access（FDA）的運作方式，由過往一項籠統的授權模式，轉為逐項評估及逐項劃定agent每個動作的範圍。Ars Technica報道指，此項變更正正針對AI agents（包括Meta的Muse助手）依賴FDA作為捷徑、藉此取得作業系統從未打算由一個儲存權限解鎖的功能。</p>
+<h4>實際改了什麼</h4>
+<p>背後的機制比標題本身更重要。Apple並非只是收緊既有的開關，而是將原本的一項entitlement拆解成capability層級、resource層級的細項權限，令持有FDA不再自動賦予其後的process所能行使的每一項動作。過往只需一次核准便可通行的工作流程，現在可能變成一系列可撤回、分別記錄的決定。</p>
+<p>這個區別對撰寫configuration profile的人而言有重大影響。現有透過MDM部署的FDA授權，在執行時未必如文件所述般運作。視乎特定部署在新模式啟動時的表現，agent可能完全失效、靜默降級，或退而提示用戶核准——而管理員在系統出事之前，未必能看出屬何者。</p>
+<h4>Apple的論點</h4>
+<p>Ars Technica報道所描述的Apple立場是：讀取用戶訊息與讀取整個磁碟，本身就是兩種不同的權限。私隱通訊不應成為向應用程式授予儲存存取權的副產品。Apple同時正面回應一個結構性錯配：權限模型是為人類而設計的，人會對反覆核准感到疲倦，亦能看見自己究竟核准了什麼。agent則會重複行動，既無核准疲勞，亦無可見訊號，結果令一次性的核准變成持續性的capability。</p>
+<h4>Meta的個案——以及其論據的極限</h4>
+<p>Meta的反對在表面上完全合理。Muse作為產品功能需要讀取訊息存取，而目前FDA實際上是它唯一可行的途徑。如果Apple不為agent推出更窄、僅限Messages的entitlement，Meta的用例在平台自身規則下將持續無法解決——廠商亦會繼續主張寬鬆的授權。</p>
+<p>真正值得留意的問題正是：Apple是否打算為agent推出類似Messages的範圍限定entitlement，還是FDA依然是唯一（在Meta眼中亦不足夠）的途徑？答案將決定Muse的預期行為能否實現，以及其他助手廠商會否跟隨。Apple的Transparency, Consent, and Control（TCC）框架發布說明，以及廠商文件的更新，是需要密切留意的地方。管理員亦應確認哪一條release line包含影響自身fleet的變更，而非假設所有變更只會集中於單一即將推出的版本。</p>
+<h4>IT團隊現階段應做的事</h4>
+<p>第一，全面審視estate範圍內的FDA授權。列出目前哪些持有所謂的整碟存取權，以及其用途。第二，為agent改用capability-based的權限模式：只為每個assistant授予其聲明功能所需的resources及actions，而非為貪圖方便而一律賦予磁碟層面的存取權。第三，預先界定agent觸碰權限邊界時的處理方式——封鎖、降級或提示核准——並及早溝通。</p>
+<p>最後一項既是技術問題，也是溝通問題。在大型estate中，靜默的權限範圍變更往往以自動化失敗的姿態浮現，而非被視為政策事件。員工會就實際上屬權限變更的情況提交bug ticket，IT亦會忙於排查症狀，而非解釋成因。在首次失敗發生前訂立期望，可省卻大量無謂的診斷功夫。</p>
+<h4>先例問題</h4>
+<p>更廣泛的意義在於，Apple是圍繞自主式agent重寫其權限模型，而非在舊有假設上打補釘。若其他平台廠商為AI採納resource-scoped的權限模式，這將成為業界如何管治機器助手的一次長久轉變。否則，這始終只是一家廠商的內部界線——要求寬鬆授權的壓力亦會很快重新浮現。</p>
+<p><a href="https://arstechnica.com/security/2026/10/apple-changes-full-disk-access-permissions-to-curb-abuse-from-ai-agents/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
