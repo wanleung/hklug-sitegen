@@ -1,0 +1,52 @@
+Date: 2026-10-03 18:23:00
+Author: HKLUG Team
+Title: Linux Scheduler Patches Aim to Cut Latency for Short-Lived, High-Churn Tasks
+Content:
+<h3>Linux Scheduler Patches Aim to Cut Latency for Short-Lived, High-Churn Tasks</h3>
+<p>A new patch series targeting Linux kernel scheduling latency is working its way through discussion, and it is aimed squarely at the workload profile that causes the most trouble: large numbers of short-running tasks competing for CPU time on the same machine.</p>
+<p>Phoronix has reported that Vincent Guittot, an engineer at Linaro, posted the series to reduce the delay small tasks experience when many of them are queued up and dispatched in quick succession. The patches are still under discussion — neither merged nor rejected — and no benchmark figures have been published alongside the submission.</p>
+<p>That status matters more than the headline suggestion of "promising results." Scheduler changes rank among the most sensitive code in the kernel tree, because every process on the system, from database workloads to desktop sessions, passes through the same dispatch path. Expect review timelines measured in months rather than weeks, and expect further revisions before anything lands in mainline.</p>
+<h4>Why short tasks are the hard case</h4>
+<p>Latency-sensitive workloads tend to share a shape: thousands of small units of work that wake up, execute for a fraction of a millisecond, and immediately yield the CPU again. Containerised microservices, event-driven pipelines, streaming analytics, and edge inference all look like this. So do many desktop workloads, where a burst of small processes can queue up behind one another.</p>
+<p>When the scheduler mishandles this pattern, the cost shows up as worst-case latency — the longest wait a "runnable" task can suffer before it actually gets CPU time. In turn, that shows up to end users as tail-latency spikes in response times, inconsistent frame delivery, or jittery measurements. Because scheduling behaviour is determined below the application layer, it is not something developers can fully compensate for by rewriting application code; the ceiling is set by the kernel.</p>
+<p>The series also touches code paths shared between server and desktop use. Even if the initial motivation is throughput or fairness in multi-tenant environments, a scheduler improvement of this kind does not stop at the data centre door.</p>
+<h4>What the patches do not tell us yet</h4>
+<p>The most important caveat: the original report discloses no benchmark numbers. There is no quantified evidence yet of how much latency improvement any deployment would see, under which workloads, or on which hardware. A patch submission is a proposal, not a result — and treating "under review" as "incoming" is a common way for coverage of kernel work to outrun reality.</p>
+<p>A second caveat is the conservative nature of scheduler review in the kernel community. Defects in this path can affect nearly every Linux workload, so patches here typically attract extended scrutiny, requests for rework, and sometimes multi-month review cycles even when the overall direction is accepted.</p>
+<h4>A glossary for this story</h4>
+<ul>
+<li><strong>Scheduler:</strong> The kernel subsystem that decides which process receives CPU time, and when.</li>
+<li><strong>Time slice:</strong> The duration for which a task is permitted to run continuously before being reconsidered.</li>
+<li><strong>Latency:</strong> The interval between a task becoming runnable and actually obtaining CPU time.</li>
+<li><strong>Jitter:</strong> The irregular variation in that interval from one instance to the next.</li>
+</ul>
+<h4>What to do with this news</h4>
+<p>The right posture is to treat this as a direction worth watching, not as an upgrade you can plan for. If the series progresses and validated benchmark data appears in the coming months, a fresh assessment of real production impact will be warranted. Until then, the Linux Kernel Mailing List remains the best place to follow the discussion as it develops.</p>
+<p>Editor's note: The source material carries no publication date, and none could be verified, so no "reported on" attribution is given here. The date above reflects this article's filing time only.</p>
+<hr />
+<p><strong>Source:</strong> Phoronix — no benchmark figures disclosed in the original report.</p>
+<hr>
+<h3>Linux 排程器修補程式擬降低短生命週期高變動任務的延遲</h3>
+<p>一系列針對 Linux 內核排程延遲的新修補程式正在討論中，其目標直指最令人頭痛的工作負載特徵：大量短時間運行的任務在同一部機器上競爭 CPU 時間。</p>
+<p>Phoronix 報道，Linaro 工程師 Vincent Guittot 發佈了該系列修補程式，旨在縮短小型任務在大量任務相繼排隊並被迅速調度時所經歷的延遲。這些修補程式目前仍在討論階段——既未被接受，亦未被拒絕——提交時亦未隨附任何基準測試數據。</p>
+<p>這個狀態比標題所示的「結果令人鼓舞」更值得關注。排程器的改動在內核代碼庫中屬於最敏感的部分，因為系統上的每一個 process，從數據庫工作負載到桌面 session，都要經過同一條調度路徑。預期審核時間會以月計而非以週計，且在任何改動進入 mainline 之前，預期會有更多修訂。</p>
+<h4>為何短任務是最棘手的情況</h4>
+<p>延遲敏感的工作負載往往具有相同的形態：成千上萬的小型工作單位被喚醒後運行極短的時間，隨即立刻讓出 CPU。容器化的 microservices、事件驅動的 pipeline、串流分析以及邊緣端推論都是如此。許多桌面工作負載同樣如此——一連串小型 process 可能會互相排隊等待。</p>
+<p>當排程器未能妥善處理這種模式時，代價會以最壞情況延遲的形式呈現——即一個「可運行」任務在真正取得 CPU 時間之前所經歷的最長等待時間。反過來，這會以用戶可感知的形式出現：回應時間的長尾延遲尖峰、幀率交付不穩定，或量度結果出現 jitter。由於排程行為是在應用層之下決定的，開發者無法完全透過重寫應用程式代碼來彌補——天花板由內核設定。</p>
+<p>該系列修補程式亦涉及伺服器與桌面用途共享的代碼路徑。即使最初的動機是多租戶環境下的吞吐量或公平性，此類排程器改進不會止步於數據中心的門口。</p>
+<h4>修補程式尚未告訴我們的事</h4>
+<p>最重要的保留：原始報導並未披露任何基準測試數據。目前尚未有量化證據說明任何部署將獲得多少延遲改善、適用於哪種工作負載，或哪種硬件平台。修補程式的提交是一項提議，而非結果——把「審核中」等同於「即將採用」，往往是內核報導脫離現實的常見方式。</p>
+<p>第二項保留，是內核社群對排程器審核的審慎態度。此路徑上的缺陷幾乎影響所有 Linux 工作負載，因此此處的修補程式通常會吸引大量審視、要求重做，甚至在整體方向獲接受後，審核週期仍可能長達數月。</p>
+<h4>本篇報道用語解釋</h4>
+<ul>
+<li><strong>Scheduler（排程器）：</strong> 決定哪個 process 何時獲得 CPU 時間的內核子系統。</li>
+<li><strong>Time slice（時間片）：</strong> 任務被允許連續運行、之後才重新接受排程器評估的時長。</li>
+<li><strong>Latency（延遲）：</strong> 從任務進入可運行狀態到實際取得 CPU 時間之間的時間間隔。</li>
+<li><strong>Jitter（抖動）：</strong> 該時間間隔在不同次數之間不規則的變動。</li>
+</ul>
+<h4>如何看待這則消息</h4>
+<p>正確的態度是把這視為值得關注的方向，而非可以據此規劃的升級方案。如果該系列修補程式持續推進，並在未來數月內出現經過驗證的基準測試數據，那麼就值得重新評估其對實際生產環境的影響。在此之前，追蹤討論進展的最佳途徑仍是 Linux Kernel Mailing List。</p>
+<p>編者按：原始素材沒有附上發佈日期，亦無法查證，因此本文不作「何日報道」的標示。上文日期僅反映本文的發稿時間。</p>
+<hr />
+<p><strong>來源：</strong> Phoronix — 原始報導未披露基準測試數據。</p>
+<p><a href="https://www.phoronix.com/news/Linux-Latency-Short-Slice-Tasks" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
