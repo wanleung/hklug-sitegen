@@ -1,0 +1,30 @@
+Date: 2026-10-04 19:02:00
+Author: HKLUG Team
+Title: MGLRU-FG Promises 10–40% Faster Linux Memory Reclaim — But Nothing Ships Yet
+Content:
+<p>A fresh patch series targeting Linux's memory reclamation path claims double-digit speedups on memory-stressed workloads — but administrators should treat those numbers as a roadmap signal, not a spec sheet. The work, described in Phoronix's report as a refinement of the kernel's Multi-Gen LRU machinery, is not merged upstream, and no distribution has committed to shipping it.</p>
+<p>Benchmark figures quoted in that report — attributed to the patch author — put the gains at up to 10–40% in some tests. Those results come from a single contributor's testing environment; they have not been independently replicated, and they should be read as upper-bound figures rather than expected production outcomes.</p>
+<p><strong>Building on what already ships</strong></p>
+<p>Multi-Gen LRU (MGLRU) is not a newcomer. The mechanism first merged into the mainline kernel in Linux 6.1 and has since improved reclaim behaviour for a broad range of workloads by giving the kernel a generation-aware view of which pages are actively used and which can safely go. The upshot for anyone reading the headline number: the 10–40% range describes an incremental gain over an already-optimised subsystem, not a comparison against the legacy LRU that MGLRU replaced.</p>
+<p>The "-FG" extension identifies the proposed series. According to the Phoronix report, it targets the kernel's page classification and eviction logic under heavy memory pressure, with the stated goal of cutting costly reclaim activity and holding working sets in memory for longer. For servers and container estates running against tight memory budgets, even modest reclaim improvements could show up as higher throughput and fewer stalls — if the changes make it through review.</p>
+<p><strong>What administrators need to know now</strong></p>
+<p>Status first: MGLRU-FG is experimental and unmerged. The series is circulating in the kernel's public review process, where it will be revised, questioned, or turned away by the subsystem maintainers. There is nothing to install today, no config knob to flip, and no backport to pull for a production host.</p>
+<p>Distro follow-through is equally absent. None of the major Linux vendors have stated that MGLRU-FG will appear in their kernels — whether in mainline stable releases or their own long-term support branches. Patches of this kind routinely sit in review for months before they become candidates for stable backports, and not all of them survive that process unchanged.</p>
+<p><strong>What to do today</strong></p>
+<p>The actionable step is a check, not an upgrade. Verify that Multi-Gen LRU is active in the kernels you already run: look for <code>CONFIG_LRU_GEN</code> in your distribution's kernel configuration (run <code>zgrep CONFIG_LRU_GEN /proc/config.gz</code> or inspect your build config directly). Where it is enabled — mainstream distributions increasingly ship with MGLRU turned on, but verify in yours — that is the reclaim capability you can rely on today, and tuning its parameters where your kernel exposes them is a reasonable response to memory-pressure pain.</p>
+<p>Beyond that, keep the MGLRU-FG series on your kernel mailing-list watch list to see whether it advances toward a merge-window acceptance. Do not size memory, plan node layouts, or set capacity targets around benchmarks that no one outside the contributor's lab has reproduced yet.</p>
+<p>Kernel memory-management work happens in public and lands in stages. The 10–40% figures, if they hold up under review and independent replication, would matter for memory-constrained deployments. For now, they are one contributor's early results for a patch set that has not earned a merge commit. The full discussion is available through Phoronix's report at phoronix.com.</p>
+<hr>
+<p>一組針對 Linux 記憶體回收路徑（memory reclamation path）的新 patch 系列聲稱，在記憶體高負載的工作環境下可錄得雙位數的速度提升——但系統管理員應將這些數字視為發展路線的指標，而非規格表。相關工作在 Phoronix 報導中被描述為對 kernel Multi-Gen LRU 機制的進一步改良，目前尚未合併至 upstream，亦沒有任何 Linux 發行版承諾會將其納入發佈版本。</p>
+<p>該報導所引用的基準測試數字——據稱來自 patch 作者——指出在部分測試中提升幅度最高可達 10–40%。這些結果來自單一貢獻者的測試環境，並未經獨立重複驗證，因此應被理解為理論上限的參考數字，而非預期的生產環境表現。</p>
+<p><strong>在現有基礎上再作優化</strong></p>
+<p>Multi-Gen LRU（MGLRU）並非嶄新事物。該機制最早於 Linux 6.1 合併至 mainline kernel，透過讓 kernel 以「世代」（generation）的角度分辨哪些頁面正被活躍使用、哪些可以安全移除，至今已為多種不同類型的工作負載改善了回收表現。對閱讀標題數字的人士而言，重點在於：10–40% 的增幅描述的是一個已經過優化的子系統之上的進一步提升，而非與 MGLRU 所取代的舊制 LRU 作對比。</p>
+<p>「-FG」後綴標示出這組所提出的 patch 系列。根據 Phoronix 的報導，其目標是在高記憶體壓力下，針對 kernel 的頁面分類與淘汰邏輯作出改進，明確目標是減少代價高昂的回收活動，並令工作集（working set）在記憶體中保留更長時間。對於在緊絀記憶體預算下運行的伺服器及 container 群集而言，即使只是溫和的回收改進，也可能反映為更高的吞吐量（throughput）以及更少的停頓——前提是相關改動最終能通過審核。</p>
+<p><strong>系統管理員現階段需要知悉的事項</strong></p>
+<p>首先是最新的狀態：MGLRU-FG 仍屬實驗性階段，且尚未合併。這組 patch 系列目前正處於 kernel 公開的審核流程之中，最終會由子系統維護者（maintainers）加以修訂、質疑，或直接退回。今天並無任何軟件可以安裝，沒有 config 選項可以調校，亦沒有可 backport（回植）至生產主機的 patch。</p>
+<p>發行版方面同樣沒有實際行動。沒有任何主要 Linux 廠商表示 MGLRU-FG 會出現在他們的 kernel 之中——無論是 mainline 穩定版本，或是他們各自的長期支援（long-term support）分支。這類型 patch 通常需在審核階段滯留數月，才有機會成為 stable backport 的候選，而且當中並非全部都能在整個流程結束後完整無缺地保留。</p>
+<p><strong>現階段可以做的事</strong></p>
+<p>實際可行的行動是核查，而非升級。請確認在你現有 kernel 中 Multi-Gen LRU 已啟用：查看發行版的 kernel 設定中有否 <code>CONFIG_LRU_GEN</code>（可執行 <code>zgrep CONFIG_LRU_GEN /proc/config.gz</code>，或直接檢視你的 build config）。在已啟用的系統上——主流發行版正日益將 MGLRU 設為預設啟用，但請自行核實你所用的版本——這就是你現時可以倚賴的記憶體回收能力；而在 kernel 提供相關參數的情況下作出調校，也是回應記憶體壓力問題的合理做法。</p>
+<p>除此之外，建議你將 MGLRU-FG 系列列入 kernel mailing-list（即 kernel 開發者所用的郵遞討論清單）的監控清單，留意其是否推進至 merge window 接納階段。切勿以一套只有貢獻者實驗室內進行、外界從未重複驗證的基準測試，作為規劃記憶體容量、配置節點（node）佈局或設定容量目標的依據。</p>
+<p>Kernel 的記憶體管理工作向來公開進行，並以階段性方式落地。10–40% 這個數字若能在審核及獨立重複驗證後經得起考驗，對於記憶體受限的部署環境將具有重要意義。然而現階段，它只是一位貢獻者對一套尚未取得 merge commit 的 patch 集合所提出的初步結果。完整討論可透過 Phoronix 的報導查閱，網址為 phoronix.com。</p>
+<p><a href="https://www.phoronix.com/news/Linux-MGLRU-FG-Patches" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
