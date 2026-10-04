@@ -1,0 +1,36 @@
+Date: 2026-10-04 13:22:00
+Author: HKLUG Team
+Title: NVIDIA Puts Its Own Latency Numbers Behind the Wayland Case at XDC 2026
+Content:
+<p>At XDC 2026 in Toronto, the measured gap between Wayland and X.Org on NVIDIA hardware was narrower than the Linux desktop community has long assumed, according to Phoronix's coverage of the session. The figures come from NVIDIA's own latency testing, which the company presented at the X.Org Foundation's annual developer conference alongside a separate announcement: a new Display Config Server project aimed at cleaning up how display configuration flows through the graphics stack.</p>
+<p>Both items landed in a developer-oriented forum rather than a marketing release, and that framing is itself the story. NVIDIA has spent years on the defensive side of the Wayland-on-NVIDIA debate, fielding reports of stutter, tearing and higher input latency. Showing up at XDC with internally produced testing — presented with a full walkthrough of its methodology — signals a shift toward empirical engagement with the open-source display ecosystem.</p>
+<h4>The caveat: this is vendor data</h4>
+<p>The figures should be read exactly for what they are: NVIDIA's numbers, from NVIDIA's lab, on NVIDIA's own hardware, presented by NVIDIA. That is the best case any vendor can offer, not an industry verdict. Phoronix's summary confirms the testing was conducted in-house and presented with its methodology, but no independent replication was available at the time of reporting.</p>
+<p>The headline finding — that Wayland and X.Org latency on NVIDIA GPUs are far closer than widely assumed — is therefore a vendor's best case pending verification. When independent data lands, it should be reported as a separate development with its own framing, not folded into this claim.</p>
+<p>For teams weighing practical decisions now, the honest position is: treat the result as a credible signal, not a conclusion.</p>
+<h4>The part that matters most for integrators</h4>
+<p>If the two halves of NVIDIA's XDC appearance read as a single engineering story, it is this one: better display configuration handling produces fewer stalls and configuration races, which in turn produce lower and more stable input latency. The Display Config Server is the plumbing behind that claim — a dedicated piece of infrastructure for how display configuration is negotiated and applied, rather than a direct performance patch.</p>
+<p>That interpretation is ours to read, and it should be re-checked against the raw XDC session materials once they are published. But the structural point holds independently of the latency numbers: for downstream packagers and system integrators, the Display Config Server is the more consequential announcement. A more deterministic display configuration pipeline is the kind of change that either justifies migration or quietly rewrites maintenance assumptions.</p>
+<h4>How the community has reacted</h4>
+<p>The Linux desktop community has reported elevated latency on NVIDIA under Wayland for years, and vendor-supplied benchmarks are routinely met with requests for independent verification rather than acceptance. If Phoronix publishes third-party frame-latency measurements on comparable hardware — a natural follow-up to its coverage of this session — that provides a near-term reference point. If NVIDIA's numbers hold up against that measurement, that is the point at which the "Wayland is slower on NVIDIA" narrative can be retired with confidence.</p>
+<p>Distribution packaging is where any eventual Display Config Server integration would surface. The project's current status, and when or whether it will appear in driver releases and distro packaging, has not been announced.</p>
+<h4>Why this matters beyond the desktop</h4>
+<p>For teams running Linux on NVIDIA GPU workstations in production — graphics and design work, signage deployments, engineering desktops — the question has been whether adopting Wayland means accepting a latency regression. NVIDIA's own data suggests that question is more nuanced than assumed, but the decision remains unanswered until independent numbers and a concrete shipping timeline exist.</p>
+<p>Two questions close that gap: whether NVIDIA's figures survive third-party replication, and when the Display Config Server reaches driver releases and distribution packaging in a form that justifies calling Wayland-on-NVIDIA production-ready. Until then, this is a vendor making its case in public — welcome, methodologically transparent, and still unproven.</p>
+<hr>
+<p>根據 Phoronix 對該場會議的報導，於多倫多舉行的 XDC 2026 上，NVIDIA 硬件的實測數據顯示，Wayland 與 X.Org 之間的差距，遠比 Linux 桌面社群一直以來所假設的為窄。數據來自 NVIDIA 自行進行的延遲測試，公司在 X.Org 基金會的年度開發者大會上與另一項公告一同發表：一個全新的 Display Config Server 專案，旨在清理顯示配置資訊在圖形技術堆疊中流轉的方式。</p>
+<p>這兩項內容都發表於開發者導向的論壇，而非市場推廣性質的新聞稿，而這個本身就是一個值得注意的地方。多年來，NVIDIA 在 Wayland-on-NVIDIA 的爭論中一直處於守勢，不斷應對有關畫面 stutter、tearing 以及較高輸入延遲的報告。如今 NVIDIA 帶著自行研發、且附有完整方法論解說的測試數據現身 XDC，顯示出該公司正轉向以實證方式投入開源顯示生態系統。</p>
+<h4>但要注意：這只是供應商的數據</h4>
+<p>讀者應該準確理解這組數字的性質：這是 NVIDIA 的數字，出自 NVIDIA 的實驗室，採用 NVIDIA 自己的硬件，並由 NVIDIA 自己發表。這是任何供應商所能提供的最佳情況，而非業界的定論。Phoronix 的報導摘要確認測試在內部完成，並附有方法論說明，但在撰寫該篇報導時並未有獨立覆核的數據可供參考。</p>
+<p>因此，頭條發現——即 Wayland 與 X.Org 在 NVIDIA GPU 上的延遲遠比一般認知為接近——目前仍是待驗證的供應商最佳情況。當獨立數據出台時，應作為一項獨立進展、以自身的框架另行報導，而不應納入此項聲明之中。</p>
+<p>對於現正面對實際決策的團隊而言，坦白的立場是：將此結果視為一個可信的信號，而非一個結論。</p>
+<h4>對集成商最重要的一環</h4>
+<p>如果將 NVIDIA 在 XDC 的兩項發表視為同一個工程故事來看，那就是：更完善的顯示配置處理能減少停頓（stall）及配置競爭（race），進而帶來更低且更穩定的輸入延遲。Display Config Server 正是這項主張背後的基建——一個專門處理顯示配置如何磋商與應用的基礎設施，而非直接的性能修補程式。</p>
+<p>以上解讀由我們提出，一旦 XDC 會議原始材料正式刊出，應據此重新核對。然而，撇開延遲數據不談，這一點的結構性意義依然成立：對於下游軟件打包者及系統集成商而言，Display Config Server 才是更為關鍵的一項公告。一條更具確定性的顯示配置 pipeline，往往正是那種要麼足以支持遷移決策、要麼會悄然改寫維護假設的變更。</p>
+<h4>社群的反應</h4>
+<p>多年來，Linux 桌面社群一直報告 NVIDIA 在 Wayland 下出現較高延遲，而供應商提供的 benchmark 常常只是引來要求獨立驗證的聲音，而非被全盤接受。若 Phoronix 在可比硬件上發表第三方 frame-latency 測量結果——這正是報導該場會議後的自然後續——便會提供一個近期的參考點。若 NVIDIA 的數據在該等測量下依然成立，那便是「Wayland 在 NVIDIA 上較慢」這一段敘事可以安心退場的時刻。</p>
+<p>發行版打包環節，將是任何 Display Config Server 整合方案最終浮現的地方。至於該專案目前的進展，以及它會否、何時進入驅動版本及發行版打包，現階段尚未公布。</p>
+<h4>這件事為何不局限於桌面層面</h4>
+<p>對於在生產環境中以 NVIDIA GPU 工作站運行 Linux 的團隊——無論從事圖形及設計工作、數碼標牌部署抑或工程桌面——長期以來的疑問一直是：採用 Wayland 是否等於接受延遲倒退？NVIDIA 自家的數據顯示這個問題比想像中更為複雜，但在獨立數據及具體的發布時間表出台之前，決定仍然懸而未決。</p>
+<p>要彌合這道距離，需要兩個答案：NVIDIA 的數據能否經得起第三方重複驗證，以及 Display Config Server 何時以一種足以稱 Wayland-on-NVIDIA 為 production-ready 的形式，進入驅動版本及發行版打包。在此之前，這只是供應商公開陳述自己的立場——值得歡迎，方法論透明，但仍未經證實。</p>
+<p><a href="https://www.phoronix.com/news/NVIDIA-Wayland-Xorg-Latency" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
