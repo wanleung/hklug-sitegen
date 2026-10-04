@@ -1,0 +1,38 @@
+Date: 2026-10-04 11:33:00
+Author: HKLUG Team
+Title: Patched a Year Ago, Still Breached: Warlock Keeps Riding SharePoint's ToolShell Chain
+Content:
+<p>Ransomware operators linked by Symantec to a group known as Warlock are still walking through a SharePoint door that Microsoft closed more than a year ago — and, according to the vendor's threat hunters, they are getting into critical infrastructure as a result. Water utilities, telecoms operators, government bodies and universities have reportedly been breached worldwide using the same exploitation chain, collectively known as ToolShell, that made headlines in mid-2025.</p>
+<p>The practical takeaway is not another entry for a threat feed. It is a failure mode: on-premises SharePoint estates that were patched once, or never fully patched, and then forgotten — while attackers kept the same access path open.</p>
+<p>The chain, as summarised by Security Affairs based on Symantec research, involves the suite of SharePoint Server defects publicly detailed during the mid-2025 disclosure cycle, when Microsoft acknowledged in-the-wild abuse and shipped out-of-band fixes for on-premises SharePoint Server versions. Symantec is quoted as observing that unpatched, internet-facing SharePoint servers remain reliably exploitable well over a year after those fixes shipped — and that Warlock's operators have kept using the chain rather than moving on.</p>
+<h4>Why "we patched it" is not sufficient reassurance</h4>
+<p>The technical core of ToolShell is what lifts this from an incident report into an operational warning. The chain yields remote code execution on on-premises SharePoint Server systems, and — critically — the intrusion does not necessarily end when the patch lands.</p>
+<p>Attackers who captured ASP.NET machine keys during the exposure window can forge valid ViewState payloads, re-entering systems that carry the correct patch level. A server can be fully up to date and still be re-compromised by someone holding stolen cryptographic material. Patching closes the door; it does not evict the intruder squatting inside.</p>
+<p>Two points of scope matter here. First, cloud-only SharePoint Online tenants were not part of this chain — the exposed population is organisations running on-premises SharePoint Server exposed to the internet, which is precisely the estate this kind of exploitation reaches. Second, any claim that "we already patched" is a hypothesis until it has been checked against primary sources — in this case, the relevant Microsoft Security Response Center advisories, which determine which server versions and cumulative updates an estate actually needs. CVE identifiers are deliberately not asserted here; readers should pull the wave-by-wave mapping directly from MSRC rather than relying on any single article's list.</p>
+<h4>Action checklist for admins responsible for internet-facing on-prem infrastructure</h4>
+<p>For administrators responsible for internet-facing on-premises infrastructure — including SharePoint estates — the following steps are broadly applicable:</p>
+<ol>
+<li><strong>Verify patch state against primary sources.</strong> Confirm that every internet-exposed SharePoint server carries the fixes from both the mid-2025 disclosure waves, cross-checked against the relevant MSRC advisories for the exact version and cumulative update in place.</li>
+<li><strong>Assume exposure, not just vulnerability.</strong> Any system exposed to the internet between disclosure and patching should be treated as potentially compromised, whether or not indicators are visible.</li>
+<li><strong>Patch first, then rotate.</strong> Patching must precede credential and key rotation by design — rotating ASP.NET machine keys while a server remains reachable by the attacker simply hands over fresh keys. Patch, isolate, then rotate machine keys and any other credentials associated with the exposure window.</li>
+<li><strong>Hunt for forged ViewState.</strong> Review IIS and SharePoint logs for anomalous ViewState submissions and unexpected process execution, since re-entry through forged payloads is the persistence mechanism that makes patching alone insufficient.</li>
+</ol>
+<p><em>Source: Security Affairs, citing Symantec research, 4 October 2026.</em></p>
+<hr>
+<p>根據 Symantec 的分析，與一個名為 Warlock 的組織相關的勒索軟件操作者，至今仍穿過 Microsoft 早在一年多前就已關上的 SharePoint 大門——而根據該供應商的 threat hunters 所述，他們因此得以入侵關鍵基礎設施。據報導，全球各地的供水設施、電訊營運商、政府機構及大學均遭同一套被稱為 ToolShell 的入侵鏈入侵，該鏈條於 2025 年年中曾引起廣泛關注。</p>
+<p>實務上的啟示並非又一項威脅情報（threat feed）紀錄，而是一種失敗模式：某些本機部署（on-premises）的 SharePoint 環境只修補過一次，或從未徹底修補，其後卻無人跟進——而攻擊者則始終保持同一條入侵路徑暢通。</p>
+<p>Security Affairs 根據 Symantec 研究整理的攻擊鏈，涉及 2025 年年中披露期間公開的一整批 SharePoint Server 缺陷；當時 Microsoft 承認相關漏洞正遭實際利用（in-the-wild），並為本機部署的 SharePoint Server 版本推出了修補程式（out-of-band fixes）。引述 Symantec 的觀察指出，未修補、面向互聯網的 SharePoint 伺服器，在修補程式推出一年多之後仍可被可靠地利用——而 Warlock 的操作者一直沿用此攻擊鏈，並未另尋他徑。</p>
+<h4>為何「我們已經修補」並不足以令人安心</h4>
+<p>ToolShell 的技術核心，正是把這件事從一般事故報告提升為營運層面警告的原因。該攻擊鏈可在本機部署的 SharePoint Server 系統上取得遠端代碼執行（remote code execution）能力，而且——關鍵在於——入侵未必在修補安裝後隨之終結。</p>
+<p>在漏洞暴露期間擷取了 ASP.NET machine key 的攻擊者，可以偽造有效的 ViewState payload，重新進入已安裝正確修補的系統。一部伺服器即使狀態完全更新，仍可能被持有被盜加密材料者重新入侵。修補是關上大門，但並不能把佔據屋內的入侵者趕走。</p>
+<p>以下兩點範圍界定值得注意。第一，純雲端的 SharePoint Online 租戶並不在此次攻擊鏈的範圍之內——受影響的是將本機 SharePoint Server 暴露於互聯網的機構，而這正是這類入侵所針對的環境。第二，任何「我們已經修補了」的說法，在對照一級來源之前只屬假設——就本例而言，即 Microsoft Security Response Center（MSRC）的相關通告，這些通告決定了機構實際上需要哪些伺服器版本及累積更新（cumulative update）。本文不列出任何 CVE 編號；讀者應直接從 MSRC 查閱逐波次的對應關係，而非依賴任何單一篇文章所列的清單。</p>
+<h4>面向互聯網的本機基礎設施管理員行動清單</h4>
+<p>對於負責面向互聯網的本機基礎設施——包括 SharePoint 環境——的系統管理員而言，以下步驟大致適用：</p>
+<ol>
+<li><strong>對照一級來源核實修補狀態。</strong> 確認每一部面向互聯網的 SharePoint 伺服器已安裝 2025 年年中兩輪披露所要求的修補，並交叉核對相關 MSRC 通告，確認實際使用的版本及累積更新。</li>
+<li><strong>假設系統已暴露，而不只假設系統存在漏洞。</strong> 任何在披露與修補之間曾暴露於互聯網的系統，均應視作可能已被入侵，無論是否有可見的入侵指標（indicators）。</li>
+<li><strong>先修補，後輪換。</strong> 憑證與金鑰的輪換在設計上必須排在修補之後——在伺服器仍可被攻擊者接觸的情況下更換 ASP.NET machine key，只會等於把新鑰匙拱手奉上。先修補，再隔離，然後才輪換 machine key 及其他與漏洞暴露期間相關的憑證。</li>
+<li><strong>搜尋偽造的 ViewState。</strong> 檢視 IIS 及 SharePoint 日誌中的異常 ViewState 提交及非預期的 process execution，因為透過偽造 payload 重新進入系統，正是令單靠修補不足以防範的持續入侵機制（persistence mechanism）。</li>
+</ol>
+<p><em>資料來源：Security Affairs，引述 Symantec 研究，2026 年 10 月 4 日。</em></p>
+<p><a href="https://securityaffairs.com/200304/malware/warlock-ransomware-still-exploits-year-old-sharepoint-flaws-to-hit-critical-infrastructure.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
