@@ -1,0 +1,48 @@
+Date: 2026-10-08 14:30:00
+Author: HKLUG Team
+Title: Apple Moves to Restrict macOS Full Disk Access as AI Agents Push a Broad Permission Past Its Limits
+Content:
+<p>Apple has signalled that it intends to tighten the controls surrounding macOS Full Disk Access (FDA), the broad permission that lets a granted application read and write nearly everything on a user's machine. The move, reported by The Hacker News earlier this month, follows concerns that some developers are invoking the permission in ways that expose user data — including files, mail, messages and browsing history — beyond what people reasonably expect when they click through a consent prompt.</p>
+<h4>What FDA actually grants</h4>
+<p>Full Disk Access sits inside macOS's Transparency, Consent and Control (TCC) framework, the system that manages per-category consent for sensitive capabilities such as Contacts, Camera, Microphone and Screen Recording. Add an application to the FDA list in System Settings and it gains read and write access across a user's home directory, external volumes, application support data, and historically sensitive stores such as local mail and message databases — largely without further per-file prompting.</p>
+<p>For security teams, that makes FDA a different class of control from most TCC prompts. Other permissions are scoped to a category; FDA is, in effect, a general key to the user's working environment. In managed environments it is frequently provisioned through mobile device management (MDM) profiles, which means a grant made at deployment time can persist long after the person who approved it has moved on.</p>
+<h4>Why AI agents change the risk profile</h4>
+<p>The reason Apple is rethinking the control, according to the report, is not simply that the permission is widely misused. It is that the applications drawing on it have changed shape. Traditional apps access data when the user asks them to. AI agents — autonomous or semi-autonomous assistants that run continuously, invoke tools, search local and cloud data, and chain actions across systems — consume data as a background activity rather than an on-demand one.</p>
+<p>The consequence is that a single FDA grant no longer represents a one-time approval for a specific task. It becomes a standing licence over a user's entire working life, exercised repeatedly without any further prompt. And the blast radius — the scope of what a breach or misuse could expose — is no longer confined to that agent alone. Weaknesses upstream, such as a prompt injection reaching an agent's tool-use layer, a compromised or over-permissive model provider, or an over-broad retrieval index, translate directly into potential exposure of everything the user has on disk. An agent that can read everything can also be induced, directly or indirectly, to act on it.</p>
+<h4>What Apple has not specified</h4>
+<p>It is worth being precise about what remains unknown. Apple has announced direction, not a specification. There is no published timeline, no technical mechanism, and — critically — no clarity on what happens to existing grants. It remains unclear whether Full Disk Access permissions already provisioned through MDM will be re-prompted, revoked or grandfathered. Any claim about the eventual mechanism at this stage is speculation; the honest position is that fleet operators are planning against an unknown.</p>
+<h4>What to audit now</h4>
+<p>The practical response for administrators of managed Mac fleets does not depend on knowing Apple's eventual design. It depends on knowing your current posture:</p>
+<ul>
+<li><strong>Inventory every FDA grant.</strong> Enumerate which applications hold Full Disk Access, on which machines, and how each grant was obtained — interactively or through an MDM payload.</li>
+<li><strong>Map agent dependencies.</strong> Identify which internal workflows, scripts and automations sit on top of a blanket grant. These are the parts of the estate that will break — or silently change behaviour — when the rules move.</li>
+<li><strong>Review MDM payloads.</strong> FDA scopes embedded in deployment profiles are the easiest grants to lose sight of, because no one has been prompted to renew them.</li>
+<li><strong>Treat FDA as a governed exception.</strong> Where a grant is genuinely temporary, attach an expiry date and an owner rather than leaving it in place indefinitely.</li>
+<li><strong>Add telemetry.</strong> File-access logging, tool-invocation records and agent transcripts give you the evidence needed to justify — or revoke — a grant later.</li>
+</ul>
+<h4>Direction of travel</h4>
+<p>Apple's announcement points to a wider shift in how macOS permissions are likely to work: away from broad, persistent consent and toward scoped, time-bound, policy-enforced access. AI agents accelerate that shift because they are, by design, the workloads most likely to exercise a permission continuously without a human in the loop. Administrators who begin treating Full Disk Access as a reviewable exception now will be in a much stronger position than those waiting for the enforcement details.</p>
+<p>Apple has not yet published implementation specifics. This article will be updated when it does.</p>
+<hr>
+<p>Apple 已透露擬收緊 macOS Full Disk Access（FDA，全硬碟存取）的相關控制。這項廣泛權限容許已獲授權的應用程式讀取及寫入用戶機器上的幾乎所有內容。據 The Hacker News 本月早些時候報道，此舉是源於業界關注部分開發者援引該權限的方式，令用戶資料 — 包括檔案、電郵、訊息及瀏覽紀錄 — 所暴露的程度超出用戶點擊同意提示時的合理預期。</p>
+<h4>FDA 實際授予什麼</h4>
+<p>Full Disk Access 屬於 macOS 的 Transparency, Consent and Control（TCC）框架之內，該框架負責管理敏感功能的逐類別同意，例如聯絡人、相機、麥克風及螢幕錄影。在「系統設定」將應用程式加入 FDA 清單後，該程式即可讀取及寫入用戶的 home directory、外接磁碟區、application support 數據，以及歷來被視為敏感的儲存庫 — 例如本機郵件及訊息資料庫 — 而基本上不會再有逐個檔案的提示。</p>
+<p>對資訊保安團隊而言，這令 FDA 有別於一般 TCC 提示，屬於完全不同層級的控制。其他權限僅涵蓋特定類別；FDA 實質上是一把通往用戶整個工作環境的萬能匙。在受管理環境中，FDA 經常透過 mobile device management（MDM）設定檔（profile）發放，意味著在部署時作出的授權，可能在批准者離職多年後依然持續有效。</p>
+<h4>AI agents 如何改變風險面貌</h4>
+<p>根據報道，Apple 重新檢視這項控制的原因，並非單純因為該權限被濫用，而是援引該權限的應用程式本身已經「轉型」。傳統應用程式在用戶要求時才存取數據；AI agents — 即持續運行、調用工具、搜尋本地及雲端數據、並跨系統串聯行動的自主或半自主助手 — 則是將數據消耗視為背景活動，而非按需操作。</p>
+<p>結果是，單次 FDA 授權不再代表對某項特定任務的一次性批准，而成為一張涵蓋用戶整個工作生活的長期許可證，並在無需任何進一步提示的情況下反覆行使。而且 blast radius — 即一旦發生洩漏或濫用，可能暴露的範圍 — 已不再限於該 agent 本身。上游環節的弱點，例如 prompt injection 侵入 agent 的 tool-use 層、遭入侵或權限過寬的模型供應商、範圍過廣的 retrieval index，會直接轉化為用戶硬碟上所有資料的潛在外洩風險。一個能讀取一切的 agent，亦可被直接或間接地誘使對這些資料採取行動。</p>
+<h4>Apple 尚未說明的部分</h4>
+<p>有必要準確說明目前仍有何等資訊未知。Apple 公布的是方向，而非規格。目前沒有既定時間表、沒有技術機制，而最關鍵的是：既有的授權將如何處理仍不明朗。經 MDM 發放的 Full Disk Access 權限會否重新提示、被撤銷或被保留（grandfathered），目前仍不得而知。在此階段對最終機制作任何聲稱均屬推測；誠實的立場是，機隊（fleet）營運者正針對一個未知數進行規劃。</p>
+<h4>現在應審計什麼</h4>
+<p>受管理 Mac 機隊的管理員所要作出的實際應對，並取決於是否知道 Apple 的最終設計，而是取決於對現有狀態（posture）的了解：</p>
+<ul>
+<li><strong>清點每一項 FDA 授權。</strong> 列明哪些應用程式擁有 Full Disk Access、裝置為何，以及每項授權如何取得 — 經互動操作或透過 MDM payload。</li>
+<li><strong>梳理 agent 依賴關係。</strong> 找出哪些內部工作流程、腳本及自動化流程建立在籠統授權之上。當規則改變時，這些正是最先出問題或行為悄然改變的資產部分。</li>
+<li><strong>檢視 MDM payload。</strong> 嵌入部署設定檔內的 FDA 範圍，是最容易被人忽略的授權，因為從來沒有人被提示續期。</li>
+<li><strong>將 FDA 視為受管轄的例外情況。</strong> 如授權確屬臨時性，應附上到期日及負責人，而非無限期保留。</li>
+<li><strong>加入遙測（telemetry）。</strong> 檔案存取日誌、工具調用記錄及 agent 對話紀錄（transcript），能提供日後用以證明授權合理 — 或據以撤銷授權 — 所需的證據。</li>
+</ul>
+<h4>趨勢走向</h4>
+<p>Apple 的宣布指向 macOS 權限運作方式的一個更大轉變：由廣泛、持久的同意，轉向有範圍界定、有時限、受政策強制執行的存取。AI agents 會加速這一轉變，因為它們在設計上正是最可能持續行使某項權限、而無需人類參與的工作負載。現在開始將 Full Disk Access 作為可審查例外的管理員，日後將比只等待執行細則的人佔有大得多的優勢。</p>
+<p>Apple 尚未公布實施細節。本文將於其公布後更新。</p>
+<p><a href="https://thehackernews.com/2026/10/apple-plans-tighter-macos-full-disk.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
