@@ -1,0 +1,36 @@
+Date: 2026-10-05 14:38:00
+Author: HKLUG Team
+Title: Attackers Route Cling Botnet Commands Through Ordinary STUN Traffic
+Content:
+<p>Threat actors have been observed attempting to exploit a long-patched critical vulnerability in Realtek's Jungle SDK to deploy a botnet malware strain called Cling. The campaign's most interesting feature, however, is not how the malware spreads — it is how it hides its command-and-control (C2) channel in plain sight.</p>
+<p>According to a report from Nozomi Networks, covered in depth by The Hacker News, Cling takes advantage of the ordinary behaviour of the STUN protocol — Session Traversal Utilities for NAT, the mechanism that VoIP phones, video conferencing platforms and WebRTC applications routinely use to negotiate NAT traversal — and turns it into a transport for attacker instructions. The result is a C2 channel that superficially resembles the background traffic most networks already generate, making it unlikely to trip conventional signature-based detection tools.</p>
+<p>"Cling is notable not because it introduces a new propagation technique, but because it repurposes ordinary STUN behavior into a practical command-and-control channel," Nozomi Networks said, as reported by The Hacker News on 5 October.</p>
+<p>The entry point is an old one. The flaw lies in Realtek's Jungle SDK, a software toolkit embedded across a wide range of networking hardware and IoT devices, and it has already been patched. Yet exploitation attempts continue — a familiar pattern in embedded-device security, where the gap between vendor disclosure and real-world remediation can be measured in years, and in some cases never closes at all.</p>
+<p>That gap matters in practical terms for network owners, particularly those running cost-sensitive equipment. Realtek's SDK commonly underpins ISP-supplied customer premises equipment, budget home and small-office routers, access points, IP cameras and other connected hardware. For devices that still receive firmware updates, applying the latest vendor build remains the single most effective defence. For the long tail of older units — especially those from vendors that have stopped issuing updates entirely — the vulnerability is effectively permanent, and no patch cycle will arrive to save them.</p>
+<p>The detection implication is sharper still. Because Cling's traffic mimics legitimate STUN usage, defenders cannot lean on blocklists alone. What they need is traffic analysis: identifying STUN exchanges originating from devices that have no legitimate reason to generate them, and flagging sudden bursts of such traffic from a single source or a small cluster. For a home router or a small-business access point, any outbound STUN traffic at all is, on its face, anomalous.</p>
+<p>Security teams reviewing the campaign should also read the "exploit attempts" framing carefully. Nozomi Networks described actors attempting to exploit the SDK flaw — which means that at least some devices may have resisted compromise, while the attempts themselves demonstrate that the vulnerable population is still being actively mined.</p>
+<p>For network operators, the practical takeaways are straightforward:</p>
+<ol>
+<li><strong>Inventory the equipment actually running on your network.</strong> Access points, IP cameras, set-top boxes and other appliances are easily overlooked in asset registers — check whether any of it is built on a Realtek SDK platform.</li>
+<li><strong>Chase firmware updates wherever the vendor still provides them,</strong> and set a deadline for devices that will never receive another one.</li>
+<li><strong>Harden the rest.</strong> Disable remote management interfaces that aren't needed, change default credentials, and segment IoT and camera traffic away from systems handling sensitive data.</li>
+<li><strong>Monitor for outbound STUN traffic from devices with no legitimate conferencing use.</strong></li>
+</ol>
+<p>For anyone managing connected hardware, the broader lesson is one the embedded-device world has learned the hard way: a critical vulnerability can be "patched" on paper and still live, unremediated, on shelves and in cupboards for a decade after disclosure.</p>
+<hr>
+<p>安全研究人員發現，有攻擊者正嘗試利用 Realtek Jungle SDK 中一個早已修補的嚴重漏洞，用以部署名為 Cling 的僵屍網絡惡意軟件。然而，這次攻擊行動最值得注意的地方，並非惡意軟件的傳播方式——而是它如何將其 command-and-control（C2）指令渠道隱藏於眾目睽睽之下。</p>
+<p>根據 Nozomi Networks 的報告（The Hacker News 已作深入報道），Cling 利用了 STUN 協定（Session Traversal Utilities for NAT）的正常運作行為——VoIP 電話、視像會議平台及 WebRTC 應用程式經常使用該機制來協商 NAT 穿越——並將其轉化為傳送攻擊者指令的載體。結果，該 C2 渠道表面上與大多數網絡本來就會產生的背景流量極為相似，令其不易觸發傳統基於特徵（signature-based）的偵測工具。</p>
+<p>Nozomi Networks 表示：「Cling 值得關注的地方，不在於它引入了新的傳播技術，而在於它將普通的 STUN 行為重新利用為一個實際可行的 command-and-control 渠道。」據 The Hacker News 於 10 月 5 日報道。</p>
+<p>入侵入口是舊有的漏洞。漏洞位於 Realtek 的 Jungle SDK——這是一套嵌入於大量網絡硬件及 IoT 設備中的軟件工具包——而且該漏洞早已修補。然而，嘗試利用漏洞的攻擊行為從未停止。這在嵌入式設備安全領域是一個常見模式：從廠商披露漏洞到現實環境完成修補之間的差距，往往以年計算，而且某些情況下永遠不會彌補。</p>
+<p>對網絡管理員，尤其是使用成本敏感設備的機構而言，這道差距影響深遠。Realtek 的 SDK 通常是 ISP 供應的客戶終端設備、平價家用及小型辦公室路由器、access point、IP 攝影機及其他互聯硬件的核心基礎。對於仍收到韌體更新的設備，套用最新的廠商版本仍是最有效的單一防禦措施。至於大量較舊的設備——尤其是那些廠商已完全停止提供更新的型號——該漏洞實質上等於永久存在，不會有修補版本來拯救它們。</p>
+<p>偵測方面的要求則更為嚴苛。由於 Cling 的流量模仿合法的 STUN 使用，防禦方不能只依賴封鎖清單（blocklist）。他們需要的是流量分析：識別來自毫無合法理由產生 STUN 交換的設備，以及標示單一來源或小型設備群突然出現的大量此類流量。對於家用路由器或小型企業 access point 來說，任何形式的對外 STUN 流量，表面上已屬異常。</p>
+<p>審視此攻擊行動的保安團隊，亦應仔細理解「exploit attempts」（漏洞利用嘗試）的表述。Nozomi Networks 形容攻擊者正嘗試利用該 SDK 漏洞——這意味著至少部分設備可能已成功抵禦入侵，而嘗試行為本身亦證明，漏洞設備群體仍正被積極搜尋及攻擊。</p>
+<p>對網絡運營商而言，實質啟示清晰直接：</p>
+<ol>
+<li><strong>盤點網絡上實際運行的設備。</strong> Access point、IP 攝影機、機頂盒及其他電器，往往容易在資產登記冊中被忽略——須查核其中是否有設備建基於 Realtek SDK 平台。</li>
+<li><strong>只要廠商仍提供韌體更新，就逐一追蹤套用，</strong> 並為那些永遠不會再收到更新的設備設定處理期限。</li>
+<li><strong>加固其餘設備。</strong> 停用不需要的遠端管理介面、更改預設憑證，並將 IoT 及攝影機流量與處理敏感數據的系統分隔開來。</li>
+<li><strong>監察沒有合法視像會議用途的設備所產生的對外 STUN 流量。</strong></li>
+</ol>
+<p>對所有管理互聯設備的人士而言，這個更廣泛的教訓正是嵌入式設備領域歷經艱辛才領悟到的：一個嚴重漏洞可能在文件上顯示為「已修補」，但在漏洞披露十年之後，它仍然存活於貨架上及櫃桶之中，從未得到實際修復。</p>
+<p><a href="https://thehackernews.com/2026/10/realtek-jungle-sdk-exploit-attempts.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
