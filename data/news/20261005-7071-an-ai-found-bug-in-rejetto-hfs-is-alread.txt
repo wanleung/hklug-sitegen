@@ -1,0 +1,38 @@
+Date: 2026-10-05 19:23:00
+Author: HKLUG Team
+Title: An AI-Found Bug in Rejetto HFS Is Already Being Exploited — Before Anyone Could Patch
+Content:
+<p>A critical flaw in the open-source Rejetto HTTP File Server (HFS) — a lightweight self-hosted file-sharing tool used mostly by homelabs, small teams and internal deployments — is being actively exploited in the wild, Security Affairs reported. The vulnerability is tracked as <strong>CVE-2026-61500</strong> with a <strong>CVSS score of 9.3</strong> as cited in Security Affairs' reporting, and it was discovered with the help of <strong>Anthropic Mythos</strong>, an AI model Anthropic has been developing and using for security research purposes. Operators reviewing any Security Affairs coverage or advisory should confirm the CVSS rating and identifier against the official record before relying on them for triage, but the article's central claim stands: a pre-authentication flaw found by AI-assisted research is already in attackers' hands.</p>
+<p>The flaw, as described in the reporting, lets an unauthenticated attacker bypass authentication and achieve remote code execution on affected systems. That is squarely critical-severity territory. What makes the story notable is not the technical class of the bug but how quickly the window closed. In Security Affairs' account, what began as a security research experiment has hardened into an operational incident: attackers have identified and weaponised the vulnerability before affected operators have had any meaningful chance to patch. The gap between discovery and exploitation — the interval security teams have traditionally relied on to get ahead of adversaries — has effectively collapsed.</p>
+<p>That collapse is the story, not the software. AI-assisted research lowers the cost of finding critical flaws; AI-assisted exploitation lowers the cost of turning a finding into a working attack chain. Both sides of that equation now operate at machine speed, and a critical pre-authentication RCE sitting in a self-hosted, internet-reachable file server is precisely the profile automated scanning and reasoning systems will gravitate to once a candidate weakness exists. Rejetto HFS happens to be the case study this week; the pattern will repeat.</p>
+<h5>Why operators should care</h5>
+<p>HFS itself is niche. The deployment profile it represents is not. Self-hosted file servers are routinely exposed directly on the public internet, often with default configurations, weak credentials or long-outdated versions, because the people running them are generally not security specialists. For any organisation that self-hosts services reachable from the outside, CVE-2026-61500 is a useful reminder to stop treating "internal tooling" as if it were never internet-facing.</p>
+<p>Two details remain unconfirmed and should be treated as open items. <strong>Affected versions and patch status are not settled</strong> — operators should look for advisories from Rejetto's maintainer or the vendor directly rather than rely on any single account. And <strong>no technical exploitation details or indicators of compromise have been published</strong>, an absence defenders should read as a signal that the incident is still developing, not as reassurance. Until those specifics land, the prudent response is to treat any internet-reachable instance as potentially affected:</p>
+<ul>
+<li><strong>Patch or mitigate as soon as a fix exists</strong>; where it does not, restrict network exposure to trusted sources or take the instance offline entirely.</li>
+<li><strong>Inventory self-hosted services</strong> exposed to the internet — HFS and comparable file-server software alike.</li>
+<li><strong>Review authentication and access logs</strong> on affected systems for signs of intrusion.</li>
+<li><strong>Assume prior compromise</strong> on any instance that has been publicly reachable for an extended period, and rotate credentials accordingly.</li>
+</ul>
+<h5>The bigger question</h5>
+<p>The case sits alongside a growing body of AI-assisted security work that cuts in two directions at once. The same class of tooling that surfaces defects before malicious actors do can also accelerate the attacker's side — and when disclosure and patching lag, the advantage accrues to whoever moves fastest. Increasingly, that party is an automated adversary.</p>
+<p>The practical takeaway for defenders is less about this particular CVE and more about the shape of vulnerability intelligence now. Its value depends less on the moment of discovery than on what happens in the hours immediately after it — whether disclosure is coordinated, whether advisories land, whether operators act. Operators of internet-reachable, self-hosted services should verify their exposure now rather than wait for the next headline.</p>
+<p><em>Source: Security Affairs — "Anthropic Mythos Found A Bug In Rejetto HFS. Attackers Are Now Exploiting It."</em></p>
+<hr>
+<p>據 Security Affairs 報道，開源項目 Rejetto HTTP File Server（HFS）存在一個嚴重漏洞，現時已在野外遭實際利用。HFS 是一款輕量級自架（self-hosted）檔案分享工具，主要供 homelab 愛好者、小型團隊及內部部署使用。按 Security Affairs 報道所引述，該漏洞編號為 <strong>CVE-2026-61500</strong>，<strong>CVSS 評分為 9.3 分</strong>，並是借助 <strong>Anthropic Mythos</strong> 發現的——這是 Anthropic 一直開發、用於安全研究工作的 AI 模型。系統管理員如參考任何 Security Affairs 報道或公告，應先核對 CVSS 評分及漏洞編號與官方記錄是否一致，方可據此進行分級處理；不過，文章的中心論點依然成立：一個由 AI 輔助研究發現的認證前（pre-authentication）漏洞，如今已落入攻擊者手中。</p>
+<p>按報道所述，該漏洞令未經認證的攻擊者可以繞過 authentication，並在受影響系統上達成 remote code execution（遠端代碼執行）。這屬典型的 critical 級別範疇。令事件值得關注的，與其說是漏洞的技術類別，不如說是這一時間窗口關閉得有多快。按 Security Affairs 的敘述，最初只是一場安全研究實驗，如今已演化成實際事故：攻擊者在受影響的系統管理員還未有切實機會修補之前，已識別並「武器化」了此漏洞。從發現到被利用之間的關鍵間隔——安全團隊傳統上賴以搶先對手一步的時間——實際上已告坍縮。</p>
+<p>這場坍縮，才是事件的真正主角，而非軟件本身。AI 輔助研究降低了尋找嚴重漏洞的成本；AI 輔助利用則降低了將發現轉化為完整攻擊鏈（attack chain）的成本。此方程式的兩端如今都以機器速度運行，而一個自架、可從互聯網直接接達的檔案伺服器中存在 pre-authentication RCE 漏洞，正正是自動化掃描與推理系統在弱點候選出現後會優先鎖定的目標。Rejetto HFS 恰好是本週的個案研究；同類模式將會一再重演。</p>
+<h5>系統管理員為何要關注</h5>
+<p>HFS 本身屬小眾軟件，但它所代表的部署方式卻極為普遍。自架檔案伺服器往往直接暴露於公開互聯網，而且經常使用預設配置、弱密碼或長期未更新的版本——原因是運行這些系統的人一般並非網絡安全專家。對任何自行架設服務、且可從外部接達的機構而言，CVE-2026-61500 是一個有用的提醒：不要再把「內部工具」視為從未面向互聯網的東西。</p>
+<p>有兩項細節仍未獲確認，應視作未解決事項處理。<strong>受影響版本及修補狀態尚未有定論</strong>——系統管理員應直接查閱 Rejetto 維護者或廠商發布的公告，而非依賴任何單一報道。另外，<strong>目前尚未有任何技術利用細節或 indicators of compromise（入侵指標）被公開</strong>——防禦方應將此視為事件仍在發展中的訊號，而非令人安心的保證。在這些細節補齊之前，謹慎的應對方式是：將任何可從互聯網接達的實例均視為可能受影響：</p>
+<ul>
+<li><strong>一旦有修補即儘快更新或緩解漏洞</strong>；如尚無修補，則將網絡暴露範圍限制至可信來源，或索性使該實例完全下線。</li>
+<li><strong>盤點所有暴露於互聯網的自架服務</strong>，包括 HFS 及同類檔案伺服器軟件。</li>
+<li><strong>檢查受影響系統的認證及訪問日誌</strong>，留意入侵跡象。</li>
+<li><strong>假定任何曾長期公開可接達的實例均已曾被入侵</strong>，並據此輪換憑證（rotate credentials）。</li>
+</ul>
+<h5>更大的問題</h5>
+<p>此個案與日益增多的 AI 輔助安全研究相互呼應，而這類研究同時指向兩個方向。同類工具既能令漏洞在惡意行為者之前浮現，也能加速攻擊者一方的行動——而當披露與修補滯後時，優勢便歸於行動最快的一方。而越來越多時候，最快的一方是一個自動化的對手。</p>
+<p>對防禦方而言，實務上的啟示與其說是關於這個特定 CVE，不如說是關於漏洞情報（vulnerability intelligence）當下的形態。其價值與其說取決於發現的一刻，不如說取決於發現後隨即數小時內的發展——披露是否經過協調、公告是否落實、系統管理員是否行動。可從互聯網接達的自架服務管理員，應當即核查自身的暴露面，而不是等待下一個頭條新聞。</p>
+<p><em>資料來源：Security Affairs — "Anthropic Mythos Found A Bug In Rejetto HFS. Attackers Are Now Exploiting It."</em></p>
+<p><a href="https://securityaffairs.com/200444/ai/anthropic-mythos-found-a-bug-in-rejetto-hfs-attackers-are-now-exploiting-it.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
