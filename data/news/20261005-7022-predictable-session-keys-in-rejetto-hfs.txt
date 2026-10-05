@@ -1,0 +1,60 @@
+Date: 2026-10-05 10:23:00
+Author: HKLUG Team
+Title: Predictable Session Keys in Rejetto HFS Allow Admin Forgery and RCE, Researchers Warn
+Content:
+<p>Security teams should start with two questions this week: is Rejetto HTTP File Server (HFS) running anywhere in your estate, and is it reachable from the internet? Exploitation attempts against a critical session-forgery flaw in the long-running open-source file server are already underway, according to findings from VulnCheck published by The Hacker News.</p>
+<p>The vulnerability, tracked as CVE-2026-61500 and carrying a CVSS score of 9.3, does not depend on guessing a password. Instead, it stems from HFS relying on a weak pseudo-random number generator to produce session key material. Where entropy is poor enough, an attacker can predict the key and mint administrator session tokens directly, gaining unauthorised access to a system they should never be able to sign into — and, in the most damaging configurations, a foothold from which remote code execution on the host becomes possible.</p>
+<h4>The attack path, in plain terms</h4>
+<p>The chain is short enough to be worrying precisely because it needs no brute force:</p>
+<ol>
+<li><strong>Weak PRNG output</strong> — session or signing keys are derived from a generator that does not produce sufficiently unpredictable values.</li>
+<li><strong>Predictable session key</strong> — an attacker who can infer the key's state forges a valid administrator session token.</li>
+<li><strong>Silent privilege escalation</strong> — the forged session looks legitimate to the application, so the attacker reaches admin functionality without ever failing a login.</li>
+<li><strong>Code execution</strong> — admin-equivalent access on a web server routinely opens routes to arbitrary file handling, configuration manipulation, or command execution on the host.</li>
+</ol>
+<p>For defenders, the middle step is the most important. Forged sessions generate no failed-login events — the attacker never trips an authentication failure, because a valid token is simply presented and the application behaves as though a legitimate administrator has signed in. Monitoring for credential stuffing, brute force, or unusual authentication failures will return nothing at all. Detection has to target session integrity: unexpected administrator logins from unfamiliar addresses, unexplained configuration changes, token material that does not match issuance records — not just login anomalies.</p>
+<h4>Who is realistically at risk</h4>
+<p>HFS's appeal is that it is small, portable and quick to deploy. That is also why this one is uncomfortable: those same qualities place instances in home labs, small offices, developer machines and branch environments where patching cycles are measured in years rather than weeks, and where nobody has added the application to a formal asset inventory.</p>
+<p>That is why the highest-leverage action here is inventory first. Any discovery process that only covers "production-facing enterprise systems" will miss the instances most likely to be exposed — and those are exactly the ones attackers will find first, because scanning for a leaked or misconfigured HFS instance is not a sophisticated technique.</p>
+<p>Public disclosure plus confirmed exploitation attempts also means the window between advisory and commodity tooling is narrowing to days. Treat patching as urgent rather than routine.</p>
+<h4>What defenders should do</h4>
+<ul>
+<li><strong>Inventory</strong>, including shadow and personal deployments. Assume internet-facing management interfaces exist until proven otherwise.</li>
+<li><strong>Reduce exposure.</strong> No management or file-serving interface should be directly internet-exposed; front it with a VPN, reverse proxy or zero-trust access layer.</li>
+<li><strong>Patch, then rotate.</strong> Upgrade to a fixed build first, then rotate session and signing secrets. The order matters: rotating before the patch leaves you re-exposed the moment the broken generator runs again, while rotating after the upgrade invalidates any key material the old generator produced, so tokens forged with it stop working.</li>
+<li><strong>Hunt for artifacts</strong> from the intrusion: anomalous admin sessions, unexpected configuration writes, unfamiliar listening services or scheduled tasks.</li>
+<li><strong>Monitor for process anomalies</strong>, particularly unexpected child processes spawned by the HFS service or web server process, which is a common sign that an initial foothold has been turned into code execution.</li>
+</ul>
+<p>One important correction: this is not a brute-force or credential-guessing problem, and hardening password policy will not address it. It is a cryptographic design failure, and it will not be fixed by monitoring for suspicious login attempts.</p>
+<h4>The wider lesson</h4>
+<p>Predictable session keys are one of the oldest failure modes in application security, and they persist because PRNG choices made early in a project rarely get revisited. Wherever token material is generated from insufficient entropy, the fix is not detection — it is regeneration. Rotate your secrets, verify your generators, and make sure the tools running quietly on the edges of your network are on a patching cadence, not a legacy shelf.</p>
+<p>The report from The Hacker News does not enumerate specific vulnerable and fixed Rejetto HFS builds; defenders should consult Rejetto's own project advisory to confirm which versions are affected before deploying fixes across their estate.</p>
+<hr>
+<p>資訊保安團隊本周應先回答兩個問題：Rejetto HTTP File Server（HFS）是否在機構的網絡環境中任何地方運作，以及它是否可從互聯網直接存取？據 VulnCheck 發現並由 The Hacker News 報道，針對這個長期運作的開源檔案伺服器一項嚴重 session 偽造漏洞的利用嘗試已陸續出現。</p>
+<p>該漏洞編號為 CVE-2026-61500，CVSS 評分高達 9.3，並不需要猜測密碼。相反，問題根源在於 HFS 依賴一個弱式 pseudorandom number generator（PRNG，偽隨機數產生器）來產生 session key 素材。在 entropy（熵）不足的情況下，攻擊者可以預測該 key，直接鑄造 administrator session token，從而取得未經授權的存取權限登入本不應進入的系統——而在配置最不利的情形下，更可作為據點，在主機上進一步實現 remote code execution（RCE，遠端代碼執行）。</p>
+<h4>攻擊鏈，簡單說明</h4>
+<p>這條攻擊鏈短得令人憂心，正因為它完全不需要暴力破解：</p>
+<ol>
+<li><strong>弱式 PRNG 輸出</strong> — session key 或 signing key 由一個無法產生足夠不可預測值的產生器衍生而來。</li>
+<li><strong>可預測的 session key</strong> — 能夠推斷 key 狀態的攻擊者，可偽造一個有效的 administrator session token。</li>
+<li><strong>無聲的權限提升</strong> — 偽造的 session 對應用程式而言完全合法，攻擊者無需任何登入失敗紀錄即可取得 admin 功能。</li>
+<li><strong>代碼執行</strong> — 在 web server 上取得等同 admin 的存取權限，往往便開啟通往任意檔案處理、配置竄改或主機命令執行的途徑。</li>
+</ol>
+<p>對防禦者而言，中間那一步至關重要。偽造的 session 完全不會產生 failed-login event——攻擊者從未觸發認證失敗，因為攻擊者只是簡單地提交一個有效的 token，應用程式便會如同有合法 administrator 登入般正常運作。無論監察 credential stuffing、暴力破解還是異常認證失敗，都不會有任何發現。偵測手段必須針對 session integrity——例如來自陌生地址的 administrator 登入、無法解釋的配置改動、與簽發記錄不符的 token 素材——而不僅僅是登入異常。</p>
+<h4>實際上誰有風險</h4>
+<p>HFS 的吸引力在於體積小巧、易於攜帶及快速部署。這也正是這次漏洞令人不安的原因：同樣的特質使這些 instance 分佈在家用實驗室（home lab）、小型辦公室、開發人員電腦及分支機構環境，那裏的 patching cycle 以年而非星期計算，而且從沒有人將此應用程式納入正式的資產盤點。</p>
+<p>因此，這裏最具槓桿效應的行動是先做盤點（inventory）。任何只涵蓋「面向生產環境的企業系統」的發現流程，都會遺漏最可能暴露的 instance——而那正是攻擊者最先找到的目標，因為掃描洩漏或配置錯誤的 HFS instance 並不需要什麼高深技術。</p>
+<p>漏洞已公開披露，加上已有確鑿的利用嘗試，這意味著從 advisory 公佈到出現現成攻擊工具的時間窗正縮短至數天之內。應把 patching 視為緊急事務，而非例行工作。</p>
+<h4>防禦者應採取的行動</h4>
+<ul>
+<li><strong>盤點資產</strong>，包括影子 IT 及個人部署。除非有證據顯示並非如此，否則應假設網絡上存在互聯網可達的管理介面。</li>
+<li><strong>減少暴露面。</strong> 管理介面或檔案伺服器介面不應直接暴露於互聯網；應以 VPN、reverse proxy 或 zero-trust 存取層作前置防護。</li>
+<li><strong>先 patch，再輪換（rotate）。</strong> 先升級至已修復的版本，再輪換 session key 及 signing secret。次序至關重要：在 patch 之前輪換，一旦出錯的產生器再次運行，機構便會重新暴露；而在升級之後輪換，則可使舊產生器產生的所有 key 素材失效，利用該素材偽造的 token 亦隨之失效。</li>
+<li><strong>追查入侵遺留的 artifacts</strong>：異常的 admin session、非預期的配置寫入、陌生的監聽服務（listening services）或排程任務（scheduled tasks）。</li>
+<li><strong>監察進程異常</strong>，尤其是 HFS 服務或 web server 進程衍生的非預期子進程——這是初始立足點已被轉化為代碼執行的常見跡象。</li>
+</ul>
+<p>一點重要的澄清：這並非暴力破解或憑證猜測的問題，加強密碼政策無法解決。這是一次 cryptographic 設計上的失誤，單靠監察可疑的登入嘗試是無法修補的。</p>
+<h4>更廣泛的教訓</h4>
+<p>可預測的 session key 是應用程式保安中最古老的失效模式之一，而它之所以仍然存在，是因為項目初期作出的 PRNG 選擇鮮有被重新檢視。凡 token 素材由不足的 entropy 產生，解決方法不在於偵測——而在於重新生成。機構應輪換其 secrets，驗證產生器，並確保在網絡邊緣靜靜運行的工具遵循固定的 patching 節奏，而非被擱置於遺留系統清單，從此不再更新。</p>
+<p>The Hacker News 的報導並未列明 Rejetto HFS 具體受影響及已修復的 build 版本；防禦者在機構範圍內部署修復前，應查閱 Rejetto 項目自身的 advisory，以確認哪些版本受影響。</p>
+<p><a href="https://thehackernews.com/2026/10/attackers-target-rejetto-hfs-flaw-that.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
