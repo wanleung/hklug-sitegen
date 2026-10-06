@@ -1,0 +1,66 @@
+Date: 2026-10-06 16:41:00
+Author: HKLUG Team
+Title: RADV Maintenance Push Brings More Reliable Vulkan To AMD Polaris Cards
+Content:
+<p>Timur Kristóf of Valve's Linux graphics team is adding another round of reliability-focused fixes to RADV, this time aimed at AMD's Polaris-era Radeon RX 400 and RX 500 cards — hardware that lacks modern GPU features but remains widely deployed on Linux desktops, labs and small workstations.</p>
+<p>The changes arrive as part of an established pattern rather than a headline feature drop. Reporting from Phoronix, which covered the latest round of RADV improvements for Polaris, describes work centred on driver-side behaviour: eliminating the crashes, glitches and hangs users actually encounter, rather than unlocking capability the hardware never had.</p>
+<p>That framing matters because Polaris is GCN-era silicon. It has no hardware ray tracing, no mesh shaders and no hardware-based variable rate shading. What it does have is a large installed base that still gets real work done — 1080p gaming, media playback, general desktop use, and in some cases second-line scientific and engineering workloads where a graphics card is a cost rather than an investment.</p>
+<h4>Why reliability is the real story</h4>
+<p>For most of this hardware's life, the Linux graphics stack was considered its weak point. Kristóf's work has already addressed the foundation: the migration of GCN 1.0 and GCN 1.1 hardware off the unmaintained legacy <code>radeon</code> kernel driver and onto the modern <code>amdgpu</code> driver. That migration is a prerequisite, giving userspace code a maintained, actively improved base to build on.</p>
+<p>The latest RADV work addresses the layer above it — Vulkan itself. Vulkan drivers are where applications and games actually fail when something goes wrong: a shader pipeline misbehaves, a descriptor set is mishandled, or a driver fallback produces visible corruption instead of a clean error. Such fixes never appear in a benchmark table, but they remove the intermittent failures that erode confidence in an otherwise capable card.</p>
+<p>It is worth stressing that this is incremental maintenance, not a feature announcement. Expectations should be calibrated accordingly: fewer bugs needing workarounds, not higher frame rates.</p>
+<h4>Why a Valve engineer is doing this</h4>
+<p>Valve's Linux graphics team — the group behind SteamOS and the Steam Deck — funds engineers whose work does not stop at Steam. Their contributions flow into Mesa, the open-source graphics stack used by essentially every Linux distribution, and reach every supported GPU generation rather than just Valve's own hardware.</p>
+<p>That is the unusual angle of this story from a community perspective. Valve's commercial interest in stable Linux gaming has, as a byproduct, produced sustained maintenance for hardware the company does not sell. For users outside Valve's ecosystem, that is largely upside.</p>
+<h4>RADV vs AMDVLK vs amdgpu-pro</h4>
+<p>Linux users on AMD hardware have three Vulkan paths, and the distinction matters:</p>
+<ul>
+<li><strong>RADV</strong> — Mesa's open-source Vulkan driver, shipped by default in most distributions' Mesa packages. It receives community and vendor contributions, picks up fixes through ordinary package updates, and supports a wide range of AMD GPU generations.</li>
+<li><strong>AMDVLK</strong> — AMD's own open-source Vulkan driver, distributed separately from Mesa. It does not propagate through distribution repositories the way Mesa does, making it less convenient for general desktop users.</li>
+<li><strong>amdgpu-pro</strong> — AMD's proprietary driver bundle, including its proprietary Vulkan implementation. It is closed-source and distributed outside the normal distribution update path.</li>
+</ul>
+<p>For most Polaris users, RADV is the path they are already on — and the path these fixes will reach.</p>
+<h4>How to get the fix</h4>
+<ol>
+<li><strong>Check your current Mesa version.</strong> On Debian/Ubuntu-based systems, <code>apt list --installed | grep mesa</code>; on Fedora, <code>rpm -qa | grep mesa</code>; on Arch, <code>pacman -Q mesa</code>.</li>
+<li><strong>Update your distribution's Mesa packages.</strong> The RADV changes land through normal Mesa releases, so a standard system update is usually sufficient.</li>
+<li><strong>On rolling releases</strong> (Arch, openSUSE Tumbleweed, Fedora rawhide), the fixes should arrive within days of upstream merging.</li>
+<li><strong>On stable releases</strong>, expect backports on their usual schedule. The changes are maintenance rather than emergency security fixes, so there is no reason to expect expedited propagation.</li>
+<li><strong>Verify the installed driver.</strong> <code>vulkaninfo | grep driverName</code> (from the <code>vulkan-tools</code> package) will confirm which Vulkan ICD is in use. If both RADV and AMDVLK are installed, you may want to remove the unused one to avoid ambiguity.</li>
+<li><strong>Report regressions</strong> through your distribution's bug tracker rather than upstream first — that keeps triage close to the packaging layer.</li>
+</ol>
+<h4>The bigger picture</h4>
+<p>Stories like this rarely trend. A driver stability fix for a discontinued GPU generation is not a product launch. But for the many users still running RX 400 and RX 500 cards on Linux — including in cost-conscious workstation and lab settings where hardware longevity matters more than cutting-edge specification — steady, well-maintained drivers are what keep that hardware viable for years beyond what its spec sheet suggests.</p>
+<p>The pattern here is the point: kernel migration first, userspace fixes second, and the benefit arriving through ordinary package updates rather than a separate download. That is what reliable open-source graphics infrastructure looks like when it is working.</p>
+<hr>
+<p>Valve Linux 圖像團隊的 Timur Kristóf 正為 RADV 推出新一輪以穩定性為重的修正，今次針對的是 AMD Polaris 時代的 Radeon RX 400 及 RX 500 系列顯示卡 — 這些硬件雖然欠缺現今 GPU 的新功能，但仍廣泛部署於 Linux 桌面系統、實驗室及小型工作站之中。</p>
+<p>今次改動並非標榜某項重點新功能，而是延續既有的維護模式。Phoronix 報道了最新的 Polaris RADV 改進，指出工作集中在驅動層的表現：消除使用者實際遇到的崩潰、顯示異常及當機問題，而非解鎖硬件根本不具備的能力。</p>
+<p>這個框架甚為關鍵，因為 Polaris 屬於 GCN 時代的芯片。它沒有硬件光線追蹤、沒有 mesh shaders、亦沒有硬件支援的 variable rate shading。它擁有的是一個仍然在實際運作的龐大安裝基數 — 1080p 遊戲、影片播放、一般桌面應用，以及部分情況下擔任第二線科學及工程運算工作，對此類用戶而言顯示卡屬於成本開支而非投資。</p>
+<h4>為何穩定性才是真正的焦點</h4>
+<p>在這些硬件大部分生命週期內，Linux 圖像堆疊一直被視為其弱點。Kristóf 的工作已處理好根基：將 GCN 1.0 及 GCN 1.1 硬件從不再維護的舊式 <code>radeon</code> 內核驅動遷移至現代的 <code>amdgpu</code> 驅動。這項遷移是先決條件，令 user space 程式碼有一個獲持續維護及積極改進的基礎可供建構。</p>
+<p>最新的 RADV 工作則處理其上的層次 — Vulkan 本身。當問題出現時，應用程式及遊戲實際出錯的地方正是 Vulkan 驅動：shader pipeline 行為異常、descriptor set 處理不當，或驅動的 fallback 機制產生可見的畫面損壞而非乾淨的錯誤訊息。這類修正從來不會出現在基準測試成績表上，但它們消除了那些動搖使用者對一張原本能力不俗的顯示卡信心的間歇性故障。</p>
+<p>必須強調的是，這是漸進式的維護工作，而非功能發佈。讀者宜相應調整預期：是更少需要 workaround 的 bug，而非更高的 frame rate。</p>
+<h4>為何是 Valve 的工程師在做這件事</h4>
+<p>Valve 的 Linux 圖像團隊 — 即 SteamOS 及 Steam Deck 背後的團隊 — 資助的工程師，其工作並不止於 Steam。他們的貢獻流入 Mesa，即幾乎所有 Linux 發行版所使用的開源圖像堆疊，觸及所有受支援的 GPU 世代，而非僅限 Valve 自家硬件。</p>
+<p>從社群角度而言，這是本則新聞較為獨特的一面。Valve 在 Linux 遊戲穩定性上的商業利益，以副產品的形式，為這間公司並不銷售的硬件帶來了持續的維護。對於 Valve 生態系統以外的使用者來說，這基本上純屬利好。</p>
+<h4>RADV vs AMDVLK vs amdgpu-pro</h4>
+<p>使用 AMD 硬件的 Linux 用戶有三條 Vulkan 路徑，而此中區別相當重要：</p>
+<ul>
+<li><strong>RADV</strong> — Mesa 的開源 Vulkan 驅動，大多數發行版的 Mesa 套件均預載。它獲得社群及廠商貢獻，透過一般套件更新取得修正，並支援廣泛的 AMD GPU 世代。</li>
+<li><strong>AMDVLK</strong> — AMD 自家的開源 Vulkan 驅動，與 Mesa 分開發佈。它不像 Mesa 那樣透過發行版軟件倉庫傳播，對一般桌面用戶而言不太方便。</li>
+<li><strong>amdgpu-pro</strong> — AMD 的專屬驅動套件，當中包括其專屬 Vulkan 實作。它是閉源的，且在發行版正常更新管道以外發佈。</li>
+</ul>
+<p>對大多數 Polaris 用戶而言，RADV 正是他們已經在用的路徑 — 亦是這些修正將會抵達的路徑。</p>
+<h4>如何取得修正</h4>
+<ol>
+<li><strong>查看目前的 Mesa 版本。</strong> 在 Debian/Ubuntu 系統執行 <code>apt list --installed | grep mesa</code>；在 Fedora 執行 <code>rpm -qa | grep mesa</code>；在 Arch 執行 <code>pacman -Q mesa</code>。</li>
+<li><strong>更新發行版的 Mesa 套件。</strong> RADV 改動會透過一般 Mesa 發佈落實，因此進行標準系統更新通常已經足夠。</li>
+<li><strong>在滾動更新發行版</strong>（Arch、openSUSE Tumbleweed、Fedora rawhide）上，修正應在上游合併後數日內到達。</li>
+<li><strong>在穩定版發行版</strong>上，預期會按慣常時間表回移（backport）。由於改動屬維護性質而非緊急安全修正，沒有理由預期會加速推送。</li>
+<li><strong>核實已安裝的驅動。</strong> <code>vulkaninfo | grep driverName</code>（來自 <code>vulkan-tools</code> 套件）可確認目前使用的 Vulkan ICD。如果 RADV 及 AMDVLK 均已安裝，你或可考慮移除未使用的一方，以避免混淆。</li>
+<li><strong>回報回歸問題（regression）</strong> 時，應先向發行版的 bug 追蹤系統報告，而非直接向 upstream 提出 — 這樣可將問題分類工作留在軟件打包層附近。</li>
+</ol>
+<h4>從宏觀角度看</h4>
+<p>這類新聞很少會引起熱議。為一個已停產的 GPU 世代修正驅動穩定性，並不是產品發佈。但對於 Linux 上仍有大量用戶繼續使用 RX 400 及 RX 500 顯示卡 — 包括那些注重成本效益、硬件耐用度比尖端規格更為重要的工作站及實驗室環境 — 穩定而維護良好的驅動，正是讓這些硬件在規格表所暗示的年限之外繼續可行的關鍵。</p>
+<p>這個模式正是重點所在：先遷移內核驅動，再作 user space 修正，而好處透過一般套件更新抵達，而非另一次獨立下載。當一切運作正常時，這就是可靠的開源圖像基礎設施應有的模樣。</p>
+<p><a href="https://www.phoronix.com/news/More-Reliable-Vulkan-Polaris" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
