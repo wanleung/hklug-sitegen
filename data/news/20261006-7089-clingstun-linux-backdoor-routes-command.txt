@@ -1,0 +1,42 @@
+Date: 2026-10-06 07:24:00
+Author: HKLUG Team
+Title: ClingSTUN Linux Backdoor Routes Command Traffic Through Public STUN Servers
+Content:
+<p>Researchers at Fortinet's FortiGuard Labs have dissected a Linux backdoor they have named <strong>ClingSTUN</strong>, and the name telegraphs its core trick. Rather than steering infected machines toward an attacker-operated command server, the malware pushes its command-and-control exchanges through public STUN infrastructure — the protocol that keeps voice, video and conferencing traffic flowing across NAT boundaries. The findings were reported by Security Affairs on 5 October 2026.</p>
+<p>Two caveats frame everything that follows, and it is worth stating them before anything else. Fortinet has not attributed ClingSTUN to any named threat group, and no initial-access vulnerability has been published alongside the analysis — there is, as yet, no confirmed infection chain and no CVE to patch. This is a story about how a backdoor hides on the network, not a remediation bulletin.</p>
+<h4>How the technique works</h4>
+<p>STUN (Session Traversal Utilities for NAT) is foundational plumbing on the internet. A device sitting behind a router or firewall uses it to discover its public address so that real-time media can flow — the mechanism that keeps generic WebRTC workloads such as Jitsi, Nextcloud Talk and countless VoIP deployments functioning. Because the protocol is legitimately ubiquitous, it is broadly permitted at the network edge. Fortinet's researchers say ClingSTUN leans on exactly that openness: by routing its command-and-control exchanges through otherwise ordinary STUN traffic, the backdoor produces outbound connections that present as routine NAT traversal rather than malware beaconing.</p>
+<p>That framing carries real consequences for defenders. Countermeasures that have served well against traditional malware — sinkholing known malicious domains, blocking hard-coded command servers, applying destination IP reputation scores — lose most of their leverage when the relay path is made up of legitimate, widely distributed public services. Traffic that looks like a routine NAT handshake is hard to separate from genuine collaboration tooling on destination alone.</p>
+<p>ClingSTUN's preferred victims, according to Fortinet, are internet-exposed Linux devices that have not been patched — routers, cameras, gateways and comparable IoT and edge hardware. It fits a well-worn pattern in the Linux malware landscape, where attackers systematically compromise weakly governed embedded devices through known but unremediated vulnerabilities. The exposure ClingSTUN exploits is, in other words, a patch-management gap rather than a novel protocol flaw.</p>
+<h4>What is not yet known</h4>
+<p>On the disclosure as reported, this is a technical description of tradecraft, not a fixable-flaw advisory. Fortinet has named neither a threat actor nor an initial-access vulnerability, and any account of this malware that presents it as "patch your devices with CVE-XXXX" is overreaching the source material. A fuller Fortinet advisory may yet add detail — an initial-access vector or further specifics of the tunneling mechanism — but nothing published so far identifies a specific CVE or initial-access chain for defenders to act on.</p>
+<h4>What defenders can do</h4>
+<p>STUN itself is not the problem here, and blanket denial would do more harm than good. Denying outbound STUN traffic would break legitimate real-time communications for any organisation running conferencing or VoIP services, an unacceptable trade-off for Linux-heavy environments where STUN support is expected rather than incidental. The defensible response is narrower, and it focuses on the exposure pattern rather than the protocol:</p>
+<ul>
+<li><strong>Inventory the edge.</strong> Unpatched, internet-facing IoT and gateway devices are the primary victims here. Asset discovery that identifies them — and whether anyone is actually tracking their patch state — remains the highest-value control.</li>
+<li><strong>Scope legitimate STUN use.</strong> Know which systems genuinely need STUN. An outbound STUN handshake from a web server, or from a typically idle device with no communications workload, is an anomaly worth a closer look.</li>
+<li><strong>Watch UDP 3478</strong>, the standard STUN port. STUN is not port-restricted, so this is a useful signal rather than a complete one, but repeated UDP 3478 sessions from devices with no communications role merit review.</li>
+<li><strong>Audit persistence mechanisms.</strong> Check cron jobs, systemd units and startup scripts on edge devices for recently added entries; that is where backdoors like this tend to entrench themselves.</li>
+<li><strong>Maintain patching cadences</strong> for exposed Linux and IoT assets — the unglamorous control that most effectively shrinks the attack surface ClingSTUN targets.</li>
+</ul>
+<p>The broader lesson is a familiar one in open-protocol security: protocols engineered for openness get repurposed as private transport, following a trail that now runs through DNS, NTP and TLS tunneling and extends to STUN. For anyone running self-hosted Linux stacks, ClingSTUN is a case study in why egress visibility and edge-device hygiene matter more than any single blocklist.</p>
+<hr>
+<p>Fortinet 的 FortiGuard Labs 研究人員最近剖析了一款命名為 <strong>ClingSTUN</strong> 的 Linux 後門，其名稱正好道出了它的核心伎倆。這款惡意軟件並非將受感染機器引導至攻擊者控制的指令伺服器，而是將其指令與控制（command-and-control）交換流量透過公共 STUN 基礎設施轉送——STUN 正是令語音、影片及視像會議流量得以穿越 NAT 界限暢通無阻的協定。相關研究已由 Security Affairs 於 2026 年 10 月 5 日報道。</p>
+<p>有兩點前提值得在展開討論之前先作說明。Fortinet 並未將 ClingSTUN 歸因於任何具名的威脅組織，分析報告亦未同步披露任何初始入侵漏洞——目前仍未有確認的感染鏈，亦沒有需要修補的 CVE。這是一篇關於後門如何在網絡上藏身的報道，而非一份修補公告。</p>
+<h4>技術運作原理</h4>
+<p>STUN（Session Traversal Utilities for NAT）是互聯網的基礎基建之一。位於路由器或防火牆後的設備會利用它來發掘自己的公開地址，令即時媒體得以流通——這正是讓 Jitsi、Nextcloud Talk 及數不盡的 VoIP 部署等一般 WebRTC 負載得以正常運作的機制。由於該協定在合法用途上無處不在，網絡邊緣通常會廣泛放行其流量。Fortinet 研究人員指 ClingSTUN 正是利用了這種開放性：透過將指令與控制交換改道至本質上正常的 STUN 流量之中，後門令其外向連線呈現為例行的 NAT 穿越程序，而非惡意軟件的 beaconing（定時回連）行為。</p>
+<p>這種情境對防守方有實際的影響。對付傳統惡意軟件一直行之有效的對策——將已知惡意網域名稱 sinkhole、封鎖硬編碼的指令伺服器、套用目的地 IP 信譽評分——一旦中繼路徑由合法且廣泛分佈的公共服務組成，便會失去大部分效力。單憑目的地難以將貌似例行 NAT 握手的流量與真正的協作工具流量區分開來。</p>
+<p>按 Fortinet 所述，ClingSTUN 最偏好的受害者是未經修補且暴露於互聯網的 Linux 設備——路由器、網絡攝影機、閘道以及相近的 IoT 和邊緣硬件。這符合 Linux 惡意軟件領域一個行之已久的模式——攻擊者系統性地利用已知但未修補的漏洞入侵治理薄弱的嵌入式設備。換言之，ClingSTUN 所利用的暴露面是補丁管理上的缺口，而非新穎的協定缺陷。</p>
+<h4>目前仍未明朗的事項</h4>
+<p>就已披露的內容而言，這是一份對手法（tradecraft）的技術描述，而非一份可修補漏洞的通告。Fortinet 既未指名任何威脅行為者，亦未披露任何初始入侵漏洞；任何將這款惡意軟件描述為「用 CVE-XXXX 修補你的設備」的說法，都已超出原始資料的範圍。Fortinet 的完整通告日後或會補充更多細節——例如初始入侵途徑或隧道化機制的進一步資料——但目前為止，尚沒有任何已發布的資料指明可供防守方跟進的具體 CVE 或初始入侵鏈。</p>
+<h4>防守方可以採取的措施</h4>
+<p>STUN 本身並非問題所在，全面封鎖只會弊大於利。拒絕所有外向 STUN 流量，會令任何使用視像會議或 VoIP 服務的機構的合法即時通訊癱瘓；對於以 Linux 為主、預期 STUN 屬內置而非可有可無功能的環境而言，這並非可接受的代價。可行的應對更為聚焦，重點放在暴露模式而非協定本身：</p>
+<ul>
+<li><strong>盤點邊緣設備。</strong> 未經修補且面向互聯網的 IoT 和閘道設備，正是本案的主要受害者。識別這些資產——以及是否真有人在追蹤它們的補丁狀態——的資產盤點，仍然是最具價值的防禦控制措施。</li>
+<li><strong>界定合法的 STUN 用途。</strong> 清楚知道哪些系統確實需要 STUN。來自 Web 伺服器、或來自平時閒置且沒有通訊工作負載的設備的外向 STUN 握手，屬於值得深入調查的異常。</li>
+<li><strong>監察 UDP 3478</strong>，即 STUN 的標準端口。STUN 的流量並不限於該端口，因此這只是一個有用的指標而非完整的偵測手段，但來自沒有通訊職能的設備的重複 UDP 3478 會話則值得跟進調查。</li>
+<li><strong>審核持久化機制。</strong> 檢查邊緣設備上的 cron 任務、systemd units 和開機腳本，留意近期新增的項目——此類後門往往就是在此盤踞。</li>
+<li><strong>維持有規律的修補節奏</strong>，針對暴露的 Linux 和 IoT 資產——這個不起眼的控制措施，正是最有效縮小 ClingSTUN 所針對攻擊面的方法。</li>
+</ul>
+<p>更廣泛的教訓，在開放協定安全領域並非新鮮事：為開放性而設計的協定，往往會被挪用作私人傳輸用途，相關軌跡現已遍歷 DNS、NTP 和 TLS 隧道化，如今更延伸至 STUN。對任何自行架設 Linux 系統的人而言，ClingSTUN 是一個清楚的案例，說明為何出站流量可視性和邊緣設備保安管理，比任何單一封鎖名單都更為重要。</p>
+<p><a href="https://securityaffairs.com/200450/uncategorized/clingstun-linux-backdoor-abuses-public-stun-infrastructure.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
