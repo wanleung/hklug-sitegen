@@ -1,0 +1,52 @@
+Date: 2026-10-06 14:23:00
+Author: HKLUG Team
+Title: OpenSSH 10.6 Released with Post-Quantum Signatures and Faster Release Cadence After AI Report Surge
+Content:
+<p>The OpenSSH project has released version 10.6, a notable update that includes support for hybrid post-quantum signatures, an expanded sftp mkdir feature, and the disabling of the LZ77 dictionary coder in the client and server — and the announcement also reveals that a surge of AI-assisted security bug reports is prompting the project to ship updates more frequently.</p>
+<p>The release, detailed in the <a href="https://www.openssh.org/txt/release-10.6">official announcement on openssh.org</a> and reported by <a href="https://lwn.net/Articles/1098980/">LWN.net</a>, brings several functional changes:</p>
+<ul>
+<li>
+<p><strong>Hybrid post-quantum signatures by default.</strong> OpenSSH 10.6 enables the hybrid <code>ssh-mldsa44-ed25519</code> signature algorithm, pairing a post-quantum ML-DSA-44 scheme with Ed25519 to guard against future quantum attacks while preserving classical security properties.</p>
+</li>
+<li>
+<p><strong>New <code>-p</code> option for <code>sftp</code> directory creation.</strong> The <code>lmkdir</code> and <code>mkdir</code> subcommands in sftp now accept a <code>-p</code> option, mirroring the behaviour of the <code>mkdir -p</code> command by creating parent directories as needed and suppressing errors when the target directory already exists.</p>
+</li>
+<li>
+<p><strong>LZ77 dictionary coder disabled in <code>ssh</code>/<code>sshd</code>.</strong> The client and server have had the LZ77 dictionary compression coder disabled, a change that reduces the effectiveness of the <code>Compression</code> option. Operators relying on compression for bandwidth-sensitive links should review their configurations against the full release notes before upgrading.</p>
+</li>
+<li>
+<p><strong><code>scp -R</code> deprecated.</strong> The <code>-R</code> option in <code>scp</code> is now deprecated on account of security risks. The project is steering users toward alternatives rather than removing the option outright.</p>
+</li>
+</ul>
+<p>Alongside the technical changes, the announcement contains an unusually candid note about the state of the project's bug tracker. The OpenSSH team reports receiving a large volume of security bug reports produced with the help of AI tools. Their response is conditional rather than dismissive: "We very much welcome these reports, especially when combined with human triage, analysis, test-cases and particularly when accompanied by proposed fixes."</p>
+<p>That conditional welcome effectively sets the standard the project expects AI-assisted reports to meet. The value, as the announcement frames it, lies in the verification work — human triage, analysis, test cases, and proposed fixes — that a maintainer would otherwise have to perform alone. In other words, the bottleneck is not discovery of potential flaws but the human effort required to confirm and remediate them.</p>
+<p>The practical consequence for the project is a change in release cadence. Given the steady influx of reports, OpenSSH expects to move to more frequent releases in order to push updates to users faster, rather than holding changes back for batched cycles. When potential vulnerabilities arrive continuously, a scheduled release window is time in which users remain exposed.</p>
+<p>For maintainers of infrastructure that depends on OpenSSH — which, in most environments, means essentially every host offering remote access — a faster release cadence has mixed effects. Shorter intervals between versions mean less exposure to unpatched flaws, but they also raise the workload of testing and deploying updates to production systems. Organisations whose patch management processes were calibrated for infrequent SSH releases will need to assess whether their pipelines can absorb a more frequent change schedule without compromising audit and rollback procedures.</p>
+<p>Operators planning to upgrade to 10.6 should consult the <a href="https://www.openssh.org/txt/release-10.6">full release notes on openssh.org</a> rather than second-hand summaries, particularly given the behavioural changes to compression handling and the deprecation of <code>scp -R</code>.</p>
+<p>The announcement positions OpenSSH as one of the most widely deployed open-source components on the internet, and the team's approach to AI-generated reports is likely to be closely watched by other high-profile projects facing similar inflows. If the pattern holds — AI can compress the discovery stage, but triage, testing, and remediation remain human work — it may become a template for how mature open-source projects respond to the new report ecosystem.</p>
+<p>More information is available in the <a href="https://lwn.net/Articles/1098980/">LWN.net report</a> and the <a href="https://www.openssh.org/txt/release-10.6">official OpenSSH 10.6 release announcement</a>.</p>
+<hr>
+<p>OpenSSH 項目已發佈 10.6 版本，這是一次頗受關注的更新，加入對混合式後量子簽名（hybrid post-quantum signatures）的支援、擴展 sftp 建立目錄的功能，以及停用用戶端與伺服器端的 LZ77 字典壓縮編碼器——同時公告亦透露，大量由 AI 協助產生的安全漏洞報告，正促使項目加快發佈更新的步伐。</p>
+<p>這次發佈的詳情刊載於 <a href="https://www.openssh.org/txt/release-10.6">openssh.org 的正式公告</a>，並由 <a href="https://lwn.net/Articles/1098980/">LWN.net</a> 報道，帶來多項功能改動：</p>
+<ul>
+<li>
+<p><strong>預設啟用混合式後量子簽名。</strong> OpenSSH 10.6 啟用混合式 <code>ssh-mldsa44-ed25519</code> 簽名演算法，將後量子 ML-DSA-44 方案與 Ed25519 結合，在保留傳統安全特性的同時，抵禦將來的量子計算攻擊。</p>
+</li>
+<li>
+<p><strong><code>sftp</code> 建立目錄新增 <code>-p</code> 選項。</strong> sftp 的 <code>lmkdir</code> 與 <code>mkdir</code> 子指令現已接受 <code>-p</code> 選項，仿效 <code>mkdir -p</code> 指令的行為，按需建立上層目錄，並在目標目錄已存在時抑制相關錯誤。</p>
+</li>
+<li>
+<p><strong><code>ssh</code>／<code>sshd</code> 停用 LZ77 字典壓縮編碼器。</strong> 用戶端與伺服器已停用 LZ77 字典壓縮編碼器，此項改動會降低 <code>Compression</code> 選項的效能。依賴壓縮來應對頻寬敏感鏈路的系統管理人員，升級前應根據完整發佈說明檢視自身配置。</p>
+</li>
+<li>
+<p><strong><code>scp -R</code> 標記為棄用。</strong> 由於存在安全風險，<code>scp</code> 的 <code>-R</code> 選項現已標記為棄用。項目引導用戶改用替代方案，而非即時移除該選項。</p>
+</li>
+</ul>
+<p>除了技術改動之外，公告亦包含一段相當坦率的說明，交代項目漏洞追蹤系統（bug tracker）的現狀。OpenSSH 團隊表示，他們收到大量借助 AI 工具產生的安全漏洞報告。團隊的回應是有條件的接納，而非一概拒絕：「我們非常歡迎這些報告，尤其是那些配合人手進行 triage、分析、撰寫測試案例，特別是附有建議修復方案的報告。」</p>
+<p>這種有條件的歡迎，實際上為項目預期 AI 輔助報告須達致的標準訂下基準。正如公告所述，其價值在於驗證工作——即 triage、分析、測試案例及建議修復方案——否則這些工作將由維護人員獨自承擔。換言之，瓶頸並非在於發現潛在漏洞，而在於確認及修復漏洞所需的人手工作。</p>
+<p>對項目而言，實際後果是發佈節奏的改變。鑑於報告持續湧入，OpenSSH 預期會轉向更頻繁的發佈，以盡快把更新交付予用戶，而非把改動押後，等待批量週期再一併推出。當潛在漏洞報告源源不絕時，預設的發佈窗口，其實都是用戶繼續暴露於風險之中的時間。</p>
+<p>對於依賴 OpenSSH 的基建系統維運人員——在大多數環境中，這幾乎涵蓋每一部提供遠端存取的主機——更快的發佈節奏影響有利有弊。版本之間的間隔縮短，意味著未打補丁漏洞的暴露時間減少，但與此同時，測試及向生產系統部署更新的工作量亦會上升。那些補丁管理流程原本按較少發佈的 SSH 版本來調整的機構，需要評估自身的更新 pipeline 能否吸收更頻繁的改動安排，而不會削弱審計及回滾（rollback）程序。</p>
+<p>計劃升級至 10.6 版本的系統管理人員，應參考 <a href="https://www.openssh.org/txt/release-10.6">openssh.org 上的完整發佈說明</a>，而非二手摘要，尤其是有鑑於壓縮處理方面的行為改變，以及 <code>scp -R</code> 被標記為棄用。</p>
+<p>公告將 OpenSSH 定位為互聯網上部署最廣泛的開源組件之一，而團隊處理 AI 生成報告的方式，勢必會受到其他正面對類似報告洪流的知名項目密切注視。若此模式成立——AI 可以縮短發現階段的時間，但 triage、測試及修復仍然是人手的工作——這模式或可成為成熟開源項目應對新型報告生態的參考範本。</p>
+<p>更多資料可參閱 <a href="https://lwn.net/Articles/1098980/">LWN.net 的報道</a> 及 <a href="https://www.openssh.org/txt/release-10.6">OpenSSH 10.6 正式發佈公告</a>。</p>
+<p><a href="https://lwn.net/Articles/1098980/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
