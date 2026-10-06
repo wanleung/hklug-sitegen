@@ -1,0 +1,33 @@
+Date: 2026-10-05 23:32:00
+Author: HKLUG Team
+Title: Attackers Scanning for Rejetto HFS Signing-Key Bug That Opens the Door to RCE
+Content:
+<hr />
+<p>Attackers are actively scanning the internet for exposed instances of Rejetto's HFS (HTTP File Server) software, according to reporting by BleepingComputer published on 5 October, targeting a weak signing key vulnerability tracked as CVE-2026-61500 that chains into session forgery, account takeover and ultimately remote code execution.</p>
+<p>The vulnerability lies in the way HFS signs and validates session material. Rather than requiring attackers to defeat a full authentication scheme, the flaw reduces the problem to deriving a cryptographic key that is — in affected configurations — weak enough to reconstruct. Anyone who can forge valid session tokens can assume the identity of an authenticated user, and from there escalate to executing arbitrary code on the host. Because the signing key weakness sits at the bottom of that chain, a single logical step can carry an attacker from unauthenticated scanning to full server compromise.</p>
+<p>The significance of the latest disclosure is not the flaw itself but the traffic around it. Scanning activity has now been observed in real-world environments, which means defenders are handling an operational signal rather than a theoretical advisory: the flaw is being actively sought out, and the vendor has issued a patch. Security teams should treat the current period as an open window. Scanning is an early-warning indicator that reconnaissance for exposed instances is underway, not confirmation that any given server has been breached. Rejetto has acknowledged the issue and released fixes, so the remediation path exists — the question is whether operators of internet-facing deployments have applied it.</p>
+<p>HFS is a lightweight file-sharing server favoured by administrators who want a quick, self-hosted way to expose documents, backups or drop-boxes to external collaborators. That profile is precisely why the risk is outsized relative to the software's visibility. Such deployments commonly sit on unmanaged infrastructure — a spare VM, a home or office NAS appliance, an ageing Windows box — holding sensitive material that would never meet enterprise control standards. They are also routinely skipped during security audits, because no one owns them in the way they own production systems. For any organisation running self-hosted file servers, including small and mid-sized businesses without dedicated security staff, this is a reminder that the infrastructure holding the most sensitive data is often the infrastructure no one is inventorying.</p>
+<p>Defenders facing the current scanning wave should work through four steps:</p>
+<ol>
+<li><strong>Map the exposure.</strong> Enumerate every HFS instance on the network, including forgotten staging, backup and test deployments, and determine whether any are reachable from the public internet.</li>
+<li><strong>Apply the patch.</strong> Update affected installations to a fixed version, verifying version numbers against Rejetto's own advisory rather than third-party summaries before rollout.</li>
+<li><strong>Remove public exposure.</strong> Where HFS is not genuinely required to be internet-facing, take it off the public path — bind it to internal interfaces, place it behind an authenticated reverse proxy or VPN gateway, and remove stale firewall rules that may have opened it to the world.</li>
+<li><strong>Rotate keys and kill sessions.</strong> Because the flaw permits forged sessions, a password reset alone is insufficient. Administrators should rotate signing keys and any shared credentials, invalidate existing session state, and then review authentication and access logs for signs of unauthorised access or unexpected command execution.</li>
+</ol>
+<p>For self-hosted infrastructure operators, the wider lesson is structural: a file server on an unmanaged host is a full security perimeter, whether or not the team treats it as one. The current scanning activity makes the risk concrete and immediate, but the underlying gap — unmanaged, unpatched, publicly reachable software holding sensitive data — will remain after this particular CVE is closed.</p>
+<p>Operators should note that specific version numbers and patch identifiers were not confirmed in the published reporting and should be checked against Rejetto's official advisory before any remediation rollout is finalised.</p>
+<hr>
+<p>根據 BleepingComputer 於 10 月 5 日的報道，黑客正於互聯網上主動掃描暴露在外的 Rejetto HFS（HTTP File Server）實例，攻擊目標是一項已登記為 CVE-2026-61500 的弱簽署金鑰漏洞。該漏洞可進一步串連至 session 偽造、帳戶被接管，最終導致 remote code execution（RCE，遠端執行代碼）。</p>
+<p>漏洞出現在 HFS 簽署及驗證 session 資料的機制。該缺陷並不要求黑客攻破完整的身份驗證機制，而是將問題簡化為推算出一把在受影響配置下薄弱得足以被推導出來的加密金鑰。任何能偽造有效 session token 的人，都可以冒充已認證用戶的身份，並以此為跳板在主機上執行任意代碼。由於簽署金鑰的弱點處於整條攻擊鏈的最底層，黑客只需一個邏輯步驟，便可由未經身份驗證的掃描直接升級至完全控制伺服器。</p>
+<p>今次披露的重點不在漏洞本身，而在於環繞它的流量。目前已有實際網絡流量顯示掃描活動已在真實環境中被偵測到，這意味著防守人員正在處理的是一個實際運作的訊號，而非一紙理論性的通告：漏洞正被主動搜尋，而供應商亦已發布修補程式。安全團隊應將現階段視為一個敞開的窗口。掃描活動只是針對暴露實例的偵察工作已經展開的早期預警指標，並不代表任何特定伺服器已遭到入侵。Rejetto 已承認問題並發布修復，補救路徑是存在的——問題只在於面向互聯網的部署營運人員是否已經套用更新。</p>
+<p>HFS 是一款輕量級檔案分享伺服器，深受希望以快速、自架方式向外部協作者開放文件、備份或收件箱的管理員歡迎。正是因為這種特性，相對於軟件本身的能見度，其風險被放大。此類部署通常位於缺乏管理的基建之上——一部備用 virtual machine（VM）、家用或辦公室的 NAS 裝置、一部老舊的 Windows 機器——當中存放的敏感資料，往往完全不符合企業級管控標準。它們亦在安全審計中經常被略過，因為沒有人會像管理生產系統那樣為它們負責。對於任何運行自架檔案伺服器的機構——包括那些沒有專職保安人員的中小企業——這是一個提醒：存放最敏感數據的基建，往往正是沒有人在做資產盤點的基建。</p>
+<p>面對當前掃描浪潮的防守人員，應按以下四個步驟處理：</p>
+<ol>
+<li><strong>盤點暴露面。</strong> 列舉網絡上每一個 HFS 實例，包括早已被遺忘的 staging、備份及測試部署，並確定是否有任何實例可從公開互聯網訪問。</li>
+<li><strong>套用補丁。</strong> 將受影響的安裝更新至已修復的版本。在推行更新前，應按 Rejetto 官方公告核對版本號碼，而非依賴第三方摘要。</li>
+<li><strong>移除公開暴露。</strong> 若 HFS 並無真正需要面向互聯網，應將其從公開路徑上移除——綁定至內部網絡介面、置於需要身份驗證的 reverse proxy 或 VPN gateway 之後，並清除可能令其暴露於公眾網絡的過時防火牆規則。</li>
+<li><strong>輪換金鑰並終止 session。</strong> 由於該漏洞容許偽造 session，單靠重設密碼並不夠。管理員應輪換簽署金鑰及所有共享憑證、作廢現有 session 狀態，其後再檢查身份驗證及存取記錄，查看是否有未經授權的存取或異常指令執行的跡象。</li>
+</ol>
+<p>對於自架基建的營運人員而言，更廣義的教訓屬於結構層面：運行於無人管理主機上的檔案伺服器，本身已經是一道完整的 security perimeter，不管團隊是否如此看待它。目前的掃描活動將風險化為具體而迫在眉睫的威脅，但底層的缺口——缺乏管理、未打補丁、公開可達的軟件存放着敏感數據——即使在這個特定 CVE 解決之後仍然存在。</p>
+<p>營運人員應注意，已發表的報道並未確認具體版本號碼及補丁識別碼，在最終確定任何補救措施前，應先向 Rejetto 官方公告核實。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/rejetto-hfs-servers-now-actively-scanned-for-critical-rce-flaw/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
