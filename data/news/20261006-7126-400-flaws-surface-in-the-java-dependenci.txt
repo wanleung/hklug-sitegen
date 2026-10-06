@@ -1,0 +1,38 @@
+Date: 2026-10-06 14:25:00
+Author: HKLUG Team
+Title: 400+ Flaws Surface in the Java Dependencies Enterprise Applications Sit On
+Content:
+<h3>400+ Flaws Surface in the Java Dependencies Enterprise Applications Sit On</h3>
+<p>IBM and Red Hat have disclosed more than 400 previously unknown vulnerabilities across popular Java libraries, according to a report published by Phoronix. On the evidence available in the material we reviewed, no component-by-component list of affected libraries has been released yet — which makes this disclosure an audit trigger for enterprises running Java workloads, not a patch advisory to action item by item.</p>
+<p>What makes the number striking is not its size in isolation. It is what the number implies about the state of the code underneath a great deal of enterprise software: a very large body of widely used Java libraries, maintained by comparatively few people, that had never previously received a structured, resourced security review. The flaws span multiple vulnerability classes. Their cumulative effect is that, for any organisation building on common Java libraries, some non-trivial fraction of its runtime environment has, until now, contained defects nobody knew about.</p>
+<p>The practical question is not the CVE count. It is scope: which components in your own estate come from the affected libraries, and where? That question is notoriously hard to answer. Java build systems pull dependencies transitively — one library may drag in dozens of others, several levels deep, each with its own version history and patch cadence. Teams that can name their top-level frameworks but cannot enumerate their full transitive closure are, in practice, managing blind.</p>
+<h4>A dependency-audit checklist</h4>
+<ol>
+<li><strong>Inventory what you actually run.</strong> Not the frameworks you believe you use, but the artefacts deployed in each environment. If answering "which JARs are in production?" requires a developer, you do not have an inventory.</li>
+<li><strong>Generate an SBOM for each application.</strong> CycloneDX- or SPDX-producing plugins for Maven and Gradle, or OWASP Dependency-Check, produce component lists without manual effort. An SBOM is not a compliance artefact; it is a prerequisite for meaningful vulnerability matching.</li>
+<li><strong>Match components against published advisories.</strong> Map library and version data in your SBOM against NVD entries, vendor advisories, and the Red Hat and IBM security bulletins associated with this disclosure.</li>
+<li><strong>Prioritise by exploitability, not CVSS alone.</strong> A flaw in a library reachable from an external-facing service carries different operational weight from an identical score buried in an internal batch job — and transitive upgrades frequently change behaviour downstream, so remediation extends well past patch time into regression testing.</li>
+</ol>
+<h4>The harder question: who pays for this work?</h4>
+<p>One dimension of this disclosure the announcement does not address is the question of how it happened. Our reading of the material is that more than 400 previously unknown vulnerabilities across widely used Java code did not surface because the libraries' authors decided to audit them — they surfaced because a corporate research operation with the resources to do so spent the time and money.</p>
+<p>That is a fragile model. The vast majority of open-source libraries at the centre of enterprise estates have no dedicated security budget, no funded maintainers, and no route to pay for the systematic review this disclosure represents. The recent history of widely exploited open-source flaws — Log4Shell and the OpenSSL vulnerabilities among the most prominent — has produced repeated warnings about exactly this gap and repeated calls to fund maintainers directly. Progress has been real but partial.</p>
+<p>For enterprises depending on this code, the funding question is not academic. As long as deep library audits happen sporadically and at the discretion of organisations with their own commercial reasons, the vulnerabilities that get found will be the ones that get paid for. The practical response is defensive: maintain an SBOM, match it against advisories, and treat transitive dependencies as production assets rather than build-system footnotes. The structural response — sustained, transparent funding for open-source security research — remains, largely, unanswered.</p>
+<p>Until a fuller vendor advisory names the affected components, this disclosure should be treated as a reason to audit, not as a checklist of patches to apply.</p>
+<hr>
+<h3>企業應用程式所依賴的 Java 函式庫中浮現 400 多項漏洞</h3>
+<p>據 Phoronix 報道，IBM 和 Red Hat 已披露 400 多項先前未為人知的漏洞，涉及多款廣泛使用的 Java 函式庫。就我們審閱材料所掌握的證據而言，至今尚未公布受影響函式庫的逐項清單——這意味著，對運行 Java 工作負載的企業而言，本次披露應視為觸發審計的契機，而非可逐項處理的修補建議（advisory）。</p>
+<p>令外界關注的並非數字本身，而是這個數字所反映的現狀：大量用於支撐眾多企業軟件的程式碼背後，是一批極為龐大、使用廣泛的 Java 函式庫，由相對少數人維護，且從未接受過有組織、有資源投入的結構化安全審查。相關漏洞涵蓋多個類別。其累積效應是：任何建立在通用 Java 函式庫之上的機構，其運行環境中一直存在一部分並非無足輕重、卻沒有人知情的缺陷。</p>
+<p>實際問題並不在於 CVE 的數量，而在於範圍：你自身系統中有哪些元件、位於何處，是來自受影響的函式庫？這個問題向來難以回答。Java 的 build system 會透過傳遞依賴（transitive dependencies）引入相關函式——一個函式庫可能連帶引入數十個其他函式庫，層層深入，各自擁有不同的版本歷史與修補節奏。能夠說出頂層框架名稱、卻無法完整列出全部傳遞依賴閉包（transitive closure）的團隊，實際上等同蒙著眼睛進行管理。</p>
+<h4>依賴審計清單</h4>
+<ol>
+<li><strong>盤點實際運行的內容。</strong> 不是你認為自己使用的框架，而是各個環境中實際部署的產物。如果回答「生產環境中有哪些 JAR 檔案？」需要動用開發人員，那就表示你根本沒有清單。</li>
+<li><strong>為每個應用程式生成 SBOM。</strong> Maven 和 Gradle 均有可輸出 CycloneDX 或 SPDX 格式的插件，加上 OWASP Dependency-Check，均能免卻手動工作而生成元件清單。SBOM 並非合規用的文件，而是進行有意義的漏洞比對（vulnerability matching）的先決條件。</li>
+<li><strong>將元件與已公布的公告進行比對。</strong> 將 SBOM 中的函式庫與版本資料，對照 NVD 條目、供應商公告，以及與此次披露相關的 Red Hat 和 IBM 安全公告。</li>
+<li><strong>按可利用性（exploitability）而非僅憑 CVSS 分數排序。</strong> 一個可從對外服務觸及的函式庫中的漏洞，與一個同樣分數但隱藏在內部批次作業中的漏洞，在營運層面的影響截然不同——而且傳遞性升級往往會改變下游行為，因此修復工作遠不止於打補丁，還須延伸至回歸測試。</li>
+</ol>
+<h4>更棘手的問題：誰為這項工作買單？</h4>
+<p>公告本身未觸及本次披露的一個面向，就是這些漏洞究竟如何出現。我們的解讀是：這 400 多項廣泛存在於流行 Java 程式碼中的未知漏洞之所以浮現，並不是因為函式庫的作者決定進行審計——而是因為一間擁有相應資源的企業研究機構，投入了時間和金錢。</p>
+<p>這種模式十分脆弱。企業系統核心中絕大多數開源函式庫，既沒有專門的安全預算，也沒有受資助的維護者，更沒有途徑為此類系統化審查——即本次披露所代表的——提供經費。近期頻繁被利用的開源漏洞歷史，當中以 Log4Shell 和 OpenSSL 漏洞最為人所熟知——一再引發關於這一缺口的警告，以及直接資助維護者的呼聲。進展確實存在，但仍然有限。</p>
+<p>對依賴這些程式碼的企業而言，經費問題絕非紙上談兵。只要深入的函式庫審計仍然斷斷續續、取決於那些自有商業考量的機構是否願意出資，被發現的漏洞就只會是有人付錢去查的那些。實際的應對方式是防禦性的：維護一份 SBOM，與各項公告進行比對，並把傳遞依賴視為生產資產，而非 build system 中無關緊要的註腳。至於結構性應對——對開源安全研究提供持續、透明的資助——依然大體上懸而未決。</p>
+<p>在更完整的供應商公告點名受影響元件之前，本次披露應被視為審計的動機，而非一份待逐一套用的修補清單。</p>
+<p><a href="https://www.phoronix.com/news/IBM-Red-Hat-Java-400-Vulns" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
