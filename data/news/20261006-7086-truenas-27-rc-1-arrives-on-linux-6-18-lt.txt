@@ -1,0 +1,39 @@
+Date: 2026-10-06 07:31:00
+Author: HKLUG Team
+Title: TrueNAS 27 RC.1 Arrives on Linux 6.18 LTS and OpenZFS 2.4 — Test It in the Lab, Wait for GA in Production
+Content:
+<p>```</p>
+<p><em>Editor's note: This article is based on Phoronix's release summary for TrueNAS 27 RC.1, which reports the version numbers and upgrade path described below. Hardware compatibility details have not yet been published.</em></p>
+<p>iXsystems has shipped TrueNAS 27 RC.1, the first release candidate for the next major version of its Linux-based network-attached storage operating system. According to Phoronix's reporting on 6 October, the milestone moves the platform's base to what the outlet describes as Linux 6.18 LTS, and its storage stack to OpenZFS 2.4 — two shifts that will shape planning for anyone running the platform through the next upgrade cycle.</p>
+<p>For administrators in Hong Kong maintaining file servers, backup nodes, and homelab clusters — many of which sit on ageing hardware or older TrueNAS builds — RC.1 is a signal to start planning, not a signal to deploy. The release candidate means the project's upgrade path for its next major version is now concrete enough to test, but too early to trust in production. Readers weighing upgrades should watch the project's official channels for a confirmed GA date rather than assume one.</p>
+<p><em>(The framing above is editorial context for our local audience — nothing in the release itself targets any particular market.)</em></p>
+<h4>What RC.1 Actually Confirms</h4>
+<p>The headline components are the most reliable parts of the release summary. TrueNAS 27 is built on what Phoronix characterises as a long-term support kernel line, Linux 6.18 LTS, and moves to OpenZFS 2.4, the project's own ZFS variant that iXsystems has been steadily adopting across its releases.</p>
+<p>What the release summary does not yet provide is equally important. It does not itemise the specific features of either the new kernel line or the OpenZFS 2.4 release, and it does not specify which hardware configurations gain or lose support under the new stack.</p>
+<p>That gap matters. Kernel and ZFS version changes are the two upgrade stages most likely to surface hardware quirks: driver regressions, controller firmware interactions, memory management behaviour, and pool import compatibility. Until the project publishes detailed release notes or a tested-hardware matrix, any specific claim about what the upgrade will and will not break is speculation. The prudent working assumption is that the compatibility floor is a question for the release notes, not the release summary.</p>
+<h4>A Timing Decision Guide for Upgrades</h4>
+<p>The practical advice for NAS administrators splits cleanly into two tiers.</p>
+<p><strong>Production systems: wait for GA.</strong> RC.1 is for testing, not for business-critical storage. If your current TrueNAS installation is stable and patched, there is no operational reason to install a release candidate on it now. Hold on the current stable release until the general availability build ships and its upgrade path has been exercised by early adopters. That is especially true where local storage serves as the recovery layer — a platform regression in a backup or archive system is far more costly than the delay of an upgrade that did not need to happen yet.</p>
+<p><strong>Labs and non-critical nodes: start testing.</strong> RC.1 exists so that compatibility problems surface early. If you have a decommissioned server, a spare array, or a test environment that can absorb a reinstallation, this is the moment to validate your workflow against TrueNAS 27. Pay particular attention to anything that touches the storage layer directly: pool import, scrub scheduling, snapshot replication, and integration with your backup tooling. Those are the areas most exposed when the kernel and ZFS both move at once.</p>
+<h4>Where This Fits Locally</h4>
+<p><em>The following is editorial context for our Hong Kong readership, drawn from the shape of local TrueNAS deployments rather than from the release summary itself.</em></p>
+<p>The story has broad relevance to Hong Kong IT teams and home users running TrueNAS-based storage. Many local environments run small TrueNAS deployments on older hardware, with conservative upgrade cycles — sensible behaviour for a platform that holds the last line of defence for business data. Those administrators will find the guidance above immediately applicable, even though the release itself is a global one.</p>
+<p>The honest read of RC.1 is that the project is moving onto a solid base — what Phoronix describes as a long-term support kernel and a newer OpenZFS line — while the details that determine upgrade risk have yet to be published. Plan now, test in the lab, and wait for general availability before touching anything that production data depends on. iXsystems has not confirmed a GA date; treat any unofficial timeline as speculation until the project announces otherwise.</p>
+<hr>
+<p><em>編按：本文以 Phoronix 就 TrueNAS 27 RC.1 的發佈摘要為依據，該摘要報道了以下所述的版本號及升級路徑。Hardware compatibility 細節尚未公布。</em></p>
+<p>iXsystems 已推出 TrueNAS 27 RC.1，這是其基於 Linux 的 network-attached storage 作業系統下一個主要版本的首個 release candidate。根據 Phoronix 於 10 月 6 日的報道，這項里程碑將平台底層轉為該媒體所描述的 Linux 6.18 LTS，storage stack 則轉用 OpenZFS 2.4 —— 這兩項轉變將影響任何在此平台部署者的下一個升級週期規劃。</p>
+<p>對於香港負責維護 file server、backup node 及 homelab cluster 的管理員而言 —— 其中不少仍運行在舊硬件或較早期的 TrueNAS build 上 —— RC.1 是開始規劃的訊號，而不是立即部署的訊號。Release candidate 意味著專案下一主要版本的升級路徑已具體到足以測試，但距離可在 production 環境中信賴仍言之尚早。考慮升級的讀者應留意專案官方渠道的 GA 日期，而非自行假設時間表。</p>
+<p><em>（以上定位屬為本地讀者提供的編輯背景 —— 本次發佈本身並未針對任何特定市場。）</em></p>
+<h4>RC.1 實際確認了什麼</h4>
+<p>發佈摘要中的核心組件是最可靠的部分。TrueNAS 27 建基於 Phoronix 所描述的長期支援 kernel 系列 Linux 6.18 LTS，並轉用 OpenZFS 2.4，即 iXsystems 在各個發佈版本中持續採用的自家 ZFS 變體。</p>
+<p>發佈摘要尚未交代之處，同樣重要。摘要並未逐項列出新 kernel 系列或 OpenZFS 2.4 發佈的具體功能，亦沒有指明哪些硬件配置在新 stack 下會獲得或失去支援。</p>
+<p>這個缺口值得注意。Kernel 及 ZFS 版本的變動，是最容易暴露硬件古怪問題的兩個升級階段：driver regression、controller 與 firmware 的交互作用、memory management 行為，以及 pool import 的相容性。在專案公布詳細 release notes 或經測試的 hardware matrix 之前，任何聲稱升級會或不會破壞什麼的具體說法都只是推測。審慎的預設假設是：相容性的最低限度問題應交由 release notes 回答，而非發佈摘要。</p>
+<h4>升級時機判斷指南</h4>
+<p>實務建議可清晰劃分為兩個層級。</p>
+<p><strong>Production 系統：等待 GA。</strong> RC.1 是用來測試的，不是供 business-critical storage 使用。如果你現有的 TrueNAS 安裝穩定且已適時修補，目前並無任何運作上的理由在其上安裝 release candidate。應維持在目前的 stable release，直至 GA build 推出並經早期採用者實際走完其升級路徑。若本地 storage 承擔 recovery layer 的角色，情況更是如此 —— backup 或 archive 系統出現 platform regression 的代價，遠比一次尚無需要的升級所造成的延誤更為高昂。</p>
+<p><strong>Lab 及非關鍵節點：開始測試。</strong> RC.1 的存在，就是為了讓相容性問題及早浮現。如果你有一台已退役的 server、一個多餘的 storage array，或一個可以承受重新安裝的測試環境，現在正是時候以 TrueNAS 27 驗證你的 workflow。請特別留意任何直接觸及 storage 層的項目：pool import、scrub scheduling、snapshot replication，以及與你的 backup 工具的整合。當 kernel 與 ZFS 同時轉換時，這些正是最受影響的範疇。</p>
+<h4>對本地環境的意義</h4>
+<p><em>以下為針對香港讀者提供的編輯背景，取材自本地 TrueNAS 部署的實際形態，並非出自發佈摘要本身。</em></p>
+<p>這則消息對香港運行 TrueNAS 儲存方案的 IT 團隊及家庭用戶均具參考價值。不少本地環境在舊硬件上運行小型 TrueNAS 部署，並採用保守的升級週期 —— 對於一個為企業數據守護最後防線的平台而言，這是合理的做法。這些管理員會發現上述指引立即適用，即使此次發佈本身屬全球性。</p>
+<p>對 RC.1 的客觀解讀是：專案正在轉移到一個穩固的基礎之上 —— Phoronix 所描述的長期支援 kernel 與較新的 OpenZFS —— 而決定升級風險的細節仍有待公布。現在開始規劃，在 lab 中進行測試，並在 general availability 推出之前，不要觸動任何 production 數據所依賴的系統。iXsystems 仍未確認 GA 日期；在專案另行公布之前，任何非官方時間表都應視為推測。</p>
+<p><a href="https://www.phoronix.com/news/TrueNAS-27-RC.1-Release" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
