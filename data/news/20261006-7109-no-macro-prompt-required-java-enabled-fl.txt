@@ -1,0 +1,36 @@
+Date: 2026-10-06 12:33:00
+Author: HKLUG Team
+Title: No Macro Prompt Required: Java-Enabled Flaws Let Spreadsheets Run Code in LibreOffice and OpenOffice
+Content:
+<p>Security researchers have demonstrated that a malicious spreadsheet can make both LibreOffice and Apache OpenOffice execute attacker-controlled code as soon as the file is opened — with no macro warning prompt of the kind either suite normally displays before running macros. Reporting published by The Hacker News states that the attack works only when the programs' Java support is enabled. The risk analysis and administrator guidance below are informed by that reporting but go beyond it.</p>
+<h4>Patch Status: Unconfirmed</h4>
+<p>The reviewed reporting does not address whether either project has issued a fix or security advisory. Administrators should not assume a fix exists — and should not assume none does either. Check the Document Foundation's release notes and Apache OpenOffice's security pages directly, track the two projects independently, and note that this article will be updated if either vendor confirms an advisory.</p>
+<h4>Why Java Is the Only Knob That Matters</h4>
+<p>The attack fires at file-open time, not through the macro consent flow — which means the standard advice (decline the prompt, question the sender) is aimed at the wrong mechanism entirely. Java support, meanwhile, is an administrator-level configuration common in enterprise and education deployments as a legacy default. End users cannot see it, so no amount of macro-hygiene training can compensate for it. Organisations still running Java-enabled LibreOffice or OpenOffice installations, including older images and reused virtual desktops, should treat their estates as potentially exposed until the setting is verified as disabled or a vendor fix ships.</p>
+<h4>Proof of Concept — And Disclosure Windows Are Short</h4>
+<p>The reporting indicates the flaw has so far only been demonstrated as a proof of concept, with no reports of its use in real-world attacks. Still, disclosure-to-exploitation windows compress into weeks with remarkable regularity, and absence of confirmed attacks is not evidence of safety. The window between proof-of-concept publication and first observed abuse is exactly when security teams are most often caught off guard.</p>
+<h4>What Administrators Should Do Now</h4>
+<p><strong>Verify Java status estate-wide.</strong> On Linux distributions, LibreOffice's Java integration is typically controlled through the package manager and can be confirmed as fully removed. On Windows and macOS, audit the setting directly — Tools → Options → LibreOffice → Advanced — and record the result per machine rather than assuming it. Re-check after any reinstallation or image rebuild, since package defaults frequently re-enable Java.</p>
+<p><strong>Treat untrusted spreadsheets as executable content.</strong> Enforce that upstream: mail gateway filtering for spreadsheet attachments, sandboxed analysis of files from unfamiliar senders, quarantine rules, and a documented policy that routes suspicious files to a controlled environment before they reach a user's desktop.</p>
+<p><strong>Tune detection tooling.</strong> Endpoint detection and response platforms should be baselined for the office suite process tree — <code>soffice.exe</code> and <code>soffice.bin</code>, plus the associated JVM — alerting on child process creation, unusual network egress, or file writes from that lineage.</p>
+<p><strong>Apply general hardening.</strong> Run the suites without elevated privileges, restrict egress where possible, and use application allowlisting to block unexpected Java execution paths on endpoints where Java is not a business requirement.</p>
+<p><strong>Track the advisories.</strong> Prioritise patch rollout for Java-enabled endpoints the moment either project confirms a fix, tracking LibreOffice and Apache OpenOffice separately since the two projects issue advisories independently.</p>
+<h4>Open Questions at Time of Publication</h4>
+<p>The reviewed reporting does not identify a CVE, researcher attribution, a coordinated disclosure timeline, or a complete list of document formats that can carry the trigger — only "a spreadsheet file." Administrators should treat each as unresolved and re-check vendor advisories directly. The episode also stands as a reminder that document formats are an attack surface of long standing, and that a security warning is only as strong as the consent mechanism behind it.</p>
+<hr>
+<p>網絡保安研究人員已展示，一份惡意試算表可令 LibreOffice 及 Apache OpenOffice 在檔案一經開啟便執行攻擊者控制的代碼 — 且不會出現兩款辦公室軟件在執行宏前通常會顯示的那種宏警告提示。由 The Hacker News 發佈的報導指出，該攻擊只有在兩個程式的 Java 支援已啟用時才會生效。以下的風險分析及管理員指引均參考該報導撰寫，但內容已超出報導本身範圍。</p>
+<h4>修補狀態：未經確認</h4>
+<p>已審閱的報導並未提及兩個項目是否已發布修補程式或安全通告。管理員既不應假設已有修補程式推出，也不應假設修補程式尚未存在。應直接查閱 The Document Foundation 的發佈說明及 Apache OpenOffice 的安全頁面，各自獨立跟進，並留意本文如有任何一個開發商確認通告，將會作出更新。</p>
+<h4>為何 Java 是唯一關鍵開關</h4>
+<p>該攻擊在檔案開啟時觸發，而非透過宏同意流程 — 這意味著坊間的標準建議（拒絕提示、質疑寄件者）完全瞄準了錯誤的機制。另一方面，Java 支援屬管理員層級的設定，在企業及教育機構的部署中，常因沿用舊有預設值而啟用。終端使用者無法看見此設定，因此無論多少宏指令防護培訓都無法彌補。仍運行已啟用 Java 的 LibreOffice 或 OpenOffice 安裝的機構 — 包括舊映像檔及重用的虛擬桌面 — 應視其系統為可能受影響，直至設定經核實已停用或開發商修補程式正式發布為止。</p>
+<h4>概念驗證 — 披露至利用的窗口極短</h4>
+<p>據報導，該漏洞至今僅以概念驗證形式展示，未有資料顯示其曾被用於實際攻擊。不過，披露至利用的窗口往往在數週內便會發生，規律得驚人，而未確認的攻擊紀錄並非安全的證據。從概念驗證公開到首次觀察到實際濫用之間的窗口，正是安全團隊最常被殺個措手不及的時刻。</p>
+<h4>管理員現時應採取的行動</h4>
+<p><strong>全面核實 Java 狀態。</strong> 在 Linux 發行版上，LibreOffice 的 Java 整合通常由套件管理器控制，可確認是否已完全移除。在 Windows 及 macOS 上，應直接審計此設定 — 工具 → 選項 → LibreOffice → 進階 — 並逐台機器記錄結果，切勿臆斷。任何重新安裝或映像檔重建後應再次複核，因套件預設值往往會重新啟用 Java。</p>
+<p><strong>將不受信任的試算表視為可執行內容。</strong> 應在上游實施管控：郵件閘道對試算表附件的過濾、對來自陌生寄件者的檔案進行沙盒分析、隔離規則，以及制定書面政策，規定可疑檔案在到達使用者桌面前須先送往受控環境處理。</p>
+<p><strong>調校偵測工具。</strong> 端點偵測及回應（EDR）平台應以辦公室軟件的處理程序樹 — <code>soffice.exe</code> 及 <code>soffice.bin</code>，加上相關的 JVM — 作為基線，對該處理程序樹中出現的子處理程序建立、異常網絡外傳或檔案寫入作出警報。</p>
+<p><strong>套用一般強化措施。</strong> 以非提升權限的模式運行辦公室軟件，盡可能限制外傳，並在 Java 並非業務需求的端點上使用應用程式白名單，阻擋意外的 Java 執行路徑。</p>
+<p><strong>跟蹤安全通告。</strong> 一旦任一項目確認修補方案，應即時優先安排已啟用 Java 端點的修補部署，並分開跟蹤 LibreOffice 及 Apache OpenOffice，因為兩個項目各自獨立發布通告。</p>
+<h4>發佈時仍未解決的問題</h4>
+<p>已審閱的報導並未指出 CVE、研究人員身份、協調披露時間表，或可承載該觸發載荷的完整文件格式清單 — 僅提及「一個試算表檔案」。管理員應將每一項視為未解決事項，並直接複核開發商的通告。今次事件亦提醒我們，文件格式一直以來都是重要的攻擊面，而安全警告的效力，取決於其背後的同意機制有多可靠。</p>
+<p><a href="https://thehackernews.com/2026/10/libreoffice-and-openoffice-flaws-let.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
