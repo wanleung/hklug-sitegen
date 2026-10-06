@@ -1,0 +1,38 @@
+Date: 2026-10-06 19:24:00
+Author: HKLUG Team
+Title: AMD 1%-Low Frame Rates Could Rise Up to 31% — Once These Kernel Patches Land
+Content:
+<p>Linux gaming performance on AMD systems could see meaningful improvement — but not yet for end users. Kernel patches that could lift 1%-low frame rates in tested gaming workloads, including Steam Deck scenarios, by as much as 31% remain under upstream review, following a presentation on the work at the Linux Plumbers Conference in Prague.</p>
+<p>The patches were developed by Linux kernel engineer David Vernet, and first surfaced publicly in July when Phoronix reported early results from the series. Vernet's Plumbers talk kept the discussion firmly on the upstream track rather than any vendor-specific delivery plan.</p>
+<h4>Why "busy time" matters more than the percentage</h4>
+<p>The technical premise behind the patches is straightforward and arguably more important than the headline number. When the kernel schedules CPU frequency scaling, it relies on "busy time" — the fraction of time a CPU core spends doing work — as a primary input for deciding how fast to run. That metric is a coarse average: a core can show moderate overall utilisation while still suffering short, sharp bursts of latency that users perceive as stutter or frame-time spikes, particularly in gaming.</p>
+<p>The proposed change refines how recently busy activity is measured and weighted, so that brief high-intensity intervals exert more influence on frequency decisions. In effect, the scheduler becomes more responsive to the kinds of short bursts that matter for frame delivery, rather than smoothing them away in an average.</p>
+<h4>The 31% figure, in context</h4>
+<p>According to Phoronix's July coverage, the series produced up to a 31% improvement in 1%-low frame rates — the frame-rate floor that most strongly correlates with perceived smoothness — across the gaming workloads Vernet tested, which included Steam Deck runs. That figure should be treated as a best-case result from the patches' own test runs, not as a promise for any particular distribution or hardware configuration. Actual gains will vary with workload, silicon, thermal headroom, and how the final merged code compares with the proposed version.</p>
+<p>What gives the work broad relevance is not the Steam Deck specifically, but the installed base it represents. The AMD P-State driver has become the default CPU frequency-scaling path on modern AMD Linux systems, including many laptops and power-efficient desktops. Handhelds such as the Steam Deck sit at the thermally sensitive end of that spectrum, where every dropped frame — or every milliwatt of unnecessary heat driving one — is felt most acutely. A cleaner upstream fix — one that improves the driver's core logic rather than papering over symptoms with a vendor workaround — benefits maintainers and users alike, and avoids fragmenting behaviour across distributions.</p>
+<h4>Checking your own <code>amd_pstate</code> setup</h4>
+<p>For AMD Linux users curious about where they stand, confirming the active scaling driver is straightforward:</p>
+<pre><code class="language-bash">cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_driver
+</code></pre>
+<p>If the output reads <code>amd-pstate</code>, your system is already on the newer driver path these patches target. Older systems may show <code>acpi-cpufreq</code> or similar legacy drivers; on those platforms, the changes will only apply once the firmware or kernel settings enable <code>amd-pstate</code> (in its active or passive operating mode) as the scaling driver. As always with out-of-tree kernel work, testing on a secondary device or VM before touching production systems is prudent — and since the series is not merged into mainline, no distribution will ship these gains until they are accepted and released through the normal kernel release cycle.</p>
+<h4>A wait, not a feature announcement</h4>
+<p>The headline risk for this story is overpromising. Until the patches clear review — and review of kernel scheduler-touching code can be slow, contentious, and subject to substantial revision — there is no shipping feature to anticipate. What exists is a well-reasoned upstream proposal, a public technical discussion at one of the community's key conferences, and early evidence that addressing frequency-scaling granularity can pay off measurably.</p>
+<p>The practical takeaway for anyone running AMD hardware in latency-sensitive or thermally constrained environments — from gaming rigs to edge deployments — is to watch the kernel changelogs rather than any particular vendor roadmap. If this series lands, the improvement arrives for free with the next kernel release, with no vendor lock-in and no distribution-specific patch to track. Upstream hygiene is what makes that possible, and it is the only delivery timeline anyone should plan around today.</p>
+<hr>
+<p>AMD 系統上的 Linux 遊戲效能有望獲得顯著改善 —— 但一般用戶暫時仍未受惠。相關 kernel patch 在 Vernet 測試的遊戲工作負載中（包括 Steam Deck 場景），可將 1%-low frame rate 提升最多達 31%，惟目前仍在等待 upstream 審核。相關研究成果已在布拉格舉行的 Linux Plumbers Conference 上發表。</p>
+<p>這批 patch 由 Linux kernel 工程師 David Vernet 開發，今年七月經 Phoronix 報導其系列工作的初步結果後首次公開。Vernet 在 Plumbers 大會上的演講，討論內容嚴格集中在 upstream 路線，未涉及任何廠商專屬的交付計劃。</p>
+<h4>為什麼「busy time」比百分比數字更重要</h4>
+<p>這批 patch 背後的技術原理其實相當直接，而且理應比標題數字更為重要。當 kernel 要安排 CPU 頻率調度（CPU frequency scaling）時，會依賴「busy time」—— 即一個 CPU core 處於工作狀態的時間比例 —— 作為決定運行速度的主要輸入。然而，這項指標只是一個粗略的平均值：一個 core 整體利用率可能只屬中等水平，卻仍然會出現短促而劇烈的延遲尖峰，用戶感知為畫面卡頓或 frame time 突增，尤其在遊戲中尤為明顯。</p>
+<p>建議中的改動會重新精細化近期 busy 活動的量度方式及加權方法，令短暫的高強度時段對頻率決定產生更大影響。實際效果是 scheduler 對於那些真正影響幀畫面輸出的短促高峰，反應會更加敏捷，而不是把它們在平均值中抹平。</p>
+<h4>31% 數字的背景</h4>
+<p>根據 Phoronix 七月的報導，這系列 patch 在 Vernet 測試的遊戲工作負載中（包括 Steam Deck 的測試），令 1%-low frame rate —— 即與主觀流暢度關聯最強的幀率下限 —— 提升了最多達 31%。這個數字應被視為 patch 測試中取得的最佳情況結果，而非對任何特定發行版或硬件配置的承諾。實際增幅會視乎工作負載、晶片體質、散熱裕量，以及最終合併的程式碼與建議版本的差異而有所不同。</p>
+<p>令這項工作具備廣泛參考價值的，並非 Steam Deck 本身，而是它所代表的裝機基數。AMD P-State driver 已成為現今 AMD Linux 系統上的預設 CPU 頻率調度路徑，涵蓋大量手提電腦及節能桌上型電腦。Steam Deck 等掌上裝置處於該光譜中對溫度最敏感的一端，每一次丟幀 —— 或驅致丟幀的每一毫瓦多餘熱量 —— 都感受得最為明顯。一個更乾淨的 upstream 修復 —— 即改進 driver 的核心邏輯，而非以廠商 workaround 掩蓋症狀 —— 對維護者和用戶同樣有益，亦可避免不同發行版之間行為分裂。</p>
+<h4>檢查你的 <code>amd_pstate</code> 設定</h4>
+<p>AMD Linux 用戶如想了解自己系統的狀況，確認目前啟用的 scaling driver 相當簡單：</p>
+<pre><code class="language-bash">cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_driver
+</code></pre>
+<p>如果輸出顯示 <code>amd-pstate</code>，表示你的系統已採用這批 patch 所針對的較新 driver 路徑。較舊的系統可能顯示 <code>acpi-cpufreq</code> 或類似的傳統 driver；在這些平台上，相關改動要等到 firmware 或 kernel 設定將 <code>amd-pstate</code>（以 active 或 passive 操作模式）啟用為 scaling driver 後才會生效。與所有樹外（out-of-tree）kernel 工作一樣，接觸生產系統前先在第二台設備或 VM 上測試是明智之舉 —— 而且由於這系列 patch 尚未合併至 mainline，任何發行版都不會在 patch 通過審核並經正常 kernel 發布週期推出前，提供這些效能提升。</p>
+<h4>這是等待，而非功能公佈</h4>
+<p>這則新聞的最大風險在於過度承諾。在 patch 通過審核前 —— 而涉及 scheduler 的 kernel 代碼審核往往既緩慢又充滿爭議，且可能需要大幅修改 —— 並不存在任何可預期的已發布功能。現有的，是一份論據充分的 upstream 提案、一場於社群重要技術會議上的公開技術討論，以及初步證據顯示，針對頻率調度粒度（granularity）進行改進，確實可以帶來可量度的成效。</p>
+<p>對於所有在延遲敏感或散熱受限環境下使用 AMD 硬件的用戶 —— 從遊戲主機到邊緣運算部署 —— 實際建議是關注 kernel changelog，而非任何廠商的路線圖。如果這系列 patch 最終落地，效能提升會隨下一個 kernel release 自動送達，無需廠商鎖定，亦無需跟蹤任何發行版專屬 patch。正是 upstream 的規範與品質，令這種情況成為可能，而這亦是目前所有人唯一可以據以規劃的交付時間表。</p>
+<p><a href="https://www.phoronix.com/news/Boost-Recently-Busy-CPUs" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
