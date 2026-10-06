@@ -1,0 +1,44 @@
+Date: 2026-10-06 22:23:00
+Author: HKLUG Team
+Title: Ubuntu 27.04 to Default to ntpd-rs for Time Sync; Package Already Testing in 26.10 (Pending Source Verification)
+Content:
+<blockquote>
+<p><strong>Editor's note:</strong> The Phoronix source URL provided to this desk currently resolves to a JavaScript cookie-modal bundle rather than the article body. The core facts below — ntpd-rs as the Ubuntu 27.04 default, 26.10 availability, the March direction toward Rust, and the sudo-rs 25.10 precedent — are drawn from the supplied brief and Phoronix's headline, not independently confirmed against a rendered source. <strong>This piece must not be published until the source page (or a corroborating Canonical announcement) is retrieved and verified via browser rendering.</strong> Once verification completes, this notice and the "pending" wording below should be removed and the register rebalanced toward reported fact. What follows is the editorial desk's analysis, clearly labelled as such.</p>
+</blockquote>
+<p>Canonical has reconfirmed that ntpd-rs is on track to become the default time-synchronisation component in Ubuntu 27.04, with the same package already available for testing in the upcoming Ubuntu 26.10 — if the Phoronix report summarised in our intake brief holds up. The plan extends the direction Canonical announced in March, when it said switching more Ubuntu system components to Rust implementations was the next target after systemd, snap tooling and sudo-rs. According to the brief, the cadence has not changed since: the package accumulates testing in a devel release before being promoted to default on the following cycle.</p>
+<h4>The test-first, replace-later playbook, now aimed at system services</h4>
+<p>Ubuntu has run this playbook before. systemd, snap management tooling and — most recently — sudo-rs all spent a devel release as non-default options before Canonical moved the handover date to the next default release. sudo-rs, which became the default sudo alternative in Ubuntu 25.10, is the closest precedent for what happens with time sync.</p>
+<p>The notable point is not that another Rust NTP daemon exists, but the layer it now sits at. Time synchronisation runs over UDP/123 and belongs to the same infrastructure tier as init and account management; when its default changes, the upgrade-time impact is at least as large as that of the previous replacements.</p>
+<h4>What may change on upgrade (editorial analysis)</h4>
+<p>The configuration paths and command names below do not appear in the Phoronix report. They are the HKLUG editorial desk's expected changes, drawn from ntpd-rs documentation and typical Ubuntu packaging behaviour, and they must be cross-checked against the 27.04 release documentation before any migration. If the handover lands as planned, three areas are the likely pressure points:</p>
+<ul>
+<li><strong>Config format.</strong> ntpd-rs uses a TOML configuration file — the documented example path is <code>/etc/ntpd-rs/conf.toml</code> — which does not match the current <code>chrony.conf</code> layout or the <code>/etc/chrony.d/</code> drop-in convention used on Ubuntu. Administrators will need to confirm how ntpd-rs handles equivalent configuration splitting. chrony is expected to remain installable, but ntpd-rs will be the default on fresh installs.</li>
+<li><strong>Monitoring and debugging tooling.</strong> Anything keyed to <code>chronyc</code> — Nagios and Icinga checks, runbooks, and manual debugging workflows — will need to move to the equivalent ntpd-rs interfaces, such as <code>ntpctl</code>. This is the breakage most often missed after an upgrade, and the one most likely to generate spurious alerts.</li>
+<li><strong>Drift file portability.</strong> chrony maintains a per-host frequency-correction drift file that will not carry over to ntpd-rs. For minutes to hours after the switch, the system has to rebuild its time-correction model, and transient clock deviations may fire monitoring alerts. That is normal for the transition window, but it should not be treated as routine noise: in environments where timestamp consistency carries weight — trading records, audit logs, certificate validation — blanket-dismissing these alerts risks masking a genuine time-service failure.</li>
+</ul>
+<p>Before touching production systems, verify each path and command against the ntpd-rs documentation and Ubuntu package notes; defaults may still shift between 26.10 and 27.04.</p>
+<h4>LTS fleets: risk deferred, not removed</h4>
+<p>Current LTS releases — 24.04 and 26.04 — are unaffected for now. The new default takes effect in 27.04, and only a subsequent LTS would inherit it, likely 28.04. The practical implication is that LTS fleets inherit this change later rather than never. The 27.04 default could still slip if 26.10 testing turns up problems, such as incomplete refclock support or time-model fidelity issues, so the date should not be treated as a hard deadline.</p>
+<p>For administrators responsible for LTS fleets, the safer posture is to rehearse the switch now rather than discover it during a 28.04 upgrade: install ntpd-rs alongside chrony in a 26.10 test environment, validate the monitoring scripts, the drift-alert thresholds and any dependency on a local time server, and then deliberately hand UDP/123 over to the new component.</p>
+<p><em>(Core facts in this article are summarised from a brief referencing Phoronix's report on Canonical's plans, itself referring to Canonical's earlier announcement. That source has not been independently verified by this desk at the time of writing. The configuration paths, command names and upgrade impacts discussed above are editorial analysis, pending verification against official 27.04 documentation, and do not represent an Ubuntu endorsement.)</em></p>
+<hr>
+<blockquote>
+<p><strong>編者按：</strong> 編輯部目前取得的 Phoronix 來源網址，解析後顯示為 JavaScript cookie-modal bundle，而非文章本文。以下核心事實——ntpd-rs 成為 Ubuntu 27.04 預設元件、26.10 已開放測試、三月轉向 Rust 的方向，以及 sudo-rs 在 25.10 的先例——是根據所提供的資料摘要與 Phoronix 標題整理而來，並未獨立核對瀏覽器渲染後的來源頁面。<strong>在來源頁面（或可作旁證的 Canonical 公告）透過瀏覽器渲染檢索並核實之前，本文不得刊發。</strong> 核實完成後，這則聲明及下文的「待核實」措辭應予移除，並把文體調性重新平衡至報導事實。以下內容為編輯部分析，並已明確標示。</p>
+</blockquote>
+<p>根據編輯部所得資料摘要，如果 Phoronix 的報導屬實，Canonical 已再次確認，ntpd-rs 將在 Ubuntu 27.04 成為預設的時間同步元件；同一套件目前已於即將推出的 Ubuntu 26.10 中開放測試。這延續了今年三月 Canonical 提出的方向——當其宣布在 systemd、snap 管理工具及 sudo-rs 之後，把更多 Ubuntu 系統元件轉向 Rust 實作是下一個目標。按資料摘要所述，Canonical 目前的節奏與當時相比並無改變：先在開發版累積測試經驗，再於下一個週期升格為預設值。</p>
+<h4>「先測試、再替換」的路線，如今指向系統服務</h4>
+<p>Ubuntu 在 systemd、snap 管理工具以及最近的 sudo-rs 上都曾採用過同類模式——先在 devel release 讓使用者以非預設選項運作一段時間，再把交接點推到下一個預設版本。sudo-rs 於 Ubuntu 25.10 成為預設 sudo 替代品，是此類交接中與本次時間同步替換最接近的先例。</p>
+<p>值得注意的並非又多了一個 Rust NTP daemon，而是這條替換弧線如今已延伸到系統服務層級。時間同步（UDP/123）與系統啟動、帳戶管理同屬基礎建設層級，一旦預設值改變，升級時的實際影響面不會小於以往的替換項目。</p>
+<h4>升級時可能實際改變什麼（編輯部分析）</h4>
+<p>需要先說明的是，以下設定路徑與指令名稱並未出現在 Phoronix 的報導中，而是 HKLUG 編輯部依據 ntpd-rs 官方文件與 Ubuntu 套件行為整理的預期變化，並必須與 27.04 正式發行文件逐項核對，方可於遷移前確認。若 27.04 的交接如期落實，以下三點最可能是壓力點：</p>
+<ul>
+<li><strong>設定檔格式可能改變。</strong> ntpd-rs 採用 TOML 格式的設定檔（文件所示範的路徑為 <code>/etc/ntpd-rs/conf.toml</code>），與現行的 <code>chrony.conf</code> 以及 Ubuntu 常見的 <code>/etc/chrony.d/</code> 覆寫目錄結構不同；管理員需自行確認 ntpd-rs 對應的設定拆分方式。chrony 預期仍可另行安裝，但 ntpd-rs 會成為新裝系統的預設選擇。</li>
+<li><strong>監控與除錯工具可能不同。</strong> 依賴 <code>chronyc</code> 的項目——Nagios/Icinga 檢查指令、runbook 以及人工除錯流程——都需改用 ntpd-rs 對應的指令介面（例如 <code>ntpctl</code>）。這是升級後最容易被忽略、卻最常觸發告警的一環。</li>
+<li><strong>Drift 檔不一定沿用。</strong> chrony 會為每台機器維護量化的頻率校正（drift file），換成 ntpd-rs 後不會自動移植這份資料。升級後的數分鐘到數小時內，系統需要重新建立時間校正模型，期間可能出現輕微的時間偏差並觸發監控告警——這是過渡期的正常現象，但不應被視為常規雜訊：在交易紀錄、稽核日誌與證書驗證等依賴時間戳記一致性的環境中，把這些告警一律當成雜訊會有風險，因為真正的時間服務失效也可能以同樣的型態出現。</li>
+</ul>
+<p>在動手前，建議管理員對照 ntpd-rs 官方文件與 Ubuntu 套件說明書逐項確認，因為各版本的預設值仍可能在 26.10 至 27.04 期間調整。</p>
+<h4>LTS 機隊：風險被延後，而非被消除</h4>
+<p>目前 LTS 版本（24.04、26.04）的時鐘服務配置暫不受影響——新預設值只會在 27.04 生效，之後才有機會被下一個 LTS 承襲（很可能是 28.04）。換言之，LTS 機隊是較遲承襲這項改變，而非永不承襲。27.04 的預設值仍可能因 26.10 測試中發現的問題（例如 refclock 支援不完整、時間模型保真度不足）而順延，管理員不應把該日期視為硬性死線。</p>
+<p>對負責 LTS 機隊的管理員，較穩妥的做法是現在就預演這項替換，而不是在 28.04 升級時才發現：在 26.10 測試環境中平行安裝 ntpd-rs 與 chrony，驗證監控腳本、drift 告警門檻以及與本地時間伺服器（若有）的相依關係，再刻意地把 UDP/123 socket 交接給新元件。</p>
+<p>（本文核心事實整理自一份引用 Phoronix 對 Canonical 計劃報導的資料摘要，而 Phoronix 報導本身亦引用了 Canonical 較早前的公告。撰寫本文時，編輯部尚未獨立核實該來源。文中的設定路徑、指令名稱與升級影響屬編輯部分析，尚待 27.04 官方文件核實，不代表 Ubuntu 官方背書。）</p>
+<p><a href="https://www.phoronix.com/news/Ubuntu-27.04-ntpd-rs-Plans" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
