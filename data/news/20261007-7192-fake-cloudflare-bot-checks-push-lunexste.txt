@@ -1,0 +1,54 @@
+Date: 2026-10-07 18:49:00
+Author: HKLUG Team
+Title: Fake Cloudflare Bot Checks Push LunexStealer Through ClickFix, CERT-UA Warns
+Content:
+<p>A phishing technique that borrows the visual language of one of the internet's most trusted security brands is being used to distribute credential-stealing malware, according to an advisory from Ukraine's Computer Emergency Response Team (CERT-UA), as reported by Security Affairs on 7 October.</p>
+<p>The campaign relies on more than 100 compromised websites serving what appear to be routine Cloudflare bot-verification pages. Visitors are instructed to run a command — typically invoked after pressing Win+R — framed as the final step of confirming they are human, and that command quietly downloads and installs LunexStealer, a stealer built to siphon stored browser credentials and other sensitive session data from an infected machine.</p>
+<p>The confirmed footprint of the campaign as reported is Ukraine, not Hong Kong. For HK IT teams, the relevance is not local attribution but technique portability: the lure is language-agnostic, the Cloudflare brand is globally recognised, and the compromised sites are third-party assets that could surface anywhere. The method travels independently of the geography.</p>
+<h4>Why This Bypasses Technical Controls</h4>
+<p>The technique in play is ClickFix, and it works by inverting the usual phishing contract. Traditional lures ask users to <em>ignore</em> what their browser or security tooling is telling them — and that request increasingly fails, because staff have been trained to do exactly the opposite. ClickFix-style lures do something more insidious: they instruct users to <em>perform</em> a security check. The victim isn't bypassing a control; they're following instructions to satisfy one, complete with a command copied to the clipboard.</p>
+<p>That reframing is what clears the bar that conventional phishing increasingly cannot. No malicious attachment, no obvious exploit link, no red-flag URL — just a plausible verification page and a line of PowerShell that looks like part of the process. Endpoint tooling that waits for known-bad indicators will not flag it. The compromise is authorised, from the victim's perspective.</p>
+<h4>What To Tell Staff</h4>
+<p>This is fundamentally a human-layer attack, and the response should be framed in terms people can act on:</p>
+<ol>
+<li><strong>No legitimate verification ever asks you to open a terminal.</strong> Cloudflare's bot checks are automatic. If a page prompts you to press Win+R, open PowerShell, or paste a command, close the tab and report it.</li>
+<li><strong>Treat unexpected clipboard commands as hostile.</strong> Anything copied automatically and then asked to be run is a red flag, regardless of which brand the page imitates.</li>
+<li><strong>Monitor Win+R and PowerShell execution</strong> in your endpoint telemetry. ClickFix activity is detectable — what makes it dangerous is that defenders have not always been watching for it.</li>
+<li><strong>Deploy phishing-resistant MFA and prioritise session-token protection.</strong> LunexStealer is a stealer; its real value to an attacker is the session it captures after the token has already been issued. Treat session hijack as a first-order risk, not an afterthought.</li>
+<li><strong>Adapt CERT-UA's indicators of compromise (IoCs)</strong> to your own DNS, proxy, and EDR filtering. The primary advisory is the source of record for these.</li>
+</ol>
+<p>One further point worth raising internally — and this is our analysis, not something CERT-UA prescribes in the source coverage: the campaign's delivery mechanism was compromised sites, which means the lures are, in effect, a supply-chain problem. Organisations should review traffic to any sites they operate or routinely trust for signs of these lures, because an own-site compromise is exactly the kind of exposure that surfaces this way. A webshell-level check on your web estate — and on critical third-party portals your staff genuinely rely on — is cheap insurance against being an unwitting distribution node for the next campaign.</p>
+<h4>Cantonese Sidebar: Spot the Fake Cloudflare Check — 唔好信假驗證</h4>
+<ul>
+<li>「要你打字、貼 command 先畀你入？假嘅。」— A real check never asks you to type or paste a command.</li>
+<li>「真 Cloudflare 檢查唔會叫你開 PowerShell 或者 Win+R。」— Genuinely, Cloudflare's check never tells you to open a PowerShell or press Win+R.</li>
+<li>「見到「證明你唔係機械人」仲要你做嘢？即刻關閉頁面，話俾 IT 聽。」— If a "prove you're not a bot" page still asks you to <em>do</em> something, close it and tell IT.</li>
+<li>「公司任何驗證流程都唔會要求你執行指令。」— No verification process inside the company will ever require you to run a command.</li>
+</ul>
+<p>Per the source coverage, CERT-UA has published indicators for organisations wanting to hunt the campaign in their own logs. The takeaway for defenders everywhere is that brand impersonation has moved past the logo — it now impersonates the process of being secure.</p>
+<hr>
+<p>據烏克蘭電腦事故應急回應小組（CERT-UA）發出的通告，並經 Security Affairs 於十月七日報道指出，一種借用互聯網上其中一個最受信任保安品牌視覺風格的釣魚攻擊技術，正被用來散播竊取登入憑證的惡意軟件。</p>
+<p>該次攻擊行動倚賴超過一百個被入侵的網站，向訪客展示看似普通的 Cloudflare bot 驗證頁面。訪客會被指示執行一段指令——通常是在按下 Win+R 後輸入——並被包裝成確認使用者為人類的最後一步，而那段指令會在背景悄悄下載及安裝 LunexStealer。這是一款專門從受感染電腦上竊取瀏覽器已儲存登入憑證及其他敏感 session 資料的 stealer。</p>
+<p>據報道，已確認的攻擊範圍為烏克蘭，而非香港。對香港 IT 團隊而言，關鍵並非本地歸因，而是技術的可移植性：誘餌不依賴語言，Cloudflare 品牌在全球廣為人知，而被入侵的網站屬第三方資產，任何地方都可能出現。此手法可脫離特定地域獨立傳播。</p>
+<h4>為何此手法能繞過技術性防護</h4>
+<p>這次使用的是 ClickFix 技術，其原理是把傳統釣魚攻擊的「契約」倒轉過來。傳統誘餌會要求使用者<em>忽略</em>瀏覽器或保安工具所發出的警告——而這種要求愈來愈難奏效，因為員工已被訓練去做完全相反的事。ClickFix 類型的誘餌則做得更為狡猾：它們指示使用者<em>執行</em>一次保安檢查。受害者並非繞過防護措施，而是按照指示去滿足一項防護措施，連同複製到剪貼簿的指令一併執行。</p>
+<p>正是這重新包裝的思路，令其得以通過傳統釣魚攻擊愈來愈難以突破的關口。沒有惡意附件，沒有明顯的漏洞連結，沒有可疑的 URL——只有一個貌似合理的驗證頁面，以及一行看來屬於整個流程一部分的 PowerShell 指令。等候已知惡意指標的 endpoint 工具不會將其標記為異常。從受害者的角度看來，這次入侵是「已獲授權」的。</p>
+<h4>應如何向員工交代</h4>
+<p>這歸根究底是一種人為層面（human layer）的攻擊，應對措施應以員工能夠採取行動的方式來表述：</p>
+<ol>
+<li><strong>任何真實的驗證流程，從來不會要求你開啟終端機。</strong> Cloudflare 的 bot 檢查是自動化的。如果頁面要求你按下 Win+R、開啟 PowerShell 或貼上指令，請立即關閉該分頁並向 IT 報告。</li>
+<li><strong>把意料之外的剪貼簿指令視為敵意行為。</strong> 任何被自動複製、然後要求你執行的內容都是危險訊號，不論頁面模仿的是哪個品牌。</li>
+<li><strong>在 endpoint 遙測資料中監控 Win+R 及 PowerShell 執行情況。</strong> ClickFix 活動是可以被偵測的——其危險之處，在於防禦者過去並非時刻留意這種行為。</li>
+<li><strong>部署具防釣功能的 MFA，並優先保護 session token。</strong> LunexStealer 是一款 stealer；它對攻擊者真正的價值，在於 token 發出之後所擷取的 session。應把 session hijack 視為首要風險，而非事後才想到的補救措施。</li>
+<li><strong>將 CERT-UA 公布的入侵指標（indicators of compromise，IoC）套用至本身的 DNS、proxy 及 EDR 過濾系統。</strong> 主要的通告為這些指標的正式參考來源。</li>
+</ol>
+<p>另有一點值得在內部提出——以下屬我們的分析，而非 CERT-UA 在原始報導中所規定的內容：此次攻擊行動的投放機制是被入侵的網站，意味著這些誘餌實際上屬於供應鏈（supply-chain）問題。組織應檢視流向任何本身營運或慣常信任的網站的流量，留意是否出現這類誘餌的跡象，因為自身網站被入侵正是會透過這種方式曝光的典型情況。對整個 web 資產——以及員工真正依賴的關鍵第三方入口網站——進行 webshell 層面的檢查，是相宜的保險，以免成為下一輪攻擊行動中在不知情之下被利用的散播節點。</p>
+<h4>廣東話小欄：識穿假 Cloudflare 驗證——切勿相信假驗證</h4>
+<ul>
+<li>「要你打字、貼 command 先畀你入？假嘅。」——真正的檢查從來不會要求你輸入或貼上指令。</li>
+<li>「真 Cloudflare 檢查唔會叫你開 PowerShell 或者 Win+R。」——真正的 Cloudflare 檢查不會要求你開啟 PowerShell 或按下 Win+R。</li>
+<li>「見到『證明你唔係機械人』仲要你做嘢？即刻關閉頁面，話俾 IT 聽。」——如果一個「證明你並非機械人」的頁面仍然要求你<em>執行</em>某項操作，請立即關閉並通知 IT。</li>
+<li>「公司任何驗證流程都唔會要求你執行指令。」——公司內部任何驗證流程都不會要求你執行指令。</li>
+</ul>
+<p>據原始報道指出，CERT-UA 已公布相關指標，供希望在自身日誌中搜尋此攻擊行動的組織使用。所有防禦者要記住的一點是：冒充品牌的手法已超越標誌本身——它現在所冒充的，是「安全」這個過程。</p>
+<p><a href="https://securityaffairs.com/200537/hacking/cert-ua-fake-cloudflare-checks-deliver-lunexstealer-malware.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
