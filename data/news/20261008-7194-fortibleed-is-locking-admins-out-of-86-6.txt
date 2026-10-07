@@ -1,0 +1,50 @@
+Date: 2026-10-08 09:00:00
+Author: HKLUG Team
+Title: FortiBleed Is Locking Admins Out of 86,644 FortiGate Firewalls — and the Usual Patch Cycle Won't Help
+Content:
+<p>The FBI and the U.S. Secret Service have issued a joint advisory warning that a credential-harvesting campaign tracked as FortiBleed has compromised more than <strong>86,644 Fortinet FortiGate devices across 194 countries</strong> — with a detail that matters more than the raw count: intruders are seizing the administrative layer of the firewalls themselves, locking legitimate administrators out of the very appliances they would use to respond.</p>
+<p>The figures were reported by Security Affairs on 7 October, drawing on the two agencies' advisory. Both the scale and the lockout mechanic point to a failure mode that differs materially from endpoint ransomware: the compromise does not merely sit <em>behind</em> the firewall, it occupies it.</p>
+<h4>What the advisory says — and what it doesn't</h4>
+<p>According to the FBI/U.S. Secret Service advisory, as summarised by Security Affairs, the campaign is understood to be harvesting credentials and actively locking administrators out of the affected devices. The joint advisory is available via the agencies' published guidance on the campaign.</p>
+<p>One critical question remains open in the source material: <strong>whether FortiBleed targets a zero-day flaw or exploits devices that are end-of-life or otherwise out of support.</strong> As summarised, the advisory does not settle this. The distinction matters commercially and legally — it determines whether the response is "patch everything urgently" or "retire unsupported hardware now" — but for defenders, both possibilities converge on the same uncomfortable reality: <strong>this is not something a normal patch cycle will fix.</strong></p>
+<p>That is the angle Security Affairs itself puts to the fore, arguing the campaign exploits "something nobody can patch away." In a joint advisory environment where technical detail such as indicators of compromise or confirmed initial access vectors may still be forthcoming, that framing holds up operationally regardless of which root cause turns out to be true.</p>
+<h4>The administrative lockout is the story</h4>
+<p>For incident responders, the admin-lockout detail is more actionable than the 86,644 figure. A compromised perimeter appliance sits upstream of virtually everything behind it: VPN sessions, network access control, DNS, policy routing, and — critically — the logging and management tooling responders would normally reach for.</p>
+<p>If an attacker controls the admin plane, the appliance cannot be trusted to enforce its own quarantine. Nor can it be trusted as a source of truth for its own configuration, which has practical consequences for how teams respond.</p>
+<h4>A working checklist, not advisory text</h4>
+<p>The 194-country footprint suggests automated, scanning-scale exploitation — not opportunistic, hand-driven intrusion. That reinforces an old truth that keeps getting rediscovered: you cannot patch, isolate, or retire a device you do not know you own. Perimeter appliances are frequently the least-monitored, longest-lived assets in an estate — deployed at a branch five years ago, forgotten, never re-enrolled in monitoring, and administered under credentials that have not changed since deployment.</p>
+<p>Accordingly, the following is this publication's operational framing for FortiGate estate owners. It is general perimeter-compromise playbook material, not text drawn from the agencies' advisory, and specifics should be verified against the agencies' published guidance:</p>
+<ol>
+<li><strong>Secure out-of-band access first</strong> — serial console, dedicated management interfaces, or vendor-supported recovery paths — because in-band management may be compromised.</li>
+<li><strong>Inventory every FortiGate device</strong>, including branch, home-office, and decommissioned-but-powered units.</li>
+<li><strong>Verify firmware build and support status</strong> against Fortinet's published advisories; flag anything end-of-life or unpatched.</li>
+<li><strong>Rotate every credential that ever touched the appliance</strong> — local, FortiCloud, and vendor or managed-service-provider accounts — and audit for admin accounts and policy changes your team did not make.</li>
+<li><strong>Rebuild and hunt downstream</strong>: restore configuration from verified offline backups rather than a running device, and assume the network segments behind each appliance are compromised until proven otherwise.</li>
+</ol>
+<p>The practical takeaway holds regardless of how the root-cause question resolves: inventory, verify, rotate, rebuild, hunt. The lessons are not unique to any market.</p>
+<p>The 86,644 figure is the FBI's, not ours, and it will age. The underlying choices organisations are making about how they track and retire perimeter appliances will not.</p>
+<p><em>Source: <a href="https://securityaffairs.com/200558/cyber-crime/fortibleed-hit-86000-firewalls-by-exploiting-something-nobody-can-patch-away.html">Security Affairs</a>, 7 October 2026, reporting on a joint FBI / U.S. Secret Service advisory.</em></p>
+<hr>
+<p>美國聯邦調查局（FBI）與美國特勤局聯合發出通告警告，一場代號 FortiBleed 的憑證竊取行動，已入侵橫跨 <strong>194 個國家、超過 86,644 部 Fortinet FortiGate 裝置</strong> — 其中一項細節比入侵數字更為重要：入侵者正直接奪取防火牆的管理層控制權，令合資格的管理員被鎖在裝置之外，無法使用他們原本應賴以作出應對的設備。</p>
+<p>上述數據由 Security Affairs 於 10 月 7 日根據兩部門的通告作出報導。無論是入侵規模還是鎖定機制所顯示的問題，都屬於一種與端點勒索軟件截然不同的故障模式：入侵不單僅僅存在於防火牆<em>背後</em>，而是已經佔據了防火牆本身。</p>
+<h4>通告內容 — 以及未有說明的部分</h4>
+<p>根據 Security Affairs 整理的 FBI／美國特勤局通告摘要，該行動據信正在竊取憑證，並主動將管理員鎖在受影響裝置之外。兩部門已就該行動公布指引，聯合通告可透過該等指引取得。</p>
+<p>原始材料中仍有一個關鍵問題未有定案：<strong>FortiBleed 究竟針對的是零日漏洞，還是利用已達使用壽命終止、或已失去支援的裝置。</strong> 根據現有摘要，通告並未解答此問題。這個分別在商業和法律層面均十分重要 — 它決定了應對方式是「緊急全面補丁修補」抑或「即時淘汰不再支援的硬件」 — 但對防守方而言，兩種可能性最終指向同一個令人不安的事實：<strong>這並非一般補丁修補流程可以解決的問題。</strong></p>
+<p>這正是 Security Affairs 本身所強調的角度，指出該行動利用的是「沒有人能透過補丁解決的東西」。在聯合通告層面，入侵指標（IOC）或已確認的初始入侵途徑等技術細節可能仍待公布，但無論實際根因為何，這個框架在操作層面上同樣成立。</p>
+<h4>管理員被鎖定才是事件核心</h4>
+<p>對事件響應人員而言，管理員被鎖定這一點，比 86,644 這個數字更具實際意義。一部被入侵的邊界裝置，幾乎處於其背後所有系統的上游：VPN 連線、網絡訪問控制（NAC）、DNS、策略路由 — 以及至關重要的 — 響應人員通常會使用的日誌記錄與管理工具。</p>
+<p>若攻擊者控制了管理平面（admin plane），便不能相信該裝置能執行自身的隔離措施。同樣也不能相信它所提供的配置資訊作為事實依據，這對團隊的應對方式帶來實際影響。</p>
+<h4>一份可執行的清單，而非通告文本</h4>
+<p>遍及 194 個國家的入侵足跡，顯示這是一種自動化、大規模掃描式的利用方式，而非 opportunistic、人手主導的入侵。這再次印證一個反覆被人重新發現的舊有道理：你無法補丁修補、隔離或淘汰一部你根本不知道自己擁有的裝置。邊界裝置往往是資產組合中監察最少、壽命最長的資產 — 可能在五年前部署於分辦事處，其後被遺忘，從未重新納入監控系統，而管理所用的憑證自部署以來一直未曾更改。</p>
+<p>因此，以下為本刊為 FortiGate 資產負責人提供的操作框架。這是一般邊界入侵應對手冊內容，並非取自兩部門通告的文本，具體措施應對照兩部門公布的指引進行核實：</p>
+<ol>
+<li><strong>優先確保帶外（out-of-band）訪問途徑</strong> — 例如序列主控台、專用管理介面或原廠支援的復原路徑 — 因為帶內（in-band）管理通道可能已被入侵。</li>
+<li><strong>盤點所有 FortiGate 裝置</strong>，包括分辦事處、家庭辦公室，以及已停用但仍通電的設備。</li>
+<li><strong>核實 firmware build 版本及支援狀態</strong>，對照 Fortinet 公布的通告；標記任何已達使用壽命終止或未打補丁的裝置。</li>
+<li><strong>輪換所有曾經使用於該裝置的憑證</strong> — 本地憑證、FortiCloud，以及原廠或託管服務供應商帳戶 — 同時審查有無管理員帳戶及策略變更並非由你的團隊作出。</li>
+<li><strong>重建配置，並追查下游系統</strong>：應從經核實的離線備份還原配置，而非依賴運行中的裝置；在未有確切證據前，假設每部裝置背後的網絡分段均已遭到入侵。</li>
+</ol>
+<p>無論根因問題最終如何解決，實際的應對原則不變：盤點、核實、輪換憑證、重建配置、追查系統。這些教訓並非某個特定市場獨有。</p>
+<p>86,644 這個數字來自 FBI，並非本刊的估計，而且必然會隨時間過時。但機構如何追蹤和淘汰邊界裝置的這項選擇，則不會。</p>
+<p><em>來源：<a href="https://securityaffairs.com/200558/cyber-crime/fortibleed-hit-86000-firewalls-by-exploiting-something-nobody-can-patch-away.html">Security Affairs</a>，2026 年 10 月 7 日，就 FBI 與美國特勤局的聯合通告作出報導。</em></p>
+<p><a href="https://securityaffairs.com/200558/cyber-crime/fortibleed-hit-86000-firewalls-by-exploiting-something-nobody-can-patch-away.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
