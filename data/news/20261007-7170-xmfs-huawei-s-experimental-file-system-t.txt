@@ -1,0 +1,33 @@
+Date: 2026-10-07 11:26:00
+Author: HKLUG Team
+Title: XMFS: Huawei's Experimental File-System Targets CXL 3.0 and United Bus Servers
+Content:
+<p>```</p>
+<p>Huawei engineers are working on an experimental Linux file-system called XMFS, built for servers running either CXL 3.0 connectivity or Huawei's proprietary United Bus interconnect. The project was presented at this week's Linux Plumbers Conference in the Czech Republic, according to reporting by Phoronix.</p>
+<p>The disclosure arrives as the Linux storage community grapples with a genuinely new class of hardware — one in which memory and storage no longer behave as separate resources but increasingly resemble a single fabric. XMFS is Huawei's entry into that debate. Its significance lies less in what the file-system does today than in what it assumes about the direction of server architecture.</p>
+<h5>The design problem behind XMFS</h5>
+<p>Compute Express Link (CXL) is an open, standards-based interconnect layered on PCIe physical links, allowing processors to reach remote memory and accelerators with near-local latency. CXL 3.0 — the generation XMFS targets — adds fabric capabilities that let memory be pooled, shared and, critically, attached across nodes, making disaggregated memory more than a laboratory exercise and something a production rack could conceivably run.</p>
+<p>Huawei's United Bus serves a comparable architectural role within Huawei's own server designs, but it remains a proprietary interconnect rather than an open standard. The most analytically interesting detail of the XMFS announcement is that the file-system targets both CXL 3.0 and United Bus. It suggests Huawei regards remote, memory-semantic storage as a first-class design problem — and, in doing so, is asking kernel storage code to accommodate more than one interconnect paradigm.</p>
+<p>That is where the ecosystem tension begins. A file-system built substantially around a vendor-specific bus has limited reproducibility outside that vendor's hardware. The open CXL standard is the route to broader applicability, but XMFS's dual-track design hints that the two paths may not be equivalent. In practice, most of the Linux community cannot build and test the configurations Huawei describes — a gating factor for any upstream engagement.</p>
+<h5>Where it fits in Huawei's software stack</h5>
+<p>Huawei's open-source footprint runs deep: the openEuler distribution, the openGauss database and related projects form a coherent, if vendor-anchored, ecosystem. XMFS fits that pattern. It is worth noting that openEuler gives Huawei a plausible route to deployment without first navigating upstream kernel review, while the LPC presentation signals genuine interest in engaging the wider community technically.</p>
+<p>It is our analysis, not a stated Huawei roadmap, that XMFS could eventually slot into openEuler's storage layer as a memory-semantic option. Whether upstream kernel maintainers engage with the design or dismiss it as a vendor implementation will be the key near-term signal to watch.</p>
+<h5>Open questions remain unanswered</h5>
+<p>Several details the project itself has not addressed are the substance of why this matters. Durability guarantees on CXL-attached memory — which may be volatile, may be tiered, or may eventually serve as a persistence layer rather than an expansion pool — remain unclear. So are the write-path behaviours and fsync semantics that applications and databases depend on. A file-system that treats memory as fast storage makes different promises than one that treats memory as a persistence domain; XMFS has not yet said which it is making.</p>
+<p>That caveat is not a criticism. LPC is a venue for technical discussion rather than a product launch, and Huawei has a history of ambitious storage experiments that were shelved after experimentation rather than shipped widely. Presenting early and inviting scrutiny is the more productive course.</p>
+<p>For data-centre operators running dense, memory-intensive environments, XMFS is a datapoint, not a procurement signal. It shows that at least one major vendor believes the Linux storage stack will need to evolve for memory-semantic storage. Whether the answer turns out to be CXL-based, vendor-specific, or some combination remains an open engineering question — and one the community will need to engage with on the merits as more XMFS materials surface.</p>
+<hr>
+<p>華為工程師正開發一個名為 XMFS 的實驗性 Linux 檔案系統，專為配備 CXL 3.0 連接或華為專有 United Bus 互聯技術的伺服器而設。據 Phoronix 報道，該項目已在捷克舉行的本週 Linux Plumbers Conference 上展示。</p>
+<p>此項披露之際，Linux 儲存社群正面對一類真正全新的硬件——在這類硬件中，記憶體與儲存不再表現為各自獨立的資源，反而日益趨向單一 fabric（互聯結構）的形態。XMFS 正是華為在這場辯論中提出的方案。它的意義與其說在於該檔案系統今日的功能，不如說在於它對伺服器架構發展方向所作的假設。</p>
+<h5>XMFS 背後的設計難題</h5>
+<p>Compute Express Link（CXL）是一項基於標準的開放式互聯技術，疊加於 PCIe 實體鏈路之上，使處理器能以接近本地延遲的水平存取遠端記憶體與加速器。XMFS 瞄準的 CXL 3.0 一代加入了 fabric 功能，令記憶體得以匯集、共享，關鍵是更可跨節點接駁，令 disaggregated memory（分散式記憶體）不再只是實驗室層面的習作，而成為生產用機架可以實際運行的方案。</p>
+<p>華為的 United Bus 在華為自身的伺服器設計中擔當類似的架構角色，但它仍屬專有互聯技術，並非開放標準。XMFS 公布中最具分析價值的一點，在於該檔案系統同時支援 CXL 3.0 與 United Bus。這顯示華為視遠端記憶體語意（memory-semantic）儲存為一項首要的設計難題——而此舉亦等於要求 kernel 儲存代碼能夠容納不止一種互聯模式。</p>
+<p>這正是生態系統張力所在。一個以某供應商專有 bus 為基礎大量構建的檔案系統，在該供應商硬件之外的可重現性有限。開放的 CXL 標準才是通向更廣泛適用性的路徑，但 XMFS 的雙軌設計暗示兩條路徑未必等同。在實踐中，大多數 Linux 社群無法建立和測試華為所述的配置——這是任何 upstream（上游）參與的先決條件。</p>
+<h5>XMFS 在華為軟件堆疊中的位置</h5>
+<p>華為在開源領域的佈局根深柢固：openEuler 發行版、openGauss 資料庫及相關項目，共同構成一個雖以供應商為核心、卻相當完整的生態系統。XMFS 正好符合這一模式。值得一提的是，openEuler 為華為提供了一條合理的部署路徑，無須先通過 upstream kernel 審查；與此同時，LPC 的展示亦表明華為確實有興趣在技術層面與更廣社群接觸。</p>
+<p>XMFS 最終可作為記憶體語意選項納入 openEuler 的儲存層，這是我們的分析推論，並非華為已公布的路線圖。Upstream kernel 維護者會參與該設計，抑或視之為供應商私有實現而拒絕，將是近期值得觀察的關鍵指標。</p>
+<h5>仍待解答的問題</h5>
+<p>項目本身尚未回應的若干細節，正是此舉之所以重要的實質所在。CXL 接駁記憶體（CXL-attached memory）的持久性保證——它可能屬易失性（volatile）、可能採分層管理，亦可能最終成為持久層（persistence layer）而非擴充儲存池——至今未有明確交代。應用程式與資料庫所依賴的寫入路徑行為與 fsync 語意同樣如此。一個把記憶體視為快速儲存的檔案系統，與一個把記憶體視為持久化領域（persistence domain）的檔案系統，所作出的承諾截然不同；XMFS 尚未說明自己屬於哪一類。</p>
+<p>這並非批評。LPC 是技術討論的場合，而非產品發布會，而華為歷來曾推出過不少宏大的儲存實驗，最終在試驗階段告一段落，並未廣泛出貨。及早展示並邀請各方檢視，才是更具建設性的路徑。</p>
+<p>對於運行高密度、記憶體密集型環境的資料中心營運商而言，XMFS 是一個數據點，而非採購信號。它顯示至少有一家主要供應商相信，Linux 儲存堆疊必須演進，以適應記憶體語意儲存。答案最終會否採用基於 CXL 的方案、供應商專有方案，抑或某種組合，仍是一個開放的工程問題——隨著更多 XMFS 材料陸續浮現，社群將有需要從技術角度對此作出回應。</p>
+<p><a href="https://www.phoronix.com/news/XMFS-Linux-File-System" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
