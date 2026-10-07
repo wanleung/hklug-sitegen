@@ -1,0 +1,42 @@
+Date: 2026-10-10 12:10:00
+Author: HKLUG Team
+Title: Fake Cloudflare Verification Pages Deliver LunexStealer From Inside 100+ Compromised Sites
+Content:
+<p>The following is based on reporting published on 10 October 2026 by The Hacker News, which covered a disclosure by Ukraine's Computer Emergency Response Team (CERT-UA). Per that report, CERT-UA has identified more than 100 compromised websites that were injected with malicious JavaScript to serve an information-stealing malware called LunexStealer, also known as Psychedelic Stealer. The Hacker News states the activity was observed in September 2026, attributed to a threat cluster designated UAC-0277, and that no specific actor was named.</p>
+<h4>What was reported</h4>
+<p>The compromised sites, the report says, were modified to present visitors with a counterfeit version of Cloudflare's "verifying your browser" challenge — the human-verification interstitial that legitimate traffic is conditioned to accept before a page loads. The compromise appears to sit on the delivery side: an unpatched content management system, stolen administrator credentials, or a vulnerable plugin converts a trusted domain into an attacker-controlled channel, after which the operators ride the domain's existing reputation all the way to the information stealer.</p>
+<p>No Hong Kong organisations were identified as victims in the disclosure, and the reporting does not suggest the campaign was tailored to any particular geography. The sections below are editorial analysis for this publication, not claims made by CERT-UA or The Hacker News.</p>
+<h4>Analysis: why the Cloudflare cue works, and why heavy-CDN markets are exposed</h4>
+<p>Trust signals only work while they remain scarce and authentic. When a spoofed verification screen sits inside a genuine, pre-authorised domain — one the user was already trying to reach — the visitor arrives primed to comply: scrolling, clicking "Verify," or staying on the page long enough for the injected script to run is indistinguishable from ordinary browsing. Reputation-based defences, blocklists, and user scepticism are neutralised simultaneously, because none of them can detect a payload living inside a legitimate page. In other words, the compromised asset is the site, not the visitor.</p>
+<p>For a market like Hong Kong, where Cloudflare and comparable CDN and edge-security platforms are deployed widely across enterprise, e-commerce, and SME estates, that exposure is structural. The same verification cue that makes a CDN attractive to defenders is what makes the spoof convincing to users — and the more ubiquitous the cue, the more convincing the fake becomes. That is an argument for adding the verification screen itself to the threat model and treating any unexpected challenge page as a potential indicator, not for switching providers.</p>
+<h4>Five workflow changes SOC and IT-ops teams can make now</h4>
+<p>The following recommendations are HKLUG editorial analysis, not CERT-UA guidance. They follow from the structural exposure described above, rather than from the disclosure itself:</p>
+<ol>
+<li><strong>Extend the change-review gate.</strong> Any existing code-review or deployment approval workflow should flag unexpected JavaScript additions on managed properties — including scripts injected via CMS panels, plugins, or third-party widgets — not only changes made through version control.</li>
+<li><strong>Surface content integrity on ops dashboards.</strong> Content-integrity checks, script-provenance alerting, and unexpected-interstitial detection belong on the same dashboards as uptime and performance monitoring, rather than in a separate security silo.</li>
+<li><strong>Reverse the usual triage order.</strong> When a user reports a strange verification page, treat the site as the compromised asset first. Investigate the domain and its delivery chain before pivoting to the visitor's endpoint — the endpoint is usually the symptom, not the cause.</li>
+<li><strong>Fold phishing-resistant authentication into provisioning.</strong> Administrative access to CMS platforms, plugins, and hosting panels should be provisioned with passkeys or hardware-backed FIDO2 authentication, reducing the value of the stolen credentials that start many of these compromises.</li>
+<li><strong>Shorten session lifetimes and require re-authentication.</strong> Reducing the window in which a stolen administrative session stays valid limits how long an injected script can persist after the initial compromise is discovered.</li>
+</ol>
+<p>None of these measures requires new tooling. They require treating the verification surface — and the domains sitting behind it — as part of the active threat model rather than as infrastructure that is assumed benign.</p>
+<p><em>Source and verification note: Based on The Hacker News's report, published 10 October 2026, covering a CERT-UA disclosure of activity observed in September 2026. The underlying CERT-UA disclosure text was truncated at time of writing; details including the UAC-0277 attribution, the September 2026 observation window, and the non-disclosure of a named actor could not be independently verified. No IOCs — injected-domain lists, script hashes, YARA rules, or ATT&amp;CK mappings — were published in the available material; this article will be updated if they appear.</em></p>
+<hr>
+<p>以下內容基於 The Hacker News 於 2026 年 10 月 10 日發表的報道，該報道涵蓋了烏克蘭電腦事故應變小組（CERT-UA）的一次披露。據該報道，CERT-UA 已識別出 100 多個被入侵網站，這些網站被注入惡意 JavaScript，用於投放一種名為 LunexStealer（又稱 Psychedelic Stealer）的資訊竊取惡意軟件。The Hacker News 表示，該活動於 2026 年 9 月被發現，並被歸因於一個代號為 UAC-0277 的威脅群組（threat cluster），但沒有指名任何具體的攻擊者。</p>
+<h4>報道內容</h4>
+<p>報道指出，被入侵的網站經過修改，會向訪客呈現一個假冒的 Cloudflare「正在驗證你的瀏覽器」頁面——即合法流量在頁面載入前，早已被訓練成會接受的人機驗證過場畫面。入侵似乎發生在投放環節：一個未打補丁的內容管理系統（CMS）、被盜的管理員憑證，或一個存在漏洞的插件，足以把一個受信任的域名轉變為由攻擊者控制的渠道，隨後攻擊者便利用該域名既有的聲譽，一路把惡意軟件送到資訊竊取器手上。</p>
+<p>披露中並未確認有香港機構成為受害者，報道亦沒有表明該攻擊是針對任何特定地域。以下各節為本刊的編輯分析，並非 CERT-UA 或 The Hacker News 所作出的陳述。</p>
+<h4>分析：為何 Cloudflare 的提示有效，以及為何高度依賴 CDN 的市場會暴露於風險</h4>
+<p>信任訊號只有在稀有且真實時才有效。當一個偽冒的驗證畫面嵌入在一個真正的、已經通過預先授權的域名之內——即用戶原本就打算訪問的網站——訪客到達時便已預設順從：滾動頁面、點擊「驗證」、或在頁面上停留足夠長時間令注入腳本得以執行，這些行為與一般瀏覽無異，難以分辨。基於聲譽的防禦機制、封鎖名單以及用戶的警覺性因此同時被化解，因為它們都無法偵測到一個寄居在合法頁面內部的惡意負載。換言之，被入侵的資產是網站本身，而非訪客。</p>
+<p>對香港這類市場而言，Cloudflare 及同類 CDN 和邊緣安全平台廣泛部署於企業、電子商務及中小企環境，這種風險是結構性的。同一個驗證提示之所以令 CDN 對防禦者有吸引力，正是它令偽冒頁面對用戶格外可信——而該提示愈是無處不在，假冒頁面就愈具說服力。這正是將驗證畫面本身納入威脅模型、把任何意料之外的挑戰頁面視為一個潛在指標的理由，而不是轉換服務供應商。</p>
+<h4>SOC 及 IT-ops 團隊現時可作出的五項流程改動</h4>
+<p>以下建議屬 HKLUG 的編輯分析，並非 CERT-UA 的指引。它們源自上述結構性風險，而非直接源自該次披露：</p>
+<ol>
+<li><strong>擴展變更審查關卡。</strong> 任何現有的 code review 或部署審批流程，都應對受管理資產上出現的意料之外 JavaScript 新增作出警示——包括透過 CMS 後台、插件或第三方 widget 注入的腳本——而不僅限於透過版本控制系統作出的變更。</li>
+<li><strong>在營運儀表板上呈現內容完整性。</strong> 內容完整性檢查、腳本來源警報和異常過場畫面偵測，應與正常運作時間和效能監控放在同一批儀表板上，而不是另設一個安全孤島。</li>
+<li><strong>調轉一般的追查次序。</strong> 當用戶報告一個可疑的驗證頁面時，應先將該網站視為被入侵的資產。先調查該域名及其投放鏈，然後才轉向用戶的終端裝置——終端裝置通常是症狀，而非成因。</li>
+<li><strong>將抗釣魚認證機制納入帳戶開通流程。</strong> 對 CMS 平台、插件和主機面板的管理員權限，應以 passkeys 或硬件支援的 FIDO2 認證機制來開通，從而降低被盜憑證的價值——許多入侵正是由被盜憑證開始。</li>
+<li><strong>縮短 session 有效期並要求重新認證。</strong> 縮短被盜管理員 session 的有效時間窗口，可限制注入腳本在最初入侵被發現後仍能存活的時間。</li>
+</ol>
+<p>上述措施都不需要添置新工具。它們需要的是把驗證介面——以及其背後的域名——視為活躍威脅模型的一部分，而非假定其必然無害的基礎設施。</p>
+<p><em>資料來源及查證說明：基於 The Hacker News 於 2026 年 10 月 10 日發表、報道 CERT-UA 披露於 2026 年 9 月觀察到之活動的報道。撰寫時 CERT-UA 披露的原始文本並未完整呈現；其中包括 UAC-0277 歸因、2026 年 9 月的觀察期，以及未披露具體攻擊者等細節，均未能獨立查證。現有材料並未公開任何 IOC——包括受入侵域名清單、腳本雜湊、YARA 規則或 ATT&amp;CK 對應項目；如日後公布，本文將會更新。</em></p>
+<p><a href="https://thehackernews.com/2026/10/100-compromised-websites-use-fake.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
