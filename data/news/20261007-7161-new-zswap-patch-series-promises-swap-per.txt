@@ -1,0 +1,48 @@
+Date: 2026-10-07 07:24:00
+Author: HKLUG Team
+Title: New Zswap Patch Series Promises Swap Performance Gains — But Linux Admins Shouldn't Bet on It Yet
+Content:
+<p>A patch series posted to the Linux kernel mailing lists this week aims to improve how the kernel's Zswap — its compressed in-memory cache for swapped pages — performs under pressure. The catch, and the reason this is a story to watch rather than an upgrade to plan around: the series is unmerged, unreviewed by the wider community, and the performance figures attached to it are the patch author's own. Treat any numbers from this work as directional at best.</p>
+<p>The timing is not an accident. RAM prices remain elevated, driven largely by demand for high-bandwidth memory in AI datacentres, which makes software-level gains to existing capacity newly interesting to operators on memory-tight, fixed-hardware deployments.</p>
+<h4>Why it matters for operators</h4>
+<p>Zswap sits between page cache and swap on disk (or a swap file). When memory pressure forces pages out, Zswap compresses them and holds them in a RAM pool instead of writing them straight to storage. If that pool fills, pages get pushed further down the swap chain to disk. On systems running close to their memory ceiling, a faster, more efficient Zswap can mean fewer disk writes, lower I/O wait times, and smoother behaviour under load.</p>
+<p>When new DRAM is expensive and capacity upgrades get deferred, software that recovers performance from existing hardware is a cheap lever — and compressed swap is one of the more accessible ones.</p>
+<h4>What operators can do today</h4>
+<p>No action is warranted on the strength of this patch series alone. But the discussion is a useful prompt to audit how Zswap is actually configured on your systems, especially if the defaults were set years ago and never revisited.</p>
+<p>On modern kernels, the controls live under <code>/sys/kernel/mm/zswap/</code>; on older kernels, check <code>/sys/module/zswap/parameters/</code> instead. The entries worth reviewing:</p>
+<ul>
+<li><code>enabled</code> — whether Zswap is active at all.</li>
+<li><code>max_pool_percent</code> — how much RAM the compressed pool may consume. Note that the parameter's name and units vary by kernel version, so check your kernel's documentation before assuming what you're reading. Its absolute impact scales with total system memory.</li>
+<li><code>compressor</code> — the compression algorithm in play (<code>lzo-rle</code>, <code>lz4</code>, <code>zstd</code>, and others).</li>
+<li><code>zpool</code> — the backing allocator (<code>zsmalloc</code>, <code>zbud</code>, or <code>z3fold</code>).</li>
+</ul>
+<p>The last two deserve attention before anyone draws conclusions from a benchmark. Allocator and compressor choice materially change the trade-off between memory density, CPU cost, and throughput: zsmalloc generally packs pages more tightly and is the default in modern kernels, while zbud and z3fold offer different fragmentation and CPU-cost profiles. A performance figure quoted without its allocator, compression algorithm, and workload characteristics is not directly transferable to your own deployment.</p>
+<p>It is also worth confirming that Zswap is doing meaningful work at all. If a system runs well below its memory ceiling, Zswap may rarely be invoked and tuning efforts will have limited effect.</p>
+<h4>Three questions to keep in view</h4>
+<p>As the series progresses, operators tracking kernel developments should watch for three things. First, do the reported gains survive independent testing on different hardware and workloads, or only the author's benchmark? Second, does the series change any user-visible interface or defaults — particularly the pool sizing parameter — that would require configuration review on upgrade? Third, what memory-overhead trade-off does it make: a faster swap cache that consumes more RAM defeats the purpose for anyone trying to extract more capacity from a fixed system.</p>
+<h4>Bottom line</h4>
+<p>This is a story to watch, not a remediation item. Rising hardware costs have made incremental improvements to Linux memory management newly interesting, and this underlying work is worth following on the kernel mailing lists and in the relevant subsystem trees.</p>
+<p>In the meantime, a ten-minute audit of <code>/sys/kernel/mm/zswap/</code> — confirming the pool is enabled, the compressor and allocator are intentional, and the pool percentage reflects your actual workload — is a sensible use of time regardless of how this particular patch series ends up.</p>
+<hr>
+<p>本周有一組 patch 系列刊登於 Linux kernel 郵件清單（mailing list），旨在改善核心內建的 Zswap——即為被 swap 出去的頁面而設的壓縮式記憶體快取——在高負載壓力下的表現。然而必須留意：該系列尚未合併（unmerged），亦未經更廣泛社群審閱，而所附的效能數據均出自 patch 作者本人。此項工作提供的數字，充其量只可視為參考方向，不宜過分當真。</p>
+<p>時機並非偶然。記憶體（RAM）價格持續高企，主要受人工智能資料中心對高頻寬記憶體（high-bandwidth memory）的需求所推動。這令開發者及營運者重新關注：在記憶體吃緊、硬件配備固定的部署環境下，能否透過軟件層面的改進，釋放現有容量的更多效益。</p>
+<h4>對營運者有何影響</h4>
+<p>Zswap 位於頁面快取（page cache）與磁碟上的 swap（或 swap file）之間。當記憶體壓力迫使頁面被踢出時，Zswap 會先將其壓縮，並儲存於記憶體池內，而非直接寫入儲存裝置。若記憶體池爆滿，頁面才會被繼續推送至 swap 連鎖的下一層——磁碟。對於運作已接近記憶體上限的系統而言，一個更快、更有效率的 Zswap，意味著更少的磁碟寫入、更低的 I/O 等待時間，以及更平穩的高負載表現。</p>
+<p>當新增 DRAM 成本昂貴、擴容計劃一再延後時，能從現有硬件中恢復效能的軟件便是一項低成本的槓桿——而壓縮式 swap 正是其中較容易入手的一種。</p>
+<h4>營運者目前可以做的事</h4>
+<p>單憑這組 patch 系列，並不足以採取任何行動。但相關討論正好提示我們，應重新審視系統上的 Zswap 實際設定方式，尤其若那些預設值是多年前定下、從未再檢視過。</p>
+<p>在現行核心版本中，相關設定位於 <code>/sys/kernel/mm/zswap/</code>；較舊的核心則可查看 <code>/sys/module/zswap/parameters/</code>。值得覆核的選項包括：</p>
+<ul>
+<li><code>enabled</code> — 確認 Zswap 是否處於啟用狀態。</li>
+<li><code>max_pool_percent</code> — 壓縮記憶體池可用多少 RAM。注意此參數的名稱及單位會隨核心版本而異，查閱前請先參考你所用核心的文件。其絕對影響力會隨系統總記憶體而放大。</li>
+<li><code>compressor</code> — 所用的壓縮演算法（<code>lzo-rle</code>、<code>lz4</code>、<code>zstd</code> 等）。</li>
+<li><code>zpool</code> — 後端分配器（<code>zsmalloc</code>、<code>zbud</code> 或 <code>z3fold</code>）。</li>
+</ul>
+<p>後兩項尤須留意，否則不宜根據任何基準測試（benchmark）數據輕下結論。分配器與壓縮演算法的選擇，會實質改變記憶體密度、CPU 成本與吞吐量（throughput）之間的取捨：zsmalloc 一般能把頁面排列得更緊密，是現代核心的預設選項；zbud 與 z3fold 則在碎片化程度與 CPU 成本方面各有不同的特性。若一個效能數字沒有交代所用的分配器、壓縮演算法及工作負載（workload）特徵，就不能直接套用到自己的部署環境。</p>
+<p>同時也值得確認 Zswap 是否真的在實質運作。若系統運行時遠低於記憶體上限，Zswap 可能極少被觸發，調校（tuning）亦不會有太大作用。</p>
+<h4>三個需要持續關注的問題</h4>
+<p>隨著該系列的發展，追蹤核心動向的營運者應留意三點。第一，所宣稱的效能提升，能否在不同硬件與工作負載下通過獨立測試，抑或只在作者自己的基準環境成立？第二，該系列是否改變任何使用者可見的介面或預設值——尤其是記憶體池大小的參數——以致升級後需要重新覆核設定？第三，它在記憶體開銷方面作出了什麼取捨：一個更快但佔用更多 RAM 的 swap 快取，對任何希望從固定系統中釋放更多容量的人而言，可謂本末倒置。</p>
+<h4>總結</h4>
+<p>這是一則值得持續留意的動態，而非立即需要補救的項目。硬件成本上升，令 Linux 記憶體管理的漸進式改進變得重新有趣起來；這項基礎工作值得在 kernel 郵件清單（mailing list）及相關子系統樹（subsystem tree）中持續追蹤。</p>
+<p>在此期間，花十分鐘審視 <code>/sys/kernel/mm/zswap/</code>——確認記憶體池已啟用、所選壓縮演算法與分配器是有意為之，以及池的百分比設定符合實際工作負載——無論這組 patch 系列最終走向如何，都是一段值得的時間投入。</p>
+<p><a href="https://www.phoronix.com/news/Linux-Better-Zswap-Performance" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
