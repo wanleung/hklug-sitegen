@@ -1,0 +1,42 @@
+Date: 2026-10-08 00:23:00
+Author: HKLUG Team
+Title: Attackers Lock FortiGate Admins Out of Their Own Firewalls — FBI Warns Campaign Ongoing
+Content:
+<p>The FBI is warning that a series of attacks dubbed "FortiBleed" is still actively hitting internet-exposed Fortinet FortiGate firewalls and SSL VPN gateways — and the failure mode is one every network administrator dreads: legitimate operators are being locked out of their own devices while attackers alter admin credentials and configuration, according to secondary coverage of the advisory.</p>
+<p>The agency's public service announcement, issued through its Internet Crime Complaint Center (IC3), describes an ongoing campaign against exposed Fortinet appliances. In a departure from the typical "steal data and leave" pattern, threat actors appear to tamper with management-plane access — modifying administrator credentials and device configuration on compromised units. The immediate operational consequence is severe: the very systems defenders would use to investigate and remediate are the ones seized.</p>
+<h4>Why this pattern matters</h4>
+<p>For Hong Kong enterprises running FortiGate firewalls or Fortinet SSL VPN gateways at their perimeter, the incident pattern converts a routine patch cycle into an incident-response emergency. Once an attacker controls the firewall's administrative credentials, patching alone restores nothing. Operators must rebuild trust in the device: verify configuration integrity, rotate every admin credential, re-examine routing and VPN policy, and confirm the attacker has not left persistence behind in the appliance or in adjacent infrastructure.</p>
+<p>The exposure surface is also well documented. Fortinet appliances — particularly SSL VPN gateways exposed directly to the internet — have been repeatedly weaponised, and unpatched FortiOS vulnerabilities have turned into mass exploitation within days of disclosure. The FBI's framing of the FortiBleed campaign as "ongoing" is significant: it signals that whatever fixes have been released are not, on their own, clearing the threat from the board.</p>
+<h4>What defenders should do now</h4>
+<p>Administrators responsible for Fortinet estates should treat the following as an operational checklist, not a nice-to-have:</p>
+<ul>
+<li><strong>Inventory and patch.</strong> Identify every FortiGate firewall and SSL VPN appliance reachable from the internet, and confirm they are running firmware validated against Fortinet's PSIRT advisories.</li>
+<li><strong>Restrict management access.</strong> Management interfaces should never be reachable from public networks. Move them behind VPNs, jump hosts, or management VLANs, and enforce source-address restrictions at the device level.</li>
+<li><strong>Audit admin accounts.</strong> Check for unrecognised administrators, changed passwords, altered configurations, and unfamiliar log entries across the estate.</li>
+<li><strong>Maintain out-of-band access.</strong> This is the single highest-value mitigation in a lockout scenario. If the appliance itself is compromised, you need a path to console access, an out-of-band management channel, or a documented recovery procedure that does not depend on the device's own web interface.</li>
+<li><strong>Hunt for persistence.</strong> Assume credential tampering is not the whole story. Search for unauthorised CLI sessions, modified VPN and routing policies, and secondary access points left by the attacker.</li>
+</ul>
+<p>One caveat worth stating plainly: reporting on this campaign so far rests on the FBI advisory as summarised in secondary coverage. The specific FortiOS and SSL VPN version ranges — and any CVE identifiers attached to the exploited bugs — need to be confirmed against Fortinet PSIRT and the primary advisory text before they are treated as authoritative. Enterprises should work from Fortinet's own advisories rather than third-party summaries when deciding what to patch. Note also that the IC3 notice is a warning and prioritisation signal to defenders, not a binding regulation.</p>
+<h4>The bigger picture</h4>
+<p>Patching is necessary but not sufficient. The FortiBleed pattern illustrates a broader shift: perimeter appliances are now both the beachhead and the crime scene. Organisations that cannot recover a firewall without losing access to it will find that exposure management and post-compromise detection — not just vulnerability scanning — determine whether an incident is contained or catastrophic.</p>
+<p>For IT professionals anywhere running internet-facing Fortinet hardware, the FBI's warning is a prompt to ask one uncomfortable question: if an attacker changed our admin credentials tomorrow, how would we even know — and how would we get back in?</p>
+<hr>
+<p>美國聯邦調查局（FBI）警告，一系列被稱為「FortiBleed」的攻擊正持續針對暴露於互聯網的 Fortinet FortiGate 防火牆及 SSL VPN 網關發動——而其失效模式正是每一位網絡管理員的噩夢：合法的營運人員無法登入自己的設備，與此同時攻擊者則改動管理員憑證及配置，此說法取自與本文同步刊出的二次報道對該警告的轉述。</p>
+<p>FBI 透過其互聯網犯罪投訴中心（IC3）發布的公告，描述了一場針對暴露 Fortinet 設備的持續攻擊行動。有別於典型的「盜取數據後離去」模式，威脅行為者似乎會篡改管理平面的訪問權限——在已被入侵的設備上改動管理員憑證及設備配置。其即時的營運後果極為嚴重：防禦者原本用來調查及修補的系統，恰恰就是被奪走的那些系統。</p>
+<h4>為何此模式值得關注</h4>
+<p>對於在邊界網絡運行 FortiGate 防火牆或 Fortinet SSL VPN 網關的香港企業而言，此事件模式把一項例行的修補流程轉化為一場應對事件的緊急狀態。一旦攻擊者控制了防火牆的管理員憑證，單靠修補並不能恢復任何信任。營運人員必須重建對設備的信心：核實配置完整性、更換所有管理員憑證、重新檢查路由及 VPN 政策，並確認攻擊者未有在該設備或鄰近基礎設施中留下持久化機制。</p>
+<p>相關暴露面亦有充分記錄。Fortinet 設備——尤其是直接暴露於互聯網的 SSL VPN 網關——已多次被武器化，而未修補的 FortiOS 漏洞往往在披露後數日內便遭大規模利用。FBI 將 FortiBleed 行動定性為「進行中」意義重大：這意味著目前為止已發布的修補措施，本身並未能將威脅徹底清除。</p>
+<h4>防禦者現階段應採取的行動</h4>
+<p>負責 Fortinet 設備資產的管理員應將以下項目視為營運清單上的必辦事項，而非可有可無：</p>
+<ul>
+<li><strong>盤點及修補。</strong> 識別所有可從互聯網訪問的 FortiGate 防火牆及 SSL VPN 設備，並確認其固件版本已參照 Fortinet PSIRT 公告完成驗證。</li>
+<li><strong>限制管理訪問。</strong> 管理介面絕不應可從公共網絡訪問。應將其置於 VPN、jump host 或管理 VLAN 之後，並在設備層面強制執行來源地址限制。</li>
+<li><strong>審核管理員帳戶。</strong> 檢查整個資產中是否存在不明管理員、被更改的密碼、被改動的配置，以及不熟悉的日誌記錄。</li>
+<li><strong>維持 out-of-band 訪問。</strong> 在被鎖死的情況下，這是價值最高的單一緩解措施。如果設備本身已被入侵，你需要一條通往 console（主控台）的訪問途徑、一條 out-of-band 管理通道，或一套不依賴設備自身 web 介面的既定恢復程序。</li>
+<li><strong>搜尋持久化機制。</strong> 假定憑證篡改並非事件的全貌。搜尋未經授權的 CLI 會話、被修改的 VPN 及路由政策，以及攻擊者遺留下來的次要訪問點。</li>
+</ul>
+<p>有一點須坦白說明：目前關於此行動的報道均基於 FBI 告示並經二次轉述。涉及的 FortiOS 及 SSL VPN 版本範圍——以及與被利用漏洞相關的任何 CVE 編號——必須先與 Fortinet PSIRT 及原始公告文本核實，方可視為權威資訊。企業在決定修補內容時，應以 Fortinet 官方公告為依據，而非依賴第三方摘要。另須注意，IC3 通知是向防禦者發出的警告及優先次序信號，並非具約束力的法規。</p>
+<h4>更宏觀的圖景</h4>
+<p>修補是必要的，但並不充分。FortiBleed 模式揭示了一個更廣泛的轉變：邊界設備如今既是入侵的橋頭堡，亦是犯罪現場。無法在不失去防火牆訪問權的前提下恢復它的組織將會發現，決定事件能否被控制抑或演變為災難的，是暴露面管理及入侵後偵測能力——而不單是漏洞掃描。</p>
+<p>對於任何地方運行面向互聯網的 Fortinet 硬件的 IT 專業人員而言，FBI 的警告是一項催促，促使他們面對一個令人不安的問題：如果明天攻擊者改動了我們的管理員憑證，我們如何能察覺——又如何重新取得訪問權？</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/fbi-ongoing-fortibleed-attacks-lock-out-fortigate-vpn-admins/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
