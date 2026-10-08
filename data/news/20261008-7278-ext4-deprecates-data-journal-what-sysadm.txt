@@ -1,0 +1,64 @@
+Date: 2026-10-08
+Author: HKLUG Team
+Title: Ext4 Deprecates data=journal: What Sysadmins Should Do Before 2028
+Content:
+<p>The ext4 maintainers have deprecated the file system's <code>data=journal</code> mount mode, with actual removal planned for 2028, according to coverage by Phoronix. For administrators who still run the option — deliberately or by inherited configuration — that leaves roughly a two-year runway to audit fleets, update templates, and decide what, if anything, replaces it. Existing mounts keep working in the meantime; the deprecation marks the mode for eventual removal rather than switching anything off today.</p>
+<h4>What is being retired</h4>
+<p>Ext4 supports three data-journalling modes. <code>data=ordered</code>, the default, journals metadata while writing file data before the corresponding metadata is committed, which is what gives ext4 its familiar consistency guarantees after a crash. <code>data=writeback</code> journals metadata only and can reorder data writes, buying speed at the cost of possible stale data after a power loss. <code>data=journal</code>, the mode now on the way out, journals both metadata and file data. It offers the strongest crash-consistency story among the three, but every write is committed twice — once to the journal and once to its final location — and the mode is widely benchmarked as the slowest option on ext4.</p>
+<p>The deprecation means the mode still works today, but it is now marked for eventual removal, and the maintainers' stated target is 2028. Phoronix's report gives limited detail on the maintainers' specific rationale; the practical reading is that a rarely-exercised kernel code path is costly to maintain and test relative to the number of deployments that genuinely depend on it. That is analysis, not a quoted justification — anyone needing the official reasoning should follow the ext4 kernel mailing list discussion directly.</p>
+<h4>Why it matters now</h4>
+<p>Most surviving <code>data=journal</code> mounts are inherited from older guidance rather than the result of a current benchmark. The option became common advice in the late 2000s and early 2010s, when flash storage was slower and the performance penalty was less pronounced than it is today. Those mounts now live in configuration-management templates, <code>/etc/fstab</code> lines copied between generations of machines, and vendor deployment scripts that nobody has revisited since.</p>
+<p>That is the real exposure here: not a breaking change arriving next quarter, but infrastructure debt with a deadline. A file system mount option is exactly the kind of setting that survives three hardware refreshes because it is buried in a Puppet manifest or a documented "standard build" from a decade ago.</p>
+<h4>Check what is actually mounted, not just what the templates say</h4>
+<p>A grep of fstab and configuration repos tells you what your templates <em>intend</em>. It does not tell you what a machine is actually running — drifted hosts, hand-edited lines, and vendor scripts applied outside the normal process all mean the two frequently disagree. Check the live state as well:</p>
+<pre><code>findmnt -no OPTIONS &lt;mountpoint&gt;
+grep data=journal /proc/mounts
+</code></pre>
+<p>Going forward, it is also worth knowing that kernel deprecation warnings of this kind typically surface in <code>journalctl</code> and <code>dmesg</code> once maintainers add them, which makes a fleet-wide <code>journalctl</code> search a useful detection channel when the warning lands. That is general kernel practice rather than a confirmed detail of this specific patch, but either way the answer is the same: inventory running mounts now, before the warning arrives.</p>
+<h4>Durability-first workloads need a real decision, not a sed replacement</h4>
+<p>Systems still running <code>data=journal</code> were often chosen deliberately. Databases with write-ahead logs, VM image storage, and other durability-critical deployments picked it precisely for its all-journal writes. For those hosts, editing the mount line is the beginning of the conversation, not the end of it.</p>
+<p>The right response is a workload-level re-evaluation: measure how much of the workload's durability burden the journal was actually carrying, and where that burden moves when the journal stops covering file data. Sometimes the answer is a cheaper targeted mechanism (see below); sometimes it is genuinely moving the workload to a different file system. What does not work is discovering after a migration that the guarantee you were relying on quietly disappeared with the mount option.</p>
+<h4>The migration picture</h4>
+<p>Phoronix frames <code>data=ordered</code> as the natural drop-in replacement, and that is consistent with ext4's defaults — removing <code>data=journal</code> from a mount line restores the mode almost every other ext4 system already runs. The performance improvement is typically immediate and measurable.</p>
+<p>Where genuine transactional semantics are required, several options exist. <code>data=writeback</code> is faster still but weaker on crash consistency. Application-level flushing, <code>fsync()</code>, and <code>O_DIRECT</code> can pin durability requirements to the specific operations that need them rather than taxing every write. Copy-on-write file systems such as Btrfs or ZFS provide atomic transactional updates as a native feature, and are worth evaluating where the workload truly demands it. Note that these last two are general practice in the Linux community rather than official migration guidance from the ext4 maintainers.</p>
+<h4>Audit checklist</h4>
+<ul>
+<li>Grep configuration-management repositories and <code>/etc/fstab</code> for <code>data=journal</code>, including commented-out lines that may be re-enabled by a template variable.</li>
+<li>Check running mounts with <code>findmnt -no OPTIONS &lt;mountpoint&gt;</code> or <code>grep data=journal /proc/mounts</code> — templates and live state often disagree.</li>
+<li>Compare production mounts against documented intent — the goal is to distinguish deliberate choices from inherited ones.</li>
+<li>For deliberate deployments, measure <code>data=ordered</code> against current workloads before the deadline rather than after; the performance delta on modern hardware is frequently smaller than legacy guidance suggests.</li>
+<li>Where journalled data is genuinely required, scope an application-level or copy-on-write alternative and treat the 2028 removal as the project deadline.</li>
+</ul>
+<p>The window is comfortable but not indefinite, and filesystem migrations rarely become easier with time.</p>
+<p><em>Source: <a href="https://www.phoronix.com/news/EXT4-Deprecates-Journal-Mode">Phoronix — EXT4 Deprecates Its Journaled "data=journal" Mode</a></em></p>
+<hr>
+<p>Ext4 維護者已正式棄用（deprecate）檔案系統的 <code>data=journal</code> 掛載模式，實際移除時程預定於 2028 年，根據 Phoronix 的報導。對仍在使用此選項的管理員——無論是有意選擇或承襲舊設定——大約還有兩年時間可以盤點整批伺服器、更新設定範本，並決定是否需要替代方案。在此期間，現有的掛載仍可正常使用；這次棄用只是標記該模式最終會被移除，並非今天就即時關閉任何功能。</p>
+<h4>即將退役的是什麼</h4>
+<p>Ext4 支援三種數據日誌（journalling）模式。預設的 <code>data=ordered</code> 會將 metadata 寫入日誌，並在對應 metadata 正式提交之前先寫入檔案數據，這正是 ext4 在系統崩潰後仍能維持一致性的原因。<code>data=writeback</code> 只將 metadata 寫入日誌，並可重新排列數據寫入次序，以換取速度，代價是斷電後可能留下舊數據。即將步入歷史的 <code>data=journal</code>，則會同時將 metadata 和檔案數據寫入日誌。它在三者之中提供最強的崩潰一致性（crash consistency）保障，但每一次寫入都要提交兩次——一次寫入日誌，一次寫入最終位置——多項基準測試普遍顯示這是 ext4 上最慢的模式。</p>
+<p>棄用代表這個模式目前仍然可用，但已標記為最終移除，維護者訂出的目標年份是 2028 年。Phoronix 的報導對維護者的具體理據著墨有限；較務實的解讀是，一條甚少被觸及的 kernel code path，相對於真正依賴它的部署數量而言，維護與測試成本過高。這是分析，而非引述的正式理由——如需了解官方理據，應直接追蹤 ext4 kernel mailing list 的相關討論。</p>
+<h4>為什麼現在就該關注</h4>
+<p>現存的 <code>data=journal</code> 掛載大多承襲自早期建議，而非近期基準測試的結果。這個選項在 2000 年代末至 2010 年代初成為常見建議，當時 flash 儲存速度較慢，效能影響遠不如今日明顯。這些設定如今散落在 configuration management 範本、在不同世代機器之間複製的 <code>/etc/fstab</code> 記錄，以及多年來無人再檢視的廠商部署腳本之中。</p>
+<p>這才是真正的風險所在：不是下個季度突如其來的 breaking change，而是一筆有死線的 infrastructure 債。檔案系統掛載選項正是那種可以安然度過三次硬件更新的設定，只因它深埋在某份 Puppet manifest，或一份十年前寫成的「標準建置」文件裡。</p>
+<h4>核實實際掛載狀態，而非只看範本</h4>
+<p>對 fstab 和 configuration repo 執行 grep，只會告訴你範本「打算」啟用甚麼，卻無法告訴你機器實際正在運行甚麼——配置漂移（drift）的主機、人工修改過的記錄，以及在正式流程之外套用的廠商腳本，都令兩者經常不一致。務必同時檢查即時狀態：</p>
+<pre><code>findmnt -no OPTIONS &lt;mountpoint&gt;
+grep data=journal /proc/mounts
+</code></pre>
+<p>往後亦值得留意，這類 kernel 棄用警告通常在維護者加入後會出現在 <code>journalctl</code> 和 <code>dmesg</code> 之中，因此全面搜尋 <code>journalctl</code> 是警告發出時一個有用的偵測途徑。這是 kernel 專案的一般慣例，並非此 patch 已確認的細節，但無論如何答案都一樣：趁警告出現之前，先盤點目前運行中的掛載。</p>
+<h4>以持久性為先的工作負載需要真正的決策，而非 sed 替換</h4>
+<p>仍在運行 <code>data=journal</code> 的系統往往是刻意選擇的結果。設有 write-ahead log 的數據庫、VM image 儲存，以及其他對持久性有嚴格要求的部署，正是看中它所有寫入都經日誌的特性。對這些主機而言，修改掛載設定只是對話的開端，而非終結。</p>
+<p>正確的應對是重新評估工作負載層面的需要：量度日誌實際承擔了多少持久性保障責任，以及當日誌不再覆蓋檔案數據後，這份責任將轉移至何處。有時答案是更具成本效益的針對性機制（見下文），有時則確實需要把工作負載遷移至另一個檔案系統。行不通的做法是：遷移之後才發現，一直依賴的保障已隨著掛載選項悄然消失。</p>
+<h4>遷移方案</h4>
+<p>Phoronix 將 <code>data=ordered</code> 定位為自然的直接替代方案，這與 ext4 的預設值一致——從掛載設定中移除 <code>data=journal</code>，即會回復為幾乎所有其他 ext4 系統正在運行的模式。效能提升通常即時且可量度。</p>
+<p>如確實需要 transactional 語意，則有數個選項可供考慮。<code>data=writeback</code> 速度更快，但崩潰一致性較弱。應用層面的 flush、<code>fsync()</code> 和 <code>O_DIRECT</code> 可將持久性要求鎖定至真正需要的特定操作，而非為每一次寫入付出代價。Btrfs 或 ZFS 等 copy-on-write 檔案系統以原生功能提供 atomic transactional 更新，在工作負載確有需要時值得評估。請注意，後兩者屬 Linux 社群的一般實踐，並非 ext4 維護者提供的官方遷移指引。</p>
+<h4>審計清單</h4>
+<ul>
+<li>在 configuration management repository 及 <code>/etc/fstab</code> 中搜尋 <code>data=journal</code>，包括可能被範本變數重新啟用的註釋記錄（commented-out lines）。</li>
+<li>以 <code>findmnt -no OPTIONS &lt;mountpoint&gt;</code> 或 <code>grep data=journal /proc/mounts</code> 檢查運行中的掛載——範本與即時狀態經常不一致。</li>
+<li>將生產環境的掛載與文件記錄的意圖逐一比對——目標是分辨哪些是刻意選擇，哪些只是承襲而來。</li>
+<li>對於刻意部署的主機，在死線之前而非之後，以現行工作負載量度 <code>data=ordered</code> 的表現；在現代硬件上，效能差異往往小於舊有建議所聲稱的幅度。</li>
+<li>如確實需要 journaled data，應規劃應用層面或 copy-on-write 的替代方案，並以 2028 年移除為項目的死線。</li>
+</ul>
+<p>時間仍然充裕，但並非無限；檔案系統遷移從來不會隨時間變得更容易。</p>
+<p><em>資料來源：<a href="https://www.phoronix.com/news/EXT4-Deprecates-Journal-Mode">Phoronix — EXT4 Deprecates Its Journaled "data=journal" Mode</a></em></p>
+<p><a href="https://www.phoronix.com/news/EXT4-Deprecates-Journal-Mode" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
