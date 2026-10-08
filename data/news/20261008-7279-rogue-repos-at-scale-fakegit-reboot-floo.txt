@@ -1,0 +1,46 @@
+Date: 2026-10-08 18:24:00
+Author: HKLUG Team
+Title: Rogue repos at scale: FakeGit reboot floods GitHub with 17,610 malicious projects
+Content:
+<p>A revived malware operation has seeded GitHub with 17,610 lookalike repositories that quietly install the SmartLoader downloader and ultimately deliver the StealC infostealer, according to BleepingComputer, which disclosed the figures on 8 October. The campaign — a FakeGit-style operation reactivated earlier this month after a period of dormancy — represents one of the largest single waves of repository abuse reported on the platform.</p>
+<p>The scale is the story. Rather than compromising legitimate projects, the operators register repositories whose names imitate popular tools and libraries, banking on developers finding them through GitHub search and cloning them without a second look. Once a victim installs dependencies from one of these projects, install-time hooks — a delivery mechanism long favoured by typosquatted packages — can silently pull down loaders such as SmartLoader, which in turn fetches StealC, a credential and session-token stealer.</p>
+<p>Volume, not sophistication, appears to be the operating logic. Typosquatting at this volume is cheap to produce and cheap to replace: when repositories are reported and removed, the economics still favour simply seeding more. That dynamic explains why platform takedowns, however prompt, have not dented the campaign — every deleted repo is a rounding error against a five-figure inventory.</p>
+<p><strong>Why this matters beyond GitHub</strong></p>
+<p>The real exposure sits downstream of the initial infection. A developer workstation that runs a malicious install script is rarely the end of the path. Build agents, CI/CD runners, and cloud console sessions on the same machine inherit that trust, and infostealers such as StealC are specifically built to vacuum up stored tokens, cookies, and API keys. From a single careless clone, an attacker can move into a repository's build pipeline or a cloud tenant without ever touching a phishing inbox.</p>
+<p>That makes this a supply-chain story, not merely a platform-abuse story. For engineering teams — including Hong Kong-based shops sitting in the dependency path of regional and international fintech and e-commerce clients — the practical defence is not hoping the platform cleans up faster. It is treating search results and repository stars as untrusted signals, and moving dependency vetting upstream into the workflow of whoever first copies a <code>git clone</code> command.</p>
+<p>Detection, in other words, has to happen at the developer's desk. Once a loader has executed on a build machine, the incident response is already expensive.</p>
+<p><strong>Dependency-vetting checklist for engineering teams</strong></p>
+<ul>
+<li>Verify repository provenance: confirm the project's canonical home (official site, documentation, or the upstream org) before cloning anything found via search.</li>
+<li>Check repository age and activity — freshly created repos with sudden stars or a single bulk commit are classic typosquat hallmarks.</li>
+<li>Read <code>package.json</code> and install-hook scripts (<code>preinstall</code>, <code>postinstall</code>, and equivalents) before running any install command; treat remote fetches in these hooks as hostile by default.</li>
+<li>Compare package names character by character against the intended dependency; configure private registries or lockfile-pinned installs where possible.</li>
+<li>Restrict install scripts in CI/CD (for example, <code>npm install --ignore-scripts</code>) and enable them only for vetted dependencies.</li>
+<li>Keep developer endpoints and build runners on separate credential scopes, so an infostealer on one cannot reach production tokens.</li>
+<li>Monitor endpoint telemetry for loader-style behaviour: unexpected child processes spawned by install tooling, or outbound fetches during a build.</li>
+<li>Feed findings back into an internal blocklist of known-bad repositories and maintainers, and brief junior developers on the pattern.</li>
+</ul>
+<p><em>The first half of this checklist targets individual developers at the point of clone; the latter items are team-level controls that security and platform owners should put in place.</em></p>
+<p><em>Source: BleepingComputer, "FakeGit malware campaign returns with 17,610 malicious GitHub repos", 8 October 2026.</em></p>
+<hr>
+<p>據 BleepingComputer 於10月8日披露的數據，一項死灰復燃的惡意軟件行動已在 GitHub 上散布了17,610個偽冒倉庫，這些倉庫會在用戶不知情的情況下安裝 SmartLoader 下載程式，最終投放 StealC 資訊竊取器。這場行動屬於 FakeGit 類型的攻擊模式，在沉寂一段時間後於本月早先重新活躍，是該平台歷來被通報的最大規模單次倉庫濫用浪潮之一。</p>
+<p>規模正是此事件的重點。攻擊者並非入侵正規項目，而是註冊名稱模仿熱門工具及函數庫的倉庫，寄望開發者透過 GitHub 搜尋找到這些倉庫，未經細看便直接 clone。一旦受害者從這些項目安裝 dependencies，安裝階段的 hooks——這種投放機制長期被偽冒套件（typosquatting）所採用——便可在無聲無息間下載 SmartLoader 等載入程式，繼而取得 StealC 這款專門竊取登入憑證及 session token 的工具。</p>
+<p>看來其運作邏輯是以數量取勝，而非靠技術精密。如此大量生產偽冒套件的成本極低，替換成本同樣低廉：即使倉庫被舉報及移除，經濟上仍然是直接散布更多倉庫更為划算。這正解釋了為何平台的下架行動無論多迅速，都未能削弱這場攻勢——每一個被刪除的倉庫，相對於以萬計的倉庫庫存而言，只是九牛一毛。</p>
+<p><strong>為何此事的影響不限於 GitHub</strong></p>
+<p>真正的風險位於初始感染之後的下游環節。一台執行了惡意安裝腳本的開發工作站，很少會是攻擊鏈的終點。同一部機器上的 build agents、CI/CD runners 以及雲端 console sessions 都會繼承該項信任，而 StealC 等資訊竊取器正是專門設計用來大量搜刮已儲存的 tokens、cookies 及 API keys。攻擊者只需一次疏忽的 clone，便可以不接觸任何 phishing 收件匣的情況下，侵入該倉庫的 build pipeline 或雲端 tenant。</p>
+<p>這意味著此事件屬於供應鏈問題，而不僅僅是平台濫用問題。對於工程團隊而言——包括身處區域及國際金融科技、電子商務客戶 dependency 路徑上的香港公司——實際的防禦之道，並非寄望平台加快清理，而是把搜尋結果及倉庫 stars 視為不可信任的信號，並將 dependency 審查工作上游至負責執行 <code>git clone</code> 指令的人身上，在其日常工作流程中落實。</p>
+<p>換言之，偵測必須在開發者的辦公桌上進行。一旦載入程式已在 build 機器上執行，事故應對的代價已經非常沉重。</p>
+<p><strong>工程團隊 Dependency 審查清單</strong></p>
+<ul>
+<li>核實倉庫來源：在 clone 任何經搜尋得來的項目之前，先確認項目的官方來源（官方網站、文件或上游 org）。</li>
+<li>檢查倉庫的建立時間及活躍度——剛創建便突然獲得大量 stars，或只有一個批量 commit 的倉庫，是典型偽冒套件的特徵。</li>
+<li>在執行任何安裝指令之前，先閱讀 <code>package.json</code> 及安裝 hook 腳本（<code>preinstall</code>、<code>postinstall</code> 及同類腳本）；這些 hook 中的遠端 fetch 應一律視為潛在敵意。</li>
+<li>逐個字符核對 package 名稱是否與預期的 dependency 一致；盡可能使用私人 registries 或以 lockfile 鎖定版本安裝。</li>
+<li>在 CI/CD 中限制安裝腳本的執行（例如使用 <code>npm install --ignore-scripts</code>），僅為已審查的 dependencies 啟用。</li>
+<li>將開發者終端設備及 build runners 置於不同的 credential scope，確保其中一方的資訊竊取器無法觸及生產環境的 tokens。</li>
+<li>監察終端設備遙測數據中類似載入程式的行為：安裝工具意外衍生的子進程（child processes），或 build 期間的異常 outbound fetches。</li>
+<li>將發現回饋至內部已知惡意倉庫及維護者的 blocklist，並向初級開發者講解此類攻擊模式。</li>
+</ul>
+<p><em>此清單前半部針對開發者個人在 clone 環節的防範；後半部分則是團隊層面的控制措施，應由安全及平台負責人落實。</em></p>
+<p><em>資料來源：BleepingComputer，《FakeGit malware campaign returns with 17,610 malicious GitHub repos》，2026年10月8日。</em></p>
+<p><a href="https://www.bleepingcomputer.com/news/security/fakegit-malware-campaign-returns-with-17-610-malicious-github-repos/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
