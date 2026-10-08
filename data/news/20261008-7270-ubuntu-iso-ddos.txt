@@ -1,0 +1,70 @@
+Date: 2026-10-08 16:24:00
+Author: HKLUG Team
+Title: Ubuntu 官網與 ISO 下載遭確認 DDoS 攻擊：鏡像與雲端目錄仍可用
+Content:
+<blockquote>
+<p><strong>滾動報導（Rolling Coverage）</strong>：本篇為事件進行中的持續更新版本，兼有新聞報導與操作指南性質。若 Canonical 正式宣布恢復服務，或公布事後檢討報告，我們將以追蹤文章更新，不再重寫本篇。</p>
+</blockquote>
+<p><em>（截至 2026 年 10 月 8 日 16:24 HKT）</em></p>
+<p>Ubuntu 官方網站與 ISO 下載服務目前無法正常使用。Linux 硬體與效能測試網站 Phoronix 於 10 月 8 日報導，這次中斷已確認為持續進行中的分散式阻斷服務（DDoS）攻擊，並非例行維護或普通故障。Canonical 尚未公布攻擊規模、影響範圍或預計修復時間。</p>
+<h5>已確認的事實</h5>
+<ul>
+<li>ubuntu.com 及主要 ISO 下載途徑目前間歇性或完全無法存取。</li>
+<li>Phoronix 將事件定性為已確認的 DDoS 攻擊。本篇不就攻擊者身分、動機或手法作任何推測；就本稿所知，Canonical 亦未就此提供公開聲明。</li>
+<li>恢復時間表未知，事件仍在發展中。</li>
+</ul>
+<p>官方入口失效，不代表整個 Ubuntu 生態系癱瘓 —— 鏡像網絡、雲端映像目錄與分散式套件庫皆為獨立基礎設施，多數情況下不受 ubuntu.com 中斷影響。以下為事件期間的實際應變方法。</p>
+<h5>應變方法</h5>
+<p><strong>1. 用鏡像站（mirror），無需一味等待 ubuntu.com</strong></p>
+<p>Ubuntu 的鏡像網絡與 ubuntu.com 分開運作。你可以：</p>
+<ul>
+<li>直接以完整路徑取得 ISO，例如 <code>https://&lt;mirror&gt;/ubuntu-releases/&lt;版本&gt;/ubuntu-&lt;版本&gt;-desktop-amd64.iso</code>，而不是依賴目錄瀏覽頁面。<strong>注意：目錄列表（directory listing）逾時，不代表該鏡像站已失效</strong> —— 先試直接檔案路徑，再試其他鏡像。</li>
+<li>本稿發出前未能逐一即時驗證各鏡像節點狀態，因此<strong>不在此指名推薦特定主機名</strong>；建議查閱官方鏡像清單（<code>mirrors.ubuntu.com</code>）並嘗試多於一個來源。</li>
+</ul>
+<p><strong>2. 需要套件？直接改 <code>sources.list</code></strong></p>
+<p>如果你只是在事件期間需要安裝或更新套件，而不是下載整份 ISO，可以把 <code>/etc/apt/sources.list</code>（或 <code>sources.list.d/</code> 內對應項目）指向任何可用的 Ubuntu 鏡像主機，無需等待官網恢復。改動前建議先備份原檔。</p>
+<p><strong>3. 雲端映像：優先走雲廠商目錄</strong></p>
+<p><code>cloud-images.ubuntu.com</code> 雖然是獨立主機名，但仍由 Canonical 自行營運，事件期間同樣不保證可用。<strong>若要確保獨立性，應直接使用各大雲端供應商的映像目錄</strong>（AWS AMI、Azure Marketplace、Google Cloud、Oracle Cloud 等），這些映像由雲端平台自行保存與分發，不依賴 ubuntu.com。</p>
+<p><strong>4. 非官方來源下載 ISO 時，務必驗證</strong></p>
+<p>中斷期間正是冒牌 ISO 流竄的高風險時刻。從鏡像站或任何非官方管道取得的映像檔，<strong>必須</strong>核對 SHA256 雜湊值（可從 Ubuntu 官方發佈頁或可信鏡像的 <code>.SHA256</code> 檔取得），並以 GPG 驗證簽章。跳過這一步等同把供應鏈風險自己吞下去。驗證步驟為：</p>
+<pre><code class="language-bash">sha256sum -c ubuntu-&lt;版本&gt;-desktop-amd64.iso.sha256
+gpg --verify ubuntu-&lt;版本&gt;-desktop-amd64.iso.sig ubuntu-&lt;版本&gt;-desktop-amd64.iso
+</code></pre>
+<p>（GPG 驗證前需先匯入 Ubuntu 發佈金鑰。）</p>
+<h5>更大的圖景</h5>
+<p>這次事件提醒了一件開放社群早已知道、卻經常被忽略的事：<strong>官方入口不是唯一的基礎設施</strong>。鏡像網絡、雲端映像目錄與分散式套件庫的存在，正是為了在官方站點失效時維持供應連續性。日常就熟悉一至兩個可用鏡像、並在 <code>sources.list</code> 中預設備用來源，是成本極低而回報明確的做法。</p>
+<p>事件仍在進行中。我們會在 Canonical 公布恢復、影響範圍擴大至 Web/ISO 以外，或本稿發出後 24 小時（以最先發生者為準）發布後續更新。</p>
+<hr>
+<blockquote>
+<p><strong>滾動報導（Rolling Coverage）</strong>：本篇為事件進行中的持續更新版本，兼有新聞報導與操作指南性質。若 Canonical 正式宣布恢復服務，或公布事後檢討報告，我們將以追蹤文章更新，不再重寫本篇。</p>
+</blockquote>
+<p><em>（截至 2026 年 10 月 8 日 16:24 HKT）</em></p>
+<p>Ubuntu 官方網站與 ISO 下載服務目前無法正常使用。Linux 硬體與效能測試網站 Phoronix 於 10 月 8 日報導，這次中斷已確認為持續進行中的分散式阻斷服務（DDoS）攻擊，並非例行維護或普通故障。Canonical 尚未公布攻擊規模、影響範圍或預計修復時間。</p>
+<h5>已確認的事實</h5>
+<ul>
+<li>ubuntu.com 及主要 ISO 下載途徑目前間歇性或完全無法存取。</li>
+<li>Phoronix 將事件定性為已確認的 DDoS 攻擊。本篇不就攻擊者身分、動機或手法作任何推測；就本稿所知，Canonical 亦未就此提供公開聲明。</li>
+<li>恢復時間表未知，事件仍在發展中。</li>
+</ul>
+<p>官方入口失效，不代表整個 Ubuntu 生態系癱瘓 —— 鏡像網絡、雲端映像目錄與分散式套件庫皆為獨立基礎設施，多數情況下不受 ubuntu.com 中斷影響。以下為事件期間的實際應變方法。</p>
+<h5>應變方法</h5>
+<p><strong>1. 用鏡像站（mirror），無需一味等待 ubuntu.com</strong></p>
+<p>Ubuntu 的鏡像網絡與 ubuntu.com 分開運作。你可以：</p>
+<ul>
+<li>直接以完整路徑取得 ISO，例如 <code>https://&lt;mirror&gt;/ubuntu-releases/&lt;版本&gt;/ubuntu-&lt;版本&gt;-desktop-amd64.iso</code>，而不是依賴目錄瀏覽頁面。<strong>注意：目錄列表（directory listing）逾時，不代表該鏡像站已失效</strong> —— 先試直接檔案路徑，再試其他鏡像。</li>
+<li>本稿發出前未能逐一即時驗證各鏡像節點狀態，因此<strong>不在此指名推薦特定主機名</strong>；建議查閱官方鏡像清單（<code>mirrors.ubuntu.com</code>）並嘗試多於一個來源。</li>
+</ul>
+<p><strong>2. 需要套件？直接改 <code>sources.list</code></strong></p>
+<p>如果你只是在事件期間需要安裝或更新套件，而不是下載整份 ISO，可以把 <code>/etc/apt/sources.list</code>（或 <code>sources.list.d/</code> 內對應項目）指向任何可用的 Ubuntu 鏡像主機，無需等待官網恢復。改動前建議先備份原檔。</p>
+<p><strong>3. 雲端映像：優先走雲廠商目錄</strong></p>
+<p><code>cloud-images.ubuntu.com</code> 雖然是獨立主機名，但仍由 Canonical 自行營運，事件期間同樣不保證可用。<strong>若要確保獨立性，應直接使用各大雲端供應商的映像目錄</strong>（AWS AMI、Azure Marketplace、Google Cloud、Oracle Cloud 等），這些映像由雲端平台自行保存與分發，不依賴 ubuntu.com。</p>
+<p><strong>4. 非官方來源下載 ISO 時，務必驗證</strong></p>
+<p>中斷期間正是冒牌 ISO 流竄的高風險時刻。從鏡像站或任何非官方管道取得的映像檔，<strong>必須</strong>核對 SHA256 雜湊值（可從 Ubuntu 官方發佈頁或可信鏡像的 <code>.SHA256</code> 檔取得），並以 GPG 驗證簽章。跳過這一步等同把供應鏈風險自己吞下去。驗證步驟為：</p>
+<pre><code class="language-bash">sha256sum -c ubuntu-&lt;版本&gt;-desktop-amd64.iso.sha256
+gpg --verify ubuntu-&lt;版本&gt;-desktop-amd64.iso.sig ubuntu-&lt;版本&gt;-desktop-amd64.iso
+</code></pre>
+<p>（GPG 驗證前需先匯入 Ubuntu 發佈金鑰。）</p>
+<h5>更大的圖景</h5>
+<p>這次事件提醒了一件開放社群早已知道、卻經常被忽略的事：<strong>官方入口不是唯一的基礎設施</strong>。鏡像網絡、雲端映像目錄與分散式套件庫的存在，正是為了在官方站點失效時維持供應連續性。日常就熟悉一至兩個可用鏡像、並在 <code>sources.list</code> 中預設備用來源，是成本極低而回報明確的做法。</p>
+<p>事件仍在進行中。我們會在 Canonical 公布恢復、影響範圍擴大至 Web/ISO 以外，或本稿發出後 24 小時（以最先發生者為準）發布後續更新。</p>
+<p><a href="https://www.phoronix.com/news/Ubuntu-DDoS-October-2026" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
