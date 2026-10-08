@@ -1,0 +1,30 @@
+Date: 2026-10-08 15:32:00
+Author: HKLUG Team
+Title: Rust-Based Nova Driver Moves Closer to Mainline NVIDIA Linux Support
+Content:
+<p>```</p>
+<p>At LPC2026 in Prague this week, NVIDIA engineer John Hubbard and Red Hat's Danilo Krummrich presented an update on Nova — the Rust-based open-source NVIDIA Linux kernel driver the company has been building as Nouveau's successor — according to Phoronix. The pair framed the project's long-term goal as official, in-tree NVIDIA support on Linux: a milestone that, if reached, would reshape the driver lifecycle picture for operators at every scale, from individual developers to teams running AI training and inference fleets.</p>
+<p>That trajectory matters well beyond desktop rendering. For years, anyone managing Linux GPU infrastructure has had to work around a familiar constraint: NVIDIA's open-source Nouveau driver exists in-tree, but its tight coupling to clock and power limits imposed by signed firmware has kept it far behind the proprietary stack. That gap shapes how AI and HPC clusters are provisioned, audited, and maintained.</p>
+<h4>Why Nouveau stalled, and why Nova is designed differently</h4>
+<p>The essential point about Nouveau is that its limitation was never purely an engineering problem. The community driver depended on cooperation from NVIDIA to lift firmware-imposed restrictions, and that cooperation never materialised in a way that let the driver keep pace with new hardware generations.</p>
+<p>Nova's architecture is a direct response to that history. It offloads substantial work to NVIDIA's GSP firmware, is implemented from scratch in Rust rather than extending the long-standing Nouveau codebase, and — critically — has had upstream Linux kernel maintainers involved from the start rather than arriving as a finished product pushed upstream after the fact. That sequencing matters: driver projects that skip early upstream engagement have historically struggled with mainline acceptance.</p>
+<p>Rust's role is also worth noting for a broader reason. Nova is one of the clearest test cases yet for adopting a memory-safe language in a kernel subsystem where bugs have traditionally carried severe consequences. Its progress, or lack of it, will inform decisions about Rust elsewhere in the kernel tree.</p>
+<h4>The practical win: packaging, not raw performance</h4>
+<p>The headline for fleet operators is not frame rates or FLOPS. It is that an in-tree, NVIDIA-endorsed driver would let distributions ship GPU support through their standard package channels. Today, deploying NVIDIA GPU support on Linux typically means reaching outside the distribution — whether through a third-party repository or an out-of-tree binary module — which complicates provisioning automation and adds friction to supply-chain auditability. Getting Nova into the kernel proper would close that gap.</p>
+<h4>What stays closed — the near-term caveat</h4>
+<p>A clear-eyed reading of the current state also requires stating plainly what this does not change in the near term. Hubbard and Krummrich were explicit that Nova remains a work in progress, with significant hardware coverage still outstanding, and no ship date was offered. NVIDIA's proprietary driver stack is likely to remain necessary for some workloads — particularly CUDA-dependent AI and HPC deployments — for the foreseeable future. Organisations planning GPU procurement and driver strategy over the next few cycles should treat Nova as a long-term, resourced commitment rather than an imminent migration path.</p>
+<p>For those tracking the trajectory, the practical action item is straightforward: watch for Nova kernel patch submissions in upcoming merge windows. Each cycle that carries substantive Nova code is a data point on how close the in-tree goal is to reality — and how soon the packaging and lifecycle benefits might reach production fleets.</p>
+<hr>
+<p>```</p>
+<p>據 Phoronix 報導，本週在布拉格舉行的 LPC2026 大會上，NVIDIA 工程師 John Hubbard 與 Red Hat 的 Danilo Krummrich 就 Nova 專案提交了進度更新。Nova 是 NVIDIA 以 Rust 編寫的開源 Linux kernel 驅動程式，被視為現有 Nouveau 驅動的後繼者。兩人將專案的長遠目標定為在 Linux mainline kernel 中取得官方、in-tree 的 NVIDIA 支援——一旦達成，這一里程碑將徹底改變各類型運營者的驅動程式生命週期格局，從個別開發人員到營運 AI 訓練及推論集群的團隊皆受影響。</p>
+<p>這一發展方向的意義遠超桌面繪圖應用。多年來，任何管理 Linux GPU 基礎設施的人都不得不面對一個熟悉的限制：NVIDIA 的開源 Nouveau 驅動雖然存在於 in-tree 之中，但它與 signed firmware 所施加的時脈及功耗限制緊密耦合，令其遠遠落後於 proprietary 驅動堆疊。這道鴻溝直接影響 AI 及 HPC 集群的配置、審計及維護方式。</p>
+<h4>Nouveau 為何停滯不前，Nova 又為何在設計上截然不同</h4>
+<p>關於 Nouveau，關鍵的一點是：它的局限從來不只是純粹的工程問題。這個社群驅動依賴 NVIDIA 配合解除 firmware 強加的限制，但這種配合從未以足夠程度實現，令驅動無法跟上新一代硬件的步伐。</p>
+<p>Nova 的架構正是對這段歷史的直接回應。它將大量工作卸載至 NVIDIA 的 GSP firmware，從零開始以 Rust 編寫，而非在沿用已久的 Nouveau 代碼庫上改進；更關鍵的是，upstream Linux kernel 維護者從專案初期便已參與其中，而非完成後才被推 upstream。這一先後次序相當重要：歷來跳過早期 upstream 參與的驅動專案，在爭取 mainline 接納時往往舉步維艱。</p>
+<p>Rust 所扮演的角色同樣值得一提，而且理由更為廣泛。Nova 是迄今為止最清晰的測試案例之一，考驗在傳統上一旦出 bug 後果嚴重的 kernel 子系統中採用 memory-safe 語言的可行性。它的進展（或缺乏進展），將為 kernel tree 其他部分是否採用 Rust 提供重要參考。</p>
+<h4>實質好處在於打包流程，而非原始效能</h4>
+<p>對 fleet 營運者而言，焦點不在 frame rate 或 FLOPS，而在於一個 in-tree、經 NVIDIA 認可的驅動程式，將讓各 Linux distribution 透過其標準 package channel 發佈 GPU 支援。現今在 Linux 上部署 NVIDIA GPU 支援，通常意味著要離開 distribution 本身——無論是透過第三方 repository 還是 out-of-tree 的 binary module——這會增加配置自動化的複雜度，也為供應鏈審計帶來額外障礙。將 Nova 納入 kernel 本身，將可消除這道鴻溝。</p>
+<h4>仍存在的封閉領域——近期限制必須正視</h4>
+<p>冷靜審視現狀，亦必須明確指出這件事在短期內不會改變的部分。Hubbard 與 Krummrich 坦言，Nova 仍在開發當中，仍有大量硬件尚未涵蓋，亦未有明確的發布日期。在可預見的將來，NVIDIA 的 proprietary 驅動堆疊對某些工作負載——尤其是依賴 CUDA 的 AI 及 HPC 部署——很可能仍不可或缺。計劃在未來數個週期內進行 GPU 採購及制定驅動策略的機構，應將 Nova 視為一項長期、持續投入資源的承諾，而非即時可用的遷移方案。</p>
+<p>對於密切追蹤此一發展趨勢的人士而言，實質的跟進行動相當明確：留意即將到來的 merge window 中是否有 Nova 的 kernel patch 提交。每一個載有實質 Nova 代碼的 kernel 周期，都是一個數據點，反映 in-tree 目標距離現實有多近——以及打包及生命週期方面的種種好處，究竟何時能惠及生產環境中的 fleet。</p>
+<p><a href="https://www.phoronix.com/news/Nova-Driver-LPC-2026" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
