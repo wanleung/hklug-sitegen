@@ -1,0 +1,34 @@
+Date: 2026-10-08 13:26:00
+Author: HKLUG Team
+Title: Kernel Patch Series Renews the Push to Retire Linux's x32 ABI
+Content:
+<p>An updated set of patches has been posted to the Linux kernel mailing list that would begin dismantling the x32 ABI — the long-struggling 32-bit userspace interface for x86_64 processors — according to Phoronix. The series does not delete the feature outright. Instead, it methodically strips out the syscall plumbing that makes x32 work, deferring the feature's complete removal to later development cycles.</p>
+<p>The approach is deliberate: rather than proposing one sweeping deletion that maintainers may reject, the author, Dmitry Safonov, is advancing the removal incrementally, building consensus one patch at a time.</p>
+<h4>What is the x32 ABI, and why does anyone want it gone?</h4>
+<p>To understand why this matters, it helps to know what an ABI is. An Application Binary Interface defines how compiled programs interact with the operating system at the machine-code level — which system calls exist, how arguments are passed, how memory is laid out. Linux supports several ABIs on the same hardware, and x32 is one of them.</p>
+<p>x32 was merged into the kernel in Linux 3.4, released in 2012. The idea was appealing on paper: give programs the benefit of 32-bit pointers — smaller memory footprint, potentially faster execution on code that fits comfortably in 32-bit address space — while still letting them access the full 64-bit registers of modern x86 processors. It was an attempted middle ground between the aging 32-bit x86 ABI and the full 64-bit x86_64 ABI.</p>
+<p>More than a decade on, x32 never gained meaningful traction. Distribution support is minimal, real-world workloads are effectively nonexistent, and the code exists largely as a maintenance burden for the small team of developers who keep the kernel's syscall layer healthy. Every syscall added to the kernel generally has to consider x32's calling conventions, adding complexity that serves almost no one.</p>
+<h4>How a kernel feature actually gets retired</h4>
+<p>The patch series illustrates something worth understanding about how large open-source projects operate: removing a feature is rarely as simple as deleting code.</p>
+<p>Kernel maintainers apply a practical test when proposals to drop something come up: show a real workload that depends on it. For x32, no one has been able to do so convincingly for years, which is why the removal discussion keeps recurring on the mailing list each time it comes around. But the absence of users is not by itself sufficient. The question is also whether removal can be executed safely, without breaking the build, the syscall architecture, or the expectations of downstream users who may be running niche configurations.</p>
+<p>Safonov's strategy addresses that directly. By first removing the syscall plumbing — the parts of the kernel that dispatch x32-flavored system calls — the series reduces the feature to something that cannot function, even if the surrounding scaffolding remains for a while. Later patch cycles can then clean up what is left, once the initial step has settled and no unforeseen breakage has surfaced.</p>
+<h4>What happens next</h4>
+<p>No decision has been made. The series is under discussion on the Linux kernel mailing list, and maintainers may accept it in full, request revisions, or decline it — as prior removal attempts have effectively stalled.</p>
+<p>For most users and IT professionals running standard x86_64 systems, the practical impact is close to zero either way; x32 has never been part of mainstream deployments. The interest here is more structural than immediate. Linux is one of the longest-lived collaborative software projects in existence, and how it sheds dead weight is a useful case study for anyone maintaining software that must remain compatible for decades while still evolving.</p>
+<p>Feature removal, it turns out, is a discipline of its own — and x32 has been its recurring rehearsal.</p>
+<hr>
+<p>一組更新後的補丁已提交至 Linux 核心郵件列表，旨在開始拆除 x32 ABI —— 這個長期未見起色、適用於 x86_64 處理器的 32 位用戶空間接口，據 Phoronix 報導。該系列並未一舉刪除此功能，而是有條不紊地剝離令 x32 得以運作的 syscall 管線，將功能的徹底移除留待其後的開發週期處理。</p>
+<p>此舉頗為審慎：與其提出一個維護者可能否決的大規模刪除方案，作者 Dmitry Safonov 選擇以增量方式推進移除，逐個補丁凝聚共識。</p>
+<h4>x32 ABI 究竟是什麼？為何有人希望它退場？</h4>
+<p>要理解此事為何重要，先要知道甚麼是 ABI。應用程式二進制接口（Application Binary Interface）定義了已編譯的程式在機器碼層面如何與作業系統互動 —— 哪些 syscall 存在、參數如何傳遞、記憶體如何佈局。Linux 在同一硬件上支援多個 ABI，而 x32 正是其中之一。</p>
+<p>x32 於 2012 年隨 Linux 3.4 合併進核心。這個構想紙面上頗為吸引：讓程式享有 32 位指針的優勢 —— 更細的記憶體佔用，在能輕鬆容納於 32 位位址空間的程式碼上可能更快執行 —— 同時仍可存取現代 x86 處理器的完整 64 位暫存器。它是介乎老化的 32 位 x86 ABI 與完整的 64 位 x86_64 ABI 之間的一次中間地帶嘗試。</p>
+<p>十多年過去，x32 從未獲得實質採用。發行版本的支援極為有限，現實中的工作負載形同不存在，而相關程式碼很大程度上只是少數維持核心 syscall 層健康的開發者肩上的維護負擔。核心中每新增一個 syscall，一般都必須考慮 x32 的呼叫慣例，為幾乎無人受惠的功能徒添複雜度。</p>
+<h4>一個核心功能實際上如何退役</h4>
+<p>這組補丁系列說明了一件值得了解的事：在大型開放源碼項目中，移除功能很少等同於刪掉程式碼那麼簡單。</p>
+<p>當有提案建議棄用某些東西時，核心維護者會套用一個務實的檢驗：拿出一個實際依賴它的負載來。就 x32 而言，多年來從沒有人能令人信服地做到這一點，這正是每次移除討論重回郵件列表之際總會再起的原因。然而，沒有用戶本身並不足夠。問題還在於移除能否安全執行 —— 不會破壞 build、syscall 架構，或可能正運行小眾配置的下游用戶的預期。</p>
+<p>Safonov 的策略正正針對這一點。透過首先移除 syscall 管線 —— 即核心中負責分發 x32 版本系統呼叫的部分 —— 該系列把功能削弱至無法運作的程度，即使周邊的腳手架仍會暫時留存。其後的補丁週期便可清理殘餘部分，待第一步沉澱下來、沒有意外破壞浮現之後再作處理。</p>
+<h4>接下來會怎樣</h4>
+<p>目前尚無定案。該系列正於 Linux 核心郵件列表上討論中，維護者可能全盤接受、要求修改，或直接拒絕 —— 此前多次移除嘗試實際上都陷入僵局。</p>
+<p>對大多數運行標準 x86_64 系統的用戶和 IT 專業人士而言，無論結果如何，實際影響都接近零；x32 從未進入主流部署。這個故事的意義更多是結構性而非即時性。Linux 是現存壽命最長的協作軟件項目之一，它如何削減無用負載，對任何需要在保持數十年兼容性的同時仍然演進的軟件維護者來說，都是一個有用的案例研究。</p>
+<p>移除功能本身原來就是一門獨立的學問 —— 而 x32 一直扮演着這門學問反覆彩排的角色。</p>
+<p><a href="https://www.phoronix.com/news/Patches-Removing-Linux-x32-ABI" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
