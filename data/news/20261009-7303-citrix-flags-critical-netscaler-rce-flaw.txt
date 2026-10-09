@@ -1,0 +1,32 @@
+Date: 2026-10-09 10:41:00
+Author: HKLUG Team
+Title: Citrix Flags Critical NetScaler RCE Flaw Under Active Attack
+Content:
+<p>```</p>
+<p>Citrix is urging administrators to apply an emergency fix without delay, disclosing a critical remote code execution (RCE) vulnerability in NetScaler ADC and NetScaler Gateway that the company says is already being exploited in the wild. Because successful exploitation can grant an attacker access to authenticated traffic, Citrix and security watchers warn that affected sessions may already be compromised, making patching and log review urgent rather than routine.</p>
+<p>The flaw, tracked as <strong>CVE-2025-7775</strong> and carrying a CVSS base score of <strong>9.3</strong>, was detailed in a Citrix security advisory and reported by BleepingComputer. It affects the classic firmware form factors — MPX, VPX and SDX appliances — running affected NetScaler ADC or Gateway builds. Notably, deployments on the Linux-kernel-container (LLX/LXC-based) form factor are carved out of the affected scope, so administrators managing containerised instances can rule those out, but only after confirming their exact build and deployment type.</p>
+<p>The attack surface is narrower than a blanket "any NetScaler instance" headline would suggest, but the target is a sensitive one: the vulnerability is reached through <strong>AAA virtual servers</strong>. In practice, that means appliances configured for authentication, authorisation and accounting — the components that underpin gateway and single sign-on flows, including SAML-based SSO — sit directly in the path of exploitation. That is precisely the configuration common to enterprise and public-sector remote-access estates, where AAA-enabled gateways typically front staff VPN and portal access.</p>
+<p>Citrix has issued fixes in builds <strong>13.1-58.32</strong> and <strong>14.1-43.56</strong>. Organisations still running the <strong>12.1</strong> release line should treat it as unsupported technical debt: there is no fixed build, and migrating is the only compliant path.</p>
+<p><strong>What administrators should do today</strong></p>
+<ol>
+<li><strong>Inventory first.</strong> Enumerate every NetScaler ADC and Gateway instance and record its firmware build, form factor, and whether AAA virtual servers are configured. Perimeter appliances with AAA enabled are the priority tier.</li>
+<li><strong>Upgrade, or mitigate and reboot.</strong> Apply 13.1-58.32 or 14.1-43.56. If an immediate upgrade is not feasible, disabling AAA virtual servers is the documented mitigation — but Citrix is explicit that the change only takes effect <strong>after a reboot</strong>, a step that is easy to skip and leaves the appliance exposed if missed.</li>
+<li><strong>Retire 12.1.</strong> Any appliance still on the 12.1 branch needs a migration plan with a deadline, not another exception.</li>
+<li><strong>Review logs behaviourally.</strong> Citrix has published <strong>no indicators of compromise (IOCs)</strong> with this advisory, so there is nothing to match against. Administrators should instead look for behavioural anomalies — unexpected processes or memory activity on the appliance, unexplained configuration changes, anomalous authentication patterns, and traffic from AAA virtual servers that does not correlate with known users or scheduled activity.</li>
+</ol>
+<p>The disclosure adds to a string of serious flaws revealed against the NetScaler line this year, reinforcing a pattern that should inform planning: internet-facing ADC and Gateway appliances remain a favoured target, and the window between disclosure and mass exploitation continues to shrink. For organisations where these devices mediate SSO and remote access, the compromise of an appliance is not a network-edge problem — it is an identity problem, with the potential for session hijack and credential exposure that outlives the patch itself.</p>
+<hr>
+<p>```</p>
+<p>Citrix 呼籲管理員立即套用緊急修補程式，並披露 NetScaler ADC 及 NetScaler Gateway 存在一項嚴重的遠端代碼執行（RCE）漏洞，該公司指漏洞已被實際利用。由於成功入侵可令攻擊者取得已驗證流量的存取權，Citrix 及安全專家警告，受影響的 session 可能已被入侵，因此修補漏洞及檢視日誌刻不容緩，並非例行工作。</p>
+<p>該漏洞編號為 <strong>CVE-2025-7775</strong>，CVSS 基準評分為 <strong>9.3</strong>，詳情載於 Citrix 安全公告，並由 BleepingComputer 報道。漏洞影響採用傳統韌體格式的設備，包括執行受影響版本 NetScaler ADC 或 Gateway 的 MPX、VPX 及 SDX 設備。值得注意的是，採用 Linux kernel container（基於 LLX/LXC）格式的部署則不在受影響範圍之內，管理容器化實例的管理員可先行排除，但必須先確認其確切版本及部署格式。</p>
+<p>漏洞的攻擊面比「任何 NetScaler 實例」的標題所暗示的更窄，但目標相當敏感：漏洞是透過 <strong>AAA virtual server</strong> 觸發的。換言之，設定為 authentication、authorisation 及 accounting 的設備——即支撐 gateway 及 single sign-on 流程（包括基於 SAML 的 SSO）的元件——正處於攻擊路徑之上。這正是企業及公共部門遠端存取環境的常見設定，啟用 AAA 的 gateway 通常作為員工 VPN 及 portal 存取的前置節點。</p>
+<p>Citrix 已在版本 <strong>13.1-58.32</strong> 及 <strong>14.1-43.56</strong> 發布修補程式。仍運行 <strong>12.1</strong> 發行系列的機構應將其視為不再支援的技術欠債：該版本不會有修復版本，遷移是唯一合規的出路。</p>
+<p><strong>管理員今日應採取的行動</strong></p>
+<ol>
+<li><strong>先盤點資產。</strong> 列出所有 NetScaler ADC 及 Gateway 實例，記錄其韌體版本、部署格式，以及是否設定 AAA virtual server。啟用 AAA 的邊界設備屬最高優先級。</li>
+<li><strong>升級，或先緩解並重新啟動。</strong> 套用 13.1-58.32 或 14.1-43.56。若無法即時升級，停用 AAA virtual server 是官方文件記載的緩解措施——但 Citrix 明確指出，該變更只有在<strong>重新啟動後</strong>才會生效，此步驟極易遺漏，一旦漏做，設備仍會暴露於風險之中。</li>
+<li><strong>淘汰 12.1。</strong> 任何仍在 12.1 分支上的設備都需要一個有明確時限的遷移計劃，而非再批出一次例外。</li>
+<li><strong>從行為層面檢視日誌。</strong> Citrix 在是次公告中<strong>沒有發布任何 indicators of compromise（IOC）</strong>，因此無從比對。管理員應改為尋找行為異常——設備上出現預期之外的進程或記憶體活動、無法解釋的設定變更、異常的驗證模式，以及來自 AAA virtual server 但與已知用戶或既定活動不符的流量。</li>
+</ol>
+<p>是次披露令今年針對 NetScaler 系列揭露的一連串嚴重漏洞再添一筆，凸顯一個應納入規劃考慮的模式：面向互聯網的 ADC 及 Gateway 設備仍是攻擊者的首選目標，而從漏洞披露到大規模利用之間的時間差距持續收窄。對於倚賴這些設備處理 SSO 及遠端存取的機構而言，設備被入侵並非網絡邊界的問題——而是身份的問題，可能導致 session hijack 及憑證外洩，其影響更會在修補程式推出後持續存在。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/citrix-warns-admins-to-patch-new-netscaler-rce-flaw-immediately/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
