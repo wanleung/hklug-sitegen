@@ -1,0 +1,48 @@
+Date: 2026-10-09 15:26:00
+Author: HKLUG Team
+Title: AI Agents Can Act Within Their Credentials and Still Cause Real Damage
+Content:
+<p><em>Editor's note: this is a guidance explainer about the general problem of AI-agent authorization, not a report on a specific incident.</em></p>
+<p>AI agents connected to enterprise systems can cause real harm while using credentials that are entirely legitimate, according to guidance published by BleepingComputer on 9 October and drawing on analysis from Token Security. The failure mode is not credential theft or an authentication bypass — it is a chain of individually authorised actions that no one intended the agent to take.</p>
+<p>That distinction matters because it breaks the assumptions most access-control stacks are built on. Role-based access control (RBAC) asks a simple question of each request: <em>is this principal allowed to do this?</em> An agent with a valid service token, an assigned role, and access to a ticketing system, a CRM, and a payment API can answer "yes" at every step — and still assemble an outcome, such as exporting customer records and issuing refunds, that no human ever approved.</p>
+<h4>Why existing controls stay silent</h4>
+<p>Traditional anomaly detection is tuned for invalid access: impossible travel, failed logins, permission escalation. An agent operating strictly inside its granted permissions produces none of those signals. Each individual call is authenticated, authorised, and logged. The risk lives in the <em>sequence and combination</em> of valid actions, which is precisely what per-request RBAC and signature-based tooling do not evaluate.</p>
+<p>This is not a novel observation in security circles. OWASP's Top 10 for large-language-model applications lists "excessive agency" — systems given more capability than their task requires — as a first-class risk. The Model Context Protocol (MCP) ecosystem has similarly debated "blast radius": how much damage a single misconfigured or over-permissioned server can do when agents can chain tools across systems.</p>
+<h4>Enforcement cannot live inside the prompt</h4>
+<p>A common mistake is treating the system prompt as a policy engine. Instructions like "do not modify customer records" are advisory at best; an agent under instruction-injection pressure, or simply misinterpreting a task, has no mechanism to enforce them. Real constraints have to sit outside the agent — in an API gateway, an identity provider, or a policy layer that evaluates every tool call against session-scoped, continuously re-checked least privilege. This is consistent with the zero-trust architecture described in NIST SP 800-207: never trust a request because of where it came from, verify every call against current context.</p>
+<p>None of this requires a commercial platform: an Open Policy Agent sidecar, a reverse proxy in front of MCP tool servers, short-lived per-session tokens, or even a lightweight approval queue in front of irreversible actions all implement the same posture — enforcement outside the agent's process, evaluated on every call.</p>
+<p>Prerequisite to all of that is agent-level identity. When agents authenticate through shared service accounts or a human's delegated credentials, incident response becomes guesswork. Logs cannot distinguish the agent's activity from the developer's debugging session, let alone an attacker driving the same token. Without a distinct principal per agent — or per agent session — there is nothing to apply policy to and nothing to audit afterwards.</p>
+<h4>The Hong Kong angle: PDPO exposure</h4>
+<p>For organisations in Hong Kong handling personal data, agent overreach carries a specific compliance dimension. The Personal Data (Privacy) Ordinance obliges data users to observe purpose limitation — collecting and using personal data only for the stated purpose — and to take practicable steps to protect data. An agent that exports customer records to a location, system, or purpose outside the scope a customer agreed to creates exposure under both principles, regardless of whether the agent held technical permission to read those records. The permission was technical; the authorisation was not. Organisations deploying agents against customer data should map agent capabilities to declared data-use purposes explicitly, and document that mapping — it is the evidence a privacy complaint would be tested against.</p>
+<h4>A practical checklist</h4>
+<ul>
+<li><strong>Inventory every agent identity.</strong> Every agent, and ideally every agent session, gets its own principal — not a shared service account.</li>
+<li><strong>Scope permissions to the task, not the role.</strong> Grant the minimum capability for the specific job, for the duration of that job, and re-evaluate continuously.</li>
+<li><strong>Log agent activity separately.</strong> Agent-originated actions must be distinguishable in your SIEM from human activity.</li>
+<li><strong>Detect sequences, not just violations.</strong> Monitor for unusual combinations of individually valid actions — read, then export, then transmit.</li>
+<li><strong>Gate irreversible operations behind humans.</strong> Refunds, deletions, external sends, and data exports should require explicit approval.</li>
+</ul>
+<p>The broader lesson, as BleepingComputer's coverage frames it, is one of timing: define what an agent may do <em>before</em> it reaches production systems, not after it has already acted. For open-source and self-hosting practitioners wiring up agents via home-grown MCP servers or commercial platforms alike, the tooling choice matters far less than the default permission posture — and permissive defaults are the norm, not the exception.</p>
+<hr>
+<p><em>編者按：本文屬 AI agent 授權問題的指引解說，並非針對特定事件的報導。</em></p>
+<p>根據 BleepingComputer 於 10 月 9 日刊發、並參考 Token Security 分析的指引，連接到企業系統的 AI agent 即使使用完全合法的憑證，亦可能造成實質損害。問題並非憑證被盜或認證被繞過——而是一連串各自獲得授權的行動，合起來卻導致沒有任何人期望 agent 做出的結果。</p>
+<p>這個分別之所以重要，在於它推翻了大多數存取控制架構賴以建立的假設。Role-based access control（RBAC）對每個請求只問一個簡單問題：<em>這個 principal 是否獲准執行此操作？</em>一個擁有有效 service token、已分配角色，並可存取工單系統、CRM 及付款 API 的 agent，在每一步都可以回答「是」——卻仍能拼湊出一個從未獲任何人批准的結果，例如匯出客戶紀錄並發放退款。</p>
+<h4>為何現有防護機制毫無反應</h4>
+<p>傳統的異常偵測針對的是無效存取：不可能的地域跳躍、登入失敗、權限提升。一個嚴格在獲授權限內運作的 agent 不會觸發任何上述訊號。每一個單獨的呼叫都經過認證、授權及記錄。風險存在於一連串有效行動的<em>次序與組合</em>之中，而這正是逐個請求執行的 RBAC 及基於簽章的工具無法評估的。</p>
+<p>這在安全界並非新發現。OWASP 的大語言模型應用 Top 10 將「excessive agency」（系統獲賦予超出任務所需的權限）列為首要風險。Model Context Protocol（MCP）生態系同樣討論過「blast radius」問題：當 agent 能夠跨系統串接工具時，單一部配置錯誤或權限過大的 server 可以造成多大破壞。</p>
+<h4>執行機制不能放在 prompt 內</h4>
+<p>一個常見的錯誤是把 system prompt 當作 policy engine。諸如「不要修改客戶紀錄」的指令充其量只是建議；agent 在受到 prompt injection 壓力、或單純誤解任務時，並無機制去執行這些指令。真正的限制必須設在 agent 之外——例如 API gateway、identity provider，或一個 policy layer，就每次 tool call 按 session 範圍內、持續重新檢查的 least privilege 原則進行評估。這與 NIST SP 800-207 所述的 zero trust 架構一致：永不因為請求的來源而信任它，要根據當前 context 驗證每次呼叫。</p>
+<p>以上種種均無需商業平台：一個 Open Policy Agent sidecar、置於 MCP tool server 之前的 reverse proxy、短期有效的 per-session token，甚至是在不可逆操作前設置一個輕量級審批隊列，都能落實同一套姿態——執行機制設於 agent 的 process 之外，每次呼叫均加以評估。</p>
+<p>所有這一切的前提是 agent 級別的 identity。當 agent 透過共享 service account 或某個人類的委派憑證進行認證時，事故應變便淪為靠猜。log 無法分辨 agent 的活動與開發者的除錯操作，更遑論黑客驅動同一個 token 的行為。若每個 agent（或每個 agent session）沒有獨立的 principal，就沒有任何對象可供套用 policy，事後亦無從審計。</p>
+<h4>香港層面：PDPO 合規風險</h4>
+<p>對於在香港處理個人資料的機構，agent 越權帶有特定的合規維度。《個人資料（私隱）條例》要求 data user 遵守目的限制原則——收集及使用個人資料僅限於聲明的目的——並須採取切實可行的措施保障資料安全。一個 agent 若將客戶紀錄匯出至客戶同意範圍以外的地點、系統或用途，便同時違反上述兩項原則，不論 agent 是否持有讀取該等紀錄的技術權限。權限是技術性的；授權則不然。機構在針對客戶資料部署 agent 時，應明確地將 agent 功能對應至已聲明的資料使用目的，並把該對應記錄存檔——這是私隱投訴一旦成立時，機構需要拿出來對照的證據。</p>
+<h4>實務清單</h4>
+<ul>
+<li><strong>盤點每一個 agent identity。</strong>每個 agent（理想情況下每個 agent session）都應有自己的 principal，而非共享 service account。</li>
+<li><strong>按任務而非角色設定權限。</strong>只授予特定工作所需的最低權限，僅限該工作期間有效，並持續重新評估。</li>
+<li><strong>另行記錄 agent 活動。</strong>agent 發起的行動必須在你的 SIEM 中與人類活動區分開來。</li>
+<li><strong>偵測行動序列，而不只是違規行為。</strong>監察個別有效行動的異常組合——先讀取、再匯出、然後傳送。</li>
+<li><strong>為不可逆操作設置人工審批。</strong>退款、刪除、對外傳送及資料匯出均應要求明確批准。</li>
+</ul>
+<p>以 BleepingComputer 的框架而言，更廣泛的教訓在於時機問題：要在 agent <em>接入</em>生產系統<em>之前</em>定義它可以做什麼，而不是等它已經行動之後才補救。無論是透過自建 MCP server 還是商業平台自行接駁 agent 的開源及自架系統從業者，工具的選擇遠不及預設權限姿態重要——而寬鬆的預設值才是常態，並非例外。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/how-to-keep-ai-agents-within-their-permissions/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
