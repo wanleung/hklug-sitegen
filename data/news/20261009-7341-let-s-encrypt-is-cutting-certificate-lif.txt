@@ -1,0 +1,50 @@
+Date: 2026-10-09 15:27:00
+Author: HKLUG Team
+Title: Let's Encrypt is cutting certificate lifetimes to 64 days — what to check before February 2027
+Content:
+<h3>Let's Encrypt is cutting certificate lifetimes to 64 days — what to check before February 2027</h3>
+<p>Let's Encrypt will start issuing TLS certificates with a 64-day validity period on <strong>10 February 2027</strong>, the certificate authority has announced, as reported by LWN.net. Any certificate issued or renewed on or after that date will carry the shorter term, and the organisation expects the last 90-day certificates to expire on <strong>11 May 2027</strong>, completing the transition.</p>
+<p>The change does not require ACME account re-registration: it applies to certificates themselves, not to accounts or orders. Most well-maintained ACME clients will adapt automatically — but the scheduling around those clients will not.</p>
+<h4>Why lifetimes keep shrinking</h4>
+<p>Shorter validity is a deliberate containment measure. If a certificate is mis-issued, or a private key is leaked, a 64-day term bounds the exposure window compared to 90 days. The 64-day figure is not a destination but the second stage of a plan Let's Encrypt set out in 2025; a further reduction to 45-day certificates is slated for 2028. Shorter validity periods are increasingly being written into the CA/Browser Forum baseline requirements that all public certificate authorities must follow, driven largely by browser vendors. February 2027 is the next hard deadline on that path, not the last.</p>
+<h4>The four-day margin problem</h4>
+<p>Here is the arithmetic that should concern you. A renewal job configured to run every 60 days leaves roughly 30 days of slack against a 90-day certificate. Against a 64-day certificate, that same job leaves about <strong>four days</strong>. Four days is one failed DNS propagation, one cloud credential lapse, or one holiday-weekend gap away from an outage.</p>
+<p>The critical insight is that the risk does not usually sit in the ACME client. Popular tools — Certbot, acme.sh, lego, Caddy, cert-manager — renew on a percentage-of-lifetime basis and will handle 64-day certificates without configuration changes. The failure mode lives in the schedules <em>around</em> them: hand-written cron entries, Ansible playbooks, and CI pipeline steps with hardcoded values like "60", "90", or "quarterly". Those do not adapt to anything.</p>
+<h4>A pre-2027 audit checklist</h4>
+<p><em>(ACME — the Automated Certificate Management Environment protocol — is the open standard Let's Encrypt and most modern CAs use so software can request and renew certificates without human intervention.)</em></p>
+<p>The following checks are worth running across your estate before February 2027:</p>
+<ol>
+<li><strong>Inventory every certificate and its issuer.</strong> Include certificates not managed by your primary ACME client — internal load balancers, legacy appliances, and third-party integrations frequently surprise teams.</li>
+<li><strong>Find the schedule, not just the client.</strong> Search configuration management, cron, systemd timers, and CI files for hardcoded "60", "90", "quarterly", or similar values. These are the jobs that will silently break.</li>
+<li><strong>Run an end-to-end renewal test.</strong> Do not assume a green status flag from a year ago. Force a renewal in a staging environment and confirm the certificate actually lands and is served correctly.</li>
+<li><strong>Check validation method compatibility.</strong> HTTP-01, DNS-01, and TLS-ALPN-01 validations have different operational dependencies — confirm your method still works with shorter cycles.</li>
+<li><strong>Switch alerting to live certificate expiry, not renewal-job success.</strong> A "renewal succeeded" notification will not catch the job that died quietly years ago; an expiry check on the served certificate will.</li>
+<li><strong>Rehearse the failure.</strong> Let's Encrypt's staging environment can simulate the new lifetime before production does — use it to practise your incident response when a renewal fails.</li>
+</ol>
+<h4>The deadline, in short</h4>
+<p>Certificates issued from <strong>10 February 2027</strong> carry a 64-day lifetime; the last 90-day certificates expire on <strong>11 May 2027</strong>. No re-registration is needed, and most clients need no changes. What needs attention is every manual schedule bolted to them. Automated certificate renewal is now baseline infrastructure rather than a convenience, and February 2027 will expose whatever manual processes remain.</p>
+<p>Further reading: <a href="https://lwn.net/Articles/1099588/">LWN.net's coverage</a>.</p>
+<hr>
+<h3>Let's Encrypt 將憑證有效期縮短至 64 天 — 2027 年 2 月前須檢視的事項</h3>
+<p>Let's Encrypt 宣布將於 <strong>2027 年 2 月 10 日</strong>起開始簽發有效期為 64 天的 TLS 憑證，據 LWN.net 報道。在該日期或之後簽發或續期的任何憑證，有效期均會縮短，而該組織預計最後一批 90 天有效期憑證將於 <strong>2027 年 5 月 11 日</strong>屆滿，屆時過渡將全面完成。</p>
+<p>此項變更無需重新註冊 ACME 帳戶：新規定適用於憑證本身，而非帳戶或訂單。大部分維護良好的 ACME 客戶端會自動適應 — 但環繞這些客戶端的排程則不會。</p>
+<h4>為何有效期不斷縮短</h4>
+<p>縮短憑證有效期是一項刻意採取的風險控制措施。若憑證遭到錯誤簽發，或私鑰外洩，64 天的有效期可將風險暴露期限制在較 90 天更短的範圍內。64 天並非終點，而是 Let's Encrypt 於 2025 年提出的計劃中的第二階段；計劃並已定於 2028 年進一步縮短至 45 天憑證。越來越多較短的有效期要求正被納入 CA/Browser Forum 的基準要求（baseline requirements），所有公共憑證認證機構均須遵守，此舉主要由瀏覽器廠商推動。2027 年 2 月是這條路上的下一個硬性期限，而非最後一個。</p>
+<h4>四天緩衝的問題</h4>
+<p>以下是一條值得各位關注的算式。一個設定為每 60 天執行一次的續期工作，在 90 天憑證下大約有 30 天的緩衝期；但在 64 天憑證下，同一工作只剩下大約 <strong>四天</strong>。四天，距離一次服務中斷，可能只是一次 DNS 傳播失敗、一次雲端憑證失效，或一個公眾假期週末的時間差。</p>
+<p>關鍵在於，風險通常不在 ACME 客戶端本身。主流工具 — Certbot、acme.sh、lego、Caddy、cert-manager — 均以有效期百分比計算續期時間，毋須更改設定即可處理 64 天憑證。問題出在環繞這些工具的<em>排程</em>：手寫的 cron 條目、Ansible playbooks，以及 CI pipeline 步驟中寫死的「60」、「90」或「每季」等數值。這些不會自行適應任何變化。</p>
+<h4>2027 年前的審計清單</h4>
+<p><em>（ACME — Automated Certificate Management Environment 協定 — 是 Let's Encrypt 及多數現代 CA 採用的開放標準，讓軟件可在無需人手介入的情況下申請及續期憑證。）</em></p>
+<p>以下各項檢查值得在 2027 年 2 月前就整個環境進行：</p>
+<ol>
+<li><strong>盤點每一份憑證及其簽發機構。</strong> 包括並非由主要 ACME 客戶端管理的憑證 — 內部負載均衡器、舊式設備及第三方整合往往令團隊措手不及。</li>
+<li><strong>找出排程，而不只是客戶端。</strong> 在設定管理工具、cron、systemd timers 及 CI 檔案中搜尋寫死的「60」、「90」、「每季」或類似數值。這些才是會無聲失效的工作。</li>
+<li><strong>進行端到端續期測試。</strong> 不要依賴一年前的綠色狀態標誌。在預備（staging）環境中強制執行續期，並確認憑證確實成功部署及正確提供服務。</li>
+<li><strong>檢查驗證方法的相容性。</strong> HTTP-01、DNS-01 及 TLS-ALPN-01 驗證各有不同的營運依賴 — 確認你使用的方法在較短的週期下仍然可行。</li>
+<li><strong>將警報改為監控憑證實際到期時間，而非續期工作的成功狀態。</strong> 「續期成功」通知無法捕捉多年前已悄然失效的工作；對正在提供服務的憑證進行到期檢查則可以。</li>
+<li><strong>預演故障場景。</strong> Let's Encrypt 的預備環境可在正式環境推行前模擬新有效期 — 善用它來演練續期失敗時的事故應變。</li>
+</ol>
+<h4>期限總結</h4>
+<p><strong>2027 年 2 月 10 日</strong>起簽發的憑證有效期為 64 天；最後一批 90 天憑證將於 <strong>2027 年 5 月 11 日</strong>屆滿。毋須重新註冊，大部分客戶端亦無需改動。需要留意的是所有外加於客戶端之上的人手排程。憑證自動續期現已成為基礎設施的標準配置，而非一項便利功能，而 2027 年 2 月將會暴露任何仍然存在的人手流程。</p>
+<p>延伸閱讀：<a href="https://lwn.net/Articles/1099588/">LWN.net 的報導</a>。</p>
+<p><a href="https://lwn.net/Articles/1099588/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
