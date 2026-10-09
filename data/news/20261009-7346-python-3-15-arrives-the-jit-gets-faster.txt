@@ -1,0 +1,32 @@
+Date: 2026-10-09 18:25:00
+Author: HKLUG Team
+Title: Python 3.15 Arrives: The JIT Gets Faster, the Advice Stays the Same
+Content:
+<p>Python 3.15 is out as the newest annual feature release of the CPython interpreter, and its headline item is an experimental JIT compiler that has gotten measurably faster since the previous cycle. Phoronix reported the release on 6 October, with LWN.net providing deeper technical detail on how the JIT is built and where it is heading.</p>
+<p>The short version for anyone running Python in production: this is a deliberately incremental release, and the JIT is emphatically not ready for production workloads. The value of 3.15 lies less in any single feature and more in the trajectory it continues — a multi-cycle effort to modernise CPython's execution engine while keeping the language's compatibility promises intact.</p>
+<h4>The experimental JIT, refined again</h4>
+<p>The JIT remains experimental, opt-in, and off by default, exactly as it has been through earlier releases. What has changed is performance and maturity. Phoronix's benchmarks point toward further gains over 3.14's JIT builds, and LWN.net's coverage explains the internals: the compiler is built around copy-and-patch, a technique that emits machine code by stitching together pre-compiled code fragments, combined with adaptive specialisation at runtime. The interpreter profile specialised operations on hot code paths and now feeds those optimisations into the JIT more effectively.</p>
+<p>The practical guidance for teams is unchanged and worth repeating: benchmark the JIT against your own workloads if you are curious, but do not enable it by default in production. It remains behind a build-time and runtime flag, and the Python developers have been explicit that its semantics and performance characteristics are still in flux. The milestone worth watching is not 3.15 itself but the point at which the project declares the design stable enough to consider making it a supported configuration.</p>
+<h4>What backend and DevOps teams should actually plan around</h4>
+<p>Python is commonly used in Hong Kong for web services, data pipelines and internal tooling, so for teams running Python services the upgrade decision should turn on three less glamorous questions.</p>
+<p><strong>Support windows.</strong> Python 3.15 enters the release lifecycle set out in the Python project's published schedule: full bugfix support for roughly eighteen months, followed by a security-only period. If you maintain services on 3.12 or earlier, now is a reasonable point to map an upgrade path rather than waiting until a branch nears end of life and the fixes stop coming.</p>
+<p><strong>Deprecations.</strong> As with every annual release, 3.15 removes or deprecates APIs that have been flagged in prior cycles. The standard advice applies: run your test suites under 3.15 in CI before committing to the upgrade, and grep your dependency tree for warnings surfaced by the new interpreter. Third-party libraries are often the bottleneck, not first-party code.</p>
+<p><strong>Free-threading.</strong> The no-GIL (free-threaded) build continues to mature, but it remains a separate build flavour, not the default interpreter. Most production deployments should continue to target the standard build unless they have specifically validated that their workload — and every native extension they depend on — supports free-threading.</p>
+<h4>The bottom line</h4>
+<p>Python 3.15 does not change the calculus for most production teams overnight, and that is by design. The annual cadence is doing its job: incremental releases, predictable deprecation warnings, and a JIT compiler that is getting closer to prime time without being prematurely blessed. For Hong Kong backend and DevOps teams, the sensible move is to add 3.15 to your CI matrix now, treat the JIT as an experiment, and let the next two release cycles decide when an earlier upgrade to the JIT story is warranted.</p>
+<p><em>Source: <a href="https://www.phoronix.com/news/Python-3.15-Released">Phoronix</a>, with technical background from LWN.net.</em></p>
+<hr>
+<p>Python 3.15 已正式發布，這是 CPython 解釋器最新一個年度功能版本，其重點在於實驗性 JIT 編譯器的效能相比上一個周期有可量度的提升。Phoronix 於 10 月 6 日報道了此次發布，LWN.net 則提供了更深入的技術細節，說明 JIT 的建置方式及未來方向。</p>
+<p>對在生產環境中執行 Python 的人來說，簡而言之：這是一個刻意採取漸進式改動的版本，而 JIT 絕對尚未準備好應付生產工作負載。3.15 的價值不在於任何單一功能，而在於它所延續的方向——一項跨越多個周期的計劃，在不影響語言相容性承諾的前提下，將 CPython 的執行引擎現代化。</p>
+<h4>實驗性 JIT 再度改良</h4>
+<p>JIT 仍然是實驗性功能，需要自行啟用（opt-in），而且預設關閉，與過去幾個版本完全一致。改變的是效能和成熟度。Phoronix 的基準測試顯示相比 3.14 的 JIT 建置版本有進一步提升；LWN.net 的報道則解釋了其內部原理：編譯器以 copy-and-patch 技術為核心，透過拼接預先編譯的程式碼片段來生成機器碼，並結合執行時的自適應 specialization（專化優化）。解釋器會針對熱路徑（hot code path）上的專化操作進行分析，如今能更有效地將這些優化結果輸入 JIT。</p>
+<p>給團隊的實務建議沒有改變，值得再次強調：如果有興趣，可以用自己的工作負載對 JIT 進行基準測試，但切勿在生產環境中預設啟用。它仍然受到編譯時和執行時開關的控制，而 Python 開發團隊已明確表示，其語義和效能特性仍在不斷變化。值得關注的里程碑並非 3.15 本身，而是專案組宣布設計已足夠穩定、可以考慮將其列為受支援設定的那一刻。</p>
+<h4>Backend 和 DevOps 團隊實際上應該怎樣規劃</h4>
+<p>Python 在香港常用於 web 服務、data pipeline 和內部工具，因此對於執行 Python 服務的團隊而言，升級與否應取決於以下三個不那麼光鮮的問題。</p>
+<p><strong>支援期（Support windows）。</strong> Python 3.15 進入了 Python 專案公布的發布生命週期：約十八個月的完整 bug fix 支援，隨後進入僅提供安全性更新的階段。如果你仍在 3.12 或更早版本上維持服務，現在正是規劃升級路徑的合理時機，與其等到某個分支接近壽命終止（end of life）、修復不再推出之時才行動。</p>
+<p><strong>棄用警告（Deprecations）。</strong> 與每個年度版本一樣，3.15 移除或棄用了在此前周期中已標記的 API。標準建議依然適用：在正式升級前，先在 CI 中以 3.15 執行你的測試套件，並 grep 整個依賴樹，查看新解釋器發出的警告。瓶頸往往是第三方函式庫，而非自己編寫的程式碼。</p>
+<p><strong>Free-threading。</strong> no-GIL（free-threaded）建置持續成熟，但它仍是一種獨立的建置變體，並非預設解釋器。大多數生產部署仍應以標準建置為目標，除非已特別驗證過自己的工作負載——以及所依賴的每一個 native extension——支援 free-threading。</p>
+<h4>總結</h4>
+<p>Python 3.15 不會在一夜之間改變大多數生產團隊的決策考量，這是刻意為之。年度發布節奏正發揮其作用：漸進式改動的版本、可預期的棄用警告，以及一個逐步接近正式啟用（prime time）卻未被過早背書的 JIT 編譯器。對香港的 backend 和 DevOps 團隊而言，明智之舉是現在就把 3.15 加入你的 CI 矩陣，將 JIT 視為一項實驗，並讓未來兩個發布周期來決定何時值得提早擁抱 JIT。</p>
+<p><em>資料來源：<a href="https://www.phoronix.com/news/Python-3.15-Released">Phoronix</a>，技術背景資料來自 LWN.net。</em></p>
+<p><a href="https://www.phoronix.com/news/Python-3.15-Released" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
