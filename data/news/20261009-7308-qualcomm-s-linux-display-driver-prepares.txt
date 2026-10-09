@@ -1,0 +1,42 @@
+Date: 2026-10-09 11:47:00
+Author: HKLUG Team
+Title: Qualcomm's Linux Display Driver Prepares Static HDR Support for Snapdragon X Laptops
+Content:
+<p>Linux support for Qualcomm's Snapdragon X laptops is set to gain a meaningful display upgrade: static HDR support is being added to the MSM DRM kernel driver, covering both DisplayPort outputs and embedded DisplayPort (eDP) panels — the latter being what laptop screens themselves use.</p>
+<p>The change lands in the MSM DRM driver, which handles graphics display output across Qualcomm's Arm-based platforms. For anyone running Linux on a Snapdragon X machine, eDP coverage is the part that matters most: it means the laptop's built-in panel, not just external monitors, is in scope.</p>
+<h4>Why it's a milestone, not a finished feature</h4>
+<p>The Linux-on-Arm laptop story has, until now, largely been one of tinkering. Snapdragon X hardware is genuinely attractive — strong performance per watt, fanless-friendly thermals, and all-day battery life — but the software stack has lagged behind the silicon. Display quality is one of the more visible gaps, and HDR is squarely in that category.</p>
+<p>It is worth being precise about what this change does and does not deliver.</p>
+<p><strong>It is static HDR only.</strong> There is no indication of dynamic, per-frame tone-mapped HDR — the kind used by HDR10+ or Dolby Vision content pipelines. Static HDR means a fixed transfer function and mastering metadata: enough for a properly calibrated still-image or video workflow, but not for interactive HDR gaming or runtime tone mapping.</p>
+<p><strong>The kernel driver is a prerequisite, not the solution.</strong> HDR in Linux is a full-stack problem. The kernel must advertise HDR capabilities and hand the compositor the right metadata, but userspace still has to do the work. Users will need a Wayland compositor with HDR support — recent KWin and wlroots-based compositors, for example — before any of this is visible on screen. A kernel that supports HDR with a compositor that ignores it delivers nothing.</p>
+<p>The kernel-side change is also expected to arrive in a future upstream kernel release rather than appearing immediately in installed systems. That timing matters for anyone planning a purchase.</p>
+<h4>What this means if you are buying a Snapdragon X laptop in Hong Kong</h4>
+<p>For professionals here weighing a Snapdragon X machine as a primary work device, the practical guidance is straightforward: judge a laptop by the software stack it will actually run, not the silicon it ships with.</p>
+<ul>
+<li><strong>Check the kernel.</strong> Distributions tracking recent mainline kernels will pick this up first. Older LTS kernels that enterprise-oriented distros favour will lag, potentially by several release cycles.</li>
+<li><strong>Check the compositor.</strong> HDR support in the desktop environment is the other half of the equation, and it is evolving independently of kernel work.</li>
+<li><strong>Treat HDR as a bonus, not a baseline.</strong> Colour-critical work on these machines remains viable with properly calibrated SDR panels; the incoming HDR support closes a gap rather than opening a new category of work.</li>
+</ul>
+<p>Snapdragon X laptops have been commercially available since 2024, and distributions including Fedora and Ubuntu have been shipping increasingly capable support for the platform. Each incremental kernel merge makes the proposition more credible for professional use.</p>
+<p>The MSM driver's static HDR work is a small piece of a much larger puzzle — but it is a piece the display stack has been missing. Combined with the steady maturation of the wider Arm Linux ecosystem, it moves Snapdragon X hardware one step closer to being something a working professional can deploy without a caveat attached to every recommendation.</p>
+<p>More technical detail, including the patch set's status, can be found in Phoronix's original report.</p>
+<hr>
+<p>Linux 對 Qualcomm Snapdragon X 筆記本的支援即將迎來一項重要的顯示升級：MSM DRM kernel driver 正在加入靜態 HDR 支援，涵蓋 DisplayPort 輸出及 embedded DisplayPort（eDP）面板——後者正是筆記本電腦內置屏幕所採用的接口。</p>
+<p>此變更落在 MSM DRM driver 內，該 driver 負責處理 Qualcomm Arm 平台的圖像顯示輸出。對於在 Snapdragon X 設備上運行 Linux 的用戶而言，eDP 的覆蓋範圍是最關鍵的部分：這意味著筆記本的內置面板，而不僅是外接顯示器，亦在支援範圍之內。</p>
+<h4>為何這是一個里程碑，而非已完成的功能</h4>
+<p>Linux-on-Arm 筆記本的發展至今，很大程度上仍屬於折騰（tinkering）的階段。Snapdragon X 硬件確實吸引——每瓦性能強勁、適合無風扇設計的散熱表現，以及全日續航力——但軟件堆疊一直追不上硬件的步伐。顯示質量是其中一個較為明顯的落差，而 HDR 正正屬於此類。</p>
+<p>有必要準確說明此變更提供和不提供什麼。</p>
+<p><strong>它只支援靜態 HDR。</strong> 目前沒有跡象顯示支援動態、逐幀 tone-mapped HDR——即 HDR10+ 或 Dolby Vision 內容流程所使用的那一種。靜態 HDR 意味著採用固定的 transfer function 及 mastering metadata：足夠應付經適當校準的靜態圖像或影片工作流程，但不適用於互動式 HDR 遊戲或執行階段的 tone mapping。</p>
+<p><strong>Kernel driver 只是先決條件，而非解決方案。</strong> Linux 的 HDR 是一個全堆疊的問題。Kernel 必須通報 HDR 能力並將正確的 metadata 交給 compositor，但用戶空間（userspace）仍需承擔其餘工作。用戶需要一個支援 HDR 的 Wayland compositor——例如近期的 KWin 或基於 wlroots 的 compositor——才能在屏幕上看到任何效果。Kernel 支援 HDR，但若 compositor 不予配合，亦不會產生任何效果。</p>
+<p>此外，kernel 端的變更預計將在未來的上游 kernel 版本中推出，而非即時出現在已安裝的系統上。這個時間點對計劃購買設備的人士而言相當重要。</p>
+<h4>對在香港購買 Snapdragon X 筆記本的用戶意味著什麼</h4>
+<p>對於正在考慮以 Snapdragon X 設備作為主要工作機器的專業人士，實用建議十分直接：評估一部筆記本，應以其實際運行的軟件堆疊為依據，而非出廠時搭載的晶片。</p>
+<ul>
+<li><strong>檢查 kernel。</strong> 追蹤最新 mainline kernel 的發行版會最先採用此更新。企業導向發行版偏好的較舊 LTS kernel 則會滯後，可能落後數個 release cycle。</li>
+<li><strong>檢查 compositor。</strong> 桌面環境中的 HDR 支援是等式的另一半，其發展獨立於 kernel 工作之外。</li>
+<li><strong>將 HDR 視為額外加分，而非基本要求。</strong> 在這些設備上進行對色彩要求嚴格的工作，配合經適當校準的 SDR 面板仍然可行；即將到來的 HDR 支援是填補一項落差，而非開創一個全新的工作類別。</li>
+</ul>
+<p>Snapdragon X 筆記本自 2024 年起已在市場上發售，包括 Fedora 和 Ubuntu 在內的發行版，對該平台的支援亦日益成熟。每一次 kernel 整合的推進，都令此平台在專業用途上的可行性更為可信。</p>
+<p>MSM driver 的靜態 HDR 工作只是這幅大型拼圖的一小塊——但這是顯示堆疊一直缺失的一塊。配合整個 Arm Linux 生態系統的穩步成熟，Snapdragon X 硬件距離成為專業人士可以毫無保留地部署的選擇，又邁近了一步。</p>
+<p>更多技術細節，包括 patch set 的狀態，可參閱 Phoronix 的原文報導。</p>
+<p><a href="https://www.phoronix.com/news/Qualcomm-MSM-DRM-HDR" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
