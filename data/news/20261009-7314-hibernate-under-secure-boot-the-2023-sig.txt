@@ -1,0 +1,54 @@
+Date: 2026-10-09 12:03:00
+Author: HKLUG Team
+Title: Hibernate Under Secure Boot: The 2023 Signing Fix, Explained
+Content:
+<h3>Hibernate Under Secure Boot: The 2023 Signing Fix, Explained</h3>
+<p>In January 2023, a patch series from AMD's Mario Limonciello surfaced on the Linux kernel mailing list, targeting a restriction that had frustrated enterprise Linux administrators for years: the inability to hibernate a machine booted with UEFI Secure Boot. Phoronix reported on the proposal at the time. More than three and a half years later, the underlying constraint and the design of the proposed fix are still worth understanding — both because the reasoning carries forward into any similar proposal, and because the series' present-day status should be treated as unverified until you check the archives yourself.</p>
+<p>For Hong Kong IT teams managing large x86 fleets where Secure Boot is enforced by policy, the practical stakes are easy to state. Laptops and desktops that must either shut down completely or obtain a documented security-policy exemption in order to use suspend-to-disk could, in principle, regain hibernation without any loosening of the boot chain.</p>
+<h4>Why Lockdown Killed Hibernation</h4>
+<p>The limitation is worth explaining, because it shows why the fix was never as simple as flipping a configuration option.</p>
+<p>When the Linux kernel starts on a machine with UEFI Secure Boot active, it puts itself into lockdown mode. Lockdown blocks a specific set of actions that would let compromised userspace escalate to complete control of the running kernel: writing to <code>/dev/mem</code>, loading unsigned modules, reading kernel memory — and, critically, resuming from a hibernation image.</p>
+<p>Hibernation works by dumping the entire contents of system memory to a swap partition or file, powering off, and restoring that image on the next boot. The restore path means the kernel is pulling attacker-influenceable data from disk back into kernel-privileged state. Under lockdown's threat model, an on-disk hibernation image is untrusted input that could smuggle arbitrary code into the highest privilege level on the machine. Rather than bolt on a partial verification scheme, upstream disallowed the operation outright.</p>
+<p>The consequence is that, for most distributions, hibernation and Secure Boot have been mutually exclusive. That is a particular annoyance for fleets running image-based deployments and long offline periods, where suspend-to-disk meaningfully extends usable battery life and simplifies power management.</p>
+<h4>The Signing-Based Fix</h4>
+<p>The proposed approach deliberately mirrors the trust model Secure Boot already applies to the kernel image itself: sign it, then verify the signature before trusting it.</p>
+<p>Under the patches, the hibernation image would be cryptographically signed, and the kernel would verify that signature on the resume path before restoring memory contents. An image that fails verification is rejected — preserving exactly the guarantee lockdown exists to enforce: nothing on disk can inject unverified code into a running kernel.</p>
+<p>That symmetry is what made the proposal technically credible. It does not weaken lockdown; it extends the existing sign-then-verify paradigm to a subsystem that had previously been carved out as an exception. For compliance teams that need to explain security controls to auditors, that framing matters — the fix adds a verification step rather than removing a restriction.</p>
+<h4>As of the Source Report</h4>
+<p>According to the January 2023 reporting, both Fedora and Ubuntu had signalled interest in carrying hibernation-with-lockdown support through their stable update channels. Neither distribution committed to a delivery date, and the series remained at proposal stage — not present in any released kernel at the time.</p>
+<p>The sequencing is the part administrators should internalise. Upstream mainline merge is the gating condition; only after that can a distribution push the feature through its own stable pipeline, with the backport and QA discipline that enterprise fleets depend on. Work at the mailing-list stage is useful to watch, but it is not something to build a policy change around.</p>
+<h4>What This Means for Hong Kong Enterprises</h4>
+<ul>
+<li><strong>Policy can accommodate both:</strong> Many enterprise policies currently require Secure Boot to be fully enabled, at the cost of employees losing access to hibernation. If the signing-based verification approach is eventually merged upstream, the two no longer need to be mutually exclusive.</li>
+<li><strong>Fleet management becomes more practical:</strong> Teams that rely heavily on laptops and spend long periods offline — for example, field and hybrid-working teams — benefit from hibernation over shutdown because it better preserves working state. Scenarios like this may be exactly what motivates evaluating the feature.</li>
+<li><strong>Hold off on policy changes:</strong> At the time of the source report, the patches were still at proposal stage and had not been merged upstream. Policy documents and procurement decisions should be based on versions that have actually been merged and released.</li>
+<li><strong>The risk model does not change:</strong> The core of the approach is bringing the hibernation image under the same signature-verification framework as the kernel image itself, rather than relaxing lockdown restrictions — a point of particular importance for compliance teams that need to explain security controls to auditors.</li>
+</ul>
+<h4>Verify Before You Rely on This</h4>
+<p>This article reflects a January 2023 report and is published substantially later. Before drawing any conclusion about whether the series was merged (for example, in a kernel 6.2 or later release), reworked, or stalled, check the current LKML archives and the relevant kernel release notes directly. The same applies downstream: confirm Fedora and Ubuntu stable-channel inclusion against current distribution documentation rather than the 2023 status described above. Treat the technical explanation here as durable; treat the merge and rollout status as a question to answer for yourself before it informs procurement or hardening decisions.</p>
+<hr>
+<h3>Secure Boot 下的休眠功能：2023 年簽名方案解析</h3>
+<p>2023 年 1 月，AMD 的 Mario Limonciello 在 Linux 核心郵件列表上提出一組補丁系列，針對一項困擾企業級 Linux 管理員多年的限制：採用 UEFI Secure Boot 啟動的電腦無法休眠。Phoronix 當時曾報導有關建議。約三年半之後，背後的限制以及建議修補方案的設計仍有理解價值——一方面因為相關思路可延伸至任何類似建議，另一方面因為該補丁系列目前的狀態，在你親自查證郵件列表存檔之前，應視為未經核實。</p>
+<p>對於管理大型 x86 fleet、並以政策強制啟用 Secure Boot 的香港 IT 團隊而言，實際影響不難說明：手提電腦和桌上型電腦若要使用 suspend-to-disk，便只能完全關機，或申請書面豁免安全政策；原則上，這類電腦可以在毋須放寬啟動鏈（boot chain）任何環節的情況下，重新獲得休眠功能。</p>
+<h4>為何 lockdown 導致休眠失靈</h4>
+<p>這項限制值得解釋，因為它說明了為何修補方案從來都不是簡單地切換一個配置選項便可。</p>
+<p>當 Linux 核心在啟用 UEFI Secure Boot 的電腦上啟動時，會將自身置於 lockdown 模式。lockdown 會封鎖一組特定操作，這些操作會令已被入侵的使用者空間（userspace）提升至完全控制運行中核心的權限：寫入 <code>/dev/mem</code>、載入未經簽名的核心模組、讀取核心記憶體——以及最關鍵的一項：從休眠映像恢復。</p>
+<p>休眠的運作方式是將系統記憶體的全部內容傾印至 swap 分區或檔案，然後關機，並在下次啟動時還原該映像。還原路徑意味著核心正從磁碟將可受攻擊者影響的數據，取回至核心特權狀態。在 lockdown 的威脅模型下，存於磁碟的休眠映像屬不受信任的輸入，可能將任意代碼偷運至電腦的最高特權層級。與其加裝一套不完整的驗證機制，上游核心索性直接禁止此操作。</p>
+<p>結果是，對大多數發行版而言，休眠與 Secure Boot 一直無法並存。對採用映像式部署（image-based deployment）、且電腦需長時間離線運作的 fleet 來說，這尤其困擾，因為 suspend-to-disk 能實質延長可用電池續航力，並簡化電源管理。</p>
+<h4>基於簽名的修補方案</h4>
+<p>建議的做法刻意沿用 Secure Boot 對核心映像本身已經採用的信任模型：先簽名，再在信任之前驗證簽名。</p>
+<p>根據該組補丁，休眠映像會以密碼學方式簽名，核心會在恢復路徑上先驗證該簽名，才還原記憶體內容。驗證失敗的映像會被拒絕——這正好維持 lockdown 存在所要保障的承諾：磁碟上的任何東西都不能將未經驗證的代碼注入運行中的核心。</p>
+<p>正是這種對稱性，令建議在技術上具備說服力。它並未削弱 lockdown，而是把既有的「先簽名、後驗證」模式，延伸至一向被列為例外的子系統。對需要向審計方解釋安全控制措施的合規團隊而言，這個框架很重要——修補方案是增加了一個驗證步驟，而不是移除一項限制。</p>
+<h4>根據原始報導</h4>
+<p>根據 2023 年 1 月的報導，Fedora 和 Ubuntu 均已表示有興趣透過各自的穩定更新渠道（stable update channel），提供支援 lockdown 的休眠功能。兩個發行版都沒有承諾交付日期，該補丁系列當時仍屬建議階段——尚未出現在任何已發布的核心版本之中。</p>
+<p>管理員應牢記的是先後次序：必須先在上游主線（mainline）合併，才是關鍵條件；之後發行版才可以將功能推送至自己的穩定渠道，並配合企業級 fleet 所依賴的 backport 和 QA 流程。郵件列表階段的進展值得留意，但不適合作為制定政策變更的依據。</p>
+<h4>對香港企業意味著什麼</h4>
+<ul>
+<li><strong>政策可兩全：</strong> 現時不少企業政策要求全面啟用 Secure Boot，代價是員工無法使用休眠。若簽名驗證方案最終合併上游，兩者便不再互相排斥。</li>
+<li><strong>fleet 管理更實際：</strong> 對大量使用手提電腦、需要長時間離線工作的隊伍（例如外勤及混合辦公團隊），休眠比關機更能維持工作狀態。此類場景可能正是評估相關功能的動機所在。</li>
+<li><strong>暫勿調整政策：</strong> 修補在源報導時仍屬提案階段，未經上游合併。政策文件與採購決定應以已合併、已發布的版本為準。</li>
+<li><strong>風險模型不變：</strong> 方案的核心是把休眠映像納入與核心映像相同的簽名驗證框架，而非放寬 lockdown 限制——這對需要向審計方解釋控制措施的合規團隊尤其重要。</li>
+</ul>
+<h4>採納之前請先核實</h4>
+<p>本文反映的是 2023 年 1 月的報導，而發佈時間已遠在該日期之後。在就該補丁系列是否已合併（例如已納入 kernel 6.2 或之後的版本）、經過重新設計、還是已經停滯作出任何結論之前，請直接查閱最新的 LKML 存檔及相關核心版本說明（release notes）。下游情況亦然：Fedora 和 Ubuntu 穩定渠道是否已收錄該功能，應對照發行版現行文件核實，而非依據上述 2023 年的狀態。請將本文的技術解釋視為長期有效；至於合併及推出進度，則應自行查證後，才用以影響採購或加固（hardening）決策。</p>
+<p><a href="https://www.phoronix.com/news/Linux-Hibernation-With-Lockdown" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
