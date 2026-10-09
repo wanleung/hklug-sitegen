@@ -1,0 +1,142 @@
+Date: 2026-10-09 11:29:00
+Author: HKLUG Team
+Title: Microsoft's next Windows Update certificate rotation will silently cut off legacy PCs
+Content:
+<p>Microsoft has warned that PCs running unsupported versions of Windows will silently stop receiving security updates after the next Windows Update certificate rotation, a cut-off the company has framed as cryptographic rather than administrative — a hard break in the signing chain, not a gradual degradation of service.</p>
+<p>According to BleepingComputer, the mechanism is cryptographic in the strictest sense: Windows Update signs its updates using certificates that rely on the SHA-2 algorithm. Machines that cannot verify SHA-2 code signatures will be unable to trust the new signing chain once the rotation occurs, and will simply stop being offered updates — with no visible error message and nothing in typical monitoring to flag the failure. For administrators, the practical effect is that an inventory-verified device can quietly fall out of the patching perimeter, appear healthy in dashboards, and accumulate unpatched vulnerabilities indefinitely.</p>
+<h5>Affected platforms</h5>
+<p>The versions Microsoft identified as lacking the required SHA-2 support — and therefore set to lose update delivery at the rotation — are:</p>
+<table>
+<thead>
+<tr>
+<th>Product</th>
+<th>Support status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows Vista (all editions)</td>
+<td>Long out of support</td>
+</tr>
+<tr>
+<td>Windows 7 RTM (no Service Pack 1)</td>
+<td>Superseded by SP1</td>
+</tr>
+<tr>
+<td>Windows 8 RTM (no Update)</td>
+<td>Superseded by Windows 8.1 Update</td>
+</tr>
+<tr>
+<td>Windows Server 2003 / 2003 R2</td>
+<td>Long out of support</td>
+</tr>
+<tr>
+<td>Windows Server 2008 RTM (no SP)</td>
+<td>Superseded by SP2</td>
+</tr>
+<tr>
+<td>Windows XP Embedded / POSReady</td>
+<td>Extended support expired</td>
+</tr>
+</tbody>
+</table>
+<p>Devices running Windows 7 SP1, Windows 8.1 Update, and their server equivalents remain eligible provided they have the SHA-2 update stack installed — Microsoft has published a servicing-stack update that backports SHA-2 signature verification to these platforms.</p>
+<h5>The 延長安全更新 (ESU) bridge</h5>
+<p>For Windows 10 — which reached end-of-life on <strong>14 October 2025</strong> — the only sanctioned route to continued patching is the Extended Security Updates (延長安全更新, ESU) programme. ESU delivers critical and important security fixes on a yearly-renewal basis for up to three additional years, but eligibility and pricing differ sharply between segments:</p>
+<table>
+<thead>
+<tr>
+<th>Segment</th>
+<th>Eligibility</th>
+<th>Year 1 cost</th>
+<th>Escalation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Consumers (Windows 10 Home)</td>
+<td>Single devices, Microsoft account required</td>
+<td>~US$30</td>
+<td>Increases each renewal year</td>
+</tr>
+<tr>
+<td>Commercial (Pro, Enterprise, Education)</td>
+<td>Volume Licensing, Microsoft 365 E3/E5, or Windows 365</td>
+<td>~US$61 per device</td>
+<td>Doubles each year, to a maximum of three years</td>
+</tr>
+</tbody>
+</table>
+<p>Cloud-managed devices enrolled in Windows 365 or Azure Virtual Desktop receive ESU coverage at no additional charge. IT budget cycles should treat ESU as a recurring line item rather than a one-off stopgap, and should plan for per-device costs that escalate sharply in years two and three.</p>
+<h5>Why this matters locally</h5>
+<p>Hong Kong's legacy Windows footprint tends to sit in the hardest-to-audit environments — POS terminals, kiosk displays, OT gateways, and embedded branch appliances — where a silent loss of update delivery is least likely to be detected before an incident forces the question. Any 2026 hardware-refresh plan should treat these cryptographic rotation dates as fixed deadlines and confirm ESU eligibility now, since enrolment windows close ahead of the rotation itself.</p>
+<hr>
+<p>微軟警告，執行不再受支援 Windows 版本的電腦，在下一次 Windows Update 憑證輪換後，將會悄然停止接收安全更新。微軟強調此中斷屬於加密層面，而非行政性質——即簽署鏈的硬性斷裂，而非服務逐步惡化。</p>
+<p>據 BleepingComputer 報導，該機制嚴格而言屬於加密性質：Windows Update 以依賴 SHA-2 演算法的憑證為更新進行簽署。無法驗證 SHA-2 code signature 的電腦，將無法在輪換完成後信任新的簽署鏈，從而完全停止收到更新提示——既無可見的錯誤訊息，一般監控系統亦不會標示此項故障。對管理員而言，實際影響是：一台已列入資產清單的裝置，可能會悄然脫離修補範圍，在管理儀表板上顯示一切正常，卻無限期地累積未修補漏洞。</p>
+<h5>受影響的平台</h5>
+<p>微軟指出以下版本缺乏所需的 SHA-2 支援，因此將在輪換後失去更新推送：</p>
+<table>
+<thead>
+<tr>
+<th>產品</th>
+<th>支援狀態</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows Vista（所有版本）</td>
+<td>早已停止支援</td>
+</tr>
+<tr>
+<td>Windows 7 RTM（未安裝 Service Pack 1）</td>
+<td>已被 SP1 取代</td>
+</tr>
+<tr>
+<td>Windows 8 RTM（未安裝 Update）</td>
+<td>已被 Windows 8.1 Update 取代</td>
+</tr>
+<tr>
+<td>Windows Server 2003 / 2003 R2</td>
+<td>早已停止支援</td>
+</tr>
+<tr>
+<td>Windows Server 2008 RTM（未安裝 SP）</td>
+<td>已被 SP2 取代</td>
+</tr>
+<tr>
+<td>Windows XP Embedded / POSReady</td>
+<td>延長支援期已屆滿</td>
+</tr>
+</tbody>
+</table>
+<p>執行 Windows 7 SP1、Windows 8.1 Update 及其伺服器版本的裝置，只要已安裝 SHA-2 update stack，仍符合繼續接收更新的資格。微軟已發佈一項 servicing stack update，將 SHA-2 簽署驗證功能向下移植至上述平台。</p>
+<h5>延長安全更新（ESU）過渡方案</h5>
+<p>對於已在 <strong>2025 年 10 月 14 日</strong>停止支援的 Windows 10 而言，唯一獲得官方認可的持續修補途徑是 Extended Security Updates（延長安全更新，ESU）計劃。ESU 以按年續費形式提供重要及關鍵安全修補，最長可額外提供三年，惟不同客戶類別的資格及收費差異甚大：</p>
+<table>
+<thead>
+<tr>
+<th>客戶類別</th>
+<th>資格</th>
+<th>第一年費用</th>
+<th>加價機制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>個人用戶（Windows 10 Home）</td>
+<td>單一裝置，須使用 Microsoft 帳戶</td>
+<td>約 30 美元</td>
+<td>每次續費年遞增</td>
+</tr>
+<tr>
+<td>商用用戶（Pro、Enterprise、Education）</td>
+<td>批量授權、Microsoft 365 E3/E5 或 Windows 365</td>
+<td>每裝置約 61 美元</td>
+<td>每年翻倍，最長三年</td>
+</tr>
+</tbody>
+</table>
+<p>透過 Windows 365 或 Azure Virtual Desktop 管理的雲端裝置，可免費獲取 ESU 覆蓋。IT 預算週期應將 ESU 視為經常性開支項目，而非一次性權宜措施，並須為第二年及第三年急劇上升的每裝置成本作好規劃。</p>
+<h5>對本地有何影響</h5>
+<p>香港的舊版 Windows 裝機量往往集中在最難審計的環境，包括 POS 終端、自助服務機顯示屏、OT 閘道及分支機構的嵌入式裝置。在這些場景中，更新推送悄然中斷最不容易被察覺，直至事故發生才被迫正視問題。任何 2026 年的硬件更新計劃，都應將這些加密憑證輪換日期視為硬性期限，並立即確認 ESU 資格，因為申請期會在輪換正式生效前結束。</p>
+<p><a href="https://www.bleepingcomputer.com/news/microsoft/microsoft-outdated-windows-devices-will-lose-security-protection-next-year/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
