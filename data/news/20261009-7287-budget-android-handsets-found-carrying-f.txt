@@ -1,0 +1,52 @@
+Date: 2026-10-09 01:42:00
+Author: HKLUG Team
+Title: Budget Android Handsets Found Carrying Firmware-Embedded Proxy Malware From First Boot
+Content:
+<p>Budget Android handsets have been found carrying a malware campaign that is present from the very first boot, baked into the device firmware rather than installed as a rogue app — a supply-chain profile that matches the grey-market and parallel-import handsets routinely sold at a discount in markets like Hong Kong's.</p>
+<p>The campaign, tracked as <strong>Midnight Mimosa</strong>, embeds its malicious components inside the system partition of low-cost Android smartphones, according to BleepingComputer, which disclosed the findings on its security desk. That placement has consequences: the malware is active before the owner ever touches the device, survives a factory reset, and cannot be removed through the normal settings menus.</p>
+<p>A note on what is not yet established: the specific affected models and the identity of the research team behind the analysis were not confirmed in the material reviewed for this article, and the parallel-import channel is an inferred fit rather than a confirmed entry vector. Readers should treat vendor lists circulating elsewhere with caution until corroborated by a second source.</p>
+<h4>What the malware does</h4>
+<p>Devices carrying Midnight Mimosa grant its operators three broad capabilities:</p>
+<ul>
+<li><strong>Silent app installation</strong> — the ability to push additional software onto the device without meaningful user consent, opening the door to further payload delivery.</li>
+<li><strong>Ad fraud</strong> — background activity that generates fraudulent advertising impressions or clicks, quietly consuming the owner's data allowance and battery.</li>
+<li><strong>Residential proxying</strong> — turning the handset into an exit node in a proxy network, routing third-party traffic through the victim's connection. For the attacker, residential IP addresses are valuable precisely because they are harder to block than datacentre ranges; for the owner, they mean the device's bandwidth — and potentially its IP reputation — is being rented out without their knowledge.</li>
+</ul>
+<p>That last capability is what lifts this from a nuisance to an enterprise concern. A fleet of infected handsets is effectively an attacker-controlled proxy grid sitting on trusted corporate or carrier networks, and residential IPs are far harder to blocklist than datacentre ranges.</p>
+<h4>Why firmware changes the calculus</h4>
+<p>Most mobile security advice assumes the operating system can be trusted as a baseline. Midnight Mimosa breaks that assumption. Because the malicious code lives in the system partition, it reinstates itself through a standard factory reset — the step most users would take, and the step most help desks would recommend. Firmware-level persistence largely defeats end-user self-remediation: outside of specialist tooling, the honest answer is that a normal wipe will not clean the device.</p>
+<p>The same caveat applies to the custom-ROM route. Flashing a trusted aftermarket Android build is a plausible way to purge firmware-level malware, but only if the process genuinely rewrites the affected partitions and the user is comfortable with unlocked-bootloader trade-offs, including banking-app and DRM breakage. It is not a casual fix — and crucially, a reflash is only as trustworthy as the source image. Firmware pulled from the same opaque supply chain that delivered the malware in the first place is not remediation. Replacement images must come from a trusted, verifiable source: ideally the manufacturer's signed release, obtained independently of the seller.</p>
+<h4>Detecting and removing it</h4>
+<p>For technically confident users, two provenance checks are within reach:</p>
+<ul>
+<li><strong>Audit installed packages via ADB.</strong> <code>adb shell pm list packages</code> compared against a known-good baseline can surface system-level packages that should not be there — particularly on a device that has never been signed into a developer workflow.</li>
+<li><strong>Verify the build fingerprint.</strong> Check the device's build fingerprint against the manufacturer's official release. Grey-market units sometimes carry builds that do not correspond to any published firmware.</li>
+</ul>
+<p>Deeper detection — monitoring DNS and network egress for persistent connections to unfamiliar proxy or command-and-control domains, especially from an idle device — requires logging infrastructure most consumers do not have, though it is well within reach for IT teams. Where a fingerprint is wrong or packages reappear after a wipe, treat the device as compromised until trusted firmware is reflashed.</p>
+<p>For organisations, the fleet-risk point is worth heeding: any procurement process that sources handsets outside authorised distribution should treat firmware integrity as a supply-chain control, not a consumer afterthought. Devices bought through unofficial channels are, by definition, devices whose software provenance nobody in the chain has verified.</p>
+<p>The unglamorous bottom line is the oldest advice in security: in a segment where margins are thin and provenance is opaque, the cheapest phone may cost more than it saved.</p>
+<hr>
+<p>有廉價 Android 手機被發現出廠已帶有惡意軟件，於首次開機便即運行。惡意程序並非以流氓應用程式形式安裝，而是直接嵌入裝置韌體之內——這種供應鏈模式，與香港等地市場上常見以折扣價發售的灰市及平行進口手機如出一轍。</p>
+<p>據 BleepingComputer 於其保安版面披露，該惡意軟件活動代號為 <strong>Midnight Mimosa</strong>，將惡意組件植入廉價 Android 智能手機的系統分區（system partition）之內。此種配置帶來嚴重後果：惡意軟件在機主接觸裝置之前已經啟動，可以經受恢復出廠設定（factory reset），而且無法透過一般設定選單移除。</p>
+<p>需先說明目前尚未證實的事項：在本文撰寫時所審閱的資料中，受影響的具體型號及背後分析研究團隊的身份均未獲確認，而平行進口渠道只是合理的推斷，並非已證實的感染途徑。讀者對坊間流傳的受影響型號清單應審慎看待，等待第二個獨立來源佐證。</p>
+<h4>惡意軟件的運作方式</h4>
+<p>帶有 Midnight Mimosa 的裝置會授予其操控者三項主要能力：</p>
+<ul>
+<li><strong>靜默安裝應用程式</strong>——可在沒有用戶實質同意下向裝置推送額外軟件，為進一步投送惡意載荷打開方便之門。</li>
+<li><strong>廣告詐騙</strong>——在背景產生虛假廣告曝光或點擊，暗中消耗機主的數據用量及電池電量。</li>
+<li><strong>住宅代理（residential proxy）</strong>——將手機變成代理網絡中的出口節點（exit node），把第三方流量經受害者的連線轉發。對攻擊者而言，住宅 IP 地址之所以有價值，正是因為比數據中心（datacentre）IP 範圍更難被封鎖；對機主而言，這意味著裝置的頻寬——以至可能包括其 IP 信譽——正在其不知情下被出租。</li>
+</ul>
+<p>正是最後這一點能力，使問題由滋擾升級為企業層面的關注事項。大批受感染手機實際上等於一個由攻擊者控制、部署在可信企業或電訊商網絡上的代理網絡，而住宅 IP 遠比數據中心 IP 範圍難以列入黑名單。</p>
+<h4>為何韌體層面改變了問題的計算</h4>
+<p>多數流動保安建議都假設操作系統本身可以作為可信的基線。Midnight Mimosa 打破了這個假設。由於惡意代碼藏身於系統分區，它會在標準恢復出廠設定後自我還原——而這正是一般用戶會採取的步驟，亦是多數技術支援熱線會建議的步驟。韌體層面的持久化，基本上令用戶自行補救失效：除非動用專門工具，誠實的答案是，一般清除操作無法徹底清除裝置上的惡意軟件。</p>
+<p>同樣的警告適用於自訂 ROM 路線。刷入可信的第三方 Android 版本（custom ROM）確實是清除韌體層面惡意軟件的可行方法，但前提是該過程確實重寫受影響的分區，而且用戶接受解鎖 bootloader 帶來的取捨，包括銀行應用程式及 DRM 功能失效。這絕非隨手可做的修復——更關鍵的是，重刷時所用的映像檔是否可信，重刷便有多可信。從當初交付惡意軟件的同一條不透明供應鏈取得的韌體，並不能算作補救。替換用的映像檔必須來自可信、可驗證的來源：理想情況下，應是廠商簽署的正式發布版本，並從銷售商以外的獨立渠道取得。</p>
+<h4>偵測與清除方法</h4>
+<p>對具備技術能力的用戶而言，兩項來源核查是可以做到的：</p>
+<ul>
+<li><strong>透過 ADB 審計已安裝的軟件包。</strong>以 <code>adb shell pm list packages</code> 列出的清單比對已知正常的基準，可以找出不應存在於系統層面的軟件包——尤其是從未登入開發者流程的裝置。</li>
+<li><strong>核對 build fingerprint。</strong>將裝置的 build fingerprint 與廠商官方發布版本核對。灰市機有時會搭載與任何已發布韌體都不相符的版本。</li>
+</ul>
+<p>更深入的偵測——監察 DNS 及網絡出向連線（egress），留意是否持續連接至陌生的代理或 command-and-control 網域，尤其在裝置閒置時——需要一般消費者未必擁有的記錄基礎設施，但對 IT 團隊而言絕對可行。若發現 fingerprint 不正確，或清除後軟件包重新出現，應視該裝置為已受入侵，直至重新刷入可信韌體為止。</p>
+<p>對機構而言，機隊風險一點值得留意：任何從授權分銷渠道以外採購手機的流程，都應將韌體完整性視為一項供應鏈管控措施，而非消費者的事後考慮。透過非官方渠道購買的裝置，按定義即是軟件來源從未有人在鏈條上核實過的裝置。</p>
+<p>不甚華麗但最重要的結論，正是保安領域中最古老的忠告：在一個利潤微薄、來源不透明的市場裡，最便宜的電話，最終可能比它省下的錢更貴。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/low-cost-android-phones-ship-with-residential-proxy-malware/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
