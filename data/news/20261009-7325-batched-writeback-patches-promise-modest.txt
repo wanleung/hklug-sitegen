@@ -1,0 +1,34 @@
+Date: 2026-10-09 13:35:00
+Author: HKLUG Team
+Title: Batched Writeback Patches Promise Modest Zswap Speedups as RAM Prices Stay Steep
+Content:
+<p>With RAM prices still elevated, many Linux administrators are leaning harder on software-based memory tricks rather than buying more DIMMs. One of the more popular options is Zswap, the kernel's compressed RAM cache for swap pages — and a new patch series aims to squeeze some extra performance out of it by batching the writeback I/O that moves pages back out to disk.</p>
+<p>The changes, reported by Phoronix, provide what the outlet describes as incremental performance gains for Zswap by combining individual writeback operations into batches rather than issuing them one at a time. The patch series has been posted publicly for review, and it is not yet in mainline Linux.</p>
+<h4>How Zswap's writeback works today</h4>
+<p>For practitioners, a quick refresher is useful. Zswap sits in front of the swap device. When the kernel decides a page must be swapped out, Zswap compresses it and stores it in a dynamically allocated memory pool. This avoids writing many pages to disk at all — the compressed copy simply stays in RAM.</p>
+<p>But the pool has limits. When it fills up, Zswap must evict pages: it decompresses a batch of cached pages and writes them to the backing swap device, freeing pool space for new arrivals. This is the "writeback" path, and it is the part of Zswap's design that has historically drawn scrutiny. Under heavy memory pressure, writeback becomes a bottleneck — the cache's benefit depends on how quickly it can flush pages out.</p>
+<p>The new patches target exactly this path. Rather than writing pages back individually, the series batches the I/O into larger, more consolidated operations, which reduces per-page overhead and lets the backing device handle fewer, bigger requests — a pattern that generally plays well with both spinning disks and SSDs.</p>
+<h4>Why the gains are modest — and why that's fine</h4>
+<p>It is worth tempering expectations. Phoronix characterizes the improvements as incremental, and the series remains under upstream review. There is no guarantee of the exact form it will land in, or when. Administrators tracking kernel releases should not expect a dramatic overnight difference in swap throughput from this change alone.</p>
+<p>That said, Zswap continues to earn its place in the sysadmin toolkit, particularly in an era of costly memory. The value proposition is straightforward: rather than paying for more physical RAM, a compressed cache can meaningfully extend effective memory capacity. For machines that already have swap configured — including systems where swap is on fast NVMe storage — enabling Zswap is a low-risk, reversible tuning step.</p>
+<p>Readers weighing Zswap against zram should note that the two solve similar problems differently. zram creates a compressed block device used as swap in its own right, while Zswap caches pages destined for an existing swap device. On systems where a swap device already exists and serves other purposes, Zswap layers on top rather than replacing it.</p>
+<h4>What to watch for</h4>
+<p>The practical advice for Linux administrators generally — and Hong Kong practitioners alike — is unchanged for now: Zswap is worth enabling and tuning if you have not already, but the batched writeback patches are a future improvement rather than a today fix. Once the series is accepted into mainline — and depending on which kernel release carries it — it will be worth benchmarking on memory-pressured workloads to see whether the consolidated I/O translates into measurable reductions in latency on your specific storage hardware.</p>
+<p>As always with kernel memory-management changes, the real-world impact will vary with workload, swap device speed, and compression algorithm choice. The gap between "good enough" and "feels like you have more RAM" tends to close in small increments — and this series looks to be one more increment.</p>
+<p><em>Source: Phoronix, "Faster Zswap With Patches To Batch The Writeback I/O."</em></p>
+<hr>
+<p>記憶體價格仍然高企，不少 Linux 系統管理員寧願更依賴軟件層面的記憶體優化技巧，而非購買更多 DIMM。其中較受歡迎的選項之一是 Zswap——即 kernel 內建的壓縮式 RAM 快取，專門用來存放 swap 頁——近日一組新補丁系列旨在將搬回磁碟的頁面 writeback I/O 進行合批處理，從而擠出額外性能。</p>
+<p>據 Phoronix 報道，有關改動透過將個別 writeback 操作合併成批次執行，而非逐一發出，為 Zswap 帶來該媒體所形容的漸進式性能提升。該補丁系列已公開發佈以供審閱，目前尚未納入 mainline Linux。</p>
+<h4>Zswap 的 writeback 目前如何運作</h4>
+<p>對從業者而言，先作一個快速回顧不無裨益。Zswap 位於 swap 設備之前。當 kernel 判定某個頁面必須被換出時，Zswap 會將其壓縮並儲存至一個動態分配的記憶體池中。這樣一來，許多頁面根本無須寫入磁碟——壓縮後的副本直接留在 RAM 內即可。</p>
+<p>然而記憶體池有其容量上限。當池滿溢時，Zswap 必須逐出頁面：它會將一批已快取的頁面解壓，再寫入後備 swap 設備，從而騰出池空間容納新頁。這就是「writeback」路徑，也是 Zswap 設計中歷來最常受到檢視的環節。在記憶體壓力沉重的情況下，writeback 會成為瓶頸——快取的效益取決於它能多快將頁面沖刷出去。</p>
+<p>新補丁正是針對這條路徑。與逐頁寫回不同，該系列將 I/O 合批成規模更大、更整合的操作，從而減少每頁的額外開銷，亦讓後備設備處理更少但更大的請求——這種模式通常對傳統機械硬碟和 SSD 都較為理想。</p>
+<h4>為何提升幅度有限——以及為何這已足夠</h4>
+<p>期望值宜有所調整。Phoronix 將有關改動形容為漸進式改善，而該補丁系列仍在上游審閱階段。最終納入的形式以及何時落實，均沒有保證。追蹤 kernel 版本發布的系統管理員，不應僅憑此項改動就期待 swap 吞吐量一夜之間出現戲劇性變化。</p>
+<p>話雖如此，Zswap 在系統管理員的工具箱中繼續佔有一席之地，尤其在記憶體成本高昂的年代。其價值主張十分直接：與其花錢添置實體 RAM，一個壓縮式快取可以切實擴大有效記憶體容量。對於已經配置了 swap 的機器——包括 swap 設於快速 NVMe 儲存上的系統——啟用 Zswap 是一個低風險且可逆的調校步驟。</p>
+<p>正在衡量 Zswap 與 zram 取捨的讀者須留意，兩者以不同方式解決相似的問題。zram 會建立一個壓縮區塊設備，本身直接充當 swap；Zswap 則是快取那些將要寫入既有 swap 設備的頁面。在 swap 設備已存在並同時肩負其他用途的系統上，Zswap 是疊加在其之上，而非取而代之。</p>
+<h4>值得留意的事項</h4>
+<p>無論對 Linux 系統管理員整體而言，還是對香港的從業者而言，目前的實務建議不變：若尚未啟用 Zswap，值得啟用並加以調校，但這批合批 writeback 補丁屬未來改進，並非當下可用的修復方案。一旦該系列獲接納納入 mainline——具體取決於哪個 kernel 版本承載它——便值得針對記憶體壓力較重的工作負載進行基準測試，看看整合後的 I/O 能否在你實際使用的儲存硬件上轉化為可量度的延遲下降。</p>
+<p>一如既往，kernel 記憶體管理層面的改動，實際效果會因工作負載、swap 設備速度及所選壓縮算法而異。「夠用就好」與「感覺上擁有更多 RAM」之間的差距，往往是透過一次次小幅進步逐步縮小——而這組補丁看來正是多出來的又一小步。</p>
+<p><em>資料來源：Phoronix，《Faster Zswap With Patches To Batch The Writeback I/O》</em></p>
+<p><a href="https://www.phoronix.com/news/Faster-Zswap-Batch-Writeback-IO" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
