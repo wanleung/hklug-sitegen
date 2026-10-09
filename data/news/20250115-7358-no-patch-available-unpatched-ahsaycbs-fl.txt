@@ -1,0 +1,134 @@
+Date: 2025-01-15 18:25:00
+Author: HKLUG Team
+Title: No Patch Available: Unpatched AhsayCBS Flaws Used to Plant Webshells and Crypto Miners
+Content:
+<p>Hong Kong backup software vendor Ahsay's CBS platform is at the centre of an active exploitation campaign, with threat actors leveraging two vulnerabilities that have no confirmed fix to plant webshells and spin up cryptocurrency miners on affected servers.</p>
+<p>According to BleepingComputer, attackers are abusing one critical-severity and one medium-severity flaw in AhsayCBS, the backup and disaster-recovery management console widely deployed by managed service providers and small-to-medium businesses across the region. Neither issue has been patched at the time of writing, and the vendor has been contacted for a timeline on remediation.</p>
+<h5>Why this lands close to home</h5>
+<p>Ahsay is a home-grown Hong Kong vendor, and AhsayCBS remains a common sight in the server rooms of local MSPs and SMBs that resell or operate its backup stack. That combination — an unpatched, internet-reachable management console, an entrenched local install base, and exploitation already in progress — makes this a genuine check-your-exposure moment for anyone running the product. There is no update to roll out, so the only defence available today is containment and detection.</p>
+<h5>The attack chain</h5>
+<p>The reported intrusion pattern is straightforward and repeatable:</p>
+<ol>
+<li><strong>Initial access</strong> — an exposed AhsayCBS instance is reached over the network and the flaws are triggered.</li>
+<li><strong>Webshell placement</strong> — a webshell is dropped onto the host, giving the operator durable, hands-on access that survives beyond the initial intrusion.</li>
+<li><strong>Monetisation</strong> — a cryptocurrency miner is deployed on the compromised machine, generating revenue for the attacker.</li>
+</ol>
+<p>The mining component deserves particular attention. Beyond the electricity bill, sustained CPU load degrades backup and restore performance precisely when it matters most — during a recovery — and the resulting noise in ordinary resource monitoring makes it easier for other malicious activity to pass unnoticed. Treat unexplained CPU spikes on a backup host as an incident, not a capacity problem.</p>
+<h5>Affected product and severity</h5>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Severity</th>
+<th>Affected component</th>
+<th>Fix status</th>
+<th>CVE identifier</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vulnerability 1</td>
+<td>Critical</td>
+<td>AhsayCBS console</td>
+<td>No patch available</td>
+<td>Not yet assigned — see vendor advisory</td>
+</tr>
+<tr>
+<td>Vulnerability 2</td>
+<td>Medium</td>
+<td>AhsayCBS console</td>
+<td>No patch available</td>
+<td>Not yet assigned — see vendor advisory</td>
+</tr>
+</tbody>
+</table>
+<p>Confirmed CVE identifiers and affected version ranges have not been published in the reporting available to us; readers should consult Ahsay's official advisory directly for authoritative version scope.</p>
+<h5>The MSP force-multiplier problem</h5>
+<p>For service providers, this is not a single-server issue. An AhsayCBS host typically holds backup sets, and often the credentials, agent access and console trust relationships that reach every downstream client it serves. One compromised instance can therefore bridge into multiple unrelated customer networks simultaneously, and — worst case — the backup copies relied on for recovery are themselves suspect.</p>
+<h5>Remediation checklist</h5>
+<p>Because there is no patch to apply, the remediation spine is containment:</p>
+<ul>
+<li><strong>Restrict console access</strong> to VPNs or trusted management networks; do not leave AhsayCBS exposed to the open internet.</li>
+<li><strong>Hunt for webshell artefacts</strong> on every AhsayCBS host, including recently modified script and temporary directories under the web root.</li>
+<li><strong>Monitor for mining activity</strong> — sustained CPU saturation, outbound connections to known mining pools, and scheduled-task or service additions.</li>
+<li><strong>Audit and rotate credentials</strong> stored on or reachable from the console, starting with MSP-wide and client-admin accounts.</li>
+<li><strong>Validate backup integrity</strong> before trusting recovery points; restore-test from known-good media where possible.</li>
+<li><strong>Request a written patch timeline from the vendor</strong> and document it for your own compliance records.</li>
+</ul>
+<h5>How to check if you are affected</h5>
+<ol>
+<li>Scan your network for any internet-facing AhsayCBS console interfaces (commonly on port 443 or the backup management port).</li>
+<li>Inspect each server for unfamiliar <code>.asp</code> / <code>.aspx</code> files, unexpected scheduled tasks, or unknown services.</li>
+<li>Watch for sustained high CPU utilisation and outbound traffic to known mining-pool addresses.</li>
+<li>Review console accounts and agent credentials, and rotate anything suspicious or stale immediately.</li>
+<li>Contact Ahsay and request a written patch timeline.</li>
+</ol>
+<h5>Treat a compromise as a full breach</h5>
+<p>Webshell access implies persistence and the ability to extend the intrusion at will. Any AhsayCBS host with evidence of compromise should be rebuilt from trusted media rather than cleaned in place, and credentials rotated across every client environment the host could reach.</p>
+<p>If you run AhsayCBS, the takeaway is uncomfortable but simple: there is nothing to patch today, so reduce exposure now and assume anything already reachable may need to be rebuilt. We will update this article if CVE identifiers or a vendor patch timeline are confirmed.</p>
+<hr>
+<p>香港備份軟件供應商 Ahsay 的 CBS 平台正成為一場活躍攻擊行動的核心，威脅者利用兩個尚未證實修補的漏洞，在受影響的伺服器上植入 webshell 及啟動加密貨幣礦工程式。</p>
+<p>據 BleepingComputer 報道，攻擊者正濫用 AhsayCBS 的一個嚴重（critical）及一個中等（medium）程度漏洞。AhsayCBS 是管理服務供應商（MSP，managed service providers）及區內中小企業廣泛部署的備份及災難復原管理主控台。截稿時兩個漏洞均未有補丁，本刊已就修補時間表聯絡供應商查詢。</p>
+<h5>為何與本地息息相關</h5>
+<p>Ahsay 是香港本土供應商，而 AhsayCBS 在本地轉售或營運其備份方案的 MSP 及中小企機房中仍十分常見。一個未修補且可從互聯網直達的管理主控台、紮實的本地安裝基礎，再加上正在進行的利用——這三者結合，令所有仍在運行該產品的用戶必須認真檢視自身暴露面。目前並無更新可以推出，因此今天唯一可行的防禦只有遏制（containment）與偵測。</p>
+<h5>攻擊鏈</h5>
+<p>已報告的入侵模式直接而可重複：</p>
+<ol>
+<li><strong>初始存取</strong> — 攻擊者透過網絡接觸暴露的 AhsayCBS 實例並觸發漏洞。</li>
+<li><strong>植入 Webshell</strong> — 在主機上放置 webshell，讓攻擊者獲得持久的人手操控存取權，即使初始入侵結束仍可持續存在。</li>
+<li><strong>牟利</strong> — 在已被入侵的電腦部署加密貨幣礦工程式，為攻擊者帶來收益。</li>
+</ol>
+<p>礦工元件尤其值得注意。除了電費之外，持續的 CPU 高負載會在最關鍵的時刻——災難復原期間——拖慢備份與還原效能，而由此產生的常規資源監控雜訊，亦會令其他惡意活動更易蒙混過關。備份主機上無法解釋的 CPU 飆升，應視為事故，而非容量問題。</p>
+<h5>受影響產品及嚴重程度</h5>
+<table>
+<thead>
+<tr>
+<th>問題</th>
+<th>嚴重程度</th>
+<th>受影響元件</th>
+<th>修補狀態</th>
+<th>CVE 編號</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>漏洞 1</td>
+<td>嚴重（Critical）</td>
+<td>AhsayCBS 主控台</td>
+<td>無補丁可用</td>
+<td>尚未分配——請參閱供應商公告</td>
+</tr>
+<tr>
+<td>漏洞 2</td>
+<td>中等（Medium）</td>
+<td>AhsayCBS 主控台</td>
+<td>無補丁可用</td>
+<td>尚未分配——請參閱供應商公告</td>
+</tr>
+</tbody>
+</table>
+<p>截至本文可取得的報道，已確認的 CVE 編號及受影響版本範圍均未公布；讀者應直接查閱 Ahsay 的官方公告，以取得權威的版本範圍說明。</p>
+<h5>MSP 的攻擊倍增效應</h5>
+<p>對服務供應商而言，這並非單一伺服器的問題。一台 AhsayCBS 主機通常存放備份集（backup sets），而且往往還握有可連至其每個下游客戶的憑證、代理程式存取權限及主控台信任關係。因此，一個被入侵的實例可同時跨越至多個互不相關的客戶網絡；最壞的情況下，復原所依賴的備份副本本身亦已可疑。</p>
+<h5>修補清單</h5>
+<p>由於沒有補丁可以套用，修補工作的主軸是遏制：</p>
+<ul>
+<li><strong>限制主控台存取</strong>，只開放予 VPN 或受信任的管理網絡；切勿將 AhsayCBS 暴露於公開互聯網。</li>
+<li><strong>搜尋 webshell 存取痕跡</strong>，檢查每一台 AhsayCBS 主機，包括網頁根目錄下最近修改過的腳本及臨時目錄。</li>
+<li><strong>監察礦工活動</strong>——持續的 CPU 飽和、連往已知礦池位址的對外連接，以及新增的工作排程或服務。</li>
+<li><strong>審核並輪換憑證</strong>，涵蓋儲存於主控台或可從主控台存取的憑證，由 MSP 層面及客戶管理員帳戶開始。</li>
+<li><strong>驗證備份完整性</strong>，在信任復原點之前，盡可能從已知良好的介質進行還原測試。</li>
+<li><strong>要求供應商提供書面修補時間表</strong>，並為自身的合規紀錄存檔。</li>
+</ul>
+<h5>如何檢查你是否受影響</h5>
+<ol>
+<li>掃描網絡，查找是否有對外開放的 AhsayCBS 主控台介面（通常為 443 連接埠或備份管理連接埠）。</li>
+<li>檢查每台伺服器上是否出現不熟悉的 <code>.asp</code> / <code>.aspx</code> 檔案、異常工作排程或未知服務。</li>
+<li>監察是否出現持續的 CPU 高佔用，以及連往已知礦池位址的對外流量。</li>
+<li>覆核主控台帳戶及代理程式憑證，對任何可疑或陳舊的憑證即時輪換。</li>
+<li>聯絡 Ahsay 並要求書面修補時間表。</li>
+</ol>
+<h5>將入侵視為全面失陷</h5>
+<p>Webshell 存取權意味著持久性，以及隨意擴大入侵範圍的能力。任何有證據顯示被入侵的 AhsayCBS 主機，都應從可信介質重新建立，而非就地清理，同時須在該主機可觸及的每個客戶環境輪換憑證。</p>
+<p>如果你正在運行 AhsayCBS，結論令人不安但簡單：今天沒有任何東西可以修補，因此應立即縮小暴露面，並假設任何已經可以被觸及的系統可能都需要重建。若 CVE 編號或供應商修補時間表得到確認，我們將更新本文。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/unpatched-ahsaycbs-flaws-exploited-to-deploy-webshells-mine-crypto/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
