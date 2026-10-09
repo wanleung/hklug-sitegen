@@ -1,0 +1,38 @@
+Date: 2026-10-09 15:54:00
+Author: HKLUG Team
+Title: Why Ubuntu 26.10 Won't Ship GCC 16 — and What That Means for Your Build Pipeline
+Content:
+<p>Canonical has opted to ship Ubuntu 26.10 with GCC 15 as its default system compiler, rather than moving to the newer GCC 16 release, according to a report from Phoronix. The decision means developers building against the distribution's out-of-the-box toolchain will remain on the GCC 15 series when the interim release lands, with the next major compiler bump deferred to a future development cycle.</p>
+<p>The choice has drawn criticism from performance-focused users and enthusiasts, who had hoped to see the newer compiler's optimisation improvements become the baseline for the distribution's builds. GCC's default version matters well beyond benchmark curiosity: it determines the compiler that package maintainers, downstream packagers, and ordinary developers use unless they explicitly install an alternative, which in turn shapes the optimisation levels, language feature defaults, and code-generation behaviour of essentially everything compiled on a stock system.</p>
+<p>For teams maintaining build pipelines, the practical consequence is that upgrading to Ubuntu 26.10 will not, by itself, change the compiler used by <code>apt</code>-built dependencies or by any build job that relies on the distribution's packaged GCC. Any expectation of newer-compiler behaviour from a distro upgrade should be discarded.</p>
+<h5>What the change does and does not affect</h5>
+<p>Because the default remains GCC 15, projects that pin to the system compiler will see no toolchain change from this decision. Teams that want GCC 16 will need to install it explicitly from Ubuntu's repositories, where it is expected to be available as an alternative version, or build it from source. Ubuntu has adjusted toolchain selections mid-development cycle before, so the default is not formally immutable until release — but at this point the direction is clear, and teams should plan accordingly.</p>
+<p>It is also worth noting that the compiler switch will eventually happen, and when it does, the new default may carry forward into a long-term-support release in a later cycle. Canonical has not signalled which cycle that will be, and organisations should not budget for a specific date.</p>
+<h5>A toolchain-pinning checklist for build and CI pipelines</h5>
+<p>Teams upgrading to Ubuntu 26.10, or simply standardising their build environments, should treat the compiler version as an explicit dependency rather than an ambient default:</p>
+<ol>
+<li><strong>Pin the compiler version in CI images.</strong> Rather than relying on <code>gcc</code> resolving to whatever the distro ships, reference the major version explicitly (for example, install <code>gcc-15</code> and invoke it by name) so an image refresh cannot silently change code generation.</li>
+<li><strong>Add the target compiler to your CI matrix now.</strong> If a future Ubuntu release or an explicit install will put GCC 16 in your build path, test against it in parallel before it becomes the default. Catching regressions early is far cheaper than debugging them under a release deadline.</li>
+<li><strong>Record the compiler version in build artefacts.</strong> Emit <code>gcc --version</code> output into logs and, where possible, embed it in artefact metadata. When a bug is bisected to a compiler change, this is the first question you will be asked.</li>
+<li><strong>Budget for a two-step upgrade path.</strong> Moving from an older LTS toolchain to GCC 15, and later to GCC 16, is realistically two migrations, not one. Each may surface new warnings promoted to errors, changed inline-assembly assumptions, or stricter diagnostic behaviour in C and C++ codebases.</li>
+<li><strong>Audit flags and language standards.</strong> Confirm that build systems do not hardcode <code>-fcommon</code>, legacy optimisation flags, or language-standard settings that newer compiler defaults have quietly changed.</li>
+</ol>
+<p>The GCC 16 switch will arrive in a future Ubuntu cycle, and which release inherits it as default — and whether that release is an LTS — remains open. Until Canonical signals otherwise, teams should treat GCC 15 as the Ubuntu 26.10 baseline and keep the newer compiler as an explicit, tested option alongside it.</p>
+<hr>
+<p>Canonical 已決定讓 Ubuntu 26.10 繼續以 GCC 15 作為預設系統編譯器，而非升級至較新的 GCC 16，據 Phoronix 報導。這項決定意味著，當該過渡版本正式推出時，開發者若依賴發行版開箱即用的工具鏈，仍會停留在 GCC 15 系列；下一次主要編譯器版本的跳躍則推遲至未來某個開發週期。</p>
+<p>這項選擇招致性能導向用戶與愛好者的批評，他們原本期望較新編譯器的優化改進成為發行版建置的基準。GCC 的預設版本所影響的遠不止於跑分成績：它決定了套件維護者、下游打包者，以及一般開發者在未主動安裝替代版本時所使用的編譯器，進而影響整部系統上幾乎所有編譯產物的優化層級、語言特性預設值與程式碼生成行為。</p>
+<p>對於維護建置管線的團隊而言，實際影響是：升級至 Ubuntu 26.10 本身並不會改變 <code>apt</code> 建置的相依套件所用的編譯器，也不會改變任何依賴發行版打包 GCC 的建置作業。任何期望透過升級發行版即可取得較新編譯器行為的想法，都應予摒棄。</p>
+<h5>這項變動影響什麼、不影響什麼</h5>
+<p>由於預設版本維持 GCC 15，鎖定系統編譯器的專案不會因此決策而見到工具鏈變動。希望使用 GCC 16 的團隊需從 Ubuntu 套件庫明確安裝——預期會以替代版本形式提供——或自行從原始碼編譯。Ubuntu 過往曾在開發週期中途調整工具鏈選擇，因此預設版本在正式發布前並非不可更改；但截至目前方向已十分明確，團隊應據此規劃。</p>
+<p>另需留意的是，編譯器的切換終將發生，屆時新的預設版本可能延續至稍後週期的長期支援（LTS）版本。Canonical 尚未表明會落在哪個週期，組織不應為特定日期預留預算。</p>
+<h5>建置與 CI 管線的工具鏈鎖定清單</h5>
+<p>無論是升級至 Ubuntu 26.10，或僅是標準化建置環境，團隊都應將編譯器版本視為明確的相依項目，而非聽天由命的預設值：</p>
+<ol>
+<li><strong>在 CI 映像中鎖定編譯器版本。</strong> 與其依賴 <code>gcc</code> 指向發行版所附版本，不如明確指定主要版本（例如安裝 <code>gcc-15</code> 並以其名稱呼叫），如此映像更新便不會悄然改變程式碼生成。</li>
+<li><strong>立即將目標編譯器加入 CI 矩陣。</strong> 若未來 Ubuntu 版本或明確安裝會將 GCC 16 帶入你的建置路徑，請在它成為預設之前先行平行測試。提早攔截回歸，遠比在發布期限壓力下除錯划算。</li>
+<li><strong>在建置產物中記錄編譯器版本。</strong> 將 <code>gcc --version</code> 輸出寫入日誌，並盡可能嵌入產物的中繼資料。當除錯追溯至編譯器變動時，這是對方第一個會提出的問題。</li>
+<li><strong>為兩階段升級路徑預留預算。</strong> 從較舊的 LTS 工具鏈移至 GCC 15，日後再移至 GCC 16，實質上是兩次遷移而非一次。每次都可能浮現新的警告被提升為錯誤、inline assembly 假設變動，或 C 與 C++ codebase 中更嚴格的診斷行為。</li>
+<li><strong>審核編譯旗標與語言標準。</strong> 確認建置系統沒有硬編碼 <code>-fcommon</code>、過時的優化旗標，或已被較新編譯器預設值悄然改變的語言標準設定。</li>
+</ol>
+<p>GCC 16 的切換將在未來某個 Ubuntu 週期落地；哪個版本會繼承其作為預設——以及該版本是否為 LTS——仍是未知數。在 Canonical 釋出進一步訊號之前，團隊應將 GCC 15 視為 Ubuntu 26.10 的基準，並把較新編譯器作為已測試的明確選項並行保留。</p>
+<p><a href="https://www.phoronix.com/news/Ubuntu-26.10-GCC-15-Default" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
