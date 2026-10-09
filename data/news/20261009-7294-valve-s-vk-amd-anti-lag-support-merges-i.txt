@@ -1,0 +1,30 @@
+Date: 2026-10-09 01:23:00
+Author: HKLUG Team
+Title: Valve's VK_AMD_anti_lag Support Merges into RADV, Arriving with Mesa 26.3
+Content:
+<p>After months of development, Valve's implementation of <code>VK_AMD_anti_lag</code> support for RADV — AMD's open-source Vulkan driver — has been merged into the Mesa mainline and is set to ship with the Mesa 26.3 release this quarter. It is worth clarifying the provenance: <code>VK_AMD_anti_lag</code> is a Vulkan extension defined by AMD. Valve contributed the implementation of support for that extension within RADV; the extension standard itself is not Valve's creation.</p>
+<h4>Why Input Latency Matters Beyond Gaming</h4>
+<p>Input latency is the delay between a physical action — pressing a key, moving a mouse — and the corresponding change appearing on screen. For gamers, even a few dozen milliseconds can noticeably affect responsiveness. But the issue is not limited to games. 3D and DCC applications, video editing tools, compositor-driven window operations, and general desktop responsiveness all depend on the same end-to-end pipeline. The shorter the latency, the more "direct" the system feels.</p>
+<p>Anti-lag works by allowing the driver to delay certain GPU scheduling tasks, reducing the number of frames the CPU spends processing work that is likely no longer visible — thereby shortening the overall response time of the rendering pipeline.</p>
+<h4>From Driver Inference to Application-Driven Timing</h4>
+<p>The key change introduced by <code>VK_AMD_anti_lag</code> concerns who controls the timing decision. Previous anti-lag implementations relied on the driver to infer which frames could be safely deferred. The new extension provides a standardised Vulkan interface through which applications can explicitly tell the driver which input state corresponds to which frame. When the application is best placed to know the timeline, passing that information directly removes the need for the driver to guess.</p>
+<p>How much this differs in practice from the older approach, however, has not yet been quantified. According to Phoronix, concrete figures will only become available once testers benchmark pre-release builds. Until independent measurements are published, it would be premature to estimate the scale of any improvement.</p>
+<h4>When Will It Reach Your System?</h4>
+<p>The code has been merged into Mesa mainline, but merging does not mean immediate availability. When the feature actually reaches your system depends on when your distribution updates to Mesa 26.3. Separately, the extension will only have a visible effect once applications adopt it — without software-level support, the driver-side feature remains dormant.</p>
+<h4>The Broader Significance of Upstreaming</h4>
+<p>For Linux desktop users in Hong Kong running Radeon hardware — whether in IT, development, or general use — this story is worth noting for reasons that extend beyond faster games. Proton is an open-source project in its own right, even though the Steam platform it serves is closed-source. Valve has consistently fed its low-level driver and Mesa contributions back into the open-source upstream, including RADV and other Mesa components. <code>VK_AMD_anti_lag</code> follows the same pattern: a feature developed for commercial purposes ends up as driver code that anyone can use, modify, and build.</p>
+<p>Mesa 26.3 is expected to release this quarter; anti-lag is just one of several changes in the release. Users running Arch, Fedora, or other distributions that track upstream Mesa versions can watch for the 26.3 update schedule.</p>
+<hr>
+<p>經過數月開發，Valve 為 RADV（AMD 的開源 Vulkan 驅動程式）實作的 <code>VK_AMD_anti_lag</code> 支援已合入 Mesa 主線，並預計隨今個季度的 Mesa 26.3 版本發布。值得澄清的是：<code>VK_AMD_anti_lag</code> 本身是 AMD 定義的 Vulkan extension，Valve 貢獻的是在 RADV 中實作對該 extension 的支援，該 extension 標準本身並非由 Valve 創立。</p>
+<h4>為何輸入延遲不止與遊戲有關</h4>
+<p>輸入延遲指的是由實體操作（例如按下鍵盤、移動滑鼠）到螢幕顯示相應變化的時間差。對遊戲玩家而言，即使只是數十毫秒的差距，亦會明顯影響操作手感。然而，問題並不局限於遊戲 — 3D 及 DCC 應用、影片剪接工具、合成器驅動的視窗操作，以至整體桌面回應速度，同樣依賴這條端到端 pipeline。延遲越短，系統的反應就越「直接」。</p>
+<p>Anti-lag 的運作原理，是容許驅動程式延後部分 GPU 排程工作，減少 CPU 處理那些很可能已無法在畫面呈現的 frame，從而縮短整個繪圖 pipeline 的回應時間。</p>
+<h4>由驅動程式推斷到應用程式主導的時間控制</h4>
+<p><code>VK_AMD_anti_lag</code> 帶來的關鍵改變，在於由誰主導時間控制的決定。以往的 anti-lag 實作主要依賴驅動程式自行推斷哪些 frame 可以安全地延後。新的 extension 提供了一套標準化的 Vulkan interface，讓應用程式可以明確告知驅動程式哪個輸入狀態對應哪個 frame。當應用程式最了解自身的時間軸時，直接提供這些資訊便可省去驅動程式猜度的需要。</p>
+<p>然而，新舊做法在實際應用上相差多少，目前仍未能量化。根據 Phoronix 報導，具體數據要待測試人員對 pre-release build 進行基準測試後才會有。在獨立量度數據公布之前，估計改善幅度為時尚早。</p>
+<h4>何時才會在你的電腦上使用</h4>
+<p>程式碼已合入 Mesa 主線，但合入並不等於即時可用。該功能實際何時能於用戶的電腦上使用，取決於所用發行版何時更新至 Mesa 26.3。此外，該 extension 亦要待應用程式採納後才能發揮可見效果 — 缺乏軟件層面的支援，驅動程式端的功能將維持待命狀態。</p>
+<h4>Upstreaming 的更廣泛意義</h4>
+<p>對香港使用 Radeon 硬件運行 Linux 桌面的用戶 — 無論是 IT 從業員、開發人員或一般使用者 — 這則消息值得留意的原因不止是遊戲速度的提升。Proton 本身是一個開源項目，即使它所服務的 Steam 平台屬封閉源碼軟件。Valve 一直將其底層驅動程式及 Mesa 的貢獻持續回饋至開源上游，包括 RADV 及其他 Mesa 組件。<code>VK_AMD_anti_lag</code> 亦遵循同一模式：一項出於商業目的開發的功能，最終成為任何人都可以使用、修改及自行編譯的驅動程式碼。</p>
+<p>Mesa 26.3 預計於今個季度發布，anti-lag 只是該版本眾多改動的其中之一。使用 Arch、Fedora 或其他追蹤上游 Mesa 版本的發行版用戶，可留意 26.3 的更新時間表。</p>
+<p><a href="https://www.phoronix.com/news/Mesa-26.3-RADV-VK_AMD_anti_lag" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
