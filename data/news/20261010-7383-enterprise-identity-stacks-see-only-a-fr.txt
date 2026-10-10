@@ -1,0 +1,44 @@
+Date: 2026-10-10 13:24:00
+Author: HKLUG Team
+Title: Enterprise Identity Stacks See Only a Fraction of the AI Agents Actually Running
+Content:
+<h3>Enterprise Identity Stacks See Only a Fraction of the AI Agents Actually Running</h3>
+<p>Most AI capabilities entering enterprise environments today are not being deployed in any deliberate sense — they are arriving, bundled into third-party software the organisation already trusts. The 2026 State of Agent Security Report, covered by The Hacker News on 10 October 2026, puts numbers on the result: a large and largely unmonitored population of AI agents operating outside the reach of enterprise identity infrastructure.</p>
+<p>Across the environments studied for the report, roughly 1,280 third-party products were found to embed AI functionality. Only about 282 of them authenticate through single sign-on. The remaining thousand-odd agents are, by default, invisible to the identity systems that most security programmes rely on as their primary governance layer.</p>
+<p>The report's authors are explicit that malice and deliberate shadow IT are not at play here. No one concealed these agents. The problem is architectural: an identity stack can only govern workloads that authenticate through it, and most embedded agents never do. Instead of a browser redirect and an SSO assertion, they authenticate through API keys, service accounts, or credentials inherited from the host application — paths that never touch a monitored login flow.</p>
+<h4>Why Zero-Trust Programmes Miss This</h4>
+<p>The finding cuts directly at the assumptions underpinning modern zero-trust architectures. Organisations that have spent years consolidating access behind SSO, conditional access policies, and identity-centric monitoring can still have an order of magnitude more AI workloads running than their identity tooling has ever seen. Governance follows authentication, and anything that bypasses authentication is structurally ungovernable by design — however mature the surrounding programme.</p>
+<p>Traditional third-party risk management compounds the gap. Most vendor assessments are performed at procurement and refreshed annually, and most security reviews evaluate a product as it was when purchased. An AI feature pushed through a routine vendor update months later rarely triggers a fresh assessment. The AI supply chain, in effect, is the software supply chain, and it moves at patch cadence rather than procurement cadence.</p>
+<h4>Five Practical Steps</h4>
+<p>The report sets out a remediation sequence aimed at closing the discovery gap before investing in enforcement. One caveat is worth noting upfront: the discovery methods it recommends — API telemetry, gateway logs, network analysis — expand the organisation's own traffic-inspection footprint, and that monitoring layer needs governance too.</p>
+<ol>
+<li><strong>Discover beyond SSO.</strong> Inventory AI workloads using API telemetry, gateway logs, and network analysis rather than identity-provider records alone.</li>
+<li><strong>Map authentication paths.</strong> Document how each agent actually authenticates — API key, service account, or inherited credential — and where those credentials originate.</li>
+<li><strong>Govern at the API layer.</strong> Where agents never reach SSO, enforcement has to move downstream to API gateways, key management, and scoped tokens.</li>
+<li><strong>Update vendor reviews.</strong> Treat the addition of AI or agent capabilities as a material change requiring re-assessment, not a routine patch.</li>
+<li><strong>Assign named owners.</strong> Every agent should map to an accountable business owner; where identity controls cannot reach, ownership is often the cheapest effective control.</li>
+</ol>
+<h4>No Standard for Agent Identity — Yet</h4>
+<p>The report also highlights an absence that the open-source community is arguably best placed to address: there is no widely adopted standard for agent identity. Unlike human users, autonomous workloads lack a common, portable notion of identity, attestation, and delegated authority. Until such protocols mature, organisations are left stitching together bespoke controls from API management, secrets tooling, and service-mesh primitives.</p>
+<p>For organisations in Hong Kong subject to the Personal Data (Privacy) Ordinance, the governance question is not abstract. Where an ungoverned agent reads tickets, summaries, or records containing personal data, accountability for that processing still sits with the organisation — regardless of whether its identity platform ever saw the workload. The practical implication is the same one the report underscores: SSO coverage is not a proxy for AI control, and the absence of an identity record is not evidence of an absence of processing.</p>
+<hr>
+<h3>企業身份管理架構只看得見實際運行 AI 代理的一小部分</h3>
+<p>目前進入企業環境的大部分 AI 功能，其實並非經由任何刻意部署而來——它們是以捆綁形式，隨企業早已信任的第三方軟件一同出現。《The Hacker News》於 2026 年 10 月 10 日報道的《2026 年代理安全狀況報告》（2026 State of Agent Security Report）為此現象提供了具體數據：大量 AI 代理在企業身份基建的監管範圍之外運作，而且幾乎完全沒有受到監察。</p>
+<p>在報告研究的環境中，約有 1,280 項第三方產品被發現內建 AI 功能。當中只有約 282 項透過單一登入（single sign-on，SSO）進行身份驗證。其餘一千多個代理，預設情況下對各安全計劃賴以為主要治理層的身份系統而言是不可見的。</p>
+<p>報告作者明確指出，這裡並不存在惡意行為或刻意搞「影子 IT」（shadow IT）。沒有人刻意隱藏這些代理。問題在於架構本身：身份管理架構只能治理經其進行身份驗證的工作負載（workload），而大多數內建代理從來不會這樣做。它們不會經過瀏覽器重新導向及 SSO 斷言（assertion），而是透過 API key、服務帳戶（service account），或從宿主應用程式繼承的認證憑證進行驗證——這些途徑從來不會接觸到任何受監察的登入流程。</p>
+<h4>為何零信任計劃會忽略這一點</h4>
+<p>這項發現直接動搖了現代零信任（Zero Trust）架構賴以成立的假設。花費多年將存取權限統一收歸 SSO、條件式存取政策及以身份為中心的監察之下的企業，其運行的 AI 工作負載數量仍可能比其身份管理工具歷來所見的多出一個數量級。治理跟隨身份驗證而行，任何繞過身份驗證的事物，在結構上就無法受到治理——無論周邊計劃有多成熟。</p>
+<p>傳統的第三方風險管理令此差距進一步擴大。大部分供應商評估在採購時進行，其後每年更新一次，而大部分安全審查所評估的是產品在購買當時的狀態。數個月後透過例行供應商更新推送的 AI 功能，極少會觸發重新評估。事實上，AI 供應鏈就是軟件供應鏈，其迭代速度以補丁節奏運行，而非採購節奏。</p>
+<h4>五個實務步驟</h4>
+<p>報告提出了一套補救流程，目的是在投資執行機制之前，先彌補發現（discovery）層面的落差。有一點值得先行說明：報告建議的發現方法——API 遙測（telemetry）、閘道器日誌、網絡分析——會擴大企業自身的流量檢視範圍，而該監察層本身同樣需要治理。</p>
+<ol>
+<li><strong>超越 SSO 進行發現。</strong> 使用 API 遙測、閘道器日誌及網絡分析來盤點 AI 工作負載，而非單靠身份供應商（identity provider）的紀錄。</li>
+<li><strong>梳理身份驗證路徑。</strong> 記錄每個代理實際如何進行身份驗證——API key、服務帳戶還是繼承的憑證——以及這些憑證從何而來。</li>
+<li><strong>在 API 層面進行治理。</strong> 對於從來不會到達 SSO 的代理，執行控制必須下移至 API 閘道器、金鑰管理及設有權限範圍的 token。</li>
+<li><strong>更新供應商審查。</strong> 將新增 AI 或代理功能視為需要重新評估的實質性變更（material change），而非例行補丁。</li>
+<li><strong>指定負責人。</strong> 每個代理都應對應一名問責的業務負責人；在身份控制無法觸及之處，責任歸屬往往是成本最低的有效控制手段。</li>
+</ol>
+<h4>代理身份標準仍然闕如</h4>
+<p>報告同時指出一項空白，而開源社群（open source）可謂最適合填補這項空白：目前並沒有獲廣泛採用的代理身份標準。與人類用戶不同，自主運作的工作負載缺乏一套通用、可攜的身份、認證（attestation）及授權委託概念。在相關協議成熟之前，企業只能自行將 API 管理、secrets 管理工具及 service mesh 基本元件拼湊成度身訂造的控制措施。</p>
+<p>對於受香港《個人資料（私隱）條例》（Personal Data （Privacy） Ordinance）規管的企業而言，治理問題並非抽象議題。當一個不受治理的代理讀取載有個人資料的工單、摘要或紀錄時，該項處理活動的責任仍歸屬於企業——無論其身份平台是否曾經見過該工作負載。報告強調的實際結論是：SSO 覆蓋率不能等同於 AI 控制水平，而沒有身份紀錄，並不能證明沒有發生資料處理。</p>
+<p><a href="https://thehackernews.com/2026/10/the-third-party-agent-problem-why.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
