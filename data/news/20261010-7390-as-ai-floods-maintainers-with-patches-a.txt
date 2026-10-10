@@ -1,0 +1,34 @@
+Date: 2026-10-10 16:25:00
+Author: HKLUG Team
+Title: As AI Floods Maintainers With Patches, a Veteran Yocto Developer Questions the Case for LTS Linux
+Content:
+<p>A Qualcomm engineer and long-time Yocto/OpenEmbedded contributor has sparked a debate over whether Linux Long Term Support distributions remain fit for purpose in an era when generative AI tooling is flooding maintainers with patches and bug reports — though the argument is explicitly a discussion starter rather than a verdict.</p>
+<p>Speaking at the Linux Plumbers Conference in Prague, Khem Raj made the case that rolling release distributions offer real advantages in the GenAI era, chiefly by keeping systems close to mainline kernel development rather than waiting for features and fixes to trickle down through stable branches, according to Phoronix's report on the session.</p>
+<h4>A new kind of triage burden</h4>
+<p>The most interesting part of Raj's argument is not the familiar complaint that AI workloads need newer kernels for GPU drivers, memory management, and scheduler improvements. It is the second-order effect: generative AI tooling now produces bug reports and candidate patches themselves, at machine scale. LTS maintainers who curate and backport fixes into ageing stable branches are effectively being asked to triage machine-generated output against kernels that may be several major versions behind mainline. From that vantage point, following mainline — the natural posture of a rolling distribution — starts to look less like impatience and more like operational sanity.</p>
+<p>Raj's background matters here. A contributor to the Yocto Project and OpenEmbedded, he comes from the world of custom-built, tightly controlled system images. When someone from that camp argues for staying current with upstream rather than pinning to a stable branch, it is a signal that even teams used to deliberate, reproducible builds see the maintenance maths shifting.</p>
+<h4>The container irony</h4>
+<p>There is also an irony worth noting for anyone who assumed this was a binary choice. Teams that run containers over a rolling distribution to obtain stability have, in effect, rebuilt a stable layer on top of a rolling one. The rolling-versus-LTS split is often less clean than packaging categories suggest, and containerised fleets complicate any simple story about which base distribution is "safer."</p>
+<h4>Compliance cuts both ways</h4>
+<p>This analysis is not drawn from Raj's remarks, but from the perspective of our readership: for infrastructure teams in regulated sectors, the compliance dimension is where the trade-off gets genuinely uncomfortable. Rolling releases complicate auditability — the environment that was validated is not necessarily the environment running in production, and change-management processes built around scheduled, reviewable upgrades fit awkwardly with a continuously moving base.</p>
+<p>LTS carries its own risk profile. Backport queues can stretch for months, leaving known and publicly disclosed vulnerabilities resident in production systems, a problem for organisations that treat patch latency as an auditable control. Frameworks such as PCI-DSS and ISO 27001 — ubiquitous in financial-sector environments — shape what auditors look for, and both "we changed too much" and "we left a published CVE unpatched for a quarter" can become findings. No single distribution model satisfies every control objective by default.</p>
+<h4>The pragmatic middle ground</h4>
+<p>The prevailing practice among mature teams is, predictably, a hybrid. A rolling distribution or mainline-tracking environment handles development and CI, where recency matters and breakage is cheap to absorb. Production runs on LTS, or on custom images built with tools such as Yocto, where reproducibility and audit posture dominate.</p>
+<p>For teams weighing the question now, the useful criteria are not ideological. Consider how fast your AI stack actually requires kernel and driver updates; how much of your compliance evidence depends on a frozen, attestable base; and whether your change-management process can absorb rolling updates without breaking the audit trail.</p>
+<p>Raj framed his remarks as the start of a conversation, and on this evidence, it is one the wider Linux community is only beginning to have.</p>
+<hr>
+<p>一名高通工程師及長期 Yocto／OpenEmbedded 貢獻者，引發了一場關於 Linux 長期支援（LTS）發行版本在生成式 AI 工具大量向維護者湧入補丁及錯誤報告的時代是否仍然合用的討論——儘管這番論點明言只是拋磚引玉，而非定論。</p>
+<p>據 Phoronix 對該場會議的報道，Khem Raj 在布拉格舉行的 Linux Plumbers Conference 上發言，指 rolling release 發行版本在 GenAI 時代具備實際優勢，主要在於令系統緊貼主線（mainline）kernel 的開發進度，而不是被動等待各項功能及修正逐層下放到 stable branches。</p>
+<h4>全新形態的分診負擔</h4>
+<p>Raj 論點中最值得注意之處，並非那種耳熟能詳的抱怨——即 AI 工作負載需要較新的 kernel 以取得 GPU drivers、記憶體管理及 scheduler 改進。而是其連鎖效應：生成式 AI 工具如今已能自行產出錯誤報告及候選補丁，而且規模以機器級數計算。負責整理及 backport 修正到日漸老化的 stable branches 的 LTS 維護者，實質上被要求將機器生成的產出，對照那些可能已落後主線數個主要版本的 kernel 進行分診。從這個角度而言，追隨主線——即 rolling 發行版本的天然姿態——開始顯得不像是急躁，反而更像合乎營運常理的選擇。</p>
+<p>Raj 的背景在此至關重要。作為 Yocto Project 及 OpenEmbedded 的貢獻者，他出身於度身訂造、嚴密控制系統映像（system image）的領域。當來自該陣營的人主張緊貼上游而非鎖定 stable branch，這本身就是一個訊號：就連習慣刻意追求可重現（reproducible）建置的團隊，也察覺到維護成本的算式正在改變。</p>
+<h4>container 的諷刺意味</h4>
+<p>對於那些認為這是一場非黑即白選擇的人來說，還有一點頗具諷刺意味值得留意。在 rolling 發行版本之上運行 containers 以獲取穩定性的團隊，實質上等同於在 rolling 一層之上重新搭建了一個 stable 層。rolling 與 LTS 的分野，往往並不如套裝類別所暗示般界限分明，而 containerised fleets 更令任何關於哪個 base 發行版本「更安全」的簡單敍述變得複雜。</p>
+<h4>合規問題兩面不討好</h4>
+<p>以下分析並非出自 Raj 的發言，而是從本報讀者的角度出發：對於受嚴格規管行業的基建團隊而言，合規層面正是取捨變得真正令人不安之處。Rolling release 令審計（auditability）變得困難——通過驗證的環境未必等同實際在 production 運行的環境，而圍繞定期、可審查升級而建的變更管理流程，與一個持續變動的 base 難以配合。</p>
+<p>LTS 本身亦有其風險。Backport 佇列可能積壓數月，令已知且已公開披露的漏洞長期存留在 production 系統之中——對於將補丁延遲視為可審計控制項的機構來說，這是個問題。PCI-DSS 及 ISO 27001 等框架在金融行業環境中隨處可見，規範著審計人員的關注點，而「改動太多」與「一個已發布的 CVE 整整一季未有修補」同樣可以成為審計發現。沒有任何單一的發行模式能預設滿足所有控制目標。</p>
+<h4>務實的中間路線</h4>
+<p>可以預期，成熟團隊之間主流的做法是混合模式。Rolling 發行版本或追蹤主線的環境負責開發及 CI——在那裏，版本新舊很重要，而出現破壞性變化的代價亦相對低廉。Production 則運行於 LTS，或使用 Yocto 等工具建置的自訂映像，當中可重現性及審計合規佔主導地位。</p>
+<p>對於現正衡量此問題的團隊，有用的準則並非意識形態，而是務實考慮：你的 AI stack 實際上需要多快取得 kernel 及 driver 更新；你的合規證據有多少依賴一個凍結、可認證的 base；以及你的變更管理流程能否吸收 rolling updates 而不致破壞審計軌跡。</p>
+<p>Raj 將他的發言定性為一場對話的開端，而從目前跡象來看，整個 Linux 社羣對這場對話才剛剛開始。</p>
+<p><a href="https://www.phoronix.com/news/Rolling-Releases-GenAI-Era" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
