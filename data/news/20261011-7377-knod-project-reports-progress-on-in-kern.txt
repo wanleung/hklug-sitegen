@@ -1,0 +1,34 @@
+Date: 2026-10-11 09:00:00
+Author: HKLUG Team
+Title: KNOD Project Reports Progress On In-Kernel GPU Packet Offloading For Linux
+Content:
+<h3>KNOD Advances In-Kernel GPU Packet Offloading For Linux</h3>
+<p>An experimental open-source effort to push network packet processing onto AMD GPUs from inside the Linux kernel has moved forward, with a development update shared at the Linux Plumbers Conference in Prague, according to Phoronix's 9 October report.</p>
+<p>KNOD is described by the project as an in-kernel network offloading mechanism that aims to let general-purpose GPUs take over high-throughput packet workloads — work that today typically demands dedicated networking hardware. Phoronix first covered the project some time ago as an early-stage effort; the fact that Prague hosted an update signals the idea is being actively pursued rather than left as a one-off experiment.</p>
+<h4>What KNOD Is Trying To Do</h4>
+<p>The core proposition is straightforward: data centres and edge deployments increasingly run GPU-dense nodes for AI and HPC workloads, and those same machines also handle heavy network traffic. Rather than bolting a separate accelerator onto the box to keep up with packet rates, KNOD explores routing packet processing through the GPU that is already installed and powered on.</p>
+<p>The practical appeal, as outlined by Phoronix, rests on two fronts. The first is performance and energy efficiency — handling packets on an existing GPU can deliver strong throughput while avoiding the power draw of additional hardware. The second is the fact that no specialized hardware is required: the mechanism targets the general-purpose GPUs already present in these systems.</p>
+<p><em>Analysis:</em> Beyond the sourced claims, KNOD also sits within a longer-running push toward vendor-neutral networking. Because the mechanism operates in the kernel rather than depending on proprietary firmware stacks shipped by NIC vendors, it implicitly questions how much of the networking data plane needs to live in vendor-controlled silicon. That is the author's reading, not a claim made by Phoronix.</p>
+<p>These benefits echo the pressures that drove the wider kernel community toward XDP and eBPF: moving fast-path packet handling as close to the hardware as possible, with a programmable model that does not lock operators into a single silicon supplier. KNOD can be read as an extension of that trajectory — instead of making the NIC smarter, it asks whether an entirely different class of device already sitting in the chassis can absorb the work.</p>
+<h4>Experimental, And Explicitly So</h4>
+<p>It is important to be clear about where the project stands: KNOD remains experimental. Phoronix presents it as a continuing development effort rather than a technology on the verge of mainline kernel acceptance, and nothing in the Prague update suggests that has changed. Questions around memory isolation between tenants, GPU contention between compute and networking jobs, and the memory-mapping and DMA complexities of sharing a GPU across subsystems are the kind of engineering problems that typically take years to resolve in the kernel — if they are resolved at all.</p>
+<p>For DevOps and network engineers running GPU-dense and network-dense workloads on the same host, KNOD is best treated as a signal rather than a roadmap. The signal is that the boundary between "GPU node" and "network appliance" is under active pressure, and that kernel developers are exploring ways to collapse it.</p>
+<h4>What To Watch Next</h4>
+<p>Further technical detail is expected to emerge as the Plumbers Conference sessions conclude. Anyone tracking programmable data planes, eBPF offload, or heterogeneous accelerator scheduling in the kernel will want to follow the follow-up coverage. Until then, KNOD is a project worth understanding for its direction of travel — not a component to plan capacity around.</p>
+<p>For teams evaluating SmartNIC and DPU investments, the takeaway is simply this: the specialised-hardware answer is not the only one under consideration, and the conversation about where packet processing belongs is far from settled.</p>
+<hr>
+<h3>KNOD 推動 Linux 核心 GPU 封包卸載</h3>
+<p>一項將網絡封包處理從 Linux 核心內部卸載至 AMD GPU 的實驗性開源計劃取得進展，據 Phoronix 10 月 9 日報道，該計劃在布拉格舉行的 Linux Plumbers Conference 上分享了最新開發進度。</p>
+<p>KNOD 被項目方描述為一種 in-kernel 網絡卸載機制，目標是讓通用 GPU 承擔高吞吐量的封包工作負載——這類工作今日通常需要專用網絡硬件才能應付。Phoronix 此前曾以早期階段計劃的形式報道過 KNOD，如今布拉格會議上出現更新，顯示該構想正被積極推進，而非僅屬一次性實驗。</p>
+<h4>KNOD 計劃做什麼</h4>
+<p>其核心主張相當直接：數據中心及邊緣部署越來越多採用 GPU 密集節點來執行 AI 及 HPC 工作負載，而這些機器同時亦須處理繁重的網絡流量。與其額外加裝加速器以跟上封包速率，KNOD 探討的方案是直接利用機箱內已安裝並開機運行的 GPU 來處理封包。</p>
+<p>Phoronix 指出，其實際吸引力有兩方面。其一是效能與能源效率——在現有 GPU 上處理封包既能提供強勁吞吐量，又可避免額外硬件的電力消耗。其二是無需專用硬件：該機制針對的是這些系統中本已存在的通用 GPU。</p>
+<p><em>分析：</em> 除上述有來源的說法外，KNOD 亦屬長期以來推動廠商中立網絡（vendor-neutral networking）趨勢的一環。由於該機制運作於核心之中，而不依賴網卡（NIC）廠商提供的專有 firmware stack，它實際上質疑了網絡數據平面中有多少部分必須由廠商控制的芯片負責。此為本作者的解讀，並非 Phoronix 的說法。</p>
+<p>這些優勢與推動整個核心社群走向 XDP 及 eBPF 的壓力如出一轍：盡量將快速路徑（fast-path）封包處理移近硬件層，同時採用可編程模型，避免營運商被單一芯片供應商捆綁。KNOD 可被視為這一路線的延伸——它不再着眼於令網卡更聰明，而是轉而追問：機箱內是否已存在另一類完全不同的設備，足以吸收這項工作。</p>
+<h4>屬實驗階段，且項目方亦明言如此</h4>
+<p>必須清楚 KNOD 目前所處的階段：KNOD 仍屬實驗性質。Phoronix 將其定位為持續開發中的計劃，而非即將獲主線核心（mainline kernel）接納的技術，布拉格會議的更新亦未顯示情況有所改變。租戶之間的記憶體隔離、GPU 上運算與網絡任務的資源競爭，以及跨子系統共享 GPU 所涉及的記憶體映射及 DMA 複雜性——這類工程問題在核心中通常需時數年方能解決，甚至可能永遠無法徹底解決。</p>
+<p>對於在同一主機上同時運行 GPU 密集及網絡密集工作負載的 DevOps 及網絡工程師而言，KNOD 適合作為一個信號來看待，而非藍圖。該信號指出：「GPU 節點」與「網絡設備」之間的界限正面臨實質壓力，核心開發者正在探索模糊甚至消除這條界線的方法。</p>
+<h4>接下來留意什麼</h4>
+<p>隨着 Plumbers Conference 各項議程陸續舉行，預計將有更多技術細節公佈。關注可編程數據平面、eBPF offload 或核心異構加速器調度的人士，值得跟進後續報道。在此之前，KNOD 這個計劃值得理解的是其發展方向——而非作為規劃容量時可倚賴的組件。</p>
+<p>對於正在評估 SmartNIC 及 DPU 投資的團隊，結論只有一點：專用硬件並非唯一受考慮的答案，而關於封包處理應歸屬何處的討論，遠未有定論。</p>
+<p><a href="https://www.phoronix.com/news/KNOD-2026-GPU-Network-Process" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
