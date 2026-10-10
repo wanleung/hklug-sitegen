@@ -1,0 +1,30 @@
+Date: 2026-10-10 01:24:00
+Author: HKLUG Team
+Title: SQLite 3.54 Brings Performance Gains but Ends the Road for Windows XP
+Content:
+<p>SQLite 3.54 has been released, bringing performance improvements to what is arguably the most widely deployed database engine on earth — and, for the first time, formally cutting ties with Microsoft Windows XP and everything older.</p>
+<p>According to Phoronix, which covered the release at <a href="https://www.phoronix.com/news/SQLite-3.54-Released">phoronix.com</a>, the new version ships with faster performance across the engine, alongside the removal of support for Windows XP and earlier Windows releases. Phoronix has published benchmark results for the release; readers running performance-sensitive workloads should consult those figures directly rather than rely on second-hand summaries.</p>
+<p>For the overwhelming majority of SQLite users, the main story is the performance work. The engine is estimated to sit inside billions of devices and is bundled by default in environments ranging from Python and PHP installations to web browsers, mobile operating systems and embedded firmware. Any measured improvement in query execution, write throughput or startup overhead is amplified across that install base simply by virtue of how frequently SQLite is invoked per second, worldwide.</p>
+<p>The more consequential news is the platform cut — and it is consequential in a very specific, uneven way.</p>
+<h4>What "dropping XP support" actually means in practice</h4>
+<p>It is worth being precise about the mechanics. Existing SQLite binaries that were built and shipped in the XP era continue to run on XP; nothing retroactively breaks. What disappears is the guarantee: with 3.54, Windows XP and earlier are no longer within the engine's supported configuration space. Any application that upgrades its bundled SQLite — or rebuilds against the new sources — and then continues to run on XP is operating on software the upstream project no longer tests, no longer accepts bug reports against, and no longer considers a supported target.</p>
+<p>That distinction matters enormously for bundled-versus-system-package deployments. On Linux and most Unix-like systems, SQLite typically arrives through the distribution's system package, and upgrade policy is effectively delegated to the distro maintainer's compatibility commitments. On Windows, the common pattern is the opposite: SQLite is compiled into the host application as a static, bundled copy. That makes every upstream release a decision each Windows software vendor has to take individually — and it means the XP support removal will land unevenly, with some vendors upgrading immediately and others frozen indefinitely on an older bundled release.</p>
+<h4>Why this reaches Hong Kong's legacy estates</h4>
+<p>Nothing in the Phoronix coverage singles out any particular region or sector, but the practical profile of an XP-bound SQLite deployment is well understood: point-of-sale terminals, kiosk systems, industrial control hosts, medical device software and similar long-lifecycle systems where the operating system was chosen once, a decade or more ago, and never revisited because recertification costs dwarf any technical benefit.</p>
+<p>Such deployments are commonly found in exactly the kinds of long-tail Windows estate that make up Hong Kong's retail floors, transport terminals and building-management infrastructure. For maintainers of systems matching that profile, SQLite 3.54 is a clean break point: the moment a bundled copy is refreshed, the deployment leaves the vendor-supported envelope, regardless of whether anything visibly fails.</p>
+<p>This follows a familiar open-source pattern. Python dropped Windows XP support years ago; OpenSSL has progressively abandoned EOL platforms; mainstream browsers and toolchains moved on long ago. SQLite was, in effect, one of the last widely used holdouts.</p>
+<p>The takeaway for anyone maintaining legacy Windows deployments is uncomfortable but simple: the "boring, stable, invisible" component in your stack is quietly accumulating untested-platform risk with every upstream release. Inventory where SQLite is bundled, note the currently pinned version, and decide deliberately — before someone upgrades it on your behalf.</p>
+<hr>
+<p>SQLite 3.54 已正式發布，為號稱全球部署最廣泛的資料庫引擎帶來效能提升；與此同時，新版本亦首次正式終止支援 Microsoft Windows XP 及更早期的 Windows 版本。</p>
+<p>根據 Phoronix 在 <a href="https://www.phoronix.com/news/SQLite-3.54-Released">phoronix.com</a> 的報道，新版本在整體引擎層面帶來更快的效能表現，同時移除了對 Windows XP 及更早 Windows 版本的支援。Phoronix 已發布是次版本的基準測試結果；對效能敏感的用家如需參考數據，應直接查閱該等數字，而非依賴二手摘要。</p>
+<p>對絕大多數 SQLite 用家而言，今次更新的主要內容在於效能優化。據估計，該引擎嵌入於數十億部裝置之內，並以預載形式內置於由 Python、PHP 安裝環境，至網頁瀏覽器、流動作業系統及嵌入式韌件等各類平台之中。任何關於查詢執行速度、寫入吞吐量或啟動開銷的可量度改進，都會因為 SQLite 全球每秒被呼叫的次數極為頻繁，而在龐大的安裝基數中被放大。</p>
+<p>影響更深遠的則是平台支援的削減——而且其影響的方式非常具體，亦相當不平均。</p>
+<h4>「終止 XP 支援」在實際上意味著什麼</h4>
+<p>有必要準確說明其中的運作機制。在 XP 時代編譯及發布的現有 SQLite 二進制檔案，仍然可以在 XP 上運行；沒有任何東西會被追溯性地破壞。消失的是保障：自 3.54 起，Windows XP 及更早版本不再屬於引擎的支援配置範圍之內。任何應用程式一旦升級其內置的 SQLite——或以新版原始碼重新編譯——之後仍繼續在 XP 上運行，便是使用上游專案不再測試、不再接受相關錯誤報告、亦不再視為支援目標的軟件。</p>
+<p>這一點對「內置版本」與「系統套件」兩種部署方式的分別影響極大。在 Linux 及大多數 Unix 類系統上，SQLite 通常透過發行版的系統套件安裝，升級政策實質上委託給發行版維護者的相容性承諾。在 Windows 上，常見的做法恰恰相反：SQLite 以靜態內置副本的形式編譯入主應用程式之內。這意味著每一次上游版本發布，都是個別 Windows 軟件供應商需要自行作出的決定——同時也意味著 XP 支援的移除會以不平均的方式落實：部分供應商會立即升級，另一部分則會無限期停留在舊有的內置版本之上。</p>
+<h4>為何此事與香港的舊有系統息息相關</h4>
+<p>Phoronix 的報道並未點名任何特定地區或行業，但與 XP 綁定的 SQLite 部署，其實際應用場景已為人所熟知：銷售點（POS）終端、自助服務終端系統、工業控制主機、醫療裝置軟件，以及各種長壽命周期系統——這些系統的作業系統往往在十年前甚至更早之前選定，從此再無重新檢視，因為重新認證的成本遠遠超過任何技術上的好處。</p>
+<p>這類部署常見於構成香港零售店舖、交通樞紐及樓宇管理基礎設施的長尾 Windows 系統之中。對於系統特徵與此相符的維護者而言，SQLite 3.54 是一個明確的斷裂點：一旦內置副本被刷新，部署便會脫離供應商的支援範圍，不論是否出現任何可見的故障。</p>
+<p>這延續了一個為人熟悉的 open source 模式。Python 多年前已終止 Windows XP 支援；OpenSSL 亦逐步放棄已停止支援（EOL）的平台；主流瀏覽器及工具鏈早已向前邁進。SQLite 實際上是最後一批仍廣泛使用的「堅守陣地」者之一。</p>
+<p>對於任何維護舊有 Windows 部署的人士而言，這個結論令人不安但十分簡單：你技術架構中那個「沉悶、穩定、隱形」的元件，正在每一次上游版本發布中，悄然累積未經測試平台的風險。務必盤點 SQLite 內置於哪些位置、記下目前鎖定的版本，並審慎作出決定——搶在有人代你升級之前。</p>
+<p><a href="https://www.phoronix.com/news/SQLite-3.54-Released" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
