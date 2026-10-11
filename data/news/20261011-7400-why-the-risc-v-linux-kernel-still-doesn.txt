@@ -1,0 +1,40 @@
+Date: 2026-10-11 14:07:00
+Author: HKLUG Team
+Title: Why the RISC-V Linux Kernel Still Doesn't Use the Vector Extension — And What Auto-Vectorization Changes
+Content:
+<h4>The story isn't the speedup — it's why the kernel never used RVV in the first place</h4>
+<p>Phoronix reports that the RISC-V Linux kernel still does not exploit the Vector Extension (RVV) built into the ISA — but that compiler auto-vectorization alone, with no changes to kernel source code, is already delivering measurable performance gains. In other words: swap the toolchain, enable the right flags, and the kernel picks up vector instructions without any vendor-specific patch work.</p>
+<p>For a hardware ecosystem as fragmented as RISC-V, that matters. Rather than waiting for each SoC vendor to maintain its own optimised patch path, a toolchain-level fix propagates upstream and — in principle — benefits every RISC-V board running a sufficiently recent kernel and compiler.</p>
+<p><em>(Editorial note: readers working with RISC-V development boards, SoCs, and IoT modules will find this especially relevant. HKLUG has no commercial relationship with any RISC-V vendor.)</em></p>
+<h4>Why the kernel has held back on vector instructions</h4>
+<p>The caution is well-founded and historical. RISC-V's vector ISA went through a dramatic revision from version 0.7.1 to 1.0, leaving early silicon and toolchain support inconsistent. On the kernel side, saving and restoring vector register state across context switches required low-level plumbing that has only landed incrementally in mainline in recent years. The kernel has maintained a deliberately conservative stance because enabling vector use commits the project to handling vector state correctly across every RISC-V platform.</p>
+<p>The contrast with Arm is instructive. Arm's NEON and SVE extensions have long been baseline features, and the kernel has relied on compiler auto-vectorization to emit vector code for years. RISC-V is only now catching up on that path.</p>
+<h4>Reasons for measured optimism — and a few caveats</h4>
+<p>The performance results reported by Phoronix come from specific kernel build configurations and specific benchmark workloads. Several caveats apply:</p>
+<ul>
+<li><strong>Toolchain maturity is a variable.</strong> The results demonstrate auto-vectorization's potential, but not every GCC or Clang version will deliver equivalent results. We were not able to independently verify the exact compiler versions, benchmark names, and <code>-march</code> flags used in the reported tests, so we have chosen not to quote specific figures here. Readers interested in the underlying numbers should consult the original Phoronix article directly.</li>
+<li><strong>Auto-vectorization is an enhancer, not a transformation.</strong> Many kernel hot paths are not patterns that vectorize cleanly. Actual workload benefit depends heavily on whether the workload is I/O-bound, context-switch-bound, or genuinely dominated by numeric computation.</li>
+<li><strong>Upstreaming is never fast.</strong> The distance from a good benchmark to a patch set in mainline — and from there to a distro kernel shipping the relevant flags by default — runs through maintainer review, architecture-support maturity, and regression risk. This should be read as an R&amp;D signal, not an imminent performance upgrade.</li>
+</ul>
+<h4>What this means in practice</h4>
+<p>If you run RISC-V development boards for edge AI, image processing, or crypto workloads, the takeaway is this: within the next one or two toolchain/kernel release cycles, you may be able to pick up kernel-level vector acceleration <strong>without changing a single line of application code</strong>. But don't restructure a product roadmap around it. Until the relevant compiler settings ship as defaults in distribution kernels, real-world gains need to be measured per board and per workload.</p>
+<p><em>Source: Phoronix, <a href="https://www.phoronix.com/news/Auto-Vectorize-RISC-V-Kernel">"Auto Vectorizing The RISC-V Linux Kernel Shows Promising Results"</a>.</em></p>
+<hr>
+<h4>故事重點不在於提速——而在於核心為何從一開始就未有使用 RVV</h4>
+<p>Phoronix 報道指出，RISC-V Linux kernel 仍未善用 ISA 內建的 Vector Extension（RVV）——但僅靠編譯器的 auto-vectorization，在不修改任何 kernel source code 的情況下，已可帶來可量化的效能提升。換言之：更換 toolchain、啟用相應旗標，kernel 便能運用 vector 指令，毋須任何針對特定廠商的 patch 工作。</p>
+<p>對於像 RISC-V 這樣硬件生態碎片化嚴重的平台而言，這一點相當重要。與其等待每家 SoC 供應商各自維護優化 patch path，toolchain 層面的修復可以向上游傳播，原則上惠及每一塊運行足夠新版本 kernel 和 compiler 的 RISC-V 開發板。</p>
+<p><em>（編者按：從事 RISC-V 開發板、SoC 及 IoT 模組相關工作的讀者，會發現此報道尤其切身相關。HKLUG 與任何 RISC-V 供應商均無商業往來。）</em></p>
+<h4>為何 kernel 對 vector 指令一直有所保留</h4>
+<p>這種審慎態度有其歷史根據。RISC-V 的 vector ISA 經歷了由 0.7.1 版至 1.0 版的重大修訂，令早期晶片及 toolchain 的支援參差不齊。在 kernel 方面，要在 context switch 之間保存及還原 vector register 狀態，需要底層 plumbing 支援，而這些功能近年才逐步落入 mainline。Kernel 一直採取刻意保守的立場，因為一旦啟用 vector 功能，便需承擔在所有 RISC-V 平台上正確處理 vector 狀態的責任。</p>
+<p>與 Arm 的對比頗具啟發性。Arm 的 NEON 及 SVE 擴展長久以來已是 baseline 功能，kernel 多年來一直依賴編譯器 auto-vectorization 來產生 vector code。RISC-V 直至今日才開始追趕此一道路。</p>
+<h4>審慎樂觀的理由——以及若干注意事項</h4>
+<p>Phoronix 報道的效能結果，來自特定 kernel 建構配置及特定 benchmark workload。以下數點需要注意：</p>
+<ul>
+<li><strong>Toolchain 成熟度仍是變數。</strong> 這些結果展示了 auto-vectorization 的潛力，但並非每個 GCC 或 Clang 版本都能帶來同等效果。我們未能獨立核實報道所用測試中的確切 compiler 版本、benchmark 名稱及 <code>-march</code> 旗標，因此選擇在此不引用具體數字。對原始數據有興趣的讀者，請直接查閱 Phoronix 原文。</li>
+<li><strong>Auto-vectorization 是增強，而非蛻變。</strong> 許多 kernel 熱路徑並非能輕易向量化的 pattern。實際 workload 的收益，很大程度取決於該 workload 屬於 I/O-bound、context-switch-bound，還是真正以數值運算為主。</li>
+<li><strong>上游化從來不快。</strong> 從亮眼的 benchmark 數據，到 patch set 落入 mainline，再到發行版 kernel 以相關旗標作為預設出貨，中間要經過 maintainer review、架構支援成熟度及回歸風險等關卡。這應視為研發訊號，而非即將落地的效能升級。</li>
+</ul>
+<h4>這在實踐上意味著什麼</h4>
+<p>如果你以 RISC-V 開發板進行邊緣 AI、影像處理或加解密 workload，要點如下：在未來一至兩個 toolchain/kernel 發布周期內，你或可<strong>毋須修改任何應用程式碼</strong>，便獲得 kernel 層面的 vector 加速。但切勿據此重構產品 roadmap。在相關 compiler 設定成為發行版 kernel 的預設值之前，實際收益仍需逐板逐 workload 實測。</p>
+<p><em>資料來源：Phoronix，<a href="https://www.phoronix.com/news/Auto-Vectorize-RISC-V-Kernel">"Auto Vectorizing The RISC-V Linux Kernel Shows Promising Results"</a>。</em></p>
+<p><a href="https://www.phoronix.com/news/Auto-Vectorize-RISC-V-Kernel" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
