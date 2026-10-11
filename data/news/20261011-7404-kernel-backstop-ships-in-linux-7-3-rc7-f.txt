@@ -1,0 +1,44 @@
+Date: 2026-10-11 16:38:00
+Author: HKLUG Team
+Title: Kernel Backstop Ships in Linux 7.3-rc7 for AMD TLBI Erratum #1718, but Microcode Fix Still Rules
+Content:
+<p>The Linux 7.3-rc7 kernel, released today, carries a new kernel-side workaround for AMD TLBI Erratum #1718 — a defect affecting certain Zen-generation CPUs in which the Translation Lookaside Buffer Invalidate (TLBI) instruction can fail to clear cached translations, leaving stale entries active. Phoronix reported on 11 October that the workaround is also slated for back-ports to earlier kernel series.</p>
+<p>AMD's first-line remedy for the erratum is a CPU microcode update. The kernel patch shipping in 7.3-rc7 is not a substitute for that fix; it is a second layer of defence, aimed at the long tail of systems where the microcode has not yet arrived — whether because of firmware validation cycles, vendor-specific BIOS release schedules, or hardware that has aged out of routine update paths.</p>
+<p>For operators of AMD EPYC and Zen-based fleets, including those operating data-centre infrastructure in Hong Kong, the framing matters: microcode is the canonical fix, the kernel patch is the backstop. Treating the two as interchangeable is the mistake to avoid.</p>
+<h4>What the erratum actually does</h4>
+<p>TLBI is the mechanism by which a CPU discards cached virtual-to-physical address translations. When software changes a page mapping, it issues a TLBI so that subsequent memory accesses use the corrected translation.</p>
+<p>Erratum #1718 concerns cases where that invalidation does not fully take effect, leaving a stale translation active after software believes it has been flushed. The practical consequence depends heavily on timing and workload characteristics: in favourable cases it may go unnoticed, but under adversarial or unlucky conditions it risks anything from subtle memory corruption to permission-bypass conditions, since a process could retain access to a page that has since been remapped or revoked.</p>
+<p>It is worth stating plainly: this is a hardware timing bug that is difficult to reproduce reliably, and there is no evidence of public exploitation at the time of writing. The exploit risk is, on current information, theoretical. That said, defence-in-depth fixes for translation-layer defects are exactly the class of issue that tends to be revisited once exploit techniques are published, so waiting for a public proof-of-concept is not a sound patching strategy.</p>
+<p>AMD has documented the affected Zen generations in its official errata and advisory materials; administrators should verify their specific CPU models and stepping revisions against AMD's published advisory rather than relying on second-hand model lists.</p>
+<h4>Why a kernel workaround at all?</h4>
+<p>The kernel-side fix exists because microcode updates cannot be assumed universally present. Firmware travels a chain — AMD to the server OEM or motherboard vendor, then to the administrator — and each hop adds latency. Servers under change-control regimes, machines with infrequent maintenance windows, and older platforms on conservative firmware schedules can remain on pre-fix microcode for months.</p>
+<p>The workaround is landing with the 7.3-rc7 release and is due to be back-ported to maintained stable kernel branches, meaning distribution kernels should pick it up through their normal update channels.</p>
+<h4>A practical checklist for sysadmins</h4>
+<ol>
+<li><strong>Establish your microcode baseline.</strong> Check whether your EPYC fleet is already running the AMD microcode fix. If it is, this story is largely a compliance note for you, not an emergency.</li>
+<li><strong>Track the back-port.</strong> Watch your distribution's stable-kernel announcements for the TLBI #1718 workaround reaching your deployed branch.</li>
+<li><strong>Do not defer firmware because of the kernel patch.</strong> This is the critical point: the kernel workaround reduces exposure for unpatched hosts, but it does not make the microcode fix optional. Aim to land both layers.</li>
+<li><strong>Reassess once both are in place.</strong> With microcode and kernel workaround applied, residual risk from this erratum should be treated as negligible for planning purposes.</li>
+</ol>
+<p>For a bug whose exploitation is timing-dependent and theoretically motivated, two layers of mitigation is the appropriate posture — and for fleets that cannot move firmware quickly, the kernel backstop closes a gap that would otherwise persist indefinitely.</p>
+<hr>
+<p>今日發布的 Linux 7.3-rc7 核心，加入了針對 AMD TLBI 勘誤 #1718 的新版核心層 workaround（因應方案）。該缺陷影響部分 Zen 世代處理器，其 Translation Lookaside Buffer Invalidate（TLBI）指令可能無法成功清除已快取的地址翻譯，令過時的翻譯條目持續生效。Phoronix 於 10 月 11 日報道，該 workaround 亦計劃以 back-port（回溯移植）方式套用至較早的核心系列。</p>
+<p>AMD 對此勘誤的首選解決方案是處理器 microcode（微碼）更新。隨 7.3-rc7 推出的核心補丁並非用以取代該修復，而是第二層防禦，目標是針對尚未收到 microcode 更新的長尾系統——原因可能是 firmware 驗證周期、各廠牌 BIOS 的發布時間表，或已超出日常更新流程的舊硬件。</p>
+<p>對於 AMD EPYC 及基於 Zen 架構的機隊管理員，包括在香港營運數據中心基礎設施的人員，此一區分至關重要：microcode 是正規修復，核心補丁只是後備方案。切勿將兩者視為可以互相取代——這正是必須避免的錯誤。</p>
+<h4>勘誤的實際影響</h4>
+<p>TLBI 是處理器用來捨棄已快取的虛擬地址至物理地址翻譯的機制。當軟件更改頁面映射時，會發出 TLBI 指令，令隨後的記憶體訪問使用已更正的翻譯。</p>
+<p>勘誤 #1718 涉及該次失效操作未能完全生效的情況，令軟件以為翻譯已被清除後，過時的翻譯條目仍然有效。實際後果很大程度取決於時序及工作負載特性：在有利情況下可能完全不被察覺，但在惡意或運氣不佳的條件下，風險可由輕微的記憶體損壞至繞過權限限制不等，因為一個進程可能仍然存取一個已被重新映射或撤銷權限的頁面。</p>
+<p>必須清楚說明：這是一個難以可靠重現的硬件時序 bug，截至撰稿時並無公開被利用的證據。就現階段資料而言，漏洞利用風險屬理論層面。話雖如此，翻譯層缺陷的縱深防禦（defence-in-depth）修復，恰恰是一旦漏洞利用技術公開便往往會被重新檢視的問題類別，因此等待公開的概念驗證（proof-of-concept）並非合理的補丁部署策略。</p>
+<p>AMD 已在其官方勘誤及通告文件中列明受影響的 Zen 世代；系統管理員應根據 AMD 發布的通告核實自己所用處理器型號及 stepping 修訂版本，而非依賴二手型號清單。</p>
+<h4>為何仍需要核心層 workaround？</h4>
+<p>核心層修復之所以存在，是因為不能假定 microcode 更新已普遍部署。firmware 的傳遞須經一條鏈——由 AMD 至伺服器 OEM 或主機板廠商，再到管理員——每一環節均增加延遲。受變更管理（change-control）制度規管的伺服器、維護窗口頻率極低的機器，以及採用保守 firmware 時間表的舊平台，可能在修復前的 microcode 版本上停留數月。</p>
+<p>該 workaround 已隨 7.3-rc7 版本納入，並計劃回溯移植至受維護的穩定核心分支，意味著各大發行版的核心將透過其正常更新渠道取得此修復。</p>
+<h4>系統管理員實用清單</h4>
+<ol>
+<li><strong>確認你的 microcode 基準狀態。</strong> 檢查你的 EPYC 機隊是否已運行 AMD 的 microcode 修復。如果已經是，這則新聞對你而言主要是合規備忘，而非緊急事故。</li>
+<li><strong>追蹤回溯移植進度。</strong> 留意你所用發行版的穩定核心公告，確認 TLBI #1718 workaround 已抵達你部署的分支版本。</li>
+<li><strong>切勿因核心補丁而擱置 firmware 更新。</strong> 這是關鍵一點：核心 workaround 能降低未修補主機的風險敞口，但並不代表 microcode 修復可以省略。目標應是兩層防禦同時到位。</li>
+<li><strong>兩者均部署後重新評估。</strong> 在 microcode 及核心 workaround 均已套用後，就規劃用途而言，此勘誤的殘餘風險應視為可以忽略。</li>
+</ol>
+<p>對於一個漏洞利用取決於時序、且僅有理論動機的 bug，兩層緩解措施是恰當的部署姿態——對於無法迅速更新 firmware 的機隊而言，核心後備方案填補了一個本會無限期持續存在的漏洞。</p>
+<p><a href="https://www.phoronix.com/news/Linux-WA-TLBI-Erratum-1718" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
