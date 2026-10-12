@@ -1,0 +1,32 @@
+Date: 2026-10-12 10:26:00
+Author: HKLUG Team
+Title: Ext4 Readies iomap for Buffered I/O, Landing as an Opt-in Option in Linux 7.4
+Content:
+<p>Linux's most widely deployed filesystem is preparing to swap one of its oldest internal plumbing components for a modern alternative — but it is doing so cautiously, with the new path gated behind an opt-in option for now.</p>
+<p>According to Phoronix, the ext4 filesystem looks set to introduce an opt-in buffered I/O path based on iomap in the upcoming Linux 7.4 kernel, replacing part of the file system's long-standing reliance on the <code>buffer_head</code> abstraction. Users who do not explicitly enable the new path will continue running the existing code.</p>
+<h4>What is actually changing</h4>
+<p>To understand why this matters, it helps to know a little about how ext4 handles reads and writes that are not direct I/O — the ordinary buffered operations that most applications rely on.</p>
+<p>Traditionally, ext4 has used <code>buffer_head</code>, a data structure dating back to the earliest days of Linux, to track blocks of data as they move between the page cache and the storage device. It works, but it carries decades of accumulated complexity, and much of the logic for mapping file offsets to disk blocks is duplicated across filesystems that each maintain their own variant.</p>
+<p>iomap is the newer replacement. It provides a single, shared abstraction for describing how a file's logical blocks map to physical storage. XFS has used iomap as its primary mapping layer for years; Btrfs and other filesystems have adopted it in various capacities. Ext4 has leaned on iomap selectively — for direct I/O and for certain fast paths — but buffered I/O, the bread-and-butter workload, has remained on <code>buffer_head</code>.</p>
+<p>Linux 7.4 would extend iomap to that buffered path. As Phoronix notes, the change is expected to land as an opt-in feature: the ext4 default will stay on the existing <code>buffer_head</code> code until the iomap path has aged in production and confidence in it grows. Nothing changes for existing deployments unless an administrator deliberately enables the new path — a deliberate rollout strategy for a filesystem that underpins a huge share of Linux servers, desktops, and embedded devices.</p>
+<h4>Modest gains now, bigger bets later</h4>
+<p>Early results are worth tempering. The performance improvements reported with the iomap conversion are workload-dependent and, in the current state of the patch series, directional rather than dramatic. The immediate headline value is architectural: one mapping abstraction instead of two, less duplicated logic, and a smaller maintenance burden for the small group of developers who keep ext4 healthy.</p>
+<p>The more consequential payoff is what iomap unblocks down the road. Its unified mapping layer is a prerequisite for features that are awkward or impossible to implement cleanly on <code>buffer_head</code> — most notably large folio support, which lets the kernel manage memory in bigger chunks than the classic 4KB page. On fast NVMe storage in a data centre, that translates into reduced per-page overhead and the potential for better throughput as the support matures. Kernel developers have also pointed to iomap as groundwork that could eventually position ext4 for atomic write support and DAX (direct access) work long discussed in kernel circles — though none of that should be read as delivered by this patch series.</p>
+<p>For IT teams running Linux fleets — where storage hardware is often several generations ahead of the kernel code that drives it — that future-proofing angle may matter more than any day-one benchmark. But the sensible posture is to wait: monitor the 7.4 merge cycle, test the opt-in path on non-production systems, and revisit performance claims once the feature has settled.</p>
+<h4>Caveats</h4>
+<p>Linux 7.4 is still in development. The exact name of the mount option enabling the iomap buffered path, and whether the patch series lands in 7.4 as currently proposed, could still change before release. Administrators should treat this as an early look at the direction of ext4, not a deployment announcement.</p>
+<hr>
+<p>Linux 部署最廣泛的檔案系統正準備把其中一個歷史最悠久的內部元件更換為現代化方案——但過程相當審慎，新路徑目前須透過選用選項才會啟用。</p>
+<p>據 Phoronix 報導，ext4 檔案系統預計將在即將推出的 Linux 7.4 kernel 中，引入基於 iomap 的選用式緩衝 I/O（buffered I/O）路徑，取代檔案系統長期依賴的 <code>buffer_head</code> 抽象層的一部分。沒有明確啟用新路徑的用戶，將繼續沿用現有代碼運作。</p>
+<h4>實際改變了甚麼</h4>
+<p>要理解此事的重要性，需先了解 ext4 如何處理並非 direct I/O 的讀取及寫入操作——即大多數應用程式所依賴的普通緩衝運作。</p>
+<p>傳統上，ext4 一直使用 <code>buffer_head</code> 這一數據結構來追蹤數據區塊在 page cache 與儲存裝置之間的傳輸過程。此結構可追溯至 Linux 最早期，運作正常，但承載了數十年累積的複雜性，而且將檔案偏移映射至磁盤區塊的邏輯，大量重複存在於各自維護其變體的各個檔案系統之中。</p>
+<p>iomap 是較新的替代方案。它提供統一且共享的抽象層，用以描述檔案的邏輯區塊如何映射至實體儲存。XFS 多年來一直以 iomap 作為主要映射層；Btrfs 及其他檔案系統亦已以不同形式採用。Ext4 選擇性地運用過 iomap——用於 direct I/O 及部分 fast path——但緩衝 I/O 這一行業核心負載（bread-and-butter workload）一直沿用 <code>buffer_head</code>。</p>
+<p>Linux 7.4 將把 iomap 擴展至該緩衝路徑。正如 Phoronix 指出，此改動預計將以選用功能形式登陸：ext4 的預設設定將維持在現有的 <code>buffer_head</code> 代碼，直至 iomap 路徑在生產環境經過足夠時間驗證、信心逐步增強為止。除非管理員刻意啟用新路徑，否則現有部署不會有任何改變——對於一個支撐著極大部分 Linux 伺服器、桌面系統及嵌入式裝置的檔案系統而言，這是有意為之的部署策略。</p>
+<h4>短期收益有限，長遠布局更大</h4>
+<p>早期結果仍需謹慎看待。據報導，iomap 轉換帶來的效能改進取決於具體負載，就目前補丁系列（patch series）的狀態而言，方向性意義大於實際大幅躍升。眼前的主要價值在於架構層面：以單一映射抽象取代兩個，減少重複邏輯，並減輕負責維護 ext4 的少數開發人員的維護負擔。</p>
+<p>影響更為深遠的回報，是 iomap 日後所解鎖的能力。其統一映射層是多項功能的先決條件，這些功能在 <code>buffer_head</code> 上難以甚至無法妥善實現——其中最值得注意的是大型 folio 支援，令 kernel 能以超越傳統 4KB page 的更大單位管理記憶體。在數據中心的高速 NVMe 儲存環境中，這可望降低每頁（per-page）開銷，並隨著支援成熟而提升吞吐量。Kernel 開發人員亦指 iomap 可作為基礎工作，最終或能讓 ext4 支援 atomic write 及 kernel 圈子長期討論的 DAX（direct access）功能——儘管這些均不應被解讀為本補丁系列已經實現的成果。</p>
+<p>對於運行 Linux 機群的 IT 團隊而言——其儲存硬件往往較驅動它的 kernel 代碼先進數個世代——這種面向未來的架構價值，可能比任何首日基準測試成績更為重要。但合理的做法仍是觀望：密切留意 7.4 merge cycle，在非生產系統上測試選用路徑，並待該功能穩定後再重新評估效能聲稱。</p>
+<h4>注意事項</h4>
+<p>Linux 7.4 仍在開發階段。啟用 iomap 緩衝路徑的 mount option 的具體名稱，以及補丁系列是否會按目前提案於 7.4 落地，發布前仍可能出現變化。管理員應視此為 ext4 發展方向的前瞻資訊，而非部署公告。</p>
+<p><a href="https://www.phoronix.com/news/EXT4-iomap-Buffered-IO" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
