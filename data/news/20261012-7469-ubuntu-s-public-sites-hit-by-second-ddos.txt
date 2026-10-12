@@ -1,0 +1,30 @@
+Date: 2026-10-12 22:27:00
+Author: HKLUG Team
+Title: Ubuntu's Public Sites Hit by Second DDoS of 2026 in Repeat Strike on Canonical
+Content:
+<p>Canonical, the company behind Ubuntu, has disclosed that it was hit by a second distributed denial of service (DDoS) attack this year — a repeat strike that took its public websites offline for more than four hours. The incident is a reminder that even the widely trusted infrastructure behind the world's most popular Linux desktop and server distribution is not immune to volumetric attacks, and that the adversary responsible retained enough capability to try again.</p>
+<p>The attack, which Canonical said it spent part of last week mitigating, disrupted the company's public-facing web properties but did not, on the company's account, extend to the services most Ubuntu operators depend on day to day. Launchpad and the Snap Store remained online throughout the disruption, according to the reported account of Canonical's disclosure. As of publication, that account rests on Security Affairs' reporting of Canonical's statement; Canonical's own channels should be checked for a primary advisory. Canonical has not attributed the attack or said whether it is connected to the earlier incident this year.</p>
+<p>That Launchpad/Snap Store distinction is the operationally relevant point. A public-web outage is a different animal from an outage of the package-repository and CI/CD infrastructure that fleets actually build against. There is no evidence from the disclosure that apt mirrors, PPAs, or snap distribution were impaired — but for teams running Ubuntu at scale, the event is still a useful stress test of their own assumptions.</p>
+<p>Several practical questions follow for operators, particularly in Hong Kong, where many organisations run mixed on-premises and cloud Ubuntu estates and often rely on upstream public infrastructure by default:</p>
+<ul>
+<li><strong>Mirror health:</strong> Outages of upstream infrastructure are the moment regional mirrors earn their keep. Teams should confirm their apt sources point to a geographically appropriate mirror, and that fallback to upstream is deliberate rather than accidental.</li>
+<li><strong>Snap availability:</strong> Snap-heavy deployments depend on the Snap Store for refresh and install operations. Where snapd is load-bearing, teams should ask what happens to their estate during a multi-hour store disruption, and whether deb alternatives or vendored artefacts cover the gap.</li>
+<li><strong>ISO and installer fallbacks:</strong> Provisioning pipelines that pull installer images or cloud images directly from Canonical's public endpoints are exposed to the same class of disruption. Cached copies or secondary mirrors reduce that exposure.</li>
+</ul>
+<p>None of this is a criticism of Canonical's response — four hours to mitigate a sustained DDoS against a large public footprint is a respectable result. The broader point is about blast radius on the consumer side: an organisation's resilience is only as good as the fallbacks it has already tested before the incident, not during it.</p>
+<p>The more interesting story, though, is the pattern rather than the duration. A second hit within the same year implies one of two things: a persistent adversary that has taken a specific interest in Canonical's infrastructure, or a low-cost extortion or harassment loop that has decided the target is worth repeating. Canonical has not publicly said which, and has not linked this attack to the earlier one. Either way, the attacker demonstrably retained enough capacity to mount a second sustained campaign, which is the detail that should concern defenders more than any single outage window.</p>
+<p>For open-source infrastructure operators everywhere, the episode is a modest but useful case study: upstream projects that give away their software for free are not thereby funded to defend volumetric attacks at scale, and downstream consumers inherit whatever risk that creates. Monitoring Canonical's channels for further disclosure — including any attribution or linkage between the two 2026 incidents — would be sensible.</p>
+<hr>
+<p>Ubuntu 背後的公司 Canonical 透露，其在今年內第二次遭分散式阻斷服務攻擊（DDoS），這已是重複襲擊，令其公開網站癱瘓超過四小時。是次事件再次提醒外界，即使是全球最受歡迎的 Linux 桌面及伺服器發行版背後、廣受信任的基礎設施，亦無法免疫於流量型（volumetric）攻擊，而發動攻擊者仍然保留了足夠的實力再次出手。</p>
+<p>Canonical 表示上週曾花部分時間處理這次攻擊。據其所述，攻擊令公司的對外網頁服務中斷，但並未影響到大多數 Ubuntu 營運者日常依賴的服務。根據 Canonical 公佈內容的轉述，Launchpad 及 Snap Store 在整個中斷期間維持在線。截至本文明之時，上述內容均引自 Security Affairs 對 Canonical 聲明的報道；讀者應查閱 Canonical 自身渠道以取得第一手通報。Canonical 尚未為攻擊歸因，亦未交代是否與今年較早前的事件有關。</p>
+<p>當中 Launchpad／Snap Store 的區分，正是營運層面最值得注意的一點。公開網站中斷，與套件儲存庫及 CI/CD 基礎設施的中斷，是截然不同的兩回事——後者才是各大系統真正賴以建置的設施。目前沒有證據顯示 apt mirror、PPA 或 snap 分發受到影響，但對於大規模運行 Ubuntu 的團隊而言，是次事件仍是對自身假設的一次有用壓力測試。</p>
+<p>營運者隨之要面對數個實際問題，在香港尤其如此——本港不少機構同時運行本地（on-premises）及雲端的 Ubuntu 環境，且往往預設依賴上游公開基礎設施：</p>
+<ul>
+<li><strong>Mirror 健康狀況：</strong>上游基礎設施癱瘓之時，正是各地區 mirror 發揮作用的關鍵時刻。團隊應確認其 apt source 指向地理位置合適的 mirror，而回落至上游亦應是有意為之，而非意外所致。</li>
+<li><strong>Snap 可用性：</strong>大量使用 snap 的部署依賴 Snap Store 進行更新及安裝操作。若 snapd 承擔關鍵角色，團隊應審視在 store 中斷數小時期間，自身的系統環境會面臨甚麼情況，以及 deb 替代方案或自行預載的 artefacts 能否填補空檔。</li>
+<li><strong>ISO 及安裝程式後備方案：</strong>直接從 Canonical 公開端點下載安裝程式映像或雲端映像的部署 pipeline，同樣暴露於同類中斷風險。使用本機快取副本或次要 mirror 可降低此風險。</li>
+</ul>
+<p>以上並非批評 Canonical 的應對——針對大規模公開網絡資產的持續性 DDoS，能在四小時內完成緩解，成績已算不俗。更廣泛的要點，是關於使用方一側的影響範圍（blast radius）：機構的韌性，取決於其在事件發生前、而非事件發生期間已經測試過的後備方案。</p>
+<p>不過，更值得關注的其實是攻擊的模式，而非持續時間。同年內第二度被擊中，意味著兩種可能之一：一個對 Canonical 基礎設施產生特定興趣的長期敵對者，或是一個已經認定目標值得一再出手的低成本勒索或騷擾循環。Canonical 尚未公開表明屬何者，亦未將今次攻擊與較早前一次連繫起來。無論如何，攻擊者顯然保留了足夠能力發動第二次持續攻勢——這一點應比任何單一的中斷時段更令防禦者憂慮。</p>
+<p>對全球開源基礎設施營運者而言，是次事件是一個規模不大但具參考價值的案例：免費提供軟件的上游項目，並不會因此獲得資金去抵禦大規模流量型攻擊，而下游用戶則需承擔由此產生的一切風險。持續監察 Canonical 各渠道的進一步公佈——包括任何歸因或 2026 年兩次事件之間的關聯——是明智之舉。</p>
+<p><a href="https://securityaffairs.com/200832/security/canonical-hit-by-second-ddos-attack-in-2026.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
