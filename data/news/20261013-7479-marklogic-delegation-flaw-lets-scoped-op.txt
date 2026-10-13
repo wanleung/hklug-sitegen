@@ -1,0 +1,40 @@
+Date: 2026-10-13 11:42:00
+Author: HKLUG Team
+Title: MarkLogic Delegation Flaw Lets Scoped Operators Keep Admin Rights After Removal
+Content:
+<p>Progress Software has disclosed 31 security vulnerabilities in its MarkLogic Server database platform, and two of them carry a property that should alarm enterprise database administrators more than the raw count: an account granted only limited, delegated management rights could use them to seize administrator control of the server — and retain that control even after the delegated role is revoked.</p>
+<p>Progress published the full set of advisories on 12 October, with five of the 31 flaws rated critical. Notably for incident-response planning, fixes have been shipping since 10 September in MarkLogic 11.3.7 and MarkLogic 12.1.0. Organisations still running older builds were therefore exposed for roughly a month before the public advisories appeared — and once disclosure lands, attackers monitoring vendor bulletins have a clear roadmap.</p>
+<h4>Persistence is the distinguishing risk</h4>
+<p>The two headline vulnerabilities matter less for the escalation itself than for what happens afterwards. In a typical privilege-escalation bug, an attacker who gains elevated rights loses them as soon as an administrator re-roles or disables the compromised account. That assumption fails here. According to Progress, control obtained through these flaws persists even after the delegated management role is stripped away — a breakdown at the seam between scoped operator privileges and full administrator capability.</p>
+<p>The practical consequence is that remediation becomes a sequence rather than a single action. Patching closes the vulnerability, but it does not unwind access that may already have been obtained during the exposure window. Administrators cannot simply inspect present-day role assignments, conclude nothing looks amiss, and move on. They have to look backwards at what happened while the flaws were live.</p>
+<h4>What administrators should do</h4>
+<p>A defensible response has three components:</p>
+<ol>
+<li><strong>Patch now.</strong> Move to MarkLogic 11.3.7 or 12.1.0. Because the fixes predate public disclosure by about a month, this warrants urgent priority rather than a routine patch-cycle slot.</li>
+<li><strong>Audit historically, not just currently.</strong> Review every account that held delegated management privileges at any point during the exposure window — including accounts that have since been re-scoped, deactivated, or returned to standard user status. That means examining logs and session artefacts, not merely current role definitions.</li>
+<li><strong>Re-validate separation-of-duties controls.</strong> Delegated administration exists precisely so that scoped operators cannot act as full administrators. Verify that monitoring, alerting, and periodic permission reviews for delegated accounts still hold, and check for delegated-account activity inconsistent with intended scope.</li>
+</ol>
+<p>Progress assigned CVE identifiers to the disclosed flaws. Administrators should scope their response to all five critical-rated issues, not only the two privilege-escalation cases described in detail; the remaining critical flaws merit equivalent urgency even where their exploitation paths differ. The full identifier list is available in the vendor advisory linked below.</p>
+<h4>A recurring blind spot</h4>
+<p>Delegated administration is one of the most common — and least examined — control surfaces in enterprise database deployments. It solves a genuine operational problem: large estates need multiple operators with differentiated rights. But every delegation boundary is attack surface, and a single defect at the operator/full-admin seam can collapse the entire separation-of-duties model at once. MarkLogic installations supporting master data management, integration layers, or governed content repositories are, by design, the environments where delegation is used most heavily and where a superuser-equivalent foothold carries the widest blast radius.</p>
+<p>For IT teams in Hong Kong and elsewhere running MarkLogic on regulated or data-intensive workloads, the lesson generalises beyond this vendor: the delegation model relied on for compliance assurance is only as robust as the code enforcing it. This month, that code fell short.</p>
+<p>Source: <a href="https://www.progress.com/marklogic">Progress Software advisory</a>; coverage via <a href="https://thehackernews.com/2026/10/two-critical-marklogic-flaws-could-give.html">The Hacker News</a>, 12 October 2026.</p>
+<hr>
+<p>Progress Software 已披露其 MarkLogic Server 資料庫平台的 31 個安全漏洞，其中兩個漏洞的特性，比漏洞數目本身更值得企業資料庫管理員警惕：一個僅獲授予有限委派管理權限的帳戶，可以利用這些漏洞奪取伺服器的管理員控制權——即使該委派角色其後被撤銷，仍能繼續保留此控制權。</p>
+<p>Progress 於 10 月 12 日發布了完整的安全公告，31 個漏洞中有 5 個被評為嚴重級別。值得事故應變規劃注意的是，相關修復自 9 月 10 日起已隨 MarkLogic 11.3.7 及 MarkLogic 12.1.0 版本發布。換言之，仍在使用較舊版本的機構，在公開公告出現前已暴露約一個月——而一旦漏洞披露，密切監察供應商公告的攻擊者便擁有清晰的入侵路線圖。</p>
+<h4>持久性是最關鍵的風險</h4>
+<p>這兩個主要漏洞的重要性，與其說在於權限提升本身，不如說在於事後的發展。在典型的權限提升漏洞中，攻擊者取得提升後的權限後，一旦管理員重新設定角色或停用被入侵的帳戶，權限便會隨之喪失。但在這裡，這項假設並不成立。根據 Progress 的說法，透過這些漏洞取得的控制權，即使在委派管理角色被剝奪之後依然持續存在——這是受限操作員權限與完整管理員能力之間接合處的失守。</p>
+<p>實際後果是，補救工作變成一連串步驟，而非單一行動。安裝補丁可以堵塞漏洞，但無法回溯並解除攻擊者在暴露期間可能已取得的存取權限。管理員不能只是檢查現時的角色分配，確認沒有異常便了事。他們必須回顧漏洞存活期間曾經發生的事。</p>
+<h4>管理員應採取的措施</h4>
+<p>一個站得住腳的應對方案包含三個部分：</p>
+<ol>
+<li><strong>立即安裝補丁。</strong> 升級至 MarkLogic 11.3.7 或 12.1.0。由於修復比公開披露早約一個月發布，這應列為緊急優先事項，而非排入例行補丁週期處理。</li>
+<li><strong>進行歷史審計，而非只看現況。</strong> 檢視每一個在暴露期間任何時間點曾持有委派管理權限的帳戶——包括其後已被重新設定範圍、已停用、或已還原為標準用戶身份的帳戶。這意味著必須查閱日誌和 session 記錄，而非僅僅查看現時的角色定義。</li>
+<li><strong>重新驗證職責分離控制。</strong> 委派管理機制存在的目的，正是確保受限操作員不能以完整管理員身份行事。應驗證針對委派帳戶的監控、警示及定期權限審查仍然有效，並檢查是否存在與預定範圍不符的委派帳戶活動。</li>
+</ol>
+<p>Progress 已為披露的漏洞分配 CVE 編號。管理員的應對範圍應涵蓋所有 5 個嚴重級別的問題，而非僅限於詳細描述的兩個權限提升案例；其餘嚴重漏洞的緊急程度並無分別，即使其攻擊途徑有所不同。完整的編號清單可在下方連結的供應商公告中查閱。</p>
+<h4>反覆出現的盲點</h4>
+<p>委派管理是企業資料庫部署中最常見、卻最少受到檢視的控制面之一。它解決了一個真實的營運問題：大型環境需要多個擁有不同權限的操作員。但每一個委派邊界都是攻擊面，操作員與完整管理員之間接合處的一個單一缺陷，便足以瞬間瓦解整個職責分離模式。支援主數據管理、整合層或受管內容庫的 MarkLogic 安裝環境，按設計正是委派使用最頻繁、而等同超級用戶的立足點影響範圍最廣的地方。</p>
+<p>對於香港及其他地區在受監管或數據密集型工作負載上運行 MarkLogic 的 IT 團隊而言，這個教訓已超出單一供應商的範疇：用來保障合規性的委派模式，其穩健程度取決於執行它的程式碼。這個月，這份程式碼未能達標。</p>
+<p>資料來源：<a href="https://www.progress.com/marklogic">Progress Software 公告</a>；報道來自 <a href="https://thehackernews.com/2026/10/two-critical-marklogic-flaws-could-give.html">The Hacker News</a>，2026 年 10 月 12 日。</p>
+<p><a href="https://thehackernews.com/2026/10/two-critical-marklogic-flaws-could-give.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
