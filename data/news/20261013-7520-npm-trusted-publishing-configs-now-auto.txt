@@ -1,0 +1,55 @@
+Date: 2026-10-13 18:28:00
+Author: HKLUG Team
+Title: npm Trusted Publishing Configs Now Auto-Expire After 48 Hours Following Hijacking Flaw
+Content:
+<p>GitHub is now auto-expiring unvalidated npm trusted publishing configurations 48 hours after they are created, closing a gap that reportedly left more than 1,500 packages exposed to hijacking by attackers who never needed to steal a maintainer's credentials.</p>
+<p>The change, reported by The Hacker News, targets a specific window in the trusted publishing lifecycle. Trusted publishing — GitHub's OIDC-based mechanism for letting CI/CD pipelines publish to npm without long-lived access tokens — was itself introduced as the remedy for token leakage. But a configuration that has been added yet not exercised through a successful publish sits in an intermediate state, and it is exactly this state the new expiry window targets. Under the previous behaviour, an attacker able to push from a hijacked pipeline or repository could publish new versions of another user's package during that gap. The exposure was effectively indefinite; it is now bounded to two days.</p>
+<p>Crucially for security teams triaging their exposure, there is no leaked credential to hunt for and no token to rotate. The attack as described involved no stolen secrets at all — it abused a trust relationship that had been configured but never completed. That makes the failure mode easy to miss in conventional secrets-scanning dashboards.</p>
+<p>One clarification matters before anyone starts auditing in a hurry: the expiry applies only to unvalidated configurations. GitHub's guidance states that "your configuration becomes validated and exempt from expiry after its first successful publish." Maintainers whose trusted publishers were established long ago and have published successfully are unaffected. The 48-hour clock applies to new setups — and, importantly, to any configuration whose first publish has not yet happened.</p>
+<p>For development teams running npm releases through CI/CD, the practical takeaway is a short audit rather than an incident response:</p>
+<ol>
+<li><strong>Inventory your trusted publishing configurations.</strong> Identify every publisher entry across your orgs and flag any that have not produced a successful publish. Those are the ones subject to expiry.</li>
+<li><strong>Review workflow permissions on publishing pipelines.</strong> Trusted publishing is only as sound as the workflow that invokes it. Over-broad permissions, untrusted fork contributions reaching publish jobs, or self-hosted runners shared with less-trusted code all widen the window before validation even begins.</li>
+<li><strong>Add release-integrity checks downstream.</strong> Provenance attestations and signature verification at install or deploy time catch anomalous releases regardless of how they were authorized — a useful backstop for any residual exposure.</li>
+<li><strong>Publish within the 48-hour window.</strong> If you add or modify a publisher, complete a real publish promptly. A configuration that sits idle past the deadline will expire and must be recreated, which can break release pipelines at the worst possible moment — mid-hotfix, for instance.</li>
+</ol>
+<p>That last point cuts both ways. The expiry converts an open-ended vulnerability into a bounded, reasoning-friendly rule, but teams with slow or heavily gated release processes could find their staging-to-production cadence colliding with it. If your first publish after adding a trusted publisher takes longer than two days to clear review, build that constraint into the process rather than discovering it during an emergency release.</p>
+<p>The broader lesson is one the ecosystem has been learning repeatedly: every new trust mechanism introduces a pre-established state that attackers can reason about. Trusted publishing removes the token from the equation — a genuine improvement — but the setup phase of the trust relationship was, until now, an attack surface in its own right. GitHub's fix doesn't eliminate that surface; it puts a stopwatch on it, which for defenders is usually the next best thing.</p>
+<p>Teams relying on npm release automation should treat the new expiry as a scheduling constraint to check now, not a breach to respond to.</p>
+<h4>---</h4>
+<p>title: "npm Trusted Publishing 設定改為 48 小時自動過期　修補可遭綁架漏洞"
+date: 2026-10-13T18:28:00
+author: HKLUG Team
+source_url: https://thehackernews.com/2026/10/github-tightens-npm-publishing-after.html
+tags: [npm, github, supply-chain-security, trusted-publishing, ci-cd, open-source]</p>
+<hr />
+<p>GitHub 現已將未經驗證的 npm Trusted Publishing 設定改為建立後 48 小時自動過期，封閉一項據報曾令超過 1,500 個套件面臨綁架風險的漏洞——攻擊者全程無須竊取維護者的任何憑證。</p>
+<p>根據 The Hacker News 的報導，本次變更針對 Trusted Publishing 生命週期中的一個特定窗口。Trusted Publishing 是 GitHub 基於 OIDC 的機制，讓 CI/CD 流水線無須長期存取權杖即可發佈至 npm；此機制本身正是為了取代易遭外洩的權杖而推出。然而，一個已新增、卻尚未透過首次成功發佈來「啟用」的設定，會停留在中間狀態——新過期窗口針對的正是這個狀態。在舊有行為下，若攻擊者能從遭綁架的流水線或程式碼庫推送，便可在此空窗期內發佈其他使用者套件的新版本。該暴露曾近乎無限期存在，如今被限制為兩天。</p>
+<p>對正在評估自身風險的資安團隊而言，關鍵一點是：沒有外洩憑證可追查，也沒有權杖需要輪替。此攻擊手法完全不涉及被竊的秘密——它濫用的是一項已設定、卻從未完成的信任關係。這正是此類失敗模式容易在一般祕密掃描儀表板上被忽略的原因。</p>
+<p>在所有人開始匆忙展開盤查之前，有一點必須釐清：過期機制只適用於未經驗證的設定。GitHub 的官方指引明確指出：「您的設定在首次成功發佈後即成為已驗證狀態，並豁免於過期機制。」長期以來已完成成功發佈的維護者，其 Trusted Publishing 設定不受影響。48 小時倒數只適用於新設定——以及任何尚未完成首次發佈的設定。</p>
+<p>對於透過 CI/CD 執行 npm 發佈的開發團隊，實際的應對做法是一次簡短盤查，而非事故應變：</p>
+<ol>
+<li><strong>盤點您的 Trusted Publishing 設定。</strong> 列出各組織下所有發佈者（publisher）項目，並標記任何尚未成功發佈的設定——這些才是會過期的對象。</li>
+<li><strong>檢視發佈流水線的工作流程權限。</strong> Trusted Publishing 的安全性，取決於呼叫它的 workflow 本身。過寬的權限、未受信任的 fork 貢獻能觸及發佈工作、或與較不可信程式碼共用的 self-hosted runner，都會在驗證完成之前擴大暴露窗口。</li>
+<li><strong>在下游加入發佈完整性檢查。</strong> 在安裝或部署時進行來源證明（provenance attestation）與簽章驗證，可攔截任何異常發佈——不論該發佈是如何獲得授權。這是殘餘風險的有效後盾。</li>
+<li><strong>在 48 小時窗口內完成發佈。</strong> 若新增或修改發佈者設定，請儘速完成一次真實發佈。閒置逾時的設定將會過期並須重新建立，可能在最不恰當的時機中斷發佈流水線——例如 hotfix 進行途中。</li>
+</ol>
+<p>最後這一點影響是雙向的。過期機制將一個無限期的漏洞轉化為可量化、易於推理的規則，但發佈審核流程緩慢或關卡繁複的團隊，可能發現其預發佈到正式環境的節奏與此窗口產生衝突。若您在新增 Trusted Publisher 後，首次發佈需超過兩天才能通過審核，請將此限制納入既有流程，而不是等到緊急發佈時才發現。</p>
+<p>更廣泛的教訓，是整個生態系統一再學習的：每一項新信任機制都會引入一個「已宣告、未啟用」的前置狀態，而攻擊者可以針對此狀態推理。Trusted Publishing 將權杖從等式中移除——這是真正的進步——但這段信任關係的設定階段，直到本次變更之前，本身就是一個攻擊面。GitHub 的修復並未消除這個面，而是為它加上了倒數計時器；對防禦者而言，這通常是次佳的選擇。</p>
+<p>依賴 npm 發佈自動化的團隊，應將新過期機制視為需要立即檢視的排程約束，而非需要應變的資安事故。</p>
+<hr>
+<p>GitHub 現已將未經驗證的 npm Trusted Publishing 設定改為建立後 48 小時自動過期，封閉一項據報曾令超過 1,500 個套件面臨綁架風險的漏洞——攻擊者全程無須竊取維護者的任何憑證。</p>
+<p>根據 The Hacker News 的報導，本次變更針對 Trusted Publishing 生命週期中的一個特定窗口。Trusted Publishing 是 GitHub 基於 OIDC 的機制，讓 CI/CD 流水線無須長期存取權杖即可發佈至 npm；此機制本身正是為了取代易遭外洩的權杖而推出。然而，一個已新增、卻尚未透過首次成功發佈來「啟用」的設定，會停留在中間狀態——新過期窗口針對的正是這個狀態。在舊有行為下，若攻擊者能從遭綁架的流水線或程式碼庫推送，便可在此空窗期內發佈其他使用者套件的新版本。該暴露曾近乎無限期存在，如今被限制為兩天。</p>
+<p>對正在評估自身風險的資安團隊而言，關鍵一點是：沒有外洩憑證可追查，也沒有權杖需要輪替。此攻擊手法完全不涉及被竊的秘密——它濫用的是一項已設定、卻從未完成的信任關係。這正是此類失敗模式容易在一般祕密掃描儀表板上被忽略的原因。</p>
+<p>在所有人開始匆忙展開盤查之前，有一點必須釐清：過期機制只適用於未經驗證的設定。GitHub 的官方指引明確指出：「您的設定在首次成功發佈後即成為已驗證狀態，並豁免於過期機制。」長期以來已完成成功發佈的維護者，其 Trusted Publishing 設定不受影響。48 小時倒數只適用於新設定——以及任何尚未完成首次發佈的設定。</p>
+<p>對於透過 CI/CD 執行 npm 發佈的開發團隊，實際的應對做法是一次簡短盤查，而非事故應變：</p>
+<ol>
+<li><strong>盤點您的 Trusted Publishing 設定。</strong> 列出各組織下所有發佈者（publisher）項目，並標記任何尚未成功發佈的設定——這些才是會過期的對象。</li>
+<li><strong>檢視發佈流水線的工作流程權限。</strong> Trusted Publishing 的安全性，取決於呼叫它的 workflow 本身。過寬的權限、未受信任的 fork 貢獻能觸及發佈工作、或與較不可信程式碼共用的 self-hosted runner，都會在驗證完成之前擴大暴露窗口。</li>
+<li><strong>在下游加入發佈完整性檢查。</strong> 在安裝或部署時進行來源證明（provenance attestation）與簽章驗證，可攔截任何異常發佈——不論該發佈是如何獲得授權。這是殘餘風險的有效後盾。</li>
+<li><strong>在 48 小時窗口內完成發佈。</strong> 若新增或修改發佈者設定，請儘速完成一次真實發佈。閒置逾時的設定將會過期並須重新建立，可能在最不恰當的時機中斷發佈流水線——例如 hotfix 進行途中。</li>
+</ol>
+<p>最後這一點影響是雙向的。過期機制將一個無限期的漏洞轉化為可量化、易於推理的規則，但發佈審核流程緩慢或關卡繁複的團隊，可能發現其預發佈到正式環境的節奏與此窗口產生衝突。若您在新增 Trusted Publisher 後，首次發佈需超過兩天才能通過審核，請將此限制納入既有流程，而不是等到緊急發佈時才發現。</p>
+<p>更廣泛的教訓，是整個生態系統一再學習的：每一項新信任機制都會引入一個「已宣告、未啟用」的前置狀態，而攻擊者可以針對此狀態推理。Trusted Publishing 將權杖從等式中移除——這是真正的進步——但這段信任關係的設定階段，直到本次變更之前，本身就是一個攻擊面。GitHub 的修復並未消除這個面，而是為它加上了倒數計時器；對防禦者而言，這通常是次佳的選擇。</p>
+<p>依賴 npm 發佈自動化的團隊，應將新過期機制視為需要立即檢視的排程約束，而非需要應變的資安事故。</p>
+<p><a href="https://thehackernews.com/2026/10/github-tightens-npm-publishing-after.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
