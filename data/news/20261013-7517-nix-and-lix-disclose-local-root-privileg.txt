@@ -1,0 +1,72 @@
+Date: 2026-10-13 18:46:00
+Author: HKLUG Team
+Title: Nix and Lix disclose local root-privilege-escalation vulnerabilities in build daemons
+Content:
+<p>The Nix and Lix projects have jointly disclosed a set of vulnerabilities that can be used to escalate privileges to root on systems running the Lix or Nix daemons. Releases with fixes from both projects were made available on the day of disclosure, according to LWN, which carried the announcement on 13 October.</p>
+<p>The joint advisory's stated scope is categorical: "All systems that build untrusted derivations are affected."</p>
+<h5>What is known about the vulnerability</h5>
+<p>Both projects maintain a privileged daemon that evaluates and executes <em>derivations</em> — declarative build instructions describing how a package is constructed. The advisory identifies untrusted derivations as the exposure condition, though the summary available at the time of writing does not describe the technical mechanism in detail. Operators should consult the projects' own disclosure for specifics.</p>
+<h5>Affected and fixed versions</h5>
+<table>
+<thead>
+<tr>
+<th>Project</th>
+<th>Affected</th>
+<th>Fixed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nix</td>
+<td>All daemon versions prior to the patched release</td>
+<td>Patched release shipped on disclosure day</td>
+</tr>
+<tr>
+<td>Lix</td>
+<td>All daemon versions prior to the patched release</td>
+<td>Patched release shipped on disclosure day</td>
+</tr>
+</tbody>
+</table>
+<p>The disclosure summary does not enumerate specific version identifiers, so operators should treat the boundary as "any version currently running" until they can confirm against the projects' release notes and channel announcements.</p>
+<h5>What operators should do</h5>
+<p>Patch releases from both projects are available now. Any host whose daemon evaluates untrusted derivations should be updated as soon as practical. Administrators running distribution-packaged versions should check their distribution's update channels, as downstream packaging typically lags upstream releases.</p>
+<h5>CVE identifiers</h5>
+<p>CVE IDs had not yet been requested at the time of disclosure. Because no identifiers exist, automated security inventory and compliance tooling will not flag affected systems. Operators tracking this issue should monitor the LWN report and the projects' own announcement channels for updates, including identifier assignment.</p>
+<h5>Why it matters</h5>
+<p>The advisory's framing implies that the exposure is structural rather than contingent on a particular deployment pattern: any daemon that builds untrusted derivations is in scope. Until patched, the advisory's language amounts to a simple trust rule — if the daemon builds a derivation, the daemon trusts it. For infrastructure that accepts third-party package expressions, that is the boundary that these vulnerabilities cross.</p>
+<hr>
+<p>Nix 與 Lix 項目聯合披露了一組漏洞，攻擊者可利用這些漏洞，在運行 Lix 或 Nix daemon 的系統上提升權限至 root。根據 LWN 報導，兩個項目在披露當日已同步發布修補版本。LWN 於 10 月 13 日刊載了有關公告。</p>
+<p>聯合公告對影響範圍的表述是絕對的：「所有 build 不受信任 derivation 的系統均受影響。」</p>
+<h5>關於漏洞目前已知的情況</h5>
+<p>兩個項目均設有一個特權 daemon，負責評估及執行 <em>derivation</em>——即描述軟件包如何構建的宣告式 build 指令。公告指出，不受信任的 derivation 是造成風險的條件，惟撰文時可取得的摘要並未詳細說明具體技術機制。操作員應查閱兩個項目自身的披露文件以了解詳情。</p>
+<h5>受影響及已修補版本</h5>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>受影響版本</th>
+<th>修補版本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nix</td>
+<td>修補版本發布前的所有 daemon 版本</td>
+<td>披露當日發布的修補版本</td>
+</tr>
+<tr>
+<td>Lix</td>
+<td>修補版本發布前的所有 daemon 版本</td>
+<td>披露當日發布的修補版本</td>
+</tr>
+</tbody>
+</table>
+<p>披露摘要並未列出具體版本編號，因此操作員在核對兩個項目的 release notes 及 channel 公告之前，應將邊界視為「目前正在運行的所有版本」。</p>
+<h5>操作員應採取的行動</h5>
+<p>兩個項目的修補版本現已提供。任何 daemon 會評估不受信任 derivation 的主機，應盡快更新。使用發行版打包版本的管理員應檢查所用發行版的更新 channel，因為下游打包通常會滯後於上游版本。</p>
+<h5>CVE 編號</h5>
+<p>披露當時尚未申請 CVE 編號。由於目前不存在任何編號，自動化安全庫存及合規工具不會標記受影響系統。跟進此事的操作員應留意 LWN 報導及兩個項目自身的公告 channel，包括編號的分配進展。</p>
+<h5>重要性何在</h5>
+<p>公告的表述意味著此風險屬結構性問題，並非取決於某種特定部署模式：任何 build 不受信任 derivation 的 daemon 均在影響範圍之內。在補丁套用之前，公告的措辭可歸結為一條簡單的信任規則——daemon build 哪個 derivation，就代表 daemon 信任哪個 derivation。對於接收第三方 package expression 的基建設施而言，這正是此次漏洞所跨越的邊界。</p>
+<p><a href="https://lwn.net/Articles/1100247/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
