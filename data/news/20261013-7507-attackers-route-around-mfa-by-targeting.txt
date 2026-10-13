@@ -1,0 +1,46 @@
+Date: 2026-10-13 16:49:00
+Author: HKLUG Team
+Title: Attackers Route Around MFA by Targeting VPNs, RDP and Password-Only Windows Endpoints
+Content:
+<p>Multi-factor authentication (MFA) has become standard practice for cloud applications — but the coverage stops at the cloud. According to research highlighted by BleepingComputer, attackers are continuing to exploit the gap between the identity protections organisations have deployed in SaaS environments and the legacy endpoints that still authenticate with a password alone: VPN gateways, Remote Desktop Protocol (RDP) services, and on-premises Windows systems.</p>
+<p>The attack chain is straightforward. Stolen credentials — harvested from infostealer malware, credential dumps, or phishing kits that defeat push-based MFA in the cloud — are replayed against network entry points where a password is still the only required factor. From a corporate VPN or an exposed RDP host, an attacker inherits a legitimate foothold inside the corporate perimeter, sidestepping the phishing-resistant posture an organisation may have painstakingly built around its email and productivity suites.</p>
+<h4>Coverage, Not Cryptography, Is the Weak Point</h4>
+<p>The uncomfortable reality is that in many hybrid Active Directory estates, MFA is <em>enrolled</em> rather than <em>enforced</em>. Users may be registered for MFA in an identity provider, but conditional access policies either exclude legacy protocols entirely or fall back to password-only authentication for applications that cannot speak modern auth. VPN concentrators, jump boxes, and RDP endpoints frequently sit in exactly that blind spot — they authenticate against on-premises AD, where directory-level MFA enforcement is harder to implement and easier to bypass with fallback settings.</p>
+<p>The gap is compounded by adversary-in-the-middle (AiTM) phishing, which can capture both passwords and session cookies or one-time passcodes (TOTPs) in real time. Defenders who assume that "MFA enabled" equals "MFA enforced" discover the difference only after incident responders trace the intrusion back to a VPN login that never triggered a second factor.</p>
+<h4>Why Password-Only Endpoints Persist</h4>
+<p>IT managers auditing hybrid estates know the practical reasons: legacy appliances that only support RADIUS or LDAP password bind, third-party and contractor accounts that bypass federated sign-in, service accounts with static credentials, and RDP exposed for administrative convenience that was never revisited. Each of these is a legitimate operational compromise — and each is a place where a single leaked password grants persistent network access that cloud-side policies cannot see.</p>
+<p>This is not a theoretical concern. Credential-driven intrusions against remote-access infrastructure remain a dominant initial access vector in threat intelligence reporting, and organisations running hybrid AD/VPN/RDP environments are squarely exposed: the more legacy network entry points an estate maintains, the more of its MFA coverage attackers can simply route around.</p>
+<h4>Closing the Gap: A Practical Audit</h4>
+<p>The remediation path is an inventory exercise before it is a technology purchase:</p>
+<ol>
+<li><strong>Map every authentication point.</strong> Enumerate all systems that accept credentials — VPN gateways, RDP hosts, RADIUS and LDAP endpoints, bastion servers, and service accounts. Anything that can grant network access belongs on the list.</li>
+<li><strong>Distinguish enrolled from enforced.</strong> For each entry point, verify whether MFA is genuinely mandatory and non-bypassable, not merely available. Test fallback behaviour deliberately.</li>
+<li><strong>Prioritise phishing-resistant factors.</strong> FIDO2 security keys and certificate-based authentication resist AiTM capture in ways that push approvals and TOTP codes do not. Apply them first to administrators and any account with VPN or RDP access.</li>
+<li><strong>Deploy compensating controls where legacy protocols block MFA.</strong> Network segmentation, conditional access based on device compliance, just-in-time access, and monitoring of authentication anomalies reduce the blast radius of a password-only login.</li>
+<li><strong>Treat exposed RDP as an incident waiting to happen.</strong> Where possible, remove public exposure and force access through an MFA-protected gateway.</li>
+</ol>
+<p>For any organisation running a hybrid estate, the message from this research is a governance question, not a cryptography question: the security of your identity perimeter is defined by its weakest authentication point.</p>
+<hr />
+<p><em>Research: Specops, as reported by BleepingComputer — <a href="https://www.bleepingcomputer.com/news/security/the-mfa-gaps-attackers-are-still-exploiting/">"The MFA Gaps Attackers are Still Exploiting"</a></em></p>
+<hr>
+<p>多因素認證（MFA）已成為雲端應用的標準做法——然而其覆蓋範圍僅止於雲端。根據 BleepingComputer 報導的研究指出，攻擊者正持續利用一個漏洞：企業在 SaaS 環境部署的身份保護措施，與仍然只憑密碼認證的傳統終端之間存在落差，包括 VPN gateway、Remote Desktop Protocol（RDP）服務，以及本地部署（on-premises）的 Windows 系統。</p>
+<p>攻擊鏈相當直接。被竊取的憑證——來自 infostealer 惡意軟件、憑證外洩數據庫，或可在雲端繞過 push 式 MFA 的釣魚工具——會被重複使用（replay）於網絡入口點，而這些入口點仍然只以密碼作為唯一認證因素。透過企業 VPN 或暴露的 RDP 主機，攻擊者便可在企業網絡邊界內取得合法立足點，繞過企業為電郵及生產力套件精心建立的防釣魚機制。</p>
+<h4>覆蓋範圍而非加密技術，才是弱點所在</h4>
+<p>一個令人不安的事實是，在許多混合 Active Directory 環境中，MFA 只是「已登記」（enrolled）而非「已強制執行」（enforced）。用戶可能已在 identity provider 註冊 MFA，但 conditional access 政策往往完全排除傳統協議，或對不支援 modern auth 的應用程式退回到僅密碼認證。VPN concentrator、jump box 及 RDP 終端經常正好處於這個盲區——它們向本地 AD 進行認證，而在目錄層面強制執行 MFA 更為困難，且更容易因 fallback 設置而被繞過。</p>
+<p>此漏洞更因 adversary-in-the-middle（AiTM）釣魚攻擊而加劇，這類攻擊可即時截取密碼、session cookie 或一次性密碼（TOTP）。防禦方若以為「已啟用 MFA」等同「已強制執行 MFA」，往往要待事件應變人員追查入侵源頭至一次從未觸發第二因素的 VPN 登入後，才會發現兩者的分別。</p>
+<h4>為何僅用密碼的終端依然存在</h4>
+<p>審計混合環境的 IT 管理人員深知實際原因：只支援 RADIUS 或 LDAP password bind 的舊型設備、繞過 federation 登入的第三方及承辦商帳戶、使用靜態憑證的服務帳戶，以及為管理便利而暴露、從未重新檢視的 RDP。每一項都是合理的營運妥協——而每一處都是一個單一密碼外洩便能取得持久網絡存取權的位置，雲端方面的政策對此無從得知。</p>
+<p>這並非理論上的問題。根據威脅情報報告，針對遠端存取基礎設施、以憑證為基礎的入侵仍然是主導性的初始存取途徑，而運行混合 AD/VPN/RDP 環境的企業更是首當其衝：一個環境維持的傳統網絡入口點越多，其 MFA 覆蓋範圍被攻擊者輕易繞過的部分就越多。</p>
+<h4>填補漏洞：實務審計步驟</h4>
+<p>補救路徑首先是盤點工作，然後才是技術採購：</p>
+<ol>
+<li><strong>列出每一個認證點。</strong>枚舉所有接受憑證的系統——VPN gateway、RDP 主機、RADIUS 及 LDAP 終端、bastion server 以及服務帳戶。凡能授予網絡存取權限者，皆須列入清單。</li>
+<li><strong>區分「已登記」與「已強制執行」。</strong>對每個入口點逐一查證 MFA 是否真正強制且無法繞過，而非僅屬可用。須刻意測試 fallback 行為。</li>
+<li><strong>優先採用防釣魚認證因素。</strong>FIDO2 security key 及以證書為基礎的認證，能以 push 批准及 TOTP 碼無法比擬的方式抵禦 AiTM 截取。應優先應用於管理員，以及任何擁有 VPN 或 RDP 存取權的帳戶。</li>
+<li><strong>在傳統協議阻礙 MFA 部署時，採用補償性控制措施。</strong>網絡分段（network segmentation）、基於設備合規性的 conditional access、即時存取（just-in-time access），以及對認證異常的監察，均可收窄僅密碼登入所帶來的影響範圍。</li>
+<li><strong>將暴露的 RDP 視為隨時可能發生的事故。</strong>在可行情況下，移除公開暴露，強制存取透過受 MFA 保護的 gateway 進行。</li>
+</ol>
+<p>對於任何運行混合環境的企業而言，這項研究傳達的訊息是一個管治問題，而非加密技術問題：你的身份邊界是否安全，取決於其中最薄弱的認證點。</p>
+<hr />
+<p><em>研究：Specops，由 BleepingComputer 報導——<a href="https://www.bleepingcomputer.com/news/security/the-mfa-gaps-attackers-are-still-exploiting/">"The MFA Gaps Attackers are Still Exploiting"</a></em></p>
+<p><a href="https://www.bleepingcomputer.com/news/security/the-mfa-gaps-attackers-are-still-exploiting/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
