@@ -1,0 +1,46 @@
+Date: 2026-10-13 19:28:00
+Author: HKLUG Team
+Title: Ivanti Connect Secure Hit by Three-Chained Zero-Days; Third Flaw Still Without a Patch
+Content:
+<p>An attacker chained three previously unknown vulnerabilities in Ivanti Connect Secure to execute commands at the root level of the VPN appliance without needing to log in, security firm Volexity disclosed on 13 October, as reported by The Hacker News. Ivanti has issued fixes for two of the three flaws and urged customers running affected versions to "act immediately" — but a patch for the third flaw remains outstanding, meaning that applying the available updates does not fully close the exposure.</p>
+<p>The disclosure matters because of the shape of the attack, not just its count. A pre-authentication chain that lands root privileges on a perimeter VPN appliance is among the most consequential classes of flaw an enterprise can face: the device sits on the edge of the network, holds session and credential material, and is frequently trusted implicitly by internal systems. Root-level access also raises a harder question for defenders — whether an appliance that has been updated still carries residue of a compromise that pre-dated the fix.</p>
+<p><strong>What happened</strong></p>
+<p>According to Volexity, which reported the vulnerabilities to Ivanti, an attacker combined three separate zero-days in Connect Secure into a single exploitation chain. The result is unauthenticated remote command execution as root. Ivanti has released fixes for two of the three issues; Volexity confirmed that the vendor's remediation for the final flaw is still pending.</p>
+<p><strong>Why this matters</strong></p>
+<ul>
+<li><strong>Remediation is partial, not complete.</strong> Administrators who apply Ivanti's current updates still have one unpatched flaw in the chain. Treat the appliance as exposed until the remaining fix ships and is deployed.</li>
+<li><strong>Normal detection will not necessarily catch this.</strong> Pre-authentication root access via a chained exploit does not resemble the brute-force or credential-stuffing activity that many perimeter monitoring rules are tuned to flag. Defenders relying solely on login-anomaly alerts may see nothing.</li>
+<li><strong>A patched appliance may still be a compromised one.</strong> Root-level access plausibly survives an update. Any Connect Secure appliance on an affected version should be treated as potentially compromised until proven otherwise, not simply patched and forgotten.</li>
+</ul>
+<p><strong>What to do</strong></p>
+<ol>
+<li>Determine immediately whether your organisation operates Ivanti Connect Secure on an affected version, and apply the vendor's available fixes without waiting for a maintenance window.</li>
+<li>Audit the appliance rather than trusting the update: check logs and configuration for signs of tampering, rotate credentials and certificates that transit the device, and perform a factory reset where compromise is suspected.</li>
+<li>Strengthen inline inspection of appliance traffic — monitor for unexpected outbound connections, anomalous administrative activity, and indicators that the appliance itself is beaconing or being used as a pivot.</li>
+<li>Plan for the pending patch. Because one flaw in the chain is unfixed, register for Ivanti's follow-up advisory and be ready to deploy the moment it lands.</li>
+</ol>
+<p><strong>Looking ahead</strong></p>
+<p>The disclosure pattern here is a reminder of why edge VPN and remote-access appliances remain a favoured target class: they are internet-facing, high-value, and often lag in patch cadence relative to the risk they carry. The chain has also been added to CISA's Known Exploited Vulnerabilities (KEV) catalog — a listing that sets a binding remediation deadline for federal civilian agencies and functions as a de facto urgency signal for everyone else, though the obligation cannot be fully discharged while one flaw in the chain remains unpatched. Watch for the vendor's follow-up advisory on the third flaw and any further government cybersecurity guidance; Volexity is expected to publish fuller technical detail that defenders will use to refine detection.</p>
+<p>For now, the operational message is unambiguous: two of three flaws are fixed, one is not, and the available patches alone should not be read as a clean bill of health.</p>
+<hr>
+<p>網絡保安公司 Volexity 於 10 月 13 日向 The Hacker News 披露，有攻擊者將 Ivanti Connect Secure 中三個先前未知的漏洞串連利用，在毋須登入的情況下，於 VPN 裝置上以 root 權限執行指令。Ivanti 已為三個漏洞中的兩個發布修補程式，並促請使用受影響版本的客戶「立即行動」——但第三個漏洞的修補程式仍然未有發布，意味著套用現有的更新並不能完全解除風險。</p>
+<p>是次披露的重要性不在於漏洞的數目，而在於攻擊的結構。一個能夠在邊界 VPN 裝置上取得 root 權限的預認證漏洞串連，屬於企業可能面對的最高危漏洞類別之一：該裝置處於網絡邊界，持有會話及憑證資料，而且經常受到內部系統的預設信任。取得 root 權限亦為防禦者帶來一個更棘手的問題——一台已更新的裝置，是否仍然殘留著早於修補前已被入侵的痕跡。</p>
+<p><strong>事件經過</strong></p>
+<p>根據向 Ivanti 報告漏洞的 Volexity 所述，攻擊者將 Connect Secure 中三個獨立的 zero-day 漏洞串連成單一利用鏈，最終實現未經認證的遠端 root 指令執行。Ivanti 已為其中兩個漏洞發布修補程式；Volexity 確認廠商針對最後一個漏洞的修補程式仍未發布。</p>
+<p><strong>為何重要</strong></p>
+<ul>
+<li><strong>修補並不完整。</strong> 即使套用 Ivanti 現有的更新，漏洞串連中仍然有一個漏洞未獲修補。在餘下的修補程式發布並部署之前，應視該裝置仍處於暴露狀態。</li>
+<li><strong>現有偵測手段未必能察覺。</strong> 透過串連漏洞取得的預認證 root 存取，與多數邊界監控規則所針對的暴力破解或憑證填充活動截然不同。僅依賴登入異常警報的防禦者，可能完全沒有察覺。</li>
+<li><strong>已修補的裝置仍可能早已被入侵。</strong> root 權限很可能在更新後仍然存在。任何運行受影響版本的 Connect Secure 裝置，在未經查證之前，都應被視為可能已遭入侵，而非完成修補後便置之不理。</li>
+</ul>
+<p><strong>應對措施</strong></p>
+<ol>
+<li>立即確認貴機構是否運行受影響版本的 Ivanti Connect Secure，並毋須等待維護時段，即時套用廠商已發布的修補程式。</li>
+<li>審計裝置本身而非盲目信任更新：檢查日誌及配置以尋找竄改跡象，輪換流經該裝置的憑證及證書，並在懷疑已遭入侵時進行出廠重設。</li>
+<li>加強對裝置流量的即時檢查——監察非預期的對外連線、異常的管理活動，以及裝置本身正向外發出信號（beacon）或被用作跳板的跡象。</li>
+<li>為即將發布的修補程式做好準備。由於漏洞串連中仍有一個漏洞未獲修補，請訂閱 Ivanti 的後續安全公告，並準備在修補程式一經發布即時部署。</li>
+</ol>
+<p><strong>展望</strong></p>
+<p>今次的披露模式再次說明，為何邊界 VPN 及遠端存取裝置始終是攻擊者的首選目標：它們暴露於互聯網、價值高，而且修補節奏往往落後於其承擔的風險。該漏洞串連亦已納入 CISA 的已知被利用漏洞（Known Exploited Vulnerabilities, KEV）目錄——該目錄為聯邦民用機構設定具約束力的修補期限，對其他所有人而言亦可視為緊急程度的實質指標，但在漏洞串連中仍有一個漏洞未獲修補的情況下，這項責任並不能完全履行。請持續關注 Ivanti 就第三個漏洞發布的後續公告，以及任何進一步的政府網絡安全指引；Volexity 預計會發布更詳細的技術分析，協助防禦者完善偵測規則。</p>
+<p>目前的操作訊息非常明確：三個漏洞中有兩個已獲修補，另一個則否，現有的修補程式絕不能被視為安全無虞的證明。</p>
+<p><a href="https://thehackernews.com/2026/10/attacker-chains-three-ivanti-connect.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
