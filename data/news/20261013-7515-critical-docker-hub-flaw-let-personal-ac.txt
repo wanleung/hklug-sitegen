@@ -1,0 +1,34 @@
+Date: 2026-10-13 16:26:00
+Author: HKLUG Team
+Title: Critical Docker Hub flaw let personal access tokens cross account boundaries
+Content:
+<p>Docker has disclosed a critical vulnerability in Docker Hub, tracked as CVE-2026-105445, that allowed an attacker holding one user's personal access token (PAT) to act with the authority of a different account — reaching repositories they should not have been able to touch, and potentially tampering with images that downstream pipelines pull automatically.</p>
+<p>Docker's disclosure appears to sit in the hosted registry's token handling rather than in the container runtime itself, and it points users toward rotating personal access tokens. BleepingComputer, reporting the flaw citing Docker's own advisory, described the outcome plainly: token-based impersonation across accounts, with image content exposed to modification as a result.</p>
+<h4>What is not yet known</h4>
+<p>Several questions that matter most to defenders remain unanswered in the public record. Docker has not stated how broadly the weakness could be exploited, whether it was used in the wild, or what the complete remediation path looks like beyond token rotation. Teams treating this as a credential-hygiene event rather than a contained registry bug are making a reasonable assumption — but an assumption. Docker's full advisory is the place to confirm scope before committing engineering effort in any one direction.</p>
+<h4>Why a registry flaw is a supply-chain flaw</h4>
+<p><em>The following is analysis rather than reported fact.</em></p>
+<p>Container registries sit at a chokepoint in the software supply chain, and Docker Hub is the default upstream for a very large share of it. A reference such as <code>nginx:latest</code> — or an internal base image pinned by tag rather than digest — resolves to whatever the registry currently serves for that name. If an attacker can alter what a repository serves, every downstream consumer inherits the compromise, and often without any visible change to the build log.</p>
+<p>That is where PATs make this incident more than a single-account problem. Personal access tokens are static and long-lived by design, and in practice they accumulate: pasted into CI variables, baked into self-hosted build agents, stored in secret managers, left on developer laptops. A token that crosses account boundaries inside the registry therefore does not stop at one repository. Its blast radius is every pipeline, agent, and machine where it has ever existed.</p>
+<h4>The practical response</h4>
+<p>For teams that push to or pull from Docker Hub, the useful response is an explicit audit rather than a general refresh. Treat every PAT created before the disclosure as potentially exposed and rotate them all, including tokens embedded in CI runners and orchestration configs, even where there is no evidence of misuse. In the same pass, separate credentials so that a push token is not also a production pull token, and narrow both to the smallest repository scope that will function — short-lived, scope-limited tokens cap the damage any single leak can do.</p>
+<p>Image integrity deserves equal attention. Pin production dependencies by digest (<code>image@sha256:...</code>) so that a retagged or overwritten entry cannot silently change what gets deployed; any pipeline still resolving <code>latest</code> or mutable version tags should be treated as an open risk. Organisations caching Docker Hub content in local or regional registries should flush those mirrors and re-pull against known-good digests, because a mirror populated from a tampered upstream entry will keep serving the compromised artifact indefinitely until it is explicitly refreshed. Finally, review which accounts and tokens hold write access to each repository, and scan audit logs for push events or token usage from unfamiliar sources.</p>
+<p>Docker has not publicly detailed every element of the attack chain, so no individual mitigation above should be treated as complete until checked against the company's official advisory.</p>
+<h4>The recurring pattern</h4>
+<p>Registry flaws of this kind keep returning to the container ecosystem because the underlying trust model is fragile in two specific ways: authentication leans on static, long-lived tokens, and integrity is asserted by mutable tags rather than cryptographic digests. Neither weakness is individually fixable overnight. Both can be narrowed, and incidents like CVE-2026-105445 are the reminder that supply-chain security is decided by credential hygiene and image provenance long before any scanner runs at the end of the pipeline.</p>
+<hr>
+<p>Docker 已披露 Docker Hub 的一項嚴重漏洞（CVE-2026-105445），該漏洞容許持有任何一名用戶個人存取權杖（personal access token，PAT）的攻擊者，以另一帳戶的身份行事——存取其本不應觸及的 repository，並可能篡改下游 pipeline 自動拉取的 image。</p>
+<p>Docker 的披露指向該託管式 registry 的權杖處理機制，而非容器執行環境本身，並建議用戶輪替（rotate）個人存取權杖。BleepingComputer 引述 Docker 官方公告報道該漏洞時直言其後果：跨帳戶的權杖冒用，image 內容因而可遭修改。</p>
+<h4>仍未知之事</h4>
+<p>對防禦方而言最關鍵的若干問題，至今仍未有公開資料解答。Docker 並未說明此漏洞可被利用的範圍有多廣、是否曾於現實中被利用，或除輪替權杖外，完整的補救路徑為何。有團隊將此事視為憑證衛生（credential hygiene）問題而非單純的 registry 缺陷，這是一個合理但仍然只是假設的判斷。在投入任何單一方向的工程資源之前，應查閱 Docker 完整公告以確認影響範圍。</p>
+<h4>為何 registry 漏洞即是供應鏈漏洞</h4>
+<p><em>以下為分析，而非已報道的事實。</em></p>
+<p>Container registry 位處軟件供應鏈的咽喉地帶，而 Docker Hub 更是其中極大部分的預設上游。諸如 <code>nginx:latest</code> 之類的參照——又或者以 tag 而非 digest 固定的內部基礎 image——會解析為 registry 目前就該名稱所提供的內容。若攻擊者能更改 repository 所提供的內容，所有下游使用者皆會繼承此入侵，而且 build log 往往不見任何明顯異常。</p>
+<p>正因如此，PAT 令本次事件不只涉及單一帳戶。個人存取權杖在設計上屬靜態且長期有效，實際上更會不斷累積：貼入 CI 變數、固化於自託管 build agent、存於 secret manager、遺留於開發人員的手提電腦。一個在 registry 內可跨越帳戶邊界的權杖，其影響絕不止於單一 repository。它的影響半徑，是曾經存在過該權杖的每一個 pipeline、agent 及機器。</p>
+<h4>實務應對</h4>
+<p>對於會向 Docker Hub 推送或拉取的團隊，有效的應對是明確審計，而非籠統地刷新。應將每一枚於漏洞披露前建立的 PAT 視為可能已外洩並全部輪替，包括嵌入 CI runner 及 orchestration 設定中的權杖，即使沒有任何遭濫用的證據。在同一輪處理中，應分隔憑證，令推送權杖不致同時是生產環境拉取權杖，並將兩者的權限收窄至能運作的最小 repository 範圍——短期有效、範圍受限的權杖，能將單次外洩的損害封頂。</p>
+<p>Image 完整性同樣值得關注。應以 digest（<code>image@sha256:...</code>）固定生產環境的依賴，令重新標記或被覆寫的項目無法悄然更改部署內容；任何仍在解析 <code>latest</code> 或可變版本 tag 的 pipeline，均應視為未受控風險。在本地或區域性 registry 快取 Docker Hub 內容的機構，應清空這些 mirror 並以已知良好的 digest 重新拉取，因為由遭篡改的上游項目填充的 mirror，在未經明確刷新前會一直繼續提供受感染的 artefact。最後，應檢視哪些帳戶及權杖對各 repository 擁有寫入權限，並審核 audit log，查找來自陌生來源的推送事件或權杖使用紀錄。</p>
+<p>Docker 尚未公開攻擊鏈的全部細節，因此上述各項緩解措施在對照公司官方公告核實之前，不應被視為完整有效。</p>
+<h4>反覆出現的模式</h4>
+<p>此類 registry 缺陷之所以在 container 生態系統中反覆出現，是因為其底層信任模型在兩方面結構脆弱：認證依賴靜態且長期有效的權杖，而完整性則由可變的 tag 而非加密 digest 來聲明。兩項弱點皆非一朝一夕可以根治，但皆可收窄。CVE-2026-105445 類型的事件正是一個提醒：供應鏈安全的成敗，早在 pipeline 末端任何 scanner 運行之前，就已由憑證衛生與 image 來源可追溯性（provenance）所決定。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/docker-hub-flaw-let-attackers-impersonate-users-tamper-with-images/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
