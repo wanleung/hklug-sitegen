@@ -1,0 +1,42 @@
+Date: 2026-10-14 13:34:00
+Author: HKLUG Team
+Title: CISA Sounds Alarm on Ivanti Connect Secure Authentication Bypass Already Being Exploited in the Wild
+Content:
+<p>The U.S. Cybersecurity and Infrastructure Security Agency (CISA) on Tuesday called on organisations to update their Ivanti Connect Secure (ICS) appliances and deployments immediately, following disclosure of an actively exploited authentication bypass tracked as <strong>CVE-2026-104935</strong> and scored <strong>8.6 on the CVSS scale</strong>.</p>
+<p>The flaw, which allows an attacker to circumvent authentication on affected ICS deployments, is already being exploited in the wild. Honeypot telemetry has recorded <strong>105 exploit attempts</strong> against the vulnerability — a figure defenders should read as a floor rather than a ceiling. Honeypots tend to capture opportunistic, low-sophistication scanning; more targeted intrusion sets may well have reached vulnerable appliances earlier without registering on the same sensors.</p>
+<p>A note on terminology: "ICS" here refers to <strong>Ivanti Connect Secure</strong>, the widely deployed remote-access VPN product — not industrial control systems.</p>
+<h4>Why This Bug Deserves Priority</h4>
+<p>Authentication bypasses in VPN appliances sit near the top of the risk hierarchy for defenders. These devices are, by design, internet-facing and high-trust: a foothold obtained by defeating login looks legitimate from inside the network, giving attackers a clean path to lateral movement without immediately raising alarms. That combination of external exposure and privileged function is precisely why CISA attached an expedited remediation requirement rather than issuing a routine advisory.</p>
+<p>The decision also carries institutional memory. Ivanti appliance vulnerabilities have previously served as an initial-access vector in campaigns attributed to suspected Chinese state actors, including high-profile intrusions into U.S. federal networks. Organisations should assume a comparable playbook is already in motion: probe broadly, prioritise unpatched units, then establish persistence quietly.</p>
+<h4>What To Do Now</h4>
+<p>The operational risk here lies not in the difficulty of the fix but in the gap between patch cycle and breach — a gap that, for opportunistic attacks, is measured in hours. A practical response checklist:</p>
+<ol>
+<li><strong>Inventory first.</strong> Identify every internet-facing ICS appliance in the fleet, including branch-office and legacy units that tend to escape change-management records.</li>
+<li><strong>Update immediately.</strong> Move affected deployments to the latest version per <a href="https://forums.ivanti.com/">Ivanti's patch notes</a>.</li>
+<li><strong>Run vendor tooling.</strong> Execute Ivanti's integrity and external exposure checker utilities on all appliances.</li>
+<li><strong>Rotate credentials.</strong> Treat all appliance-local and downstream authentication material as potentially compromised.</li>
+<li><strong>Hunt for persistence.</strong> Look for webshells, rogue administrative accounts, unauthorised configuration changes, and unexplained outbound connections.</li>
+<li><strong>Rebuild where compromise is suspected.</strong> Factory-reset and restore from known-good backups rather than attempting to surgically remove an intruder.</li>
+</ol>
+<p>Full remediation guidance is available in <a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog">CISA's advisory</a>.</p>
+<p>For any organisation running remote-access VPN hardware — not only Ivanti customers — the wider lesson is inventory hygiene. The fleets most at risk are usually the appliances nobody remembered they owned. This story will be updated as Ivanti or CISA publish further technical detail.</p>
+<hr>
+<p>美國網絡安全及基礎設施安全局（CISA）於週二呼籲各機構立即更新其 Ivanti Connect Secure（ICS）設備及部署版本。此前，一個已被實際利用的認證繞過漏洞 <strong>CVE-2026-104935</strong> 獲披露，其 CVSS 評分達 <strong>8.6 分</strong>。</p>
+<p>該漏洞容許攻擊者繞過受影響 ICS 部署的認證機制，且已在野外遭實際利用。Honeypot 遙測數據已記錄針對該漏洞的 <strong>105 次 exploit 嘗試</strong> —— 防守方應將此數字視作下限而非上限。Honeypot 通常只能捕捉投機性、低技術含量的掃描活動；較為針對性的入侵行動（intrusion sets）很可能早已接觸相關漏洞設備，只是未被同一批感應器記錄在內。</p>
+<p>名詞說明：此處的「ICS」是指 <strong>Ivanti Connect Secure</strong>，即廣泛部署的遠端存取 VPN 產品 —— 並非工業控制系統（industrial control systems）。</p>
+<h4>為何此漏洞須優先處理</h4>
+<p>VPN 設備的認證繞過漏洞，在防守方的風險層級中位居前列。這類設備按設計本身面向互聯網，且屬高信任級別：入侵者一旦透過繞過登入機制取得立足點，其活動從網絡內部看來形同正常，得以在不即時觸發警報的情況下展開 lateral movement。正是這種外部暴露面與高權限功能的組合，促使 CISA 加入加速補救（expedited remediation）要求，而非僅發出一般性通告。</p>
+<p>此決定亦有其歷史背景。此前，Ivanti 設備漏洞曾被用作初始入侵途徑（initial-access vector），相關攻擊行動被歸因於疑似中國國家級行為者，包括多宗針對美國聯邦網絡的高調入侵事件。各機構應假設類似的攻擊腳本（playbook）已在運作之中：先作大範圍偵察、優先鎖定未修補設備，然後悄然建立持久化機制。</p>
+<h4>現在應採取的措施</h4>
+<p>此處的營運風險並不在於修復工作的難度，而在於補丁週期與遭到入侵之間的時間差 —— 對投機性攻擊而言，這段差距往往只以小時計算。以下為實務應變清單：</p>
+<ol>
+<li><strong>先作盤點。</strong> 識別機群中每一部面向互聯網的 ICS 設備，包括分辦事處及較舊型號等通常不會出現在變更管理紀錄中的設備。</li>
+<li><strong>立即更新。</strong> 按照 <a href="https://forums.ivanti.com/">Ivanti 的補丁說明</a>，將受影響的部署升級至最新版本。</li>
+<li><strong>執行原廠工具。</strong> 在所有設備上執行 Ivanti 的完整性檢查及外部暴露面檢查工具。</li>
+<li><strong>輪換憑證。</strong> 將所有設備本地及下游的認證材料視為可能已遭洩露。</li>
+<li><strong>搜尋持久化機制。</strong> 檢查是否存在 webshell、來歷不明的管理員帳戶、未經授權的配置改動，以及無法解釋的對外連線。</li>
+<li><strong>如懷疑已遭入侵，則重建系統。</strong> 進行恢復原廠設定（factory reset）並從已知良好的備份還原，而非嘗試精準移除入侵者。</li>
+</ol>
+<p>完整的補救指引可參閱 <a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog">CISA 的通告</a>。</p>
+<p>對所有使用遠端存取 VPN 硬件的機構 —— 不單是 Ivanti 客戶 —— 更廣泛的教訓是做好資產盤點管理。風險最高的機群，往往正是眾人早已忘記自己擁有的那些設備。本報道將在 Ivanti 或 CISA 公布更多技術細節後更新。</p>
+<p><a href="https://thehackernews.com/2026/10/cisa-urges-immediate-ivanti-connect.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
