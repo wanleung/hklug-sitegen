@@ -1,0 +1,48 @@
+Date: 2026-10-14 11:28:00
+Author: HKLUG Team
+Title: Attackers Chain Three Ivanti VPN Zero-Days to Root a Fully Patched Appliance, Volexity Warns
+Content:
+<p>A threat intelligence investigation has exposed a quiet intrusion in which attackers chained three previously unknown vulnerabilities in an Ivanti Connect Secure VPN appliance to gain root access, deploy backdoors, harvest credentials, and position themselves for broader network compromise — all while the device was running the latest available firmware.</p>
+<p>According to Security Affairs, which reported on Volexity's findings, the investigation began on 5 October when Volexity noticed suspicious activity at one of its monitoring customers. Analysts traced the activity to an Ivanti Connect Secure VPN appliance running build 22.8R2.4 — the most current release at the time — meaning the intrusion succeeded against a device that appeared, on paper, fully up to date.</p>
+<h5>Three zero-days, one kill chain</h5>
+<p>The attackers exploited a chain of three Ivanti zero-day flaws: CVE-2024-8963, CVE-2024-9189, and CVE-2024-9203. By linking them together, the operators escalated to root-level control of the appliance, then persisted by writing malicious executables over legitimate system binaries — a binary-overwrite technique that blends attacker code into the device's normal file set and makes detection far harder.</p>
+<p>Two custom backdoors were deployed in the course of the operation: one tracked as LBM and another as BERNARD. Together they enabled credential theft and gave the operators a foothold from which to stage wider movement inside the victim's network.</p>
+<p>The activity has been attributed to UNC5221, a cluster long associated with espionage-oriented operations against edge networking gear, and the relevant vulnerabilities have since been added to CISA's Known Exploited Vulnerabilities catalogue.</p>
+<h5>Fooling the vendor's own trust tool</h5>
+<p>Perhaps the most consequential detail for defenders is how the intrusion evaded scrutiny. Ivanti's Integrity Checker Tool (ICT) — the mechanism administrators rely on to confirm an appliance has not been tampered with — was itself manipulated by the attackers. The compromised device reported itself as clean. For any organisation whose incident-response runbook depends on ICT output, that assurance is effectively void.</p>
+<h5>Remediation: rebuild, don't clean</h5>
+<p>Ivanti's guidance is unambiguous and counterintuitive: affected appliances should be rebuilt from factory images rather than cleaned in place. An attacker with root and binary-level persistence cannot be reliably evicted through patching alone. Organisations that simply update firmware and declare victory risk leaving live backdoors on the device.</p>
+<h5>What to do if you run Ivanti Connect Secure</h5>
+<p>Ivanti Connect Secure is a common fixture behind enterprise remote-access portals worldwide, including in Hong Kong — though it is worth noting that the source material makes no territory-specific claims, and the guidance below applies equally wherever the appliance is deployed. Treat the following as an immediate action item, independent of whether compromise is suspected:</p>
+<ul>
+<li><strong>Inventory first.</strong> Identify every Ivanti Connect Secure appliance and record its firmware version. Do not assume the newest build is safe; verify integrity.</li>
+<li><strong>Do not rely on ICT alone.</strong> Where compromise is suspected, treat a clean ICT result as inconclusive. Engage forensic support or move directly to rebuild.</li>
+<li><strong>Rebuild, then rotate.</strong> Rebuild from factory images, then reset all credentials, session tokens, and certificates that traversed the appliance — including service-account secrets.</li>
+<li><strong>Hunt on the network side.</strong> Review VPN authentication logs and internal traffic for anomalous sessions, particularly outside business hours or from unexpected geographies.</li>
+<li><strong>Patch against the KEV listing.</strong> Apply Ivanti's fixes as they become available, but treat patching as one step in remediation, not the whole of it.</li>
+</ul>
+<p>The core lesson is uncomfortable but simple: a fully patched perimeter device can still be fully compromised, and the tools meant to prove otherwise can be turned into part of the deception.</p>
+<p><em>Source: Security Affairs, reporting on research by Volexity.</em></p>
+<hr>
+<p>一項威脅情報調查揭露了一宗靜默入侵事件：攻擊者串聯 Ivanti Connect Secure VPN 設備上三個前所未聞的漏洞，取得 root 權限、部署後門、竊取憑證，並為進一步入侵整個網絡做好部署——而事发期間該設備一直運行最新版本的 firmware。</p>
+<p>據 Security Affairs 報道 Volexity 的調查結果，事件始於 10 月 5 日，當時 Volexity 在其中一家監察客戶那裏發現可疑活動。分析人員追查後確定，相關活動源自一部運行 build 22.8R2.4 的 Ivanti Connect Secure VPN 設備——這是當時的最新版本——意味入侵是針對一部表面上已完全更新的設備而成功的。</p>
+<h5>三個 zero-day，一條 kill chain</h5>
+<p>攻擊者利用了三個 Ivanti zero-day 漏洞的組合攻擊：CVE-2024-8963、CVE-2024-9189 及 CVE-2024-9203。透過將三者串連，操作者提升了權限至設備的 root 級別控制，其後再以惡意 executable 覆寫合法系統 binary 的方式維持持久性——這種 binary overwrite 技術將攻擊者代碼混入設備的正常檔案之中，令偵測難度大增。</p>
+<p>行動期間共部署了兩個自製後門：一個代號 LBM，另一個代號 BERNARD。兩者結合使操作者得以竊取憑據，並在受害者網絡內部建立進一步移動的立足點。</p>
+<p>相關活動被歸屬為 UNC5221——一個長期與針對邊緣網絡設備的間諜行動相關的攻擊集群，涉及漏洞其後已列入 CISA 的 Known Exploited Vulnerabilities（KEV）目錄。</p>
+<h5>騙過廠商自家的 trust 工具</h5>
+<p>對防禦者而言，或許最具影響力的細節是入侵如何避開審查。Ivanti 的 Integrity Checker Tool（ICT）——管理員用來確認設備未被篡改的機制——本身遭攻擊者操控。被入侵的設備自我回報為「乾淨」。對於任何事件應變流程依賴 ICT 輸出的機構而言，這項保證實際上已完全失效。</p>
+<h5>修復方法：重建，而非清理</h5>
+<p>Ivanti 的指引明確但違反直覺：受影響的設備應以 factory image 重新構建，而非就地清理。擁有 root 權限及 binary 層級持久性的攻擊者，無法單靠修補可靠地驅逐。僅更新 firmware 便宣告勝利的機構，有令設備上仍然活躍的後門得以留存的風險。</p>
+<h5>若你正在使用 Ivanti Connect Secure，該怎麼做</h5>
+<p>Ivanti Connect Secure 是全球企業遠程訪問入口常見的配置，香港亦不例外——不過值得注意的是，原始資料並未作出任何針對特定地區的聲明，以下指引同樣適用於任何部署該設備的地方。請將以下各項視為即時行動事項，不論是否懷疑已遭入侵：</p>
+<ul>
+<li><strong>先做盤點。</strong> 識別每一部 Ivanti Connect Secure 設備，並記錄其 firmware 版本。不要假設最新 build 便安全；須核實其完整性。</li>
+<li><strong>不要只依賴 ICT。</strong> 若懷疑已遭入侵，應視 ICT 乾淨的結果為不具決定性。尋求鑑證支援，或直接進入重建程序。</li>
+<li><strong>先重建，後輪換。</strong> 以 factory image 重新構建後，重設所有曾經過該設備的憑證、session token 及證書——包括 service account 的機密資料。</li>
+<li><strong>從網絡端進行狩獵。</strong> 檢視 VPN authentication log 及內部流量，尋找異常 session，尤其是在營業時間以外或來自預期外地區的連接。</li>
+<li><strong>針對 KEV 名單修補。</strong> 隨時套用 Ivanti 推出的修復程式，但須視修補為補救過程中的一個步驟，而非全部。</li>
+</ul>
+<p>核心教訓令人不安但簡單：一部全面修補的邊界設備仍可能被徹底入侵，而原本用來證明並非如此的工具，也可能被轉化為欺騙手段的一部分。</p>
+<p><em>資料來源：Security Affairs，報導 Volexity 的研究。</em></p>
+<p><a href="https://securityaffairs.com/200895/hacking/volexity-uncovers-stealthy-ivanti-vpn-attack-using-three-zero-day-vulnerabilities.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
