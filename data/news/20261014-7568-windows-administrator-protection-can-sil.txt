@@ -1,0 +1,40 @@
+Date: 2026-10-14 11:28:00
+Author: HKLUG Team
+Title: Windows Administrator Protection Can Silently Block Remote Desktop Logins for Non-Admin Users
+Content:
+<p>Microsoft has acknowledged that some recent Windows updates can break Remote Desktop connections for standard, non-administrator users on machines where the "Administrator Protection" security feature is switched on — while leaving administrators able to log in normally.</p>
+<p>The partial nature of the outage is what makes the bug awkward: it does not take down Remote Desktop wholesale, and it does not fail loudly. Affected users simply cannot connect, with no obvious signal that a Windows update is the cause.</p>
+<p>According to BleepingComputer, which reported Microsoft's confirmation, the failures appear on devices with Administrator Protection enabled after recent updates are installed. Accounts with administrative rights continue to connect without trouble, which is precisely the pattern that makes this one easy to misread.</p>
+<h5>Why this is a helpdesk trap</h5>
+<p>The failure mode closely resembles a permissions or network problem — a misconfigured Remote Desktop permission, a rights assignment that was missed during a migration, a firewall or NLA quirk. In practice, support staff are likely to spend time re-checking access control lists and group membership on the target host, when the actual trigger is a client-side interaction between the update and a security feature.</p>
+<p>That diagnostic misdirection is the real cost of this bug. Environments running lean support queues can burn hours chasing an issue that has nothing to do with the permissions they are inspecting, and the "it only affects some users" symptom invites repeat tickets as different people hit the same wall.</p>
+<h5>What Administrator Protection does</h5>
+<p>Administrator Protection is a security capability Microsoft introduced in recent Windows 11 releases, including version 24H2. It separates administrative privilege from the logged-in user session: when an elevated task is requested, the system creates a temporary, isolated admin profile, and elevation happens behind a Windows Hello confirmation on a protected sign-in surface. The intent is to reduce the blast radius of malware running with stolen admin rights, and to stop credential exposure in everyday sessions.</p>
+<p>Because it changes how admin rights are exercised during a session, it is also the component implicated in this Remote Desktop regression.</p>
+<h5>Who is affected</h5>
+<p>The risk profile is narrow but common in enterprise settings: machines running affected Windows builds with Administrator Protection enabled, accessed over Remote Desktop by users who are <strong>not</strong> members of the local Administrators group. Broad deployments that push the feature via Group Policy or MDM, combined with standard-user access for day-to-day work, are the most exposed — including managed endpoints and jump hosts used by support teams.</p>
+<p>Microsoft has not framed this as a security vulnerability, so there is no CVE attached; it is a functional defect introduced by the update cycle.</p>
+<h5>Microsoft's workarounds, and one thing to weigh</h5>
+<p>Microsoft's stated remedies are to disable Administrator Protection on affected devices, or to sign in with an administrative account. Both are blunt instruments: disabling the feature removes a security control you may have deliberately enabled, and requiring admin accounts for Remote Desktop undermines the least-privilege posture most organisations are trying to maintain. Administrators could also consider deferring or holding the relevant update in the interim, weighing operational disruption against the risk of leaving the security control disabled — though that is a judgement call rather than an official fix.</p>
+<h5>What IT teams should do now</h5>
+<p>Before triaging the next "can't RDP in" ticket, verify the Administrator Protection state on the affected host rather than starting with permissions. Check your Windows Update history to confirm whether a recent patch landed, and cross-reference the build against Microsoft's Windows release health documentation for the current list of affected updates and fix status — that list can change between advisories, so re-verify at the time you are reading rather than relying on a static snapshot. Finally, brief the service desk that this symptom can masquerade as an access-rights problem, so the first-line checklist reflects it.</p>
+<p>For teams standardising on non-admin daily accounts, this is a reminder that new security features and routine patching can interact in ways that quietly erode day-to-day access — and that the helpdesk, not the security team, is usually where that gets discovered.</p>
+<hr>
+<p>微軟已確認，部分近期 Windows 更新可能會令已啟用「Administrator Protection（管理員保護）」安全功能的電腦上，標準非管理員用戶的 Remote Desktop 連線中斷，但管理員則仍可正常登入。</p>
+<p>此故障的部分性質正是這個 bug 最棘手之處：它並非全面癱瘓 Remote Desktop，也不會發出明顯的錯誤訊號。受影響的用戶只是完全無法連線，而且沒有明顯跡象顯示成因是 Windows 更新。</p>
+<p>根據報道微軟證實的 BleepingComputer 指出，故障出現在已啟用 Administrator Protection 的裝置上，並於近期更新安裝後浮現。擁有管理員權限的帳戶則繼續連接無阻，而這種模式正是令問題容易被誤判的原因。</p>
+<h5>為何這是服務台的陷阱</h5>
+<p>故障模式與權限或網絡問題極為相似——可能是 Remote Desktop 權限設定錯誤、系統遷移時遺漏的權限指派、防火牆或 NLA（網絡層級驗證）異常。在實務上，支援人員很可能會花費大量時間重新檢查目標主機的 access control list 及群組成員資格，但真正的觸發原因是更新與安全功能之間的用戶端交互作用。</p>
+<p>這種診斷上的誤導正是此 bug 的真正代價。支援人手緊絀的環境，可能會浪費數小時追查一個與他們所檢查的權限完全無關的問題；而「只影響部分用戶」的症狀，更會令不同的人遇到同一障礙時不斷提交重複的求助個案。</p>
+<h5>Administrator Protection 的運作方式</h5>
+<p>Administrator Protection 是微軟在近期 Windows 11 版本（包括 24H2）引入的一項安全功能。它將管理員權限與已登入的用戶會話分離：當系統要求提升權限時，會建立一個臨時的、獨立的管理員設定檔，權限提升須透過受保護的登入介面上的 Windows Hello 確認來完成。其目的是縮小被盜用管理員權限執行的惡意軟件的影響範圍，並防止日常會話中出現憑證外洩。</p>
+<p>正因為它改變了管理員權限在會話期間的行使方式，它亦是今次 Remote Desktop 回歸問題（regression）所涉及的元件。</p>
+<h5>受影響範圍</h5>
+<p>風險範圍雖窄，但在企業環境中相當常見：執行受影響 Windows 組建並已啟用 Administrator Protection 的電腦，以及透過 Remote Desktop 存取、而<strong>並非</strong>本機 Administrators 群組成員的用戶。透過 Group Policy 或 MDM 大規模推行此功能、同時讓員工以標準用戶日常工作的部署環境最為高危——其中包括由支援團隊使用的受管理終端裝置及 jump host（跳板機）。</p>
+<p>微軟並未將此事定性為安全漏洞，因此沒有相關 CVE；這是更新週期引入的功能性缺陷。</p>
+<h5>微軟的應變方法，以及一項需要權衡的事</h5>
+<p>微軟提出的補救方法，是在受影響的裝置上停用 Administrator Protection，或以管理員帳戶登入。兩者都是粗暴的手段：停用功能等於移除一項你可能刻意啟用的安全控制；而要求 Remote Desktop 必須使用管理員帳戶登入，則有違大多數機構努力維持的最低權限（least privilege）原則。管理員在過渡期間亦可考慮延遲或暫緩安裝相關更新，權衡營運受干擾的程度與讓安全控制處於停用狀態的風險——惟這屬於自行判斷，並非官方修復方案。</p>
+<h5>IT 團隊現階段應做的事</h5>
+<p>在分類下一個「無法 RDP 登入」的個案之前，應先檢查受影響主機的 Administrator Protection 狀態，而非一開始就從權限入手。查看 Windows Update 歷史記錄，確認最近是否安裝了相關修補程式，並核對組建版本與微軟 Windows release health 文件中現時列出的受影響更新及修復狀態——該清單可能在不同公告之間有所變動，因此應在你查閱時重新核實，而非依賴靜態的快照。最後，應向服務台簡報此症狀可能被誤認為存取權限問題，令一線支援清單能反映這一點。</p>
+<p>對於已統一使用非管理員日常帳戶的團隊而言，此事提醒大家：新安全功能與例行修補程式可能以各種方式交互作用，無聲無息地削弱日常存取能力——而發現問題的地方通常不是安全團隊，而是服務台。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/microsoft-recent-windows-updates-may-trigger-remote-desktop-failures/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
