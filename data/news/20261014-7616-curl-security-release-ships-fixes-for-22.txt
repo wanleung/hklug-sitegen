@@ -1,0 +1,44 @@
+Date: 2026-10-14 19:44:00
+Author: HKLUG Team
+Title: curl security release ships fixes for 22 vulnerabilities, including one high-severity flaw
+Content:
+<p>The curl project's scheduled security release has landed, delivering fixes for 22 known vulnerabilities in the ubiquitous command-line transfer tool. On 7 October, maintainer Daniel Stenberg published a plan announcing that a patched version would ship on 14 October; the vulnerability details themselves remained under embargo until that date, when they were publicly disclosed alongside the release.</p>
+<p>According to the Ubuntu security team's write-up, the batch contains a single high-severity flaw, CVE-2026-92392, which the post describes as "known to allow remote code execution" and notes "requires a malicious server." The remaining 21 vulnerabilities are rated low or medium severity, and the Ubuntu post includes a separate "Impact of the other vulnerabilities" section summarising them. Operators handling internet-facing services should read the upstream curl security advisories for full per-CVE technical analysis before setting priorities.</p>
+<h4>Release status across Ubuntu releases</h4>
+<p>As of the Ubuntu blog post, only Resolute (26.04) has received the fixed package — <code>8.18.0-1ubuntu2.8</code>. Releases from Trusty through Noble are listed as "Update pending," with Ubuntu noting that updates for other supported releases "will be available shortly." Teams on older LTS releases should monitor their mirrors and plan for the package to land in the coming days.</p>
+<h4>Why curl patches matter more than their CVSS scores suggest</h4>
+<p>curl's blast radius is disproportionate to its profile. It ships in essentially every major Linux distribution, sits inside the base layers of most container images, and is invoked routinely by CI/CD pipelines, deployment scripts, and health-check jobs. A "low" or "medium" rating is cold comfort when the vulnerable component runs unattended in an automated build or as a sidecar process that nobody monitors. Even flaws rated below high severity can be operationally significant in contexts where curl processes attacker-influenced URLs or responses without human oversight.</p>
+<p>That ubiquity is also why the project's coordinated-disclosure habit matters. Stenberg's 7 October plan — published a full week ahead of the code — gave distribution maintainers and downstream builders time to prepare packages before the details went public. The embargo held until 14 October, meaning operators had advance notice that a security release was coming but did not learn what it fixed until the code shipped.</p>
+<h4>Remediation steps</h4>
+<ol>
+<li><strong>Inventory.</strong> Run <code>curl --version</code> on every host, VM, and container image in scope to record the currently deployed version. Include bastion hosts and build nodes — these are frequently missed.</li>
+<li><strong>Prioritise internet-facing systems.</strong> Systems where curl fetches attacker-reachable URLs or APIs first; internal automation second.</li>
+<li><strong>Rebuild container images.</strong> Rebuild and re-tag any base images that bundle curl, then redeploy dependent workloads. A package update inside a running container without a rebuild leaves the vulnerable layer in the registry.</li>
+<li><strong>Update CI runners.</strong> Self-hosted runners and build agents are a common blind spot: they run with broad network access and are rarely included in routine patch cycles.</li>
+<li><strong>Update in place.</strong> On Ubuntu systems, the source recommends <code>sudo apt upgrade</code> (or, more narrowly, <code>sudo apt install --only-upgrade '?source-package(^curl$)'</code>) once the fixed package is available for your release. Verify with <code>curl --version</code> afterwards.</li>
+</ol>
+<p>Until systems are confirmed patched, the prudent interim posture is to minimise unnecessary outbound curl traffic and monitor the upstream security page for any follow-up advisories.</p>
+<h4>The bottom line</h4>
+<p>The vulnerabilities were publicly disclosed on 14 October, so the operational burden now falls on deployment rather than discovery. Any organisation in Hong Kong running curl in production infrastructure — whether on bare metal, in Kubernetes, or inside build pipelines — should treat this batch as a routine but time-sensitive patch cycle, with CVE-2026-92392 as the priority item. Teams on Ubuntu releases other than Resolute should expect packages shortly and plan accordingly.</p>
+<p>Source: Ubuntu Security Blog.</p>
+<hr>
+<p>curl 專案的例行安全版本現已發布，為這款無處不在的命令列傳輸工具的 22 個已知漏洞提供修復。維護者 Daniel Stenberg 已於 10 月 7 日刊出計劃公告，宣布修補版本將於 10 月 14 日發布；漏洞詳情本身則繼續受到 embargo 約束，直至該日才隨版本發布一併公開披露。</p>
+<p>根據 Ubuntu 安全團隊的撰文，該批漏洞包含一個高嚴重性漏洞 CVE-2026-92392，Ubuntu 的文章形容它「已知可導致遠端執行代碼」，並指出「需要一部惡意伺服器」。其餘 21 個漏洞被評為低或中嚴重性，Ubuntu 的文章亦載有一個獨立的「其他漏洞的影響」章節作歸納。處理對外互聯網服務的營運人員，應在釐定優先次序前查閱上游 curl 安全通告，以獲取逐個 CVE 的完整技術分析。</p>
+<h4>各 Ubuntu 版本的修復狀況</h4>
+<p>截至 Ubuntu 網誌文章刊出時，只有 Resolute（26.04）獲得了已修復的軟件包——版本號為 <code>8.18.0-1ubuntu2.8</code>。由 Trusty 至 Noble 的各個版本仍列為「更新待發」，Ubuntu 指出其他受支援版本的更新「不久即會提供」。使用較舊 LTS 版本的團隊應留意其軟件鏡像，並為軟件包於未來數日內到來作好準備。</p>
+<h4>為何 curl 的修補比其 CVSS 評分所顯示的更為重要</h4>
+<p>curl 的實際影響範圍與它的知名度並不相稱。它幾乎裝載於每一個主要 Linux 發行版，身處大多數 container image 的基礎層之內，並經常被 CI/CD pipeline、部署腳本及健康檢查作業所調用。當有漏洞的元件在自動化建置過程中無人看管地運行，或作為乏人監察的 sidecar process 運作時，「低」或「中」的評級並不能帶來多少安慰。即使漏洞的嚴重性未達高等級，在 curl 無需人手監督便處理受攻擊者影響的 URL 或回應的情境下，它在營運層面仍可能意義重大。</p>
+<p>這種無處不在的特性，亦正是該專案的協調披露慣例如此重要的原因。Stenberg 在 10 月 7 日刊出的計劃公告——較代碼正式發布整整早一星期——讓發行版維護者及下游建置者有時間在詳情公開前準備軟件包。Embargo 維持至 10 月 14 日，意味著營運人員早已獲悉一項安全版本即將推出，但要待代碼正式發布後才知悉它修復了哪些問題。</p>
+<h4>補救步驟</h4>
+<ol>
+<li><strong>盤點。</strong> 在範圍內的每一部主機、虛擬機及 container image 上執行 <code>curl --version</code>，記錄目前已部署的版本。切勿遺漏 jump host 及建置節點——這些往往最易被忽略。</li>
+<li><strong>優先處理對外互聯網系統。</strong> 首要處理 curl 會存取攻擊者可接達的 URL 或 API 的系統；其次才是內部自動化系統。</li>
+<li><strong>重建 container image。</strong> 任何捆綁了 curl 的基礎 image 均須重建及重新標記（re-tag），然後重新部署相應的工作負載。僅在運行中的 container 內更新軟件包而不重建 image，會令有漏洞的層（layer）仍然留在 image registry 之中。</li>
+<li><strong>更新 CI runner。</strong> 自行託管的 runner 及建置代理（build agent）是常見的盲點：它們擁有廣泛的網絡存取權限，卻很少被納入例行的 patch cycle。</li>
+<li><strong>原地更新。</strong> 在 Ubuntu 系統上，來源建議執行 <code>sudo apt upgrade</code>（或以更精準的方式執行 <code>sudo apt install --only-upgrade '?source-package(^curl$)'</code>），前提是你的版本已有修復軟件包可供安裝。事後請以 <code>curl --version</code> 核實。</li>
+</ol>
+<p>在確認系統已完成修補前，審慎的過渡做法是盡量減少不必要的 curl 對外流量，並密切留意上游安全頁面是否刊出任何後續通告。</p>
+<h4>要點總結</h4>
+<p>漏洞已於 10 月 14 日公開披露，因此操作上的負擔現已完全落在部署環節，而非漏洞發現方面。香港任何在生產基礎設施中使用 curl 的機構——不論是運行於 bare metal、Kubernetes 之內，抑或置身建置 pipeline 之中——都應將這批修復視為一個例行但時間緊迫的 patch cycle，並以 CVE-2026-92392 為優先處理項目。使用 Resolute 以外 Ubuntu 版本的團隊，應預期軟件包不久即會推出，並據此作好計劃。</p>
+<p>資料來源：Ubuntu Security Blog。</p>
+<p><a href="https://ubuntu.com/blog/curl-vulnerabilities-fixes-available" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
