@@ -1,0 +1,48 @@
+Date: 2026-10-14 13:01:00
+Author: HKLUG Team
+Title: Rustls 0.23.46 Patches Four Security Flaws — Is Your Dependency Tree Affected?
+Content:
+<p>The Rustls project has shipped version 0.23.46 of its memory-safe TLS implementation, carrying four security fixes. It is a routine maintenance release, but one that warrants attention from any team whose dependency graph reaches the crate — however indirectly.</p>
+<p>Rustls is a widely adopted TLS library written in Rust, positioned as a memory-safe alternative to OpenSSL-based stacks. Its reach extends well past direct dependents: the crate is commonly pulled in transitively through HTTP clients, gRPC frameworks, and assorted networking crates, meaning a security release here can ripple through services whose own developers never chose Rustls in the first place.</p>
+<p>Phoronix, which covered the release on 14 October, reports that v0.23.46 exists primarily to land the four security fixes. The project's release announcement does not characterize any of them as a zero-day or call for emergency action, and there is no indication of active exploitation. Details on individual issues, however, live in the project's advisory records — the GitHub Security Advisories for Rustls and the RustSec Advisory Database — which remain the authoritative source for each fix's identifier, severity rating, affected version range, and exploitation conditions.</p>
+<p>Given that, operators should treat this as an actionable maintenance item and work through the following steps:</p>
+<ol>
+<li><strong>Determine whether Rustls is in your tree at all</strong>, including transitive paths:</li>
+</ol>
+<p><code>cargo tree -i rustls</code></p>
+<p>Cross-check the resolved version in your <code>Cargo.lock</code>. CI images and vendored dependency sets often lag behind what a developer workstation resolves.</p>
+<ol>
+<li>
+<p><strong>Read the advisories before updating</strong>, at the <a href="https://github.com/rustls/rustls/security/advisories">rustls GitHub Security Advisories</a> page and the <a href="https://rustsec.org/">RustSec Advisory Database</a>. Severity and affected configurations dictate whether this is a routine rebuild or an expedited redeploy. Pay particular attention to whether an advisory applies to client-only, server-only, or both roles — several historical Rustls issues have proven exploitable in only one configuration.</p>
+</li>
+<li>
+<p><strong>Update and rebuild:</strong></p>
+</li>
+</ol>
+<p><code>cargo update -p rustls</code></p>
+<p>Then redeploy affected services, including any static binaries, container images, or vendored artifacts that embed the previous version.</p>
+<p>One piece of context worth keeping in mind: Rustls's safety claim covers memory safety, not immunity to logic or protocol-level bugs. TLS is a complex, stateful protocol, and memory-safe code can still harbor validation and negotiation flaws. What matters is the bug class described in this release's advisories — not any assumption drawn from Rustls's general reputation.</p>
+<p>No per-fix detail is reported in the release coverage itself; teams should rely on the advisory records linked above for authoritative, issue-by-issue information.</p>
+<hr>
+<p>Rustls 項目已發布其記憶體安全 TLS 實現的 0.23.46 版本，當中包含四項安全修復。這是一個例行的維護版本，但任何 dependency graph 涉及該 crate 的團隊——無論間接程度如何——都值得留意。</p>
+<p>Rustls 是一個採用廣泛、以 Rust 編寫的 TLS 函式庫，定位為 OpenSSL 方案的記憶體安全替代品。其影響範圍遠超直接依賴者：該 crate 常見於透過 HTTP 客戶端、gRPC 框架及各種網絡 crate 間接引入，意味著這裡的一次安全發布，可能會波及本身開發人員從未選擇 Rustls 的服務。</p>
+<p>Phoronix 於 10 月 14 日報道了此次發布，指出 v0.23.46 主要是為納入四項安全修復而推出。項目發布公告並未將任何一項形容為零日漏洞，亦沒有呼籲採取緊急行動，目前亦沒有跡象顯示存在 active exploitation。不過，各個問題的細節載於項目的安全公告記錄——即 Rustls 的 GitHub Security Advisories 及 RustSec Advisory Database——這些仍是各項修復的編號、嚴重程度評級、受影響版本範圍及漏洞利用條件的權威來源。</p>
+<p>有見及此，系統管理員應將此視為需要跟進的維護項目，並按以下步驟處理：</p>
+<ol>
+<li><strong>確認 Rustls 是否存在於你的 dependency tree 中</strong>，包括間接引入路徑：</li>
+</ol>
+<p><code>cargo tree -i rustls</code></p>
+<p>並核對 <code>Cargo.lock</code> 中已解析的版本。CI 映像及 vendored 依賴集合往往落後於開發工作站所解析的版本。</p>
+<ol>
+<li>
+<p><strong>更新前先閲讀安全公告</strong>，包括 <a href="https://github.com/rustls/rustls/security/advisories">rustls GitHub Security Advisories</a> 頁面及 <a href="https://rustsec.org/">RustSec Advisory Database</a>。嚴重程度及受影響配置將決定這是例行重新構建還是需要加速重新部署。特別留意公告是否僅適用於客戶端角色、伺服器角色或兩者兼有——Rustls 歷史上多個問題曾被證明僅在其中一種配置下可被利用。</p>
+</li>
+<li>
+<p><strong>更新及重新構建：</strong></p>
+</li>
+</ol>
+<p><code>cargo update -p rustls</code></p>
+<p>然後重新部署受影響的服務，包括任何嵌入舊版本的靜態二進制文件、container 映像或 vendored artifacts。</p>
+<p>有一點背景值得留意：Rustls 的安全性聲稱涵蓋的是記憶體安全，而非對邏輯或協議層面 bug 的免疫。TLS 是一個複雜且有狀態的協議，記憶體安全的程式碼仍然可能存在驗證及協商方面的缺陷。關鍵在於本次發布安全公告所描述的 bug 類別——而非從 Rustls 一般聲譽中作出的任何假設。</p>
+<p>發布報道本身並未提供各項修復的具體細節；團隊應依賴上述鏈接的安全公告記錄，以獲取逐項問題的權威資訊。</p>
+<p><a href="https://www.phoronix.com/news/Rustls-0.23.46-Released" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
