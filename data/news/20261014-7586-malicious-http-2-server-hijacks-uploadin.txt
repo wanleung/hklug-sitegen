@@ -1,0 +1,42 @@
+Date: 2026-10-14 14:05:00
+Author: HKLUG Team
+Title: Malicious HTTP/2 Server Hijacks Uploading curl Client — Fix Ships in 8.23.0
+Content:
+<p>The curl project shipped 8.23.0 on October 14, 2026, patching a security flaw in its HTTP/2 upload path. What makes the vulnerability notable is not the low-level mechanics but the inverted threat model, according to same-day coverage from The Hacker News: the attacker is not a hostile download source but the <strong>server receiving the upload</strong>. A researcher has demonstrated with a proof of concept that a malicious HTTP/2 server can corrupt the memory of the uploading curl client and progress to remote code execution on the uploading machine.</p>
+<h5>What the bug does</h5>
+<p>Based on the level of detail disclosed so far in The Hacker News report, the problem lies in memory management inside curl/libcurl when handling HTTP/2 uploads: as a client sends data to a server, the peer server can induce memory corruption on the client side. The actual root-cause mechanism has not been published; readers who want to trace it should consult the official curl advisory and the 8.23.0 release notes directly. As of press time, the report does not mention a CVE identifier.</p>
+<p>The patched release is <strong>curl/libcurl 8.23.0</strong>. Builds prior to this version with HTTP/2 uploads enabled fall within the risk envelope. Because libcurl is embedded in source form across a wide range of software, the real list of affected products will not match what a system-level <code>curl</code> package version shows.</p>
+<h5>Real-world exploitability</h5>
+<p>This is not a "one-click remote takeover" vulnerability. Per the report, taking full control of a client requires precise knowledge of the target's build configuration and memory layout — compile options, byte layout, and so on. The curl maintainers are candid about the practical outcome: they expect most real-world attacks to end in a <strong>crash</strong> rather than stable code execution.</p>
+<p>That does not make the bug ignorable. Even a crash-only result is a reliability and security incident for automation pipelines that depend on curl: CI artifacts may be silently truncated, backup or log-shipping flows may enter blind retry loops, and some deployments may suffer sustained outages. For a targeted attacker, a crash can also serve as a probe to fingerprint the victim environment.</p>
+<h5>Who needs to act</h5>
+<p>This vulnerability sits on the side of the attack surface that security tooling watches least. Most organisations apply proxies, file scanning, and reputation checks to download paths, but treat uploads — CI release artifacts, cloud backups, log and telemetry streams, provisioning workflows — as routine outbound traffic, never suspecting the receiving server of being the adversary. Any automation that uses curl/libcurl to upload to an external or third-party endpoint is in scope.</p>
+<p>Recommended order of operations:</p>
+<ol>
+<li><strong>Upgrade to 8.23.0</strong> across all servers, workstations, and build environments.</li>
+<li><strong>Inventory embedded libcurl.</strong> Running <code>curl --version</code> alone is insufficient: libcurl copies vendored inside applications, toolchains, and development frameworks will not appear in the system curl version output. Audit dependency trees and container images individually.</li>
+<li><strong>Check container base images.</strong> curl/libcurl inside official and third-party base images typically lags upstream releases; confirm the package source has been refreshed when rebuilding.</li>
+<li><strong>Interim mitigation if patching is delayed:</strong> restrict upload targets to endpoints you control, and avoid sensitive uploads to third-party HTTP/2 endpoints. Because the vulnerability only triggers when the upload connection negotiates HTTP/2, forcing <code>--http1.1</code> in an emergency is a legitimate stopgap until a full upgrade is complete.</li>
+</ol>
+<p>The timing of this report is itself noteworthy: patch and disclosure landed on the same day, meaning Linux distribution backports are still in flight. Until distro packages catch up, teams that build from source are the only ones able to stop the bleeding immediately.</p>
+<p><strong>Source:</strong> The Hacker News, October 14, 2026.</p>
+<hr>
+<p>curl 專案於 2026 年 10 月 14 日發布 8.23.0，修補一個 HTTP/2 上傳路徑的安全漏洞。根據 The Hacker News 同日的報導，這個漏洞最值得注意的地方並非底層技術細節，而是威脅模型被反轉了：能夠發動攻擊的不是惡意下載來源，而是<strong>接收上傳的伺服器</strong>。研究人員已以概念驗證程式示範，惡意 HTTP/2 伺服器可以破壞上傳端 curl 用戶端的記憶體，並進一步在上傳方的機器上取得遠端程式碼執行能力。</p>
+<h5>漏洞做了什麼</h5>
+<p>依 The Hacker News 目前披露的層級，問題出現在 curl/libcurl 處理 HTTP/2 上傳時的記憶體管理：當用戶端向伺服器傳送資料時，對端伺服器可以誘使用戶端發生記憶體損毀。實際的根本原因機制並未見於該篇報導，有興趣追查的讀者應直接查閱 curl 官方公告與 8.23.0 的發行說明。截至發稿，報導未提及 CVE 編號。</p>
+<p>修補版本為 <strong>curl/libcurl 8.23.0</strong>；在該版本之前、啟用 HTTP/2 上傳功能的建置皆屬風險範圍。由於 libcurl 以原始碼形式被大量嵌入各種軟件，實際受影響的產品清單不會等同於系統層級已安裝的 curl 套件版本。</p>
+<h5>現實世界的可利用性</h5>
+<p>這不是一個「一鍵遠端完全控制」的漏洞。依報導所述，要真正完全控制一台用戶端，攻擊者需要對目標的建置配置與記憶體配置有相當精確的掌握——包括編譯選項、位元組配置等。curl 維護團隊的態度也相當坦白：他們預期真實攻擊在現場更可能以<strong>崩潰告終</strong>，而非穩定的遠端程式碼執行。</p>
+<p>不過這不代表可以忽視。即使是「僅能導致崩潰」的結果，對依賴 curl 的自動化流程仍屬可靠性與保安事故：CI 上傳的產物可能悄悄被截斷而未被察覺、備份或日誌傳輸流程可能進入盲目重試的迴圈，甚至在某些部署情境下形成持續性的服務中斷。對有目標性的攻擊者而言，崩潰也可能只是用來偵測受害者環境特徵的探針。</p>
+<h5>誰需要行動</h5>
+<p>這個漏洞的攻擊面剛好落在保安工具盯得較鬆的一側。多數組織對「下載」路徑有代理伺服器、檔案掃描與信譽評級機制，但對「上傳」——CI 發佈產物、雲端備份、日誌與遙測資料上傳、系統配置流程——通常只視為常規出站流量，很少懷疑接收端伺服器會是攻擊者。任何以 curl/libcurl 向外部或第三方端點執行上傳的自動化工作，都在此次風險範圍內。</p>
+<p>建議的處置順序：</p>
+<ol>
+<li><strong>升級到 8.23.0</strong>，涵蓋所有伺服器、工作站與建置環境。</li>
+<li><strong>盤點內嵌的 libcurl</strong>。只執行 <code>curl --version</code> 是不夠的——應用程式、工具鏈與開發框架內建的 libcurl 副本不會反映在系統 curl 的版本輸出上，需要逐一檢查相依樹與容器映像。</li>
+<li><strong>檢查容器基礎映像（base image）</strong>。官方與第三方基礎映像內的 curl/libcurl 通常滯後於上游發版，重新編譯時確認套件來源已納入修補。</li>
+<li><strong>補丁來不及時的暫時緩解</strong>：將上傳目標限制在組織自行控管的端點，避免對第三方 HTTP/2 端點執行敏感上傳。由於漏洞只有在上傳連線協商為 HTTP/2 時才會觸發，緊急情況下也可以用 <code>--http1.1</code> 強制降級，作為尚未完成升級前的止血手段。</li>
+</ol>
+<p>這則報導的時間點也值得注意——修補與揭露同日發生，代表目前各 Linux 發行版的回移補丁（backport）還在進行中。在發行版套件追上之前，自行掌握建置流程的團隊是唯一能立刻止血的一方。</p>
+<p><strong>來源：</strong> The Hacker News，2026 年 10 月 14 日。</p>
+<p><a href="https://thehackernews.com/2026/10/curl-patches-http2-upload-flaw-after.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
