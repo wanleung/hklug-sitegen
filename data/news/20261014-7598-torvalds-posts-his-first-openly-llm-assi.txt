@@ -1,0 +1,30 @@
+Date: 2026-10-14 15:08:00
+Author: HKLUG Team
+Title: Torvalds posts his first openly LLM-assisted kernel patch series
+Content:
+<p>Linux maintainer Linus Torvalds has posted a ten-patch series to the kernel mailing list, and in doing so has confirmed that it is the first patch series of his that he has publicly stated was developed with assistance from a large language model.</p>
+<p>The disclosure was made at the recently concluded Maintainers Summit, where Torvalds said he had been using an LLM to work on a patch series addressing a long-standing memory-management problem. He has now posted that series for review. It has not been merged.</p>
+<h4>What the patches do</h4>
+<p>The series targets the folio lookup path — code that runs frequently and, in its current form, treats every lookup identically. Torvalds's description, quoted in LWN.net's coverage, is that the ten patches "enhance folio lookup by noticing when folios are hot." The mechanism works by deferring folio release across a grace period: both the lookup path and data accesses then run under RCU, removing the need to take a reference count on the fastpath. In a benchmark dominated by read() calls, the change produced a roughly order-of-magnitude speedup.</p>
+<p>For readers who have not followed the kernel's memory-management refactoring, a folio is an abstraction introduced to replace the older, fragmented handling of pages in the page cache and elsewhere. Rather than reasoning about individual <code>struct page</code> entries, which can represent pieces of a larger compound allocation, code works with a folio: one contiguous, page-sized or multi-page unit with a well-defined lifetime. Converting subsystems to folios has been one of the more sustained cleanup efforts in recent kernel development, and the lookup path for those folios is exactly the kind of hot, frequently exercised code where a small inefficiency gets amplified.</p>
+<h4>Review already found problems</h4>
+<p>The series has been posted for review, and review is doing its job. Respondents on the list have identified a race condition in the proposed changes that will require further work before the series can land. That is a reminder that the series is an early-stage submission, not a settled patch set.</p>
+<h4>The disclosure</h4>
+<p>AI-assisted contributions to open-source projects have been contested terrain, with projects adopting a spread of positions on provenance, licensing obligations for generated code, and whether disclosure is required. Torvalds's approach establishes no new policy, but it does model a practical workflow: disclose the assistance, submit through the ordinary review channel, and let the patch series be judged by the same reviewers, against the same criteria — correctness, style, impact on other subsystems — as any other work.</p>
+<p>The shape of the submission is also worth noting. Ten tightly scoped patches on a single well-defined optimisation is not the profile of a sprawling model-generated dump. Reviewers on the list are evaluating the work on its technical merits, and those merits are being debated in public.</p>
+<h4>Status</h4>
+<p>The series is posted for review and has not been merged; the identified race condition means further revisions are expected. Any landing depends on the outcome of the mailing-list discussion. The full patch thread is publicly readable at <a href="https://lwn.net/ml/all/CAHk-=wjLjgfwgSZ1RDk4YdNFcV0ntosMO5AmBoHD76Zb3HFY7Q@mail.gmail.com">the lkml archive</a>. It is likely to be watched closely — as much for how the community handles the disclosure as for the optimisation itself.</p>
+<hr>
+<p>Linux維護者Linus Torvalds在kernel mailing list上發佈了一個由十個patch組成的系列，並藉此確認這是他首個公開表示曾借助大型語言模型（LLM）開發的patch系列。</p>
+<p>這項披露是在剛結束的Maintainers Summit上作出的，Torvalds在會上表示他一直使用LLM來處理一個針對長期存在的memory management問題的patch系列。他現已將該系列發佈審核，尚未合併。</p>
+<h4>這些patch做了什麼</h4>
+<p>該系列針對的是folio lookup路徑——這是一段頻繁執行的程式碼，現時對每一次lookup都一視同仁。LWN.net報道引用Torvalds的描述，指這十個patch「透過識別folio何時處於熱狀態來強化folio lookup」。其機制是將folio的釋出延後跨越一個grace period：lookup路徑和資料存取隨後均在RCU下運行，無需在fastpath上取得reference count。在一個以read()呼叫為主的基準測試中，該改動帶來了約一個數量級的加速。</p>
+<p>對於沒有追蹤kernel memory management重構工作的讀者，folio是一種引入的抽象概念，用以取代頁面快取（page cache）及其他地方以往零碎的頁面處理方式。程式碼不再逐一處理個別的<code>struct page</code>條目——這些條目可能代表一個較大compound allocation的一部分——而是以folio為單位運作：一個連續的、以頁面為單位或跨多個頁面的單元，並具有明確定義的生命週期。將各個子系統轉換為folio，是近年kernel開發中較為持續的清理工作之一，而這些folio的lookup路徑，正正是那種經常被執行的熱路徑，任何輕微的低效率都會被放大。</p>
+<h4>審核已發現問題</h4>
+<p>該系列已發佈審核，而審核正發揮其作用。mailing list上的回覆者已在建議的改動中識別出一個race condition，在該系列能夠落實之前仍需進一步處理。這提醒我們，該系列是一個早期階段的提交，而非已敲定的patch組合。</p>
+<h4>關於披露</h4>
+<p>人工智能輔助的開源項目貢獻一直存在爭議，各項目就成果來源、生成程式碼的授權責任，以及是否必須披露等問題，採取了不同的立場。Torvalds的做法並未確立任何新政策，但確實樹立了一個實務工作流程的示範：披露所獲協助、透過正常審核渠道提交，並讓patch series由同一批審核者、按照同一套標準——正確性、風格、對其他子系統的影響——按其本身優劣接受評判。</p>
+<p>提交的形式同樣值得一提。十個緊密聚焦於單一界定清晰的優化項目的patch，並非模型生成的一堆龐雜產物應有的面貌。mailing list上的審核者正按其技術優劣評估該工作，而這些優劣正在公開辯論中。</p>
+<h4>目前進展</h4>
+<p>該系列已發佈審核，尚未合併；已識別出的race condition意味著預計仍需進一步修訂。能否最終落實取決於mailing list討論的結果。完整的patch討論串可於<a href="https://lwn.net/ml/all/CAHk-=wjLjgfwgSZ1RDk4YdNFcV0ntosMO5AmBoHD76Zb3HFY7Q@mail.gmail.com">lkml存檔</a>公開閱讀。預料會受到密切關注——無論是社群如何處理這次披露，還是優化本身，同樣引人注目。</p>
+<p><a href="https://lwn.net/Articles/1100449/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
