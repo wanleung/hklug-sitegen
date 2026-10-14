@@ -1,0 +1,50 @@
+Date: 2026-10-14 16:36:00
+Author: HKLUG Team
+Title: Microsoft Fixes Always On VPN Breakage Caused by September Windows Updates — Admins Must Still Roll Back the Temporary Registry Workaround
+Content:
+<h3>Microsoft Fixes Always On VPN Breakage Caused by September Windows Updates — Admins Must Still Roll Back the Temporary Registry Workaround</h3>
+<p>Microsoft has marked the Always On VPN known issue triggered by the September 2026 Windows 11 security updates as "Resolved." The fix shipped as part of the routine October monthly cumulative update through the standard update channel — notably, not via Known Issue Rollback or any other automated remediation mechanism. According to BleepingComputer, affected users found their VPN tunnels unable to function properly after installing the September 2026 security update.</p>
+<p>Microsoft has not publicly disclosed the root cause of the failure or published a definitive list of affected build numbers and corresponding KB identifiers. Administrators should treat Microsoft's Windows release health dashboard as the authoritative source rather than relying on third-party round-ups.</p>
+<h4>Symptom Profile: Looks Fine, Actually Isolated</h4>
+<p>Typical symptoms on affected machines include VPN tunnels that fail to establish, connection processes that stall indefinitely at "Connecting," or established tunnels that drop unexpectedly.</p>
+<p>What makes this incident particularly troublesome for helpdesk teams is its deceptive failure mode: the device's network connection appears healthy, general web browsing works normally, but internal corporate resources reachable only through the VPN — file servers, intranet sites, internal APIs — are, in fact, unreachable. In other words, the fault often stays hidden until an employee leaves the office or switches to an external network, causing first-line troubleshooting to misdiagnose it as a site-specific or application-specific problem.</p>
+<blockquote>
+<p><strong>⚠️ Time-Sensitive Action: Roll Back the Temporary Workaround</strong></p>
+<p>Before the official fix was available, Microsoft had advised administrators to apply a temporary registry workaround. Microsoft now explicitly states that administrators must proactively roll back that registry setting once the latest cumulative update has been successfully deployed. Leaving the workaround in place can interfere with future VPN client connections. This step does not happen automatically with the update — it requires manual intervention.</p>
+</blockquote>
+<h4>Post-Deployment Checklist</h4>
+<p>IT teams should verify the following items after completing deployment:</p>
+<ol>
+<li><strong>Confirm the cumulative update version</strong>: Verify that target devices have the latest monthly cumulative update containing this fix installed, via Windows Update or WSUS / Microsoft Endpoint Manager update history.</li>
+<li><strong>Check for update blockers</strong>: Ensure that update deferrals, pause configurations, or third-party endpoint management tools are not preventing the new cumulative update from reaching clients.</li>
+<li><strong>Roll back the registry workaround</strong>: Remove the temporary registry keys previously set, per Microsoft's guidance, and confirm that client policies have been synchronized.</li>
+<li><strong>Validate VPN connections on real machines</strong>: Test tunnel establishment, long-session stability, and internal resource access across different network environments (office LAN, home network, mobile hotspot).</li>
+<li><strong>Rule out similar root causes</strong>: If sporadic failures persist, diagnose common non-update-related causes first — including certificate expiry, NPS / RADIUS key or configuration mismatches, recent changes to split-tunnel policies, and DNS suffix alterations.</li>
+</ol>
+<h4>Lessons for Hybrid Work Environments</h4>
+<p>Always On VPN is standard equipment for many enterprises running hybrid work models. It establishes tunnels automatically when devices leave the corporate network, letting employees access internal resources without manual steps. Precisely because it is designed to be invisible, its failure strikes productivity directly — and for leanly staffed helpdesk teams, cross-site, cross-network troubleshooting carries a substantial cost.</p>
+<p>This incident once again validates a deployment principle that has proven itself repeatedly: cumulative updates should first be rolled out through a staged pilot ring. Validate core business paths — VPN, proxy, and authentication — on a small cohort of clients before expanding to the full fleet. A few minutes of phased deployment strategy often saves hours of incident response.</p>
+<hr>
+<h3>微軟已修復 9 月 Windows 更新造成的 Always On VPN 連線故障，管理員仍須回復暫時性登錄檔變通做法</h3>
+<p>微軟已將 2026 年 9 月 Windows 11 安全性更新引發的 Always On VPN 已知問題標記為「已解決」。修補內容以 10 月常規月度累積更新的形式透過標準更新管道發佈，值得注意的是，並未採用 Known Issue Rollback 或任何其他自動補救機制。根據 BleepingComputer 的報道，受影響的用戶在安裝 2026 年 9 月安全性更新後，發現 VPN 隧道無法正常運作。</p>
+<p>微軟並未公開故障的根本原因，亦未發佈確切的受影響組建編號與對應 KB 編號清單。管理員應以微軟官方「Windows 版本健康狀況」（Windows release health dashboard）為權威依據，而非依賴第三方整理的資料。</p>
+<h4>故障症狀：看似正常，實則隔絕</h4>
+<p>受影響裝置的典型症狀包括：VPN 隧道無法建立、連線程序長時間停在「連線中」狀態，或已建立的隧道意外中斷。</p>
+<p>這次事故對服務台團隊尤其棘手之處，在於其「欺騙性失效模式」：裝置本身的網絡連線看似健康，一般網頁瀏覽一切正常，但只有透過 VPN 才能存取的企業內部資源——檔案伺服器、內部網站、內部 API——實際上無法到達。換言之，故障往往要等員工離開辦公室或切換至外部網絡後才浮現，令第一線排錯容易誤判為個別站點或個別應用程式的問題。</p>
+<blockquote>
+<p><strong>⚠️ 時效性行動事項：回復暫時性變通做法</strong></p>
+<p>微軟在正式修補推出前，曾建議管理員以暫時性登錄檔（registry）變通做法規避問題。微軟現已明確指出，管理員在確認最新的累積更新已成功部署後，<strong>必須主動回復（回滾）該登錄檔設定</strong>。若放任變通做法殘留，可能影響日後 VPN 用戶端的連線。這一步驟不會隨更新自動完成，需要管理員手動處理。</p>
+</blockquote>
+<h4>部署後檢查清單</h4>
+<p>IT 團隊在完成部署後，應逐項確認以下事項：</p>
+<ol>
+<li><strong>確認累積更新版本</strong>：核對目標裝置已安裝含本次修補的最新月度累積更新，可透過 Windows Update 或 WSUS／Microsoft Endpoint Manager 的更新記錄查看。</li>
+<li><strong>檢查更新封鎖因素</strong>：確認組織的更新延後（deferral）、暫停設定或第三方端點管理工具，沒有阻擋新累積更新推送至用戶端。</li>
+<li><strong>回復登錄檔變通做法</strong>：依微軟指示移除先前設定的暫時性登錄檔鍵值，並確認用戶端策略已同步更新。</li>
+<li><strong>在實機驗證 VPN 連線</strong>：在不同網絡環境（辦公室內網、家用網絡、流動熱點）實測隧道建立、長時間連線穩定性與內部資源存取。</li>
+<li><strong>排除相似成因</strong>：若仍有零星故障，先診斷與本次更新無關的常見原因，包括憑證到期、NPS／RADIUS 金鑰或設定不一致、分割隧道（split-tunnel）政策近期變更，以及 DNS 後綴設定異動。</li>
+</ol>
+<h4>對混合辦公環境的啟示</h4>
+<p>Always On VPN 是不少採用混合辦公模式的企業的標準配備。裝置離開公司網絡時會自動建立隧道，讓員工無需額外手動操作即可存取內部資源。正因為它在設計上「隱形無感」，一旦失效，影響往往直接衝擊生產力；而對編制精簡的服務台團隊而言，跨站點、跨網絡環境的排錯成本相當可觀。</p>
+<p>這次事故再次印證一條屢試不爽的部署原則：累積更新應先透過試驗環（pilot ring）分階段推出，在小組用戶端驗證核心業務路徑——包括 VPN、代理與認證——之後，才擴大至全體部署。數分鐘的分批部署策略，往往可省下數小時的事故應變。</p>
+<p><a href="https://www.bleepingcomputer.com/news/microsoft/microsoft-fixes-vpn-issues-caused-by-september-windows-updates/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
