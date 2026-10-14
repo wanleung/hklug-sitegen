@@ -1,0 +1,61 @@
+Date: 2026-10-14 12:26:00
+Author: HKLUG Team
+Title: Pending Kernel Patches Would Let RISC-V Systems Report Their Own RVA23 Status
+Content:
+<p>```</p>
+<p>Pending Linux kernel patches would let a running system answer a question that has long stumped RISC-V buyers: <em>"Is this machine RVA23 compliant?"</em> — turning a marketing claim into something user-space tooling can verify in one shot.</p>
+<p>The patches are not yet merged into mainline, and the exact user-facing interface could still change before they land. They are a patchset under review, not a shipped feature — but the capability they describe is the kind of plumbing the ecosystem has been missing.</p>
+<p>According to Phoronix, the patches offer a direct way for software to query the kernel about RVA23 profile compliance, instead of the current routine of cross-referencing board datasheets, device-tree strings, and vendor press releases.</p>
+<h4>Why the question matters</h4>
+<p>RVA23 is the latest ratified application profile in RISC-V's specification stack. Where the base ISA defines what instructions exist at all, the RVA profiles define which extensions a general-purpose application processor must actually implement — the goal being that a single RISC-V distribution image, container, or SDK binary can run predictably across vendors instead of fragmenting into per-silicon rebuilds.</p>
+<p>The pressure is not theoretical. Phoronix notes that modern versions of Ubuntu already mandate RVA23, even though shipping hardware that genuinely meets the bar remains quite limited. That gap — distributions requiring a baseline that much of the installed and in-production hardware cannot satisfy — is the real story. Developers targeting RISC-V today effectively have to trust a vendor's compliance statement, and discovering a shortfall usually happens late, when an installer refuses to proceed or a runtime silently degrades.</p>
+<p>A kernel-level self-report changes the economics of that check. Once the running OS can state compliance authoritatively, the question moves from procurement paperwork into automation: installers can gate deployments, CI pipelines can sort build nodes by capability, container runtimes can refuse to schedule onto non-compliant hosts, and inventory systems can audit a whole fleet without touching a datasheet. For a platform whose defining problem is fragmentation, making compliance a machine-readable property is plumbing that matters more than any single feature.</p>
+<h4>Procurement, and the supply-chain angle</h4>
+<p>For system integrators, the practical payoff is that RVA23 compliance becomes a verifiable procurement criterion rather than a checkbox on a quotation form. A buyer can boot a candidate board and confirm the claim directly, which is exactly the kind of due diligence that scales poorly when it depends on engineering time.</p>
+<p>This is not an abstract concern for the Hong Kong and Greater Bay Area context, where embedded and edge hardware is frequently sourced through regional ODM and module-vendor channels and rebranded several times before reaching a deployment. Boards in those supply chains often carry incomplete or optimistic documentation, and a buyer's leverage to demand clarification shrinks as the supply chain lengthens. A self-reporting kernel gives procurement teams an independent, reproducible check that travels with the hardware — useful context for a region that sits between silicon vendors and a dense field of edge deployments in logistics, retail, and industrial automation.</p>
+<blockquote>
+<p><strong>Glossary / 術語對照:</strong> <strong>RVA23</strong> — RISC-V Application Profile 2024 (RVA2024), defining the mandatory extension set for general-purpose application-class RISC-V processors. 中文可譯為「RISC-V 應用剖面 RVA23」，即應用級 RISC-V 處理器必須具備的標準指令擴展組合。</p>
+</blockquote>
+<h4>Caveats</h4>
+<p>Until the patchset merges, the interface — and whether it survives review in its current form — is open to change. Teams should treat this as a capability to plan around, not one to depend on today, and a follow-up when the patches land in a mainline release would be warranted.</p>
+<h4>A familiar precedent</h4>
+<p>None of this is novel in concept. Arm systems have exposed HWCAP and, more recently, HWCAP2 mechanism detection for years, letting glibc and applications select optimal code paths at runtime based on what the CPU actually reports. RISC-V has been slower to reach the equivalent baseline-plus-profile maturity, which is precisely why an RVA23 verdict surfacing from the kernel feels like overdue infrastructure rather than a new idea.</p>
+<p>For developers and sysadmins weighing Arm against RISC-V for edge deployments, the signal is worth noting: the RISC-V ecosystem is starting to build the boring, self-describing plumbing that platforms need before they can be procured and operated at scale.</p>
+<p><em>Source: <a href="https://www.phoronix.com/news/Linux-Answering-RVA23-Question">Phoronix</a>.</em></p>
+<hr>
+<pre><code>
+一批尚未合併的 Linux 核心補丁，將可讓運行中的系統回答一個長期困擾 RISC-V 買家的問題：「這部機器是否符合 RVA23 標準？」——把一項市場宣傳口號，轉化為 user-space 工具可即時驗證的事項。
+
+這批補丁仍未合併至 mainline，實際面向用戶的介面在正式落實前亦可能有所變動。目前它仍處於審核中的 patchset，而非正式推出的功能——但它所描述的能力，正是整個生態系統一直欠缺的基礎建設。
+
+據 Phoronix 報導，補丁提供了一個直接途徑，讓軟件向核心查詢是否符合 RVA23 profile，取代目前需要逐一核對開發板 datasheet、device-tree 字串及廠商新聞稿的繁複程序。
+
+## 為何這個問題如此重要
+
+RVA23 是 RISC-V 規範體系中最新通過批准的 application profile。如果說 base ISA 定義了有哪些指令存在，RVA profile 則定義了一款通用應用處理器實際上必須實裝哪些擴展——其目標是令單一 RISC-V 發行版本、container 或 SDK 二進位檔，可以跨不同廠商可預期地運行，而非碎裂為逐顆晶片重新編譯的局面。
+
+這種壓力並非紙上談兵。Phoronix 指出，現行版本的 Ubuntu 已經要求符合 RVA23，但真正在市面上出貨且達標的硬件仍然十分有限。發行版本要求一項大量現役及已部署硬件無法滿足的最低基線——這才是問題的核心。今日針對 RISC-V 進行開發的人員，實際上只能信任廠商的合規聲明，而發現不符通常為時已晚——可能安裝程序拒絕繼續，或 runtime 悄悄降級運作。
+
+核心層面的自我回報機制，將改變這項檢查的成本結構。一旦運行中的作業系統能夠權威性地聲明合規狀態，這個問題便從採購文件轉入自動化範疇：安裝程序可以據此把關部署，CI pipeline 可以按能力分類 build node，container runtime 可以拒絕調度至不合規的主機，而資產管理系統則毋須查閱 datasheet 即可審核整個機群。對於一個以碎片化為核心難題的平台而言，令合規成為一項機器可讀的屬性，其重要性遠超任何單一功能。
+
+## 採購與供應鏈角度
+
+對系統整合商而言，實際效益在於 RVA23 合規成為一項可驗證的採購準則，而非報價單上的一個剔格。買家可以啟動候選開發板直接確認合規聲明——這正是那種依賴工程師工時、難以規模化執行的盡職調查。
+
+在粵港澳大灣區的脈絡下，這並非抽象的關注。此區的嵌入式及邊緣硬件經常透過區域 ODM 及模組供應商渠道採購，在到達部署點前往往已經多次更換品牌。這些供應鏈上的開發板，文件經常不完整或過於樂觀，而供應鏈越長，買家要求澄清的議價能力就越弱。一個具自我回報能力的核心，為採購團隊提供了一項獨立、可重複驗證、隨硬件同行的檢查——對於一個處於晶片廠商與物流、零售及工業自動化領域密集邊緣部署之間的地區而言，這是一項有用的基礎。
+
+&gt; **Glossary / 術語對照:** **RVA23** — RISC-V Application Profile 2024（RVA2024），定義通用應用級 RISC-V 處理器必須具備的強制擴展組合。中文可譯為「RISC-V 應用剖面 RVA23」，即應用級 RISC-V 處理器必須具備的標準指令擴展組合。
+
+## 注意事項
+
+在 patchset 正式合併前，該介面——以及它能否以現有形式通過審核——仍有變數。團隊應將此視為一項需要預先規劃的能力，而非今日即可依賴的功能，待補丁正式進入某個 mainline 版本後，值得再作跟進。
+
+## 一項熟悉的先例
+
+以上概念在理論上絕非新鮮事。Arm 系統多年來已提供 HWCAP 及較近期的 HWCAP2 機制偵測，讓 glibc 及應用程式在 runtime 根據 CPU 實際回報的資料，選擇最合適的 code path。RISC-V 在追平原有的「基線加 profile」成熟度方面進度較慢——正因如此，由核心輸出 RVA23 判定結果，感覺更像是一項遲來的基礎建設，而非新概念。
+
+對於正在為邊緣部署比較 Arm 與 RISC-V 的開發者及系統管理員而言，這個信號值得注意：RISC-V 生態系統開始構建平台大規模採購及營運維護前所需的那種平凡、自我描述式的基礎建設。
+
+*Source: [Phoronix](https://www.phoronix.com/news/Linux-Answering-RVA23-Question).*
+</code></pre>
+<p><a href="https://www.phoronix.com/news/Linux-Answering-RVA23-Question" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
