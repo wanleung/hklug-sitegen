@@ -1,0 +1,36 @@
+Date: 2026-10-14 12:42:00
+Author: HKLUG Team
+Title: Hirudo Trojan Ships Patched Copies of Real Bank Apps to Neutralise Their Own Defences
+Content:
+<p>A newly documented Android banking trojan is taking an unusual approach to defeating mobile fraud controls. Rather than imitating a bank's interface with a fake overlay, it ships <em>genuine copies of the victim's banking app</em> — with the app's own tamper-detection and integrity checks surgically removed before installation.</p>
+<p>The malware, dubbed <strong>Hirudo</strong>, was detailed by Dutch mobile security firm ThreatFabric, according to reporting published by The Hacker News in October. ThreatFabric said it identified patched replacements targeting eight Indonesian banking applications. The campaign is geographically narrow so far, but the core technique is easily portable to other markets and other financial apps.</p>
+<h4>How Hirudo inverts the trust model</h4>
+<p>Previous generations of Android banking malware have relied on deception: pixel-perfect overlay screens drawn on top of legitimate apps, abusive accessibility-service permissions to read on-screen content, or interception of one-time passwords via SMS. All of them share a common weakness — the counterfeit has to be convincing enough to fool a user who might, at any moment, notice something is off.</p>
+<p>Hirudo sidesteps that problem entirely. The interface the victim sees <em>is</em> the real interface, running the real code, with the bank's logo, layout, and flows intact. What has been altered is the app's internal self-defence: the integrity checks that would normally detect a modified binary, an unusual signing certificate, or a rooted device have been patched out of the APK before it ever reaches the handset. Victim trust is not mimicked — it is inherited, from the genuine article, quietly hollowed out.</p>
+<p>That distinction matters, because it exposes an uncomfortable truth about in-app security controls. Integrity and anti-tamper mechanisms compiled into an application are, by construction, advisory: they live inside the very artefact an attacker can rebuild offline. Once tampering happens pre-installation — before the app is signed and run — an attacker who neutralises those checks faces no resistance from the app itself. Durable trust has to be anchored outside the binary, in app provenance, store verification, device-level enforcement, or server-side attestation.</p>
+<h4>Sideloading is the single point of failure</h4>
+<p>The entire scheme depends on one precondition: the victim installing an APK from somewhere other than an official channel. Any prompt promising a "new version" or a "security update" delivered via WhatsApp, Telegram, SMS, or a browser download is, in this campaign, hostile by default.</p>
+<p>For individual users, the guidance is straightforward — install banking applications only from Google Play or the bank's own website, and treat any alternate-source update prompt with suspicion, regardless of how urgent it appears.</p>
+<h4>Hardening the corporate fleet</h4>
+<p>For Hong Kong organisations managing corporate-issued Android devices, this story is best read as forward-looking hardening guidance rather than an indicator of a live local incident. The low-cost control that directly addresses Hirudo's delivery model is a mobile device management (MDM) policy blocking sideloading and installs from unknown sources, with staff briefed that banking-app "updates" arriving through messaging apps should be reported through a defined channel rather than tapped.</p>
+<p>Enterprises should also note that an attacker with a foothold on a staff device gains not just the banking app's capabilities but, potentially, whatever corporate resources that device can reach — making the sideloading prohibition a network-control question as much as a personal-fraud one.</p>
+<h4>What app developers can and cannot do</h4>
+<p>For developers, Hirudo is a reminder to harden integrity checks against static patching — root and emulator detection, certificate pinning, server-side attestation where available. But the honest caveat is that no in-app mechanism fully defeats a determined attacker who can rebuild the binary offline. App-level protections raise the cost of attack; they do not close it. The durable defence is a combination of store-level verification, device-level policy, and server-side signals that treat a legitimate-looking client with an invalid attestation as suspect.</p>
+<p>ThreatFabric's findings were reported by The Hacker News on 14 October; the specific disclosure date of the underlying research has not been independently confirmed in this article.</p>
+<hr>
+<p>一款新近被記錄在案的 Android 銀行木馬，正採用一種不尋常的手法來規避流動裝置的詐騙防禦機制。它並非以假造的覆蓋介面去模仿銀行界面，而是直接附帶<em>受害者所使用銀行應用程式的真實副本</em>——只不過在安裝之前，該應用程式自身的防竄改機制及完整性檢查已被精準地移除。</p>
+<p>荷蘭流動保安公司 ThreatFabric 詳細披露了這款名為 <strong>Hirudo</strong> 的惡意軟件，有關報道由 The Hacker News 於十月刊出。ThreatFabric 表示，他們識別出針對八款印尼銀行應用程式的經修改替代版本。截至目前，此攻擊行動的影響範圍仍局限於特定地區，但其核心技術極易移植至其他市場及其他金融類應用程式。</p>
+<h4>Hirudo 如何顛覆信任模式</h4>
+<p>以往數代 Android 銀行惡意軟件均倚賴欺騙手法：在合法應用程式之上繪製像素級精準的假覆蓋畫面、濫用無障礙服務權限以讀取螢幕內容，或透過 SMS 攔截一次性密碼。它們都有一個共同弱點——贗品必須逼真到足以瞞過隨時可能察覺異樣的用戶。</p>
+<p>Hirudo 完全繞過了這個問題。受害者看到的介面<em>就是</em>真正運行原有程式碼的介面，銀行標誌、版面佈局及操作流程一應俱全。被改動的只是應用程式內部的自我防禦機制：那些本來會偵測到經修改的執行檔、異常的簽署證書或已取得 root 權限裝置的完整性檢查，在 APK 到達手機之前就已被剔除。受害者的信任並非被模仿——而是被承襲自貨真價實的原件，再被悄然掏空。</p>
+<p>這個區別至關重要，因為它揭露了一個令人不安的事實：編譯進應用程式內部的保安控制機制，就其本質而言，僅屬建議性質——它們寄居於攻擊者可以離線重建的同一個程式檔案之內。一旦竄改行為在安裝之前發生——即應用程式簽署及執行之前——消除了這些檢查的攻擊者便不會遭遇應用程式本身的任何阻力。穩固的信任錨點必須建立於執行檔之外，例如應用程式來源、商店驗證、裝置層面的強制執行，或伺服器端的證明機制。</p>
+<h4>側載（sideloading）是唯一的失守環節</h4>
+<p>整個攻擊計劃取決於一個前提：受害者從官方渠道以外的途徑安裝 APK。在此行動中，任何透過 WhatsApp、Telegram、SMS 或瀏覽器下載而來、聲稱提供「新版本」或「保安更新」的提示，一律應被視為敵意行為。</p>
+<p>對於個別用戶而言，應對指引相當直接——只從 Google Play 或銀行官方網站安裝銀行應用程式，並對任何來自替代來源的更新提示抱持懷疑，不論其表面上看來有多急切。</p>
+<h4>加固企業流動裝置管理</h4>
+<p>對於管理公司發放 Android 裝置的香港機構而言，這則新聞最好被理解為前瞻性的加固指引，而非本港已發生實際事件的徵兆。直接針對 Hirudo 傳播模式的低成本控制措施，是實施流動裝置管理（MDM）政策，禁止側載及由未知來源安裝應用程式，同時向員工明確交代：透過即時通訊應用程式傳來的銀行應用程式「更新」，應透過指定渠道舉報，切勿直接點擊安裝。</p>
+<p>企業亦應留意，攻擊者一旦在員工裝置上站穩腳跟，取得的不僅是銀行應用程式的功能，更可能包括該裝置所能連接的一切企業資源——因此，禁止側載既是個人防詐騙的問題，同樣也是網絡保安政策的問題。</p>
+<h4>應用程式開發者能做與不能做的事</h4>
+<p>對開發者而言，Hirudo 是一個提醒：必須加強完整性檢查，以抵禦靜態修改，包括 root 及模擬器偵測、certificate pinning，以及在可行情況下採用伺服器端證明機制。但必須坦承的是，任何應用程式內部機制都無法徹底擊敗一個能夠離線重建執行檔的頑固攻擊者。應用程式層面的防護措施可以提高攻擊成本，卻無法將之杜絕。穩固的防禦之道，是結合商店層面的驗證、裝置層面的政策，以及伺服器端的信號判斷——將證明無效但外觀看似合法的用戶端視為可疑對象。</p>
+<p>ThreatFabric 的研究結果由 The Hacker News 於十月十四日報道；有關基礎研究的具體披露日期，本文未經獨立確認。</p>
+<p><a href="https://thehackernews.com/2026/10/hirudo-android-trojan-uses-patched.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
