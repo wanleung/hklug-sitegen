@@ -1,0 +1,38 @@
+Date: 2026-10-15 15:25:00
+Author: HKLUG Team
+Title: AI Agents Are Starting to Grind Through Linux's Most Tedious Hardware Reverse Engineering
+Content:
+<p>Picture the job: you have a firmware dump from an embedded controller that manages battery charging and keyboard backlighting on a laptop with no public documentation. The vendor shipped a Windows driver and nothing else — no datasheet, no register map, no support contact that answers. Now you need to turn 64 kilobytes of machine code into a Linux driver.</p>
+<p>The tedious half of that work — renaming cryptic symbols in a disassembler, cross-referencing repeated byte patterns to guess at I²C register writes, diffing two firmware dumps to isolate what changed between hardware revisions — is exactly the sort of mechanical, high-volume analysis that large language model agents have begun handling with surprising competence, according to a report from Phoronix. The tool in question was Claude Code, though the specific vendor matters less than the workflow: an agent that can be pointed at a disassembly listing, a set of protocol traces, and a pile of mailing-list threads, and then asked to produce annotated output rather than to invent a driver from scratch.</p>
+<h5>The bottleneck was never the idea</h5>
+<p>Linux hardware support has never really been limited by developers' willingness to write code. It is limited by the archaeology that precedes the code. Countless devices — USB card readers, power-management ICs, sensor hubs, fingerprint scanners — sit unsupported because someone has to spend weeks establishing what the silicon actually does before a single line of the driver can be written. Vendors consider a Windows driver sufficient; the Linux community is left to infer behaviour from observation.</p>
+<p>That inference work is unevenly distributed. A few hours of it is an interesting puzzle. Forty hours of it, on a device whose datasheet will never exist, is why peripheral support lags years behind retail availability.</p>
+<h5>Where the agents actually help</h5>
+<p>According to the Phoronix account, the payoff is largest in tasks that are repetitive but demand sustained attention: annotating disassembly, generating hypotheses about register interfaces from repeated access patterns, producing boilerplate for I²C or USB binding code, and summarising long technical threads so a human can find the relevant post without reading all of them.</p>
+<p>The useful framing is that an agent compresses the mechanical majority of the work rather than replacing the engineer. A reverse engineer who previously spent a day labelling functions in a dump can now review machine-generated labels in an afternoon and spend the reclaimed time on the questions that actually require judgement.</p>
+<h5>The part AI does not do</h5>
+<p>Correctness is the story's real risk, and it deserves more attention than the demos get. An LLM asked to infer a register map from a firmware dump will produce a plausible register map — plausible being the operative word. If the agent hallucinates an address, or misreads a byte order, downstream consequences can include corrupted EEPROM writes, bricked controllers, or a driver that appears to work until it silently corrupts data. Human review is not optional in this workflow; it is the entire safety mechanism.</p>
+<p>Beyond that, the judgement-critical steps remain stubbornly manual: deciding what is safe to probe on live hardware, building the physical test rig, and evaluating whether a proposed write could destroy attached firmware. These are physical-world risks that no amount of code generation addresses.</p>
+<h5>The open-source angle</h5>
+<p>There is a quieter benefit worth noting. Reverse engineering has always had a knowledge-retention problem: the reasoning behind a driver lives in decade-old mailing-list archives that nobody reads, and when the original author moves on, the understanding evaporates. When intermediate artefacts — annotated disassembly, protocol notes, even documented failed hypotheses — are cheap enough to produce, they are more likely to be committed alongside the driver itself. Tribal knowledge becomes repository knowledge.</p>
+<h5>What to expect</h5>
+<p>No one in this space is claiming AI-written drivers are imminent, and vendors remain unlikely to open documentation just because a model can now guess at it more efficiently. The signal to watch for is mundane: a patch landing for a device that previously wasn't worth the reverse-engineering hours. That, not any headline about autonomous coding, is where this trend will actually show up in the kernel.</p>
+<p><strong>A closing editorial note, not a claim from the source:</strong> for contributors here in Hong Kong, the practical upshot is the same as we see elsewhere — less of the mechanical slog, more time for testing, review, and the judgement work that machines still cannot be trusted with. The tools lower the cost of starting; they do not lower the standard of finishing.</p>
+<hr>
+<p>試想像一下這份工作：你手上有一個 firmware dump，來自一款負責手提電腦電池充電及鍵盤背光的 embedded controller，而該產品完全沒有公開文件。原廠只提供了一個 Windows driver，此外別無他物——沒有 datasheet、沒有 register map、亦沒有任何會回覆的技術支援聯絡人。現在，你要把 64 KB 的機器碼變成一個 Linux driver。</p>
+<p>這份工作中最枯燥的那部分——在 disassembler 中為晦澀的 symbol 重新命名、交叉比對重複的 byte pattern 以推斷 I²C register 寫入操作、diff 兩個 firmware dump 以隔離不同硬件 revision 之間的差異——正正是大型語言模型 agent 開始以令人意外的勝任程度處理的那種機械化、高通量分析工作。根據 Phoronix 的報導，當時使用的工具是 Claude Code，不過具體是哪家廠商的產品遠不如整個 workflow 本身重要：一個 agent 可以被指向一份 disassembly listing、一組 protocol trace，以及一堆郵件論壇的討論串，然後要求它產出帶有 annotations 的輸出，而非從零開始虛構一個 driver。</p>
+<h5>瓶頸從來不是想法</h5>
+<p>Linux 硬件支持的限制，從來都不在於開發者是否願意寫 code。真正的限制在於寫 code 之前的「考古」工作。無數設備——讀卡器、power management IC、sensor hub、fingerprint scanner——至今仍未獲支持，原因是必須有人花上數星期弄清楚晶片實際上如何運作，才能寫出 driver 的第一行 code。廠商認為提供一個 Windows driver 已足夠；Linux 社群就只能靠觀察來推斷設備的行為。</p>
+<p>而這種推斷工作的 distribution 並不平均。花幾個小時做，是一個有趣的謎題。花四十個小時做，而且對象是一份永遠不會存在的 datasheet 的設備——這正是外圍設備的支持往往落後零售上市好幾年的原因。</p>
+<h5>Agent 實際上有何幫助</h5>
+<p>根據 Phoronix 的報導，收益最大的是那些重複性高但需要持續專注的任務：為 disassembly 加上 annotations、從重複的存取 pattern 中生成關於 register interface 的假設、為 I²C 或 USB binding code 生成 boilerplate，以及總結冗長的技術討論串，讓人類可以不必逐一閱讀便找到相關的貼文。</p>
+<p>一個有用的框架是：agent 壓縮的是工作中佔大多數的機械化部分，而非取代工程師。過往需要花一整天為 dump 中的函數逐一命名的逆向工程師，現在只需用一個下午審閱機器生成的 labels，然後把省下來的時間用於真正需要判斷力的問題上。</p>
+<h5>AI 無法承擔的部分</h5>
+<p>正確性才是這則報導真正的風險所在，值得比那些 demo 更多的關注。要求一個 LLM 從 firmware dump 推斷 register map，它會產出一份看似合理的 register map——「看似合理」正是關鍵字。如果 agent 幻想出一個錯誤的地址，或讀錯 byte order，隨後可能引致的後果包括：EEPROM 寫入損壞、controller 直接報廢，或者一個表面上運作正常但其實正在悄悄損壞資料的 driver。在這個 workflow 中，人類審閱並非可有可無——它是整個安全機制本身。</p>
+<p>除此之外，那些最需要判斷力的步驟仍然難以擺脫手工操作：決定在 live hardware 上探測什麼是安全的、搭建實體測試平台，以及評估某個建議的寫入操作是否有可能摧毀附載的 firmware。這些都是實體世界中的風險，再多的 code generation 都無法解決。</p>
+<h5>Open source 的角度</h5>
+<p>還有一個較為低調、但值得一提的好處。逆向工程一直存在知識流失的問題：驅動程式背後的推理過程散落在十幾年前的郵件論壇存檔中，根本沒有人會看，而當原作者離開之後，相關的理解便隨之蒸發。當中間產物——帶 annotations 的 disassembly、protocol 筆記、甚至是有記錄在案的失敗假設——的製作成本夠低時，它們就更有可能與 driver 本身一併 commit 入庫。靠口耳相傳的 tribal knowledge 得以轉化為 repository 中的知識。</p>
+<h5>可以有何期望</h5>
+<p>這個領域中，沒有人聲稱 AI 編寫 driver 的時代即將來臨，廠商亦不太可能僅僅因為某個模型現在可以更有效地猜測其內容，就開放技術文件。值得留意的信號其實平淡無奇：某個此前不值得投入逆向工程工時的設備，終於有 patch 被合入。那才是這個趨勢真正會在 kernel 中顯現的地方——而非任何關於自主編程的頭條新聞。</p>
+<p>**以下是編輯按語，並非源自原文的報道內容：**對於身在香港的貢獻者來說，實際意義與我們在其他地方所見的無異——減少機械化的苦工，騰出更多時間用於測試、review，以及那些仍然不能信任機器代勞的判斷性工作。這些工具降低了起步的成本，但不會降低完成的標準。</p>
+<p><a href="https://www.phoronix.com/news/AI-Reverse-Engineer-Linux-HW" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
