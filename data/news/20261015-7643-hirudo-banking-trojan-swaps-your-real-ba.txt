@@ -1,0 +1,44 @@
+Date: 2026-10-15 07:24:00
+Author: HKLUG Team
+Title: Hirudo Banking Trojan Swaps Your Real Banking App for a Fake One
+Content:
+<p>A new Android banking trojan named <strong>Hirudo</strong> is taking a markedly different route to defeating mobile banking defences: rather than layering a fraudulent login screen over the legitimate application, it removes the genuine app outright and swaps in a trojanised replica that harvests credentials and sidesteps security checks.</p>
+<p>The technique was detailed by ThreatFabric researchers in reporting covered by Security Affairs. The findings matter because they represent a structural shift in how banking malware interacts with the device — and they raise questions about what endpoint and behavioural defences can realistically detect once the trusted application itself is gone.</p>
+<h4>How the substitution works</h4>
+<p>Instead of the classic overlay approach — where malware draws a fake window on top of a running banking app — Hirudo's chain effectively asks the user to participate in their own compromise:</p>
+<ul>
+<li>The victim is socially engineered into sideloading a malicious APK, often disguised as a legitimate or updated application.</li>
+<li>The malware identifies installed banking applications on the device and triggers their uninstallation.</li>
+<li>A trojanised clone, visually and functionally near-identical to the original, is installed in its place.</li>
+<li>Credentials entered into the fake app are captured, alongside whatever account data the replica can access, enabling downstream financial fraud.</li>
+</ul>
+<p>The elegance — and the danger — of this model is that there is no overlay anomaly to flag. Overlay-based detection, one of the more reliable heuristics in the Android banking-malware toolkit, is rendered structurally irrelevant. The fake interface <em>is</em> the application the user sees; there is no second layer for security software to compare against.</p>
+<h4>Why defences struggle</h4>
+<p>Traditional integrity checks and overlay alerts assume a genuine application persists somewhere underneath the deception. Hirudo breaks that assumption. Detection now depends on behavioural analytics keyed to the genuine application's package signature and on integrity checks that recognise an unexpected replacement — a harder problem when the user themselves consented to the install.</p>
+<p>That consent boundary is the crux. An attacker operating inside a trust relationship the user established deliberately — an APK they chose to install, from a source they chose to trust — is far harder for heuristics to distinguish from legitimate activity than a silently injected overlay.</p>
+<h4>Guidance for users and enterprises</h4>
+<p>The following guidance is editorial context added by this newsroom, not part of the ThreatFabric report.</p>
+<p>For individual users in Hong Kong, where mobile banking is near-universal, the practical advice is conventional but worth restating: install banking applications only from Google Play, keep Play Protect enabled, and treat any prompt to reinstall or "update" a banking app outside the official store as hostile. Users who suspect compromise can report incidents through regional cybercrime reporting portals such as CyberDefender in Hong Kong, and can consult HKCERT advisories for general mobile-security guidance.</p>
+<p>For enterprises, the emphasis should be on device-level controls: restricting sideloading through managed device policies, monitoring for unexpected uninstall/install pairs targeting known banking package names, and flagging accessibility-service abuse — a common enabler for this class of trojan. Application-integrity monitoring that verifies package signatures at runtime, rather than merely checking for overlays, is increasingly the relevant control.</p>
+<p>Hirudo has not, to date, been tied to any documented incident in Hong Kong; readers should treat it as an emerging threat pattern rather than a confirmed local event. But as banking trojans go, its lesson is uncomfortable: the weakest link is no longer a technical bypass, but the trust a user places in an app they installed themselves.</p>
+<hr>
+<p>一款名為 <strong>Hirudo</strong> 的新型 Android 銀行木馬，採取了截然不同的手法來突破流動銀行防禦：它並非在正規應用程式之上覆蓋假的登入畫面，而是直接移除真正的應用程式，再安裝一個經木馬化的仿製版本，以蒐集登入憑證並繞過安全檢查。</p>
+<p>此技術由 ThreatFabric 研究人員詳細揭露，並經 Security Affairs 報道。該發現的重要性在於，它代表了銀行惡意軟件與裝置互動方式的結構性轉變——同時引發一個疑問：一旦受信任的應用程式本身不復存在，endpoint 防禦及行為分析實際上還能偵測到什麼。</p>
+<h4>替換如何運作</h4>
+<p>Hirudo 的攻擊鏈並非採用傳統的 overlay 手法——即惡意軟件在運行中的銀行應用程式之上繪製假視窗——而是要求用戶親自參與自己的系統被入侵的過程：</p>
+<ul>
+<li>受害者遭社交工程手法誘使 sideload 一個惡意 APK，該 APK 通常偽裝成正規或更新版本的應用程式。</li>
+<li>惡意軟件識別裝置上已安裝的銀行應用程式，並觸發其卸載程序。</li>
+<li>一個在外觀及功能上與原版幾乎完全相同的木馬化仿製版本隨即取而代之。</li>
+<li>輸入假應用程式的登入憑證會被擷取，連同仿製版本能存取到的帳戶資料一併外洩，從而促成後續的金融詐騙。</li>
+</ul>
+<p>此模式的「巧妙」之處——亦是其危險所在——在於並沒有任何 overlay 異常可供標記。overlay 偵測一直是 Android 銀行惡意軟件防範工具中最可靠的 heuristic 之一，如今卻在結構上變得無關重要。假的介面<em>就是</em>用戶所見的應用程式；安全軟件再也沒有第二層畫面可供比對。</p>
+<h4>為何防禦難以奏效</h4>
+<p>傳統的完整性檢查及 overlay 警報，都假設在欺騙之下仍有真正的應用程式存在。Hirudo 打破了這個假設。現時的偵測須依賴以真正應用程式的 package signature 為基礎的行為分析，以及能夠識別出意外替換的完整性檢查——當用戶本身已同意安裝時，這是一個更難解決的問題。</p>
+<p>同意的界線正是關鍵所在。攻擊者在用戶主動建立的信任關係內行動——由用戶自己選擇安裝的 APK、來自用戶自己選擇信任的來源——heuristic 難以將此與合法活動區分開來，遠比偵測靜默注入的 overlay 困難。</p>
+<h4>對用戶及企業的建議</h4>
+<p>以下建議屬本報編輯部補充的資料，並非 ThreatFabric 報告的一部分。</p>
+<p>對於香港的個人用戶而言，流動銀行幾乎已全面普及，實用建議雖屬老生常談，但仍值得重申：只從 Google Play 安裝銀行應用程式，保持 Play Protect 啟用，並將任何要求在官方商店以外重新安裝或「更新」銀行應用程式的提示視為惡意行為。懷疑自己遭到入侵的用戶，可透過香港 CyberDefender 等區域網絡罪行舉報平台報告事件，亦可參閱 HKCERT 的通告以獲取一般流動安全指引。</p>
+<p>對企業而言，重點應放在裝置層面的管控：透過受管理的裝置政策限制 sideloading、監察針對已知銀行 package name 的異常卸載及安裝配對，並對無障礙服務（accessibility service）的濫用發出警報——這是此類木馬常見的協助途徑。在執行階段驗證 package signature 的應用程式完整性監控，而不僅是檢查 overlay，已日益成為相關的關鍵管控措施。</p>
+<p>截至現時為止，Hirudo 並未與香港任何有記錄的事件掛鉤；讀者宜將其視為一個新興的威脅模式，而非已確認的本地事件。但就銀行木馬而言，它帶來的教訓令人不安：最弱的一環已不再是技術上的繞過，而是用戶對自己親手安裝的應用程式所寄予的信任。</p>
+<p><a href="https://securityaffairs.com/200970/malware/hirudo-android-trojan-replaces-banking-apps-to-steal-credentials.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
