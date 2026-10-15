@@ -1,0 +1,64 @@
+Date: 2026-10-15
+Author: HKLUG Team
+Title: When Agents Outpace Reviewers: Addy Osmani's Case for Layered Quality Gates on AI-Generated Code
+Content:
+<p>The familiar ritual of code review — a human reading a colleague's diff and judging whether it is clean, fast, understandable and well tested — was never designed for the volume that AI coding agents can now produce. That is the central argument of a widely discussed essay by Addy Osmani, originally published on his Elevate blog and republished by O'Reilly Radar with his permission.</p>
+<p>Osmani's point is not that agents write bad code, but that the human-review model does not scale against them. An agent can open a dozen substantial pull requests before lunch; a reviewer cannot absorb, reason about and safely approve them at that rate. Treating review as the primary quality control mechanism, he argues, means the process quietly becomes a rubber stamp — or a bottleneck.</p>
+<h4>From reading everything to specifying and validating</h4>
+<p>The proposed answer is a shift in what developers actually do. Instead of manually reading every line an agent produces, engineers move upstream: they specify intent more precisely, and downstream: they validate output with automated machinery. Human attention gets reserved for the calls that genuinely require judgement — architecture, security trade-offs, product semantics, and anything touching a trust boundary.</p>
+<p>Practically, this means treating agent-generated code much the way security teams treat untrusted input: with a layered set of gates that must all pass before anything reaches production.</p>
+<p>Drawing on that framing, several layered checks recur in current practice:</p>
+<ol>
+<li><strong>Static analysis and linting</strong> run automatically on every agent-authored diff, catching style drift, suspicious patterns and dead code before a human ever looks.</li>
+<li><strong>Automated testing</strong> — unit, integration and regression suites — executed against agent changes, with coverage thresholds that fail the pipeline rather than merely warn.</li>
+<li><strong>Independent AI review</strong>, where a separate model or agent critiques the diff specifically for correctness, security and consistency with existing conventions. This is advisory, not authoritative, but it catches the class of errors a tired human might skim past.</li>
+<li><strong>Human review for judgement calls</strong>, focused on design decisions and risk rather than syntax — the part of review that does not scale down when volume goes up.</li>
+</ol>
+<p>The last gate is the one most teams get wrong. The reviewer's role is not eliminated; it is rewritten. The question shifts from "is this code correct line by line?" to "is this the right thing to build, and does it belong here?"</p>
+<h4>What this means for teams in Hong Kong</h4>
+<p>For development teams weighing how far to push agent-assisted workflows, the practical takeaway is to invest in layered quality gates before increasing agent throughput. That means codifying conventions in linters and templates, keeping test suites trustworthy enough that agent changes are actually exercised, and deciding explicitly which categories of change always require human sign-off.</p>
+<p>It also means being honest about incentives. If the metric that matters is speed of merged pull requests, teams will merge whatever clears the lowest bar. If the metric is verified, reviewable change, the gates described above become the fastest path rather than a tax on it.</p>
+<h4>Provenance and the audit question in regulated firms</h4>
+<p>For institutions supervised by the Hong Kong Monetary Authority (HKMA) or the Insurance Authority (IA), agent-generated code adds a documentation question on top of the engineering one: if a model authored a change that later fails, who approved it, against what specification, and how can that be evidenced afterwards?</p>
+<p>The framing that seems most useful is to treat agent-code labelling as both an engineering tool and a compliance artifact. Labelling a change as agent-generated — via commit metadata, pull-request tags or pipeline records — gives reviewers a signal about how much scrutiny to apply, while simultaneously producing a trace that can be produced during an audit or post-incident review. The source essay does not address regulation; this is our own analysis for readers in supervised firms.</p>
+<p>A short checklist worth adopting:</p>
+<ul>
+<li><strong>Provenance:</strong> every agent-authored change carries a machine-readable marker identifying the originating agent or tool and the prompt or specification behind it.</li>
+<li><strong>Approver identity:</strong> the pipeline records which human approved the change, and at which gate.</li>
+<li><strong>Specification retention:</strong> the original intent or task description is stored alongside the diff, so the "what was asked" can be compared against "what shipped."</li>
+<li><strong>Retention and access:</strong> agent activity logs are retained on the same terms as other change-management records, with access controlled.</li>
+<li><strong>Segregation of duties:</strong> no single agent both writes and approves a change that touches a critical system.</li>
+</ul>
+<p>None of this requires new technology. It requires deciding, before adoption scales, that AI-generated code is treated as any untrusted input: specified carefully, validated mechanically, approved by a named human, and recorded so the reasoning survives the sprint.</p>
+<p>Addy Osmani's essay is republished at https://www.oreilly.com/radar/agentic-code-quality/ and originally appeared on his Elevate blog. Commentary above on gate design and regulated-sector practice is HKLUG's own.</p>
+<hr>
+<p>代碼審查（code review）這套人所共知的流程——由人類閱讀同事的 diff，判斷其是否簡潔、高效、易於理解及測試充分——從來就不是為 AI 編程 agent 現在所能產生的龐大產量而設計的。這正是 Addy Osmani 一篇備受討論的文章的核心論點。該文最初發表於其個人 Elevate blog，其後經作者授權由 O'Reilly Radar 轉載。</p>
+<p>Osmani 的論點並非 agent 寫出的代碼質素欠佳，而是以人類為主的審查模式根本無法配合 agent 的產量。一個 agent 可以在午飯前提交十數個具份量的 pull request；審查者根本無法以此速度吸收、分析並安全地核准這些變更。他認為，若仍將人工審查視為首要的品質控制機制，整個流程便會悄然淪為橡皮圖章，或成為瓶頸。</p>
+<h4>由逐行閱讀轉向規格界定與驗證</h4>
+<p>他提出的答案，是改變開發者實際工作的方式。工程師不再逐一閱讀 agent 產出的每一行代碼，而是向上游（upstream）推進——更精確地界定意圖（specify intent）；向下游（downstream）推進——以自動化機制驗證輸出。人類的注意力則預留給真正需要判斷的部分：架構、安全取捨、產品語義，以及任何涉及 trust boundary 的範疇。</p>
+<p>實際而言，這意味著處理 agent 生成的代碼，應如同安全團隊處理不可信輸入（untrusted input）般：以一層又一層的關卡（gates）把關，全部通過後才可進入 production。</p>
+<p>沿用這個框架，現行實踐中常見以下分層檢查：</p>
+<ol>
+<li><strong>靜態分析（static analysis）與 linting</strong>：對每一個 agent 產生的 diff 自動執行，在任何人查看之前，先捕捉風格偏差、可疑 pattern 及 dead code。</li>
+<li><strong>自動化測試</strong>：針對 agent 的變更執行 unit、integration 及 regression test suites，並設定 coverage threshold，未達標即令 pipeline 失敗，而非僅發出警告。</li>
+<li><strong>獨立 AI 審查（independent AI review）</strong>：由另一個 model 或 agent 就正確性、安全性及與既有 conventions 的一致性對 diff 作針對性批評。此環節屬建議性質而非具權威性，但能捕捉疲累的人類可能草草略過的錯誤類別。</li>
+<li><strong>涉及判斷的人類審查</strong>：聚焦於設計決策與風險而非語法——這是審查中不會因產量增加而可相應縮減的部分。</li>
+</ol>
+<p>最後一道關卡正是多數團隊處理不當之處。審查者的角色並未被消除，而是被改寫。問題由「這段代碼逐行是否正確？」轉變為「這是否是正確的東西去建構？它是否應屬於這裡？」</p>
+<h4>對香港團隊的啟示</h4>
+<p>對於正在衡量 agent 輔助工作流應推行至何種程度的開發團隊，務實的結論是：應先投資建立分層品質關卡，然後才增加 agent 的 throughput。這包括將 conventions 固化於 linters 與 templates 之中、確保 test suites 足夠可信以令 agent 的變更真正受到測試，以及明確界定哪些類別的變更必須經人類簽署批准。</p>
+<p>同時亦需正視 incentives 的問題。若團隊重視的指標是 pull request 合併速度，團隊便會合併一切通過最低門檻的東西。若指標是經驗證、可審查的變更，上述關卡便會成為最快捷的路徑，而非額外成本。</p>
+<h4>監管機構的溯源與審計問題</h4>
+<p>對於受香港金管局（HKMA）或保監局（IA）監管的機構而言，agent 生成的代碼在工程問題之上再添一重文件問題：若某項變更由 model 產生而日後失效，是誰、依據哪一份規格核准了它？事後又如何舉證？</p>
+<p>看來最實用的框架，是將 agent 代碼標記（labelling）同時視為工程工具與合規文件。透過 commit metadata、pull-request tags 或 pipeline records 標示某項變更為 agent 生成，既為審查者提供應施加何種程度審查的訊號，同時產生可在審計或事故後覆檢時提交的 trace。原文並未論及監管事宜；以上為本會針對受監管機構讀者所作的自行分析。</p>
+<p>一份值得採用的簡短 checklist：</p>
+<ul>
+<li><strong>溯源（Provenance）</strong>：每項 agent 產生的變更均附有機器可讀的標記，識別所屬 agent 或工具，以及其背後的 prompt 或 spec。</li>
+<li><strong>核准人身份（Approver identity）</strong>：pipeline 記錄哪一位人類、在哪一道關卡核准了變更。</li>
+<li><strong>規格留存（Specification retention）</strong>：原始意圖或任務描述與 diff 一併保存，使「最初要求了什麼」可與「最終交付了什麼」互相對照。</li>
+<li><strong>留存與存取（Retention and access）</strong>：agent 活動日誌按與其他變更管理記錄相同的條件留存，並設有存取控制。</li>
+<li><strong>職責分隔（Segregation of duties）</strong>：不允許任何單一 agent 同時編寫並自行核准觸及關鍵系統的變更。</li>
+</ul>
+<p>以上均無需新技術。需要的是在採用規模化之前作出決定：AI 生成的代碼應如同任何不可信輸入般處理——謹慎界定規格、以機制驗證、由具名的人類核准，並完整記錄，令其決策理據得以跨越 sprint 而留存。</p>
+<h4>Addy Osmani 的文章轉載於 https://www.oreilly.com/radar/agentic-code-quality/，最初發表於其 Elevate blog。以上關於關卡設計及受監管行業實踐的評論，屬 HKLUG 自行立場。</h4>
+<p><a href="https://www.oreilly.com/radar/agentic-code-quality/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
