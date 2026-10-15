@@ -1,0 +1,36 @@
+Date: 2026-10-15 11:40:00
+Author: HKLUG Team
+Title: Huawei Patch Would Turn On CPU Boost by Default in Linux ACPI CPPC Driver
+Content:
+<p>A patch series proposed by Huawei to the Linux kernel would flip a long-standing default: enabling CPU boost mode automatically in the generic ACPI Collaborative Processor Performance Control (CPPC) CPUFreq driver, rather than leaving it switched off.</p>
+<p>Nothing has shipped. The change exists only as a proposal under discussion on the kernel mailing list, and no distribution, vendor kernel, or hardware platform has changed behaviour as a result. Administrators running Arm64 servers — including those deployed on Huawei's Kunpeng processors and the Ampere Arm server lines commonly found in regional datacentres — should read this as an early signal of a coming policy argument, not a pending upgrade hazard.</p>
+<h4>What CPPC does, and where boost fits in</h4>
+<p>CPPC is an ACPI-based interface through which firmware exposes performance controls to the operating system. On many Arm64 server platforms, it is the mechanism the kernel's CPUFreq subsystem uses to scale clock speeds under load. Where the firmware advertises a "boost" capability — a mode that lets cores run above their sustained base frequency — the Linux CPPC driver has historically left that capability disabled unless an operator explicitly opts in.</p>
+<p>Huawei's series would invert that decision, making boost the out-of-the-box default on any platform that exposes it through CPPC. The practical consequence is that the same generic driver would apply to more than just Huawei hardware: any system relying on CPPC could, in principle, see different performance characteristics after a kernel update that includes the change.</p>
+<h4>Why Huawei wants the change</h4>
+<p>The vendor's argument, as reported by Phoronix, is that leaving boost off by default means servers are not delivering the performance their firmware says they can offer. Boost modes exist precisely to absorb short bursts of demand, and Huawei appears to regard the current default as an artificial throttle that operators have to know to remove — a step many deployments never take.</p>
+<h4>The kernel-policy debate underneath</h4>
+<p>The more interesting story is not Huawei's hardware motivation but the question the patch forces into the open: when firmware advertises a capability, should the kernel trust it by default, or should conservative settings prevail until an operator decides otherwise?</p>
+<p>Critics of the change point to the other side of the ledger. Boost raises power draw and thermal output, and on dense Arm64 servers those costs are not marginal — they translate directly into cooling requirements and, in capacity-planned environments, into how many nodes fit within a power budget. A default that changes silently with a kernel upgrade could push racks past thermal assumptions that were validated against the old behaviour. Laptop and edge deployments on CPPC face an even sharper version of the argument, where the trade-off runs straight into battery life.</p>
+<p>Supporters counter that boost is inherently bursty rather than sustained, that firmware vendors have already vetted the operating envelope, and that operators who want the old behaviour can still disable it. In that framing, the kernel's job is to reflect what the hardware says it can do, not to impose a blanket performance ceiling on behalf of users who were never asked.</p>
+<p>Both positions have merit, and the mailing-list discussion has not settled on a resolution. A plausible middle path — enabling boost by default only on server-class platforms, or keying the behaviour off some other firmware signal — has been floated but not adopted.</p>
+<h4>What happens next</h4>
+<p>Until the maintainers decide, the status quo holds: boost stays off by default on CPPC platforms, and nothing about existing deployments changes. If the series is eventually merged, administrators managing Arm64 fleets should expect to re-validate power and thermal planning for any host using the generic CPPC driver after upgrading to a kernel that carries the change.</p>
+<p>For Hong Kong operators running Arm64 server capacity generally — Huawei's Kunpeng-based systems being the most obvious example — the practical takeaway is to watch the upstream discussion rather than any vendor changelog. This is a decision that will be made on the kernel mailing list, and it will be made for every CPPC platform at once.</p>
+<hr>
+<p>華為向 Linux kernel 提交的一系列修補程式，擬推翻一項長期沿用的預設設定：在通用 ACPI Collaborative Processor Performance Control（CPPC）CPUFreq 驅動程式中自動啟用 CPU boost 模式，而非維持預設關閉。</p>
+<p>目前尚未有任何實際部署。該改動僅為在 kernel 郵件列表上討論中的提案，並無任何發行版、廠商 kernel 或硬件平台因此改變行為。管理 Arm64 伺服器的系統管理員——包括部署華為鯤鵬處理器，以及區域數據中心常見的 Ampere Arm 伺服器產品線者——應將此視為一場即將到來的政策爭論的早期訊號，而非迫在眉睫的升級風險。</p>
+<h4>CPPC 的作用，以及 boost 的角色</h4>
+<p>CPPC 是一種基於 ACPI 的介面，讓韌體向作業系統提供效能控制功能。在許多 Arm64 伺服器平台上，這是 kernel CPUFreq 子系統在負載下調節時脈速度所使用的機制。當韌體宣告具備「boost」功能——即允許核心以超越持續基準頻率的速度運行的模式——Linux CPPC 驅動程式歷來均將該功能預設停用，除非管理員明確選擇啟用。</p>
+<p>華為的修補程式系列將顛覆該決定，使 boost 在任何透過 CPPC 暴露此功能的平台上成為出廠預設值。實際後果是，同一通用驅動程式將影響的不僅是華為硬件：任何依賴 CPPC 的系統，原則上都可能在包含此改動的 kernel 升級後出現不同的效能特性。</p>
+<h4>華為為何要作出改動</h4>
+<p>根據 Phoronix 的報導，華為的理由是：boost 預設關閉意味著伺服器未能發揮其韌體聲稱可提供的效能。Boost 模式正是為了吸收短暫的需求高峰而設，華為似乎認為目前的預設值是一種人為限制，管理員必須知情才能解除——而許多部署從未採取這一步驟。</p>
+<h4>底層的 kernel 政策爭論</h4>
+<p>更值得關注的並非華為的硬件動機，而是該修補程式所逼使浮上檯面的問題：當韌體宣告具備某項功能時，kernel 應否預設予以信任，抑或應維持保守設定，直到管理員另行決定？</p>
+<p>反對者指出另一面的代價。Boost 會提升功耗與熱能輸出，在高密度 Arm64 伺服器上，這些成本並非微不足道——它們直接轉化為散熱需求，而在進行容量規劃的環境中，更直接影響電力預算內可容納的節點數量。一個隨 kernel 升級悄然改變的預設值，可能令機架超出依據舊有行為驗證的散熱假設。在 CPPC 上的筆記簿電腦及邊緣部署，這場爭論更為尖銳，取捨直接關係到電池續航力。</p>
+<p>支持者則反駁稱，boost 本質上是短暫爆發而非持續運作，韌體廠商已審核過運作範圍，而希望維持舊有行為的管理員仍可將其關閉。在此觀點下，kernel 的職責是反映硬件自述的能力，而非代表從未被諮詢的用戶強加一刀切的效能上限。</p>
+<p>兩方立場各有道理，郵件列表的討論亦未達成共識。一條看似可行的中間路線——僅在伺服器級平台預設啟用 boost，或依據其他韌體訊號決定行為——曾被提出，但尚未被採納。</p>
+<h4>接下來會如何發展</h4>
+<p>在維護者作出決定之前，現狀維持不變：CPPC 平台上的 boost 保持預設關閉，現有部署不受任何影響。若該系列最終被合併，管理 Arm64 機群的系統管理員應預期，在升級至包含該改動的 kernel 後，須為所有使用通用 CPPC 驅動程式的主機重新驗證電力及散熱規劃。</p>
+<p>對於香港一般運行 Arm64 伺服器容量的營運商而言——華為基於鯤鵬的系統是最明顯的例子——實際的要點是關注上游討論，而非任何廠商的版本更新紀錄。這項決定將在 kernel 郵件列表上作出，而且會一次性對所有 CPPC 平台生效。</p>
+<p><a href="https://www.phoronix.com/news/Huawei-Proposes-Boost-Default" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
