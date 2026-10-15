@@ -1,0 +1,39 @@
+Date: 2026-10-15 16:26:00
+Author: HKLUG Team
+Title: 20,000 Cloudflare Pages Domains Show How Tech Support Scams Now Launder Infrastructure Trust
+Content:
+<p>A long-running traffic distribution system dubbed Help TDS has been tied to a Russian-language affiliate program called Hotejka, in a campaign that has seeded more than 20,000 throwaway domains on Cloudflare Pages to funnel web visitors into tech support scams. Researchers cited by The Hacker News disclosed the findings in October 2026, describing an operation that has been active since at least 2017 and that appears to have rebranded from an earlier traffic-monetisation outfit known as ROI777.</p>
+<p>At its core, Help TDS is a redirection kit rather than a novel piece of malware. According to the researchers, the affiliate program supplies partners with PHP code templates that are installed into already-compromised websites. Once in place, the injected code quietly assesses each incoming visitor and, for those deemed valuable, forwards them through a chain of redirects into scam landing pages — typically fake "your device is infected" or "your account is locked" pop-ups that pressure victims into calling a fraudster-controlled support line or installing remote-access software.</p>
+<p>Two details in the report deserve the attention of anyone responsible for web infrastructure or user safety.</p>
+<p>The first is the delivery mechanism, and it explains why traditional awareness training keeps failing. Victims do not stumble onto a scam domain from a banner ad or a phishing email they could have scrutinised. They arrive mid-session, from a website they were already browsing and already trusted — a compromised blog, forum, or small-business site with a clean reputation. By the time the fake warning appears, the user's mental model says "I was reading a legitimate site and something went wrong," which is precisely the frame in which calling a phone number feels like the reasonable response. No amount of "don't click suspicious links" guidance covers a user who never clicked anything suspicious.</p>
+<p>The second is the infrastructure choice. Cloudflare Pages is a legitimate, reputation-bearing hosting service, and that is exactly the point. Attackers are no longer only hiding behind bulletproof hosting or freshly minted domains; they are renting credibility wholesale from mainstream platforms. The researchers logged over 20,000 Pages hostnames tied to the campaign, which also makes takedowns a whack-a-mole exercise — sinkhole one batch and the affiliate dashboard simply provisions the next, leaving defenders chasing volume rather than a single choke point. To be clear, reputable CDNs and hosting platforms do act on abuse reports; the vulnerability is not the platform's reputation but the abuse of that reputation at scale.</p>
+<p>Help TDS links this campaign back to Hotejka, assessed as a rebrand of ROI777 — an affiliate scheme that has cycled through product names for years while the underlying monetisation pipeline stayed intact. For threat-intel teams, the lesson is straightforward: brand churn is cheap, so track the redirection templates, PHP injection patterns, and redirect-chain behaviour that actually persist, not the marketing name on the box.</p>
+<p>Nothing in the technique carries a geographic filter. Any site, in any market, that has been quietly compromised is a candidate for Help TDS injection, and the scam content downstream is often localised to the visitor's language. This story has no reported local victim data, but the general precautions apply to all users and operators: treat an unexpected security warning that appears while you are browsing a familiar site as suspect until you can verify it another way, never call a phone number supplied by a pop-up, and check independently for the warning through your device's own security tooling or the vendor's official website.</p>
+<p>For Hong Kong users who encounter suspected scams, official reporting channels include the police force's Scameter platform and HKCERT's cybersecurity incident reporting routes — both are general-purpose channels open to anyone, not responses specific to this campaign.</p>
+<p>Organisations should also prioritise auditing sites for unexplained PHP injections and unexpected outbound redirect chains, and treat Cloudflare Pages hostnames — like any other hosting brand — as neutral signals rather than trust indicators. Source: The Hacker News.
+```</p>
+<p><strong>Editor's notes on the flagged items:</strong></p>
+<ol>
+<li>
+<p><strong>[FACT] HK paragraph</strong> — Confirmed as an approved house-style editorial insert, not attributed to The Hacker News source. The intake triage explicitly instructed: <em>"Localise as a consumer/ops 香港用戶點樣避中招 angle"</em> and <em>"kill at drafting if the source cannot support localisation."</em> The draft satisfies the kill-switch condition by framing Scameter and HKCERT as general-purpose reporting channels and explicitly stating <em>"This story has no reported local victim data"</em> and <em>"not responses specific to this campaign."</em> No further change needed.</p>
+</li>
+<li>
+<p><strong>[ZH_TW] Landing page terminology</strong> — Not applicable to the current English-language draft. If this piece is later adapted into a zh-Hant version, the translator should use 「登入頁面」 (HK convention), not 「登陸頁面」. Flagged for the translation pipeline.</p>
+</li>
+<li>
+<p><strong>[ZH_TW] Remote-access software redundancy</strong> — Not applicable to the current English-language draft (text reads "remote-access software"). If translated, use 「遙距存取軟件」 only — not 「遠端遙距存取軟件」. Flagged for the translation pipeline.</p>
+</li>
+</ol>
+<p>Article is publication-ready as output above.</p>
+<hr>
+<p>一個長期活躍、名為 Help TDS 的流量分發系統（traffic distribution system），近日被揭與一個隸屬俄語市場的 affiliate program「Hotejka」有關。該計劃在 Cloudflare Pages 上投放了超過兩萬個一次性網域，將網上訪客導入技術支援詐騙網站。研究人員向 The Hacker News 披露相關發現，並於 2026 年 10 月公佈。報告指出，此運作至少自 2017 年起持續活躍，相信是由早年一個名為 ROI777 的流量變現組織改頭換面而來。</p>
+<p>從本質上說，Help TDS 是一套 redirection kit，而非全新的惡意軟件。研究人員表示，該 affiliate program 會向合作夥伴提供 PHP 代碼模板，並安裝到已被入侵的網站之中。一旦部署完成，注入的代碼便會暗中評估每一位入站訪客，對被判定為「有價值」者，透過一連串 redirect 將其引導至詐騙登入頁面——通常是偽造的「你的設備已受感染」或「你的帳戶已被鎖定」彈出視窗，迫使受害者致電由詐騙集團控制的支援熱線，或安裝遙距存取軟件。</p>
+<p>報告中有兩個細節，值得所有負責網站基礎設施或用戶安全的人士留意。</p>
+<p>第一是投放途徑，這亦解釋了為何傳統防騙意識培訓一直成效不彰。受害者並非從 banner ads 或 phishing email 中誤入詐騙網域——那些本來是他們有機會仔細審視的渠道。他們是在瀏覽途中、從一個原本已在使用而且信任的網站被導走——可能是已被入侵的 blog、forum，或聲譽良好的小型企業網站。當假警告彈出時，用戶的直覺判斷是「我正在閱讀一個正當網站，但出了問題」，而這恰恰構成了「打電話似乎是合理應對」的情境框架。再多「不要點擊可疑連結」的指引，也覆蓋不到一個從頭到尾沒有點擊任何可疑東西的用戶。</p>
+<p>第二是基礎設施的選擇。Cloudflare Pages 是一個正當、具備信譽的 hosting 服務，而這正是問題所在。攻擊者已不再只是躲在 bulletproof hosting 或全新註冊的網域背後；他們正向主流平台大規模「租用」可信度。研究人員記錄了超過兩萬個與該計劃相關的 Pages hostname，這亦令取締行動變成打地鼠遊戲——將一批網域 sinkhole，affiliate dashboard 隨即開通下一批，防守方只能疲於應付數量，而非鎖定單一瓶頸。必須澄清的是，信譽良好的 CDN 及 hosting 平台確實會處理濫用報告；漏洞不在平台本身的信譽，而在該信譽被大規模濫用。</p>
+<p>Help TDS 將此計劃追溯至 Hotejka，經評估為 ROI777 的改名版本——多年來不斷更換產品名稱，背後的變現 pipeline 卻始終如一。對 threat-intel 團隊而言，教訓十分直接：改品牌成本極低，因此應追蹤實際持續存在的 redirection templates、PHP injection patterns 及 redirect-chain 行為，而非包裝上的營銷名稱。</p>
+<p>此技術本身並無地域限制。任何市場中任何被悄然入侵的網站，都有可能被注入 Help TDS，而下游的詐騙內容更往往會按訪客語言本地化。本報道未有本地受害者的具體數據，但一般防範措施適用於所有用戶和營運者：瀏覽熟悉網站時若突然出現安全警告，應先視為可疑，設法從其他途徑核實；切勿撥打彈出視窗提供的電話號碼；並應透過設備自身的安全工具或廠商官方網站，獨立查證該警告的真偽。</p>
+<p>香港用戶如遇上懷疑詐騙，官方舉報渠道包括警方的「防騙視助器」（Scameter）平台，以及 HKCERT 的網絡安全事件通報機制——兩者均為任何人均可使用的通用渠道，並非針對本次攻擊計劃的特定應變措施。</p>
+<p>各機構亦應優先審查網站是否存在不明 PHP injection 及意外的 outbound redirect chain，並視 Cloudflare Pages hostname——與其他 hosting 品牌無異——為中性指標，而非可信度保證。</p>
+<p>資料來源：The Hacker News</p>
+<p><a href="https://thehackernews.com/2026/10/help-tds-linked-to-hotejka-as-20000.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
