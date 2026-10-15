@@ -1,0 +1,36 @@
+Date: 2026-10-15 10:41:00
+Author: HKLUG Team
+Title: GhostAction Surge Sees 30,000+ GitHub Repos Targeted in 48 Hours
+Content:
+<p>The credential-theft campaign tracked as GhostAction expanded sharply on 8 and 9 October 2026, hitting more than 30,000 GitHub repositories across roughly 3,000 users and organisations, according to an analysis by GitGuardian reported by The Hacker News on 15 October.</p>
+<p>The surge was driven by the compromise of about 1,900 GitHub accounts, with the attackers attempting to extract 3,174 secrets from the CI environments of public repositories, GitGuardian researcher Gaetan and colleagues said.</p>
+<p>No platform vulnerability appears to have been involved. GitGuardian said it found no evidence that GhostAction exploited a flaw in GitHub itself; the campaign relied entirely on valid — but unauthorised — credentials. In practice, that means there is no patch to wait for. The exposure is one of operational hygiene, not software defects.</p>
+<p>The scale of the 48-hour spike points to automation rather than hands-on intrusion. Harvesting programmatic credentials — personal access tokens (PATs), deploy keys and CI tokens — at that volume suggests internet-scale scanning of public repositories and CI logs, likely including long-unrotated secrets first leaked some time ago.</p>
+<p><strong>Why the pattern matters for development teams</strong></p>
+<p>The observation below is editorial rather than a claim by GitGuardian about specific affected organisations, but the pattern has particular relevance for teams that routinely publish repositories — open-source contributions, side projects, client demos — alongside internal tooling. Where CI configuration is committed alongside the code, and where tokens, API keys or cloud credentials are left in workflow files or build logs, the door is effectively open to automated scanners of this kind. That is precisely the door GhostAction appears to be looking for.</p>
+<p><strong>A six-item remediation checklist</strong></p>
+<p><strong>Inventory and rotate every PAT, deploy key and repository-scoped credential.</strong> Revoke broadly rather than case by case, then reissue with an expiry set — many teams treat 90 days or shorter as a reasonable default.</p>
+<p><strong>Enable GitHub secret scanning and push protection</strong> so exposed credentials are blocked at push time rather than discovered after the fact.</p>
+<p><strong>Migrate CI workloads to OIDC federation,</strong> exchanging long-lived static keys for short-lived, cloud-issued credentials. GitHub Actions and all major cloud providers support this; the migration cost is typically lower than expected.</p>
+<p><strong>Scope tokens to least privilege.</strong> Deployment tokens should be limited to specific repositories and, where read access suffices, never write-all. The same principle applies to CI tokens.</p>
+<p><strong>Audit access and administrative rights,</strong> including OAuth app authorisations that may no longer have an active owner or use.</p>
+<p><strong>Pin third-party GitHub Actions to a commit SHA</strong> rather than a mutable tag or branch — a low-cost mitigation against an increasingly common CI supply-chain vector.</p>
+<p>GitGuardian said its analysis is ongoing and may publish additional detail on attack infrastructure or full victim scope. Until then, the practical conclusion for development teams is straightforward: what is needed is not a security advisory to wait for, but a checklist to work through now.</p>
+<p>Source: GitGuardian analysis, via The Hacker News.</p>
+<hr>
+<p>根據 GitGuardian 的一項分析（由 The Hacker News 於 10 月 15 日報導），代號 GhostAction 的憑證竊取行動在 2026 年 10 月 8 日及 9 日顯著擴大，波及約 3,000 名用戶及組織旗下超過 30,000 個 GitHub 倉庫。</p>
+<p>GitGuardian 研究人員 Gaetan 及其同事表示，此次激增源自約 1,900 個被入侵的 GitHub 帳戶，攻擊者並曾嘗試從公開倉庫的 CI 環境中提取 3,174 個機密資料（secrets）。</p>
+<p>目前看來並未涉及任何平台漏洞。GitGuardian 表示，沒有證據顯示 GhostAction 利用了 GitHub 本身的缺陷；整個行動完全依賴有效但未經授權的憑證。換言之，實際上並無任何 patch 等待修補。這次的風險屬於操作衛生（operational hygiene）範疇，而非軟件缺陷。</p>
+<p>48 小時內的爆發規模顯示這是自動化作業而非人手入侵。要以這種規模收割程式化存取憑證（programmatic credentials）——personal access tokens（PAT）、deploy keys 及 CI tokens——意味著對公開倉庫及 CI 日誌進行互聯網級別的掃描，當中很可能包括一些很久以前已經外泄、從未輪換的機密資料。</p>
+<p><strong>為何此模式對開發團隊別具意義</strong></p>
+<p>以下觀察屬編輯層面的判斷，並非 GitGuardian 就特定受影響組織的說法；然而，這一模式對於經常公開發布倉庫——開源貢獻、side project、客戶 demo——並同時處理內部工具的團隊而言，尤其值得注意。當 CI 設定連同原始碼一併提交，而 tokens、API keys 或雲端憑證又留在 workflow 檔案或建置日誌之中，便等於為這類自動化掃描器打開了大門。而這正是 GhostAction 目前似乎在尋找的入口。</p>
+<p><strong>六項補救清單</strong></p>
+<p><strong>盤點並輪換所有 PAT、deploy key 及倉庫層級的憑證。</strong> 應全面撤銷（revoke）而非逐案處理，之後重新簽發並設定過期時間——不少團隊會以 90 日或更短作為合理的預設標準。</p>
+<p><strong>啟用 GitHub 的 secret scanning 及 push protection</strong>，讓外泄的憑證在 push 階段即被攔截，而非事後才被發現。</p>
+<p><strong>將 CI 工作負載遷移至 OIDC 聯邦認證</strong>，以短期有效的雲端簽發憑證取代長期有效的靜態 key。GitHub Actions 及所有主要雲端供應商均支援此做法；遷移成本通常較預期為低。</p>
+<p><strong>將 token 權限範圍收緊至 least-privilege。</strong> 部署用的 token 應僅限於特定倉庫，能以讀權限足夠應付的就不應授予 write-all。CI token 同樣適用此原則。</p>
+<p><strong>審核存取權限及管理員權限</strong>，包括可能已無活躍擁有者或不再使用的 OAuth app 授權。</p>
+<p><strong>將第三方 GitHub Actions 固定（pin）至 commit SHA</strong>，而非使用可變動的 tag 或 branch——這是一項成本低、但針對日益常見的 CI 供應鏈攻擊途徑的有效緩解措施。</p>
+<p>GitGuardian 表示分析仍在進行，日後或會公布更多關於攻擊基礎設施或完整受害者範圍的資料。在此之前，對開發團隊而言，最實際的結論很明確：需要的不是一份等待中的安全通告，而是一份現在就着手處理的清單。</p>
+<p>來源：GitGuardian 分析，經 The Hacker News 報導。</p>
+<p><a href="https://thehackernews.com/2026/10/ghostaction-compromises-about-1900.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
