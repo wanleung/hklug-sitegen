@@ -1,0 +1,50 @@
+Date: 2026-10-15 13:43:00
+Author: HKLUG Team
+Title: Ubuntu 26.10 Completes the Switch to Rust-Based uutils Coreutils
+Content:
+<blockquote>
+<p><strong>Editorial status: HOLD — do not publish yet.</strong> The central claim of this piece (uutils migration complete and enabled by default in Ubuntu 26.10, along with the codename, kernel, and desktop version numbers) rests on the source brief's headline and summary. The full Phoronix article body and Canonical's official 26.10 release notes could not be rendered or accessed at final review, and this desk does not have browser access to complete that check. Verification against at least one primary source is required before this goes live. The body below is finalised and ready to publish the moment that check clears.</p>
+</blockquote>
+<hr />
+<h3>Ubuntu 26.10 Completes the Switch to Rust-Based uutils Coreutils</h3>
+<p>Ubuntu 26.10 "Stonking Stingray" is now officially available, the newest of Canonical's six-month, non-LTS refreshes. According to <a href="https://www.phoronix.com/news/Ubuntu-26.10-Released">Phoronix's launch coverage</a>, it carries the usual semiannual bumps — Linux 7.3 and GNOME 51 — both of which were expected on this release cadence. The headline is elsewhere: the distribution's userland now runs on Rust, with the migration to uutils coreutils complete.</p>
+<h4>The Milestone: A Rewrite That Actually Shipped</h4>
+<p>For years, GNU coreutils — the humble suite behind <code>ls</code>, <code>cp</code>, <code>mv</code>, <code>sort</code>, <code>chmod</code>, and roughly a hundred other commands that every Linux system depends on — has been one of the last foundational holdouts of a software ecosystem largely rewritten in safer languages. Ubuntu 26.10 is the release where that stopped being theoretical. Per Phoronix's report, the switch to uutils, a Rust implementation of the coreutils interface, is finished and enabled by default.</p>
+<p>The milestone matters less as a language-war talking point than as an engineering proof: a large-scale rewrite of deeply embedded, decades-old GNU software can actually be <em>completed</em>, shipped, and made the default. That fact alone should reshape how maintainers think about what is realistically achievable when replacing legacy C components elsewhere in the stack.</p>
+<h4>The Compatibility Caveat</h4>
+<p>The honest caveat — one Canonical and downstream users will be testing hard over the coming months — is that uutils is not a behavioral clone of GNU coreutils. Edge cases around option parsing, locale handling, error messages, and script-visible output can differ. In a shell script or CI pipeline, a behavioral divergence in a tool as ordinary as <code>cp</code> or <code>sort</code> can silently break thousands of jobs. Nothing in the release notes should be read as a guarantee that every existing automation workflow will transfer without inspection.</p>
+<p>Sysadmins and release engineers planning to move to 26.10 should treat shell automation as a first-class regression target, not an afterthought alongside application-level testing.</p>
+<h4>Analysis: What This Means for IT Teams in Hong Kong</h4>
+<p><em>The following is analysis, not sourced reporting.</em></p>
+<p>For teams running Ubuntu in production, this release introduces an unusual decision point compared with a typical six-month cycle:</p>
+<p><strong>If you run a development, testing, or non-critical environment,</strong> consider upgrading early to gain visibility into uutils behavior before it reaches the next LTS release.</p>
+<p><strong>If you run production infrastructure,</strong> stay on LTS. Ubuntu 26.10 is explicitly not a Long Term Support release. Production systems should remain on the current supported LTS until the next LTS release — which is expected to inherit the uutils migration — is available and validated.</p>
+<p><strong>If you cannot upgrade for contractual or compliance reasons</strong> but need to plan ahead, monitor the situation. Track uutils regression reports from early adopters, and begin auditing your shell automation for coreutils-dependent assumptions now.</p>
+<h4>What to Watch Next</h4>
+<p>The release's real story begins after launch. Over the coming months, the metrics worth tracking are concrete and empirical: real-world regression reports from script and CI failures, performance comparisons between uutils and GNU coreutils across common workloads, and security data on the rewritten components. The Rust rewrite's memory-safety argument is only persuasive insofar as fewer vulnerabilities actually materialize.</p>
+<p>Ubuntu 26.10 will live in the press by its Linux kernel and GNOME desktop version numbers. It will be judged, correctly, by whether users running <code>sort</code> in a nightly build script got the same result they always did.</p>
+<p><em>Source: <a href="https://www.phoronix.com/news/Ubuntu-26.10-Released">Phoronix</a>, per the headline and summary captured at intake. Cross-reference Canonical's official Ubuntu 26.10 release notes for the migration's exact status and any known behavioral divergences.</em></p>
+<hr>
+<blockquote>
+<p><strong>編輯狀態：暫緩 —— 請勿刊登。</strong> 本文的核心主張（uutils 遷移在 Ubuntu 26.10 中已完成並預設啟用，以及代號、核心及桌面版本號）均取材自來源簡報的標題及摘要。Phoronix 文章全文及 Canonical 官方的 26.10 發布說明在最終審稿時無法渲染或存取，而本編輯部亦沒有瀏覽器存取權限以完成該項查證。本文在刊登前必須至少對照一項一手來源完成核實。以下正文已定稿，一旦該項查證通過即可即時刊登。</p>
+</blockquote>
+<hr />
+<h3>Ubuntu 26.10 完成向 Rust 實作的 uutils coreutils 遷移</h3>
+<p>Ubuntu 26.10「Stonking Stingray」現已正式推出，這是 Canonical 每六個月推出一次的非 LTS（長期支援）版本中的最新一款。根據 <a href="https://www.phoronix.com/news/Ubuntu-26.10-Released">Phoronix 的發布報道</a>，今次版本照例包含半年度的升級 —— Linux 7.3 及 GNOME 51，兩者均在本發布周期的預期之內。然而，真正的焦點在別處：這個發行版的 userland 現已全面運行於 Rust 之上，遷移至 uutils coreutils 已告完成。</p>
+<h4>里程碑意義：一次真正落地的重寫</h4>
+<p>多年以來，GNU coreutils —— 這套支撐著 <code>ls</code>、<code>cp</code>、<code>mv</code>、<code>sort</code>、<code>chmod</code> 以及另外約一百個命令的基礎工具，每個 Linux 系統均離不開它 —— 一直是整個軟件生態中少數尚未以更安全語言重寫的基礎組件之一。Ubuntu 26.10 正是令這一切不再停留於理論的版本。根據 Phoronix 的報道，切換至 uutils —— 一個以 Rust 實作的 coreutils 介面 —— 已經完成並預設啟用。</p>
+<p>這個里程碑的意義，與其說在於它是語言之爭的話題，不如說在於它是一項工程上的證明：大規模重寫一個深度嵌入、歷史長達數十年的 GNU 軟件，實際上是可以<em>完成</em>、可以發布、並且可以成為預設選項的。僅此一點，就足以改變維護者對於在技術堆疊其他部分取代舊有 C 組件時「實際上可以做到什麼」的看法。</p>
+<h4>兼容性上的保留</h4>
+<p>必須坦白指出的保留事項 —— Canonical 及下游用戶在未來數月將對此進行密集測試 —— 是 uutils 並非 GNU coreutils 的行為克隆。在選項解析、locale 處理、錯誤訊息以及腳本可見的輸出等邊界情況上，兩者可能存在差異。在 shell 腳本或 CI pipeline 中，像 <code>cp</code> 或 <code>sort</code> 這樣普通工具的行為差異，可能悄然令數以千計的工作任務失效。發布說明中的任何內容，都不應被理解為保證所有現有自動化工作流程均可毋須檢查便直接過渡。</p>
+<p>計劃升級至 26.10 的系統管理員及發布工程師，應將 shell 自動化視為首要的回歸測試對象，而不應在應用層面測試之外將其視為事後補充。</p>
+<h4>分析：這對香港 IT 團隊意味著什麼</h4>
+<p><em>以下為分析內容，並非有來源的新聞報道。</em></p>
+<p>對於在生產環境中運行 Ubuntu 的團隊而言，這次發布與典型的半年度周期相比，帶來了一個不尋常的決策點：</p>
+<p><strong>若你運行的是開發、測試或非關鍵環境，</strong> 則可考慮提早升級，以便在 uutils 行為進入下一個 LTS 版本之前掌握其實際表現。</p>
+<p><strong>若你運行的是生產基礎設施，</strong> 則應留守 LTS。Ubuntu 26.10 明確並非長期支援版本。生產系統應繼續停留在目前受支援的 LTS 上，直至下一個 LTS 版本（預期將承繼 uutils 的遷移）正式推出並通過驗證。</p>
+<p><strong>若你因合約或合規原因無法升級，</strong> 但需要提前規劃，則應持續監察形勢。密切留意早期採用者提交的 uutils 回歸報告，並即時開始審核你的 shell 自動化中有關 coreutils 的假設。</p>
+<h4>接下來應留意什麼</h4>
+<p>這個版本的真正故事，始於正式發布之後。在未來數月，值得追蹤的指標具體而實證：來自腳本及 CI 失敗的真實回歸報告、uutils 與 GNU coreutils 在常見工作負載下的性能比較，以及經過重寫組件的安全數據。Rust 重寫在記憶體安全方面的論點，只有在漏洞確實減少的情況下才具有說服力。</p>
+<p>Ubuntu 26.10 在新聞報道中，將以其 Linux 核心及 GNOME 桌面版本號為人所記住。而它真正的評價標準，將在於那些在 nightly build 腳本中執行 <code>sort</code> 的用戶，是否得到了他們一直以來所得到的相同結果 —— 這才是正確的判準。</p>
+<p><em>資料來源：<a href="https://www.phoronix.com/news/Ubuntu-26.10-Released">Phoronix</a>，依據投稿時所擷取的標題及摘要。遷移的準確狀態及已知行為差異，請自行對照 Canonical 官方的 Ubuntu 26.10 發布說明。</em></p>
+<p><a href="https://www.phoronix.com/news/Ubuntu-26.10-Released" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
