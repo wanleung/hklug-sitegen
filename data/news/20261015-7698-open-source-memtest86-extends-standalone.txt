@@ -1,0 +1,42 @@
+Date: 2026-10-15 19:25:00
+Author: HKLUG Team
+Title: Open-Source Memtest86+ Extends Standalone RAM Diagnostics to ARM64
+Content:
+<p>Memtest86+, the open-source memory diagnostic that has been a fixture of system builders' and datacentre operators' toolkits for three decades, has crossed an architectural milestone with version 9.00: native support for ARM64/AArch64 hardware. Until now the tool's testing scope was confined to x86, x86_64, and LoongArch64 platforms, leaving a conspicuous gap on the ARM servers and single-board systems that have spread rapidly through infrastructure fleets.</p>
+<p>The 9.00 release targets UEFI-bootable ARM64 systems, and the addition was reported by Phoronix as the first time the project's testing reach has extended past its x86 and LoongArch roots. For operators running AMD EPYC and Intel Xeon nodes, the previous gap may have seemed academic. For anyone deploying Graviton-class or Ampere Altra-class hardware — increasingly common in cloud regions serving Hong Kong — it meant falling back on proprietary tools, vendor burn-in utilities, or simply hoping the kernel caught errors before they manifested as silent data corruption.</p>
+<p><strong>Why the ARM gap mattered</strong></p>
+<p>Memory errors are not theoretical concerns at infrastructure scale. Row-hammer effects, marginal DIMMs that pass a superficial POST but fail under sustained load, and mixed-vendor memory kits in newly assembled nodes are all routine sources of hard-to-diagnose instability. On x86, the standard response has been to boot Memtest86+ and let it run overnight. On ARM servers, there was no equivalent community-verified option that worked standalone and outside the operating system.</p>
+<p>That gap is worth pausing on, because the diagnostics that run <em>before</em> an OS boots are exactly the ones that are hardest to replace later. A kernel that has already marked pages as usable cannot easily tell you that a DIMM was marginal from hour one. Catching that at provisioning time saves weeks of intermittent-crash triage.</p>
+<p><strong>The auditability argument</strong></p>
+<p>What makes the ARM64 support more than a checkbox is that Memtest86+ is open source. In an environment where supply-chain scrutiny of hardware and firmware is intensifying, the ability to read and verify the diagnostic that vets your memory has real weight. Proprietary burn-in utilities shipped by server vendors are opaque by comparison — you are trusting that the tool is doing what it claims, on hardware whose firmware you also cannot inspect. On ARM, where firmware stacks vary substantially between vendors and even between board revisions, an auditable tester is a meaningful check on the stack below it.</p>
+<p><strong>Practical caveats</strong></p>
+<p>The release does not cover every ARM device, and operators should read the fine print:</p>
+<ul>
+<li><strong>UEFI boot is required.</strong> Memtest86+ v9.00 targets UEFI systems. ARM platforms still relying on legacy boot paths, or on vendor-proprietary bootloaders that do not expose a standard UEFI interface, are outside scope. In practice, most current-generation server-class ARM hardware qualifies, but integrators should confirm before assuming.</li>
+<li><strong>Apple Silicon and Snapdragon X are excluded.</strong> These platforms use ARM64 CPUs, but their tightly controlled boot environments prevent booting third-party diagnostics in the traditional Memtest86+ manner. Users of M-series Macs or Copilot+ laptops running Windows on Snapdragon will not be able to use this release to test their memory.</li>
+<li><strong>Memtest86+ is not Memtest86.</strong> The "+" denotes the open-source fork of the original proprietary Memtest86 from PassMark. The two projects have diverged in features and licensing, and coverage of one does not imply coverage of the other. Confusing the two is common in forum advice; it matters when you are choosing a tool to trust on production hardware.</li>
+<li><strong>It is a bare-metal tool, not an in-guest one.</strong> The release is aimed at the machine, not the hypervisor. Where a hypervisor stands between you and the physical DIMMs — as it does in any cloud ARM instance — nothing running inside the guest can substitute for validating the hardware underneath.</li>
+</ul>
+<p><strong>Relevance for local deployments</strong></p>
+<p>Hong Kong's datacentre and AI-inference landscape has leaned steadily toward ARM-based nodes, drawn by the price-performance ratio that Graviton and Ampere parts deliver for scale-out workloads. Any operator provisioning those fleets — or building AI inference nodes around ARM SODIMM and RDIMM configurations — now has a free, inspectable option to validate memory before systems go live. The tool runs standalone, which also means it can be folded into pre-deployment provisioning scripts without depending on a working OS install.</p>
+<p>Version 9.00 is available for download from the official Memtest86+ project site. Given the ARM64 addition, it is likely to become a default provisioning step for a category of hardware that has, until now, gone without a credible open-source memory test.</p>
+<hr>
+<p>Memtest86+ 是開源記憶體診斷工具，三十年來一直是系統組裝者及數據中心營運商工具箱中的常客。隨着 9.00 版本推出，它終於跨越了一個架構里程碑：原生支援 ARM64/AArch64 硬件。在此之前，該工具的測試範圍僅限於 x86、x86_64 及 LoongArch64 平台，在迅速擴展至各類基建機群的 ARM 伺服器及單板電腦上，一直存在明顯空白。</p>
+<p>9.00 版本針對支援 UEFI 開機的 ARM64 系統而設。Phoronix 報道指出，這是該項目首次將測試覆蓋範圍延伸至其 x86 及 LoongArch 根基之外。對於運行 AMD EPYC 及 Intel Xeon 節點的營運商而言，以往的空白或許只屬學術層面的問題。但對於部署 Graviton 級別或 Ampere Altra 級別硬件的人來說——這類硬件在服務香港的雲端區域日漸普遍——以往只能依賴專有工具、廠商燒機測試工具，又或者寄望核心能在錯誤演變為無聲資料損壞之前將其攔截。</p>
+<p><strong>為何 ARM 的空白至關重要</strong></p>
+<p>在基建規模層面，記憶體錯誤並非純屬理論問題。Row-hammer 效應、通過表面開機自檢（POST）卻在持續負載下失效的邊緣規格 DIMM，以及新組裝節點中混用不同廠商記憶體模組，全都是經常造成難以診斷的不穩定因素的元兇。在 x86 平台上，標準做法是啟動 Memtest86+ 讓它整夜運行。但在 ARM 伺服器上，一直缺乏等效的社區驗證方案——既可獨立運行，又不依賴作業系統操作。</p>
+<p>這個空白值得停下來思考，因為在作業系統啟動<em>之前</em>運行的診斷程序，恰恰是最難以在事後取代的。一個已將記憶體頁標記為可用的核心，事後很難告訴你某條 DIMM 由第一小時起就是邊緣規格。在系統配置階段及早察覺問題，可以省卻數星期間歇性當機的排查工作。</p>
+<p><strong>可審計性的論點</strong></p>
+<p>令 ARM64 支援不單是多一個支援清單選項的原因，在於 Memtest86+ 是開源的。在硬件及韌件供應鏈審查日趨嚴格的環境下，能夠閱讀及驗證負責檢查你記憶體的診斷工具，具有實質意義。相比之下，伺服器廠商附帶的專有燒機測試工具並不透明——你只能相信該工具確實如其聲稱般運作，而其所在硬件的韌件你同樣無法檢視。在 ARM 平台上，不同廠商之間、甚至同一廠商不同主板版本之間的韌件堆疊差異甚大，一個可審計的測試工具對其下方的整條堆疊構成有意義的把關。</p>
+<p><strong>實務上的注意事項</strong></p>
+<p>是次發布並未涵蓋所有 ARM 設備，營運商務必細閱條款：</p>
+<ul>
+<li><strong>必須以 UEFI 開機。</strong> Memtest86+ v9.00 針對 UEFI 系統。仍然依賴傳統開機路徑、或採用不提供標準 UEFI 介面的廠商專有 bootloader 的 ARM 平台，不在支援範圍之內。實際上，現今世代大部分伺服器級 ARM 硬件均符合要求，但系統整合商不應掉以輕心，應先行確認。</li>
+<li><strong>Apple Silicon 及 Snapdragon X 被排除在外。</strong> 這些平台採用 ARM64 CPU，但其嚴密管控的開機環境令傳統 Memtest86+ 方式的第三方診斷工具無法啟動。使用 M 系列 Mac、或在 Snapdragon 上運行 Windows 的 Copilot+ 筆記本電腦的用戶，將無法使用此版本測試記憶體。</li>
+<li><strong>Memtest86+ 並非 Memtest86。</strong> 「+」代表源自 PassMark 原版專有 Memtest86 的開源分支。兩個項目在功能及授權條款上已各自發展，覆蓋其中之一並不等於覆蓋另一。論壇討論中經常混淆兩者，但當你要為生產環境硬件選擇可信工具時，這點至關重要。</li>
+<li><strong>這是裸機（bare-metal）工具，不是客戶作業系統內的工具。</strong> 此版本針對機器本身，而非 hypervisor。當 hypervisor 橫亙在你與實體 DIMM 之間——任何雲端 ARM 實例均如此——客戶機內運行的任何程序都無法取代對底層硬件的驗證。</li>
+</ul>
+<p><strong>與本地部署的關聯</strong></p>
+<p>香港的數據中心及 AI 推論基建一直穩步轉向以 ARM 為基礎的節點，原因在於 Graviton 及 Ampere 處理器在擴展型工作負載上所提供的性價比。任何配置這類機群的營運商——又或者圍繞 ARM SODIMM 及 RDIMM 配置組建 AI 推論節點的人——如今都擁有一個免費且可供檢視的方案，在系統正式投入運作前驗證記憶體。該工具獨立運行，亦意味着它可以整合到部署前的配置腳本中，無須依賴一個已正常安裝的作業系統。</p>
+<p>9.00 版本可從 Memtest86+ 官方項目網站下載。隨着 ARM64 支援的加入，它很可能成為某類硬件的標準配置流程步驟——在此之前，這類硬件一直缺乏可信的開源記憶體測試方案。</p>
+<p><a href="https://www.phoronix.com/news/memtest86-Plus-9.0" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
