@@ -1,0 +1,268 @@
+Date: 2026-10-16 09:25:00
+Author: HKLUG Team
+Title: Linux 無需專屬驅動即可硬解影片：Mesa Zink 加入 VA-API 支援
+Content:
+<h3>Linux 無需專屬驅動即可硬解影片：Mesa Zink 加入 VA-API 支援</h3>
+<p>對 Linux 桌面用戶來說，最常見的困擾之一是：3D 加速一切正常，播放影片卻要靠 CPU 軟解，結果是 4K 影片掉格、風扇狂轉。這個落差正被縮小——根據 Phoronix 於 10 月 16 日的報導，Zink 這套以 Vulkan 為基礎的通用 Gallium3D 驅動已合併「初步」的影片加速支援，讓使用者能在 AMD 或 Intel 硬體上透過 Mesa 開源驅動堆疊取得 VA-API 硬體解碼，不必安裝專屬驅動。</p>
+<h4>這件事解決了什麼問題</h4>
+<p>Zink 的角色是把 OpenGL 指令翻譯成 Vulkan 命令。過去幾年，它已讓不少使用者以純開源方式取得穩定的 3D 加速；但 VA-API——Linux 上播放器（mpv、VLC、Firefox、GStreamer 等）用來呼叫硬體編解碼的標準介面——在 Zink 環境下並未隨之啟用。結果就是常見的分裂狀態：遊戲與 3D 應用走 GPU，影片解碼卻退回 CPU。此次合併補上了這塊缺口。</p>
+<h4>架構上發生了什麼</h4>
+<p>這次實作並非在 Zink 內部重新造一套編解碼器，而是讓 VA-API 架構在 Mesa 既有的 Vulkan Video 介面之上。Vulkan Video 是 Vulkan 標準中處理影片編解碼的擴充（extension），本身由 Mesa 通用 Vulkan 驅動層提供。</p>
+<p>整條堆疊大致如下：</p>
+<pre><code>應用程式（mpv / VLC / 瀏覽器）
+        │  呼叫 VA-API 介面
+        ▼
+    VA-API（Zink 內的介面層）
+        │  轉交 Mesa 通用 Vulkan Video 前端
+        ▼
+   Vulkan Video 命令
+        │
+        ▼
+ GPU 硬體編解碼引擎（AMD / Intel）
+</code></pre>
+<p>需要澄清的一點是：VA-API 介面本身由 Zink 這層 Gallium 驅動對外呈現，但真正的編解碼運算依賴 Mesa 的通用 Vulkan Video 前端，而非 Zink 自行實作。換句話說，Zink 負責「對外說 VA-API 的語言」，底層仍交給 Mesa 共用的 Vulkan Video 程式碼。</p>
+<h4>長期意義大於首日功能</h4>
+<p>這項合併更重要的訊號，是驅動堆疊持續收斂到 Vulkan 單一抽象層的趨勢。過去 OpenGL 加速與影片加速往往需要兩套不同的驅動元件，發行版打包也因此更為複雜；當 3D 與影片路徑都建構在同一個 Vulkan 實作之上，未來可能逐漸不再需要獨立的 VA-API 驅動套件。這才是此架構方向的持久價值。</p>
+<h4>使用者要注意的限制</h4>
+<ul>
+<li><strong>這是初步支援。</strong> 合併進 Mesa <strong>26.3 開發分支</strong>，目前尚未出現在各大發行版的穩定套件中，現行使用者短期內不必期待手上的發行版更新即會帶來此功能。</li>
+<li><strong>編解碼器覆蓋範圍因 GPU 而異。</strong> AV1 及較新的 HEVC profile 支援程度可能落後於成熟的專屬驅動；實務上，新介面往往需要數個開發週期才追得上成熟的專屬驅動，不能假設第一天就等同於 AMD 或 Intel 官方驅動的完整能力。</li>
+<li><strong>Wayland 合成器的直通（passthrough）支援仍是另一道關卡。</strong> 即使驅動層提供 VA-API，Mutter、KWin 等桌面環境仍須在合成器正確實作相關路徑，硬解才會真正生效；這部分同樣不在本次合併的範圍內。</li>
+<li><strong>來源報導中未附任何效能數據。</strong> 這是合併當日的初步實作，效能、功耗與相容性表現都還沒有公開測試結果，任何「快了多少」的說法此時都缺乏依據。相關實測值得等 26.3 穩定版接近釋出時再追蹤。</li>
+</ul>
+<h4>詞彙表</h4>
+<table>
+<thead>
+<tr>
+<th>術語</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Mesa</strong></td>
+<td>Linux 開源圖形驅動堆疊，內含 OpenGL、Vulkan、VA-API 等實作</td>
+</tr>
+<tr>
+<td><strong>Zink</strong></td>
+<td>Mesa 中的通用 Gallium3D 驅動，以 Vulkan 為基礎提供 OpenGL</td>
+</tr>
+<tr>
+<td><strong>VA-API</strong></td>
+<td>Video Acceleration API，Linux 上呼叫硬體影片編解碼的標準介面</td>
+</tr>
+<tr>
+<td><strong>Vulkan Video</strong></td>
+<td>Vulkan 標準的影片編解碼擴充，Mesa 在 Vulkan 驅動層提供</td>
+</tr>
+<tr>
+<td><strong>Gallium3D</strong></td>
+<td>Mesa 的驅動架構框架，讓不同 GPU 前端共用同一套狀態管理邏輯</td>
+</tr>
+<tr>
+<td><strong>軟解 / 硬解</strong></td>
+<td>分別指以 CPU 或 GPU 編解碼引擎處理影片，後者功耗與效能通常明顯較佳</td>
+</tr>
+</tbody>
+</table>
+<p>對香港的 Linux 桌面與開源社群而言，這類驅動層整合長期來看會簡化發行版維護與使用者設定；但以現階段而言，最實際的動作仍是關注 Mesa 26.3 的穩定版進度，再評估是否值得升級嘗試。</p>
+<p><em>資料來源：Phoronix（10 月 16 日報導 Zink VA-API 支援合併至 Mesa 26.3）。</em></p>
+<hr />
+<h3>Hardware Video Decode on Linux Without Proprietary Drivers: Mesa Zink Adds VA-API Support</h3>
+<p>One of the most common frustrations for Linux desktop users is this: 3D acceleration works flawlessly, yet video playback still falls back to CPU software decoding — resulting in dropped frames on 4K content and fans spinning at full speed. That gap is now narrowing. According to a Phoronix report on 16 October, Zink — the generic Gallium3D driver built on top of Vulkan — has merged initial video acceleration support. The change allows users on AMD or Intel hardware to obtain VA-API hardware decoding through Mesa's open-source driver stack, with no proprietary driver required.</p>
+<h4>What Problem Does This Solve?</h4>
+<p>Zink's role is to translate OpenGL commands into Vulkan calls. Over the past few years it has enabled many users to enjoy stable 3D acceleration using fully open-source drivers. However, VA-API — the standard interface Linux players such as mpv, VLC, Firefox, and GStreamer use to invoke hardware codecs — was not enabled alongside it in a Zink setup. The result is the familiar split: games and 3D applications run on the GPU, while video decoding falls back to the CPU. This merge fills that gap.</p>
+<h4>What Changed Architecturally</h4>
+<p>This implementation does not build a new codec stack inside Zink. Instead, it layers VA-API on top of Mesa's existing Vulkan Video interface. Vulkan Video is the extension within the Vulkan standard that handles video encode and decode, and it is provided by Mesa's common Vulkan driver layer.</p>
+<p>The full stack looks roughly like this:</p>
+<pre><code>Applications (mpv / VLC / browsers)
+        │  Call the VA-API interface
+        ▼
+    VA-API (interface layer inside Zink)
+        │  Passed to Mesa's common Vulkan Video frontend
+        ▼
+   Vulkan Video commands
+        │
+        ▼
+ GPU hardware codec engine (AMD / Intel)
+</code></pre>
+<p>One important clarification: the VA-API interface itself is exposed by Zink's Gallium driver layer, but the actual codec operations depend on Mesa's common Vulkan Video frontend — they are not implemented by Zink. In other words, Zink "speaks VA-API on the outside," while the underlying work is handled by Mesa's shared Vulkan Video code.</p>
+<h4>The Long-Term Significance Outweighs Day-One Features</h4>
+<p>The more important signal from this merge is the ongoing convergence of the driver stack onto a single Vulkan abstraction layer. In the past, OpenGL acceleration and video acceleration often required two separate driver components, making distribution packaging more complex. When both the 3D and video paths are built on the same Vulkan implementation, it may gradually become unnecessary to ship standalone VA-API driver packages. That is the lasting value of this architectural direction.</p>
+<h4>Limitations Users Should Be Aware Of</h4>
+<ul>
+<li><strong>This is initial support.</strong> The code has been merged into the Mesa <strong>26.3 development branch</strong> and has not yet appeared in stable packages from major distributions. Users should not expect their current distro update to bring this feature anytime soon.</li>
+<li><strong>Codec coverage varies by GPU.</strong> Support for AV1 and newer HEVC profiles may lag behind mature proprietary drivers. In practice, new interfaces often need several development cycles before catching up with established proprietary drivers — do not assume feature parity with AMD's or Intel's official drivers from day one.</li>
+<li><strong>Wayland compositor passthrough remains another hurdle.</strong> Even with VA-API available at the driver layer, desktop environments such as Mutter and KWin must correctly implement the relevant path in their compositors for hardware decoding to take effect. That part is also outside the scope of this merge.</li>
+<li><strong>The source report includes no performance data.</strong> This is an initial implementation merged on the day of the announcement; no public results exist yet for performance, power consumption, or compatibility. Any claim about "how much faster it is" would be unfounded at this stage. Real-world testing is worth revisiting as Mesa 26.3 approaches its stable release.</li>
+</ul>
+<h4>Glossary</h4>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Mesa</strong></td>
+<td>The open-source graphics driver stack for Linux, containing implementations of OpenGL, Vulkan, VA-API, and more</td>
+</tr>
+<tr>
+<td><strong>Zink</strong></td>
+<td>A generic Gallium3D driver within Mesa that provides OpenGL on top of Vulkan</td>
+</tr>
+<tr>
+<td><strong>VA-API</strong></td>
+<td>Video Acceleration API — the standard Linux interface for invoking hardware video encode and decode</td>
+</tr>
+<tr>
+<td><strong>Vulkan Video</strong></td>
+<td>The video codec extension of the Vulkan standard, provided at Mesa's Vulkan driver layer</td>
+</tr>
+<tr>
+<td><strong>Gallium3D</strong></td>
+<td>Mesa's driver framework that allows different GPU front-ends to share a common state-management layer</td>
+</tr>
+<tr>
+<td><strong>Software / Hardware decode</strong></td>
+<td>Refers to video processing on the CPU versus the GPU's dedicated codec engine; the latter is typically far more power- and performance-efficient</td>
+</tr>
+</tbody>
+</table>
+<p>For Hong Kong's Linux desktop and open-source community, this kind of driver-stack consolidation will, over time, simplify distribution packaging and user configuration. For now, the most practical step is to track Mesa 26.3's progress toward a stable release before deciding whether an upgrade is worthwhile.</p>
+<p><em>Source: Phoronix (16 October report on Zink VA-API support merging into Mesa 26.3).</em></p>
+<hr>
+<h3>Linux 無需專屬驅動即可硬解影片：Mesa Zink 加入 VA-API 支援</h3>
+<p>對 Linux 桌面用戶來說，最常見的困擾之一是：3D 加速一切正常，播放影片卻要靠 CPU 軟解，結果是 4K 影片掉格、風扇狂轉。這個落差正被縮小——根據 Phoronix 於 10 月 16 日的報導，Zink 這套以 Vulkan 為基礎的通用 Gallium3D 驅動已合併「初步」的影片加速支援，讓使用者能在 AMD 或 Intel 硬體上透過 Mesa 開源驅動堆疊取得 VA-API 硬體解碼，不必安裝專屬驅動。</p>
+<h4>這件事解決了什麼問題</h4>
+<p>Zink 的角色是把 OpenGL 指令翻譯成 Vulkan 命令。過去幾年，它已讓不少使用者以純開源方式取得穩定的 3D 加速；但 VA-API——Linux 上播放器（mpv、VLC、Firefox、GStreamer 等）用來呼叫硬體編解碼的標準介面——在 Zink 環境下並未隨之啟用。結果就是常見的分裂狀態：遊戲與 3D 應用走 GPU，影片解碼卻退回 CPU。此次合併補上了這塊缺口。</p>
+<h4>架構上發生了什麼</h4>
+<p>這次實作並非在 Zink 內部重新造一套編解碼器，而是讓 VA-API 架構在 Mesa 既有的 Vulkan Video 介面之上。Vulkan Video 是 Vulkan 標準中處理影片編解碼的擴充（extension），本身由 Mesa 通用 Vulkan 驅動層提供。</p>
+<p>整條堆疊大致如下：</p>
+<pre><code>應用程式（mpv / VLC / 瀏覽器）
+        │  呼叫 VA-API 介面
+        ▼
+    VA-API（Zink 內的介面層）
+        │  轉交 Mesa 通用 Vulkan Video 前端
+        ▼
+   Vulkan Video 命令
+        │
+        ▼
+ GPU 硬體編解碼引擎（AMD / Intel）
+</code></pre>
+<p>需要澄清的一點是：VA-API 介面本身由 Zink 這層 Gallium 驅動對外呈現，但真正的編解碼運算依賴 Mesa 的通用 Vulkan Video 前端，而非 Zink 自行實作。換句話說，Zink 負責「對外說 VA-API 的語言」，底層仍交給 Mesa 共用的 Vulkan Video 程式碼。</p>
+<h4>長期意義大於首日功能</h4>
+<p>這項合併更重要的訊號，是驅動堆疊持續收斂到 Vulkan 單一抽象層的趨勢。過去 OpenGL 加速與影片加速往往需要兩套不同的驅動元件，發行版打包也因此更為複雜；當 3D 與影片路徑都建構在同一個 Vulkan 實作之上，未來可能逐漸不再需要獨立的 VA-API 驅動套件。這才是此架構方向的持久價值。</p>
+<h4>使用者要注意的限制</h4>
+<ul>
+<li><strong>這是初步支援。</strong> 合併進 Mesa <strong>26.3 開發分支</strong>，目前尚未出現在各大發行版的穩定套件中，現行使用者短期內不必期待手上的發行版更新即會帶來此功能。</li>
+<li><strong>編解碼器覆蓋範圍因 GPU 而異。</strong> AV1 及較新的 HEVC profile 支援程度可能落後於成熟的專屬驅動；實務上，新介面往往需要數個開發週期才追得上成熟的專屬驅動，不能假設第一天就等同於 AMD 或 Intel 官方驅動的完整能力。</li>
+<li><strong>Wayland 合成器的直通（passthrough）支援仍是另一道關卡。</strong> 即使驅動層提供 VA-API，Mutter、KWin 等桌面環境仍須在合成器正確實作相關路徑，硬解才會真正生效；這部分同樣不在本次合併的範圍內。</li>
+<li><strong>來源報導中未附任何效能數據。</strong> 這是合併當日的初步實作，效能、功耗與相容性表現都還沒有公開測試結果，任何「快了多少」的說法此時都缺乏依據。相關實測值得等 26.3 穩定版接近釋出時再追蹤。</li>
+</ul>
+<h4>詞彙表</h4>
+<table>
+<thead>
+<tr>
+<th>術語</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Mesa</strong></td>
+<td>Linux 開源圖形驅動堆疊，內含 OpenGL、Vulkan、VA-API 等實作</td>
+</tr>
+<tr>
+<td><strong>Zink</strong></td>
+<td>Mesa 中的通用 Gallium3D 驅動，以 Vulkan 為基礎提供 OpenGL</td>
+</tr>
+<tr>
+<td><strong>VA-API</strong></td>
+<td>Video Acceleration API，Linux 上呼叫硬體影片編解碼的標準介面</td>
+</tr>
+<tr>
+<td><strong>Vulkan Video</strong></td>
+<td>Vulkan 標準的影片編解碼擴充，Mesa 在 Vulkan 驅動層提供</td>
+</tr>
+<tr>
+<td><strong>Gallium3D</strong></td>
+<td>Mesa 的驅動架構框架，讓不同 GPU 前端共用同一套狀態管理邏輯</td>
+</tr>
+<tr>
+<td><strong>軟解 / 硬解</strong></td>
+<td>分別指以 CPU 或 GPU 編解碼引擎處理影片，後者功耗與效能通常明顯較佳</td>
+</tr>
+</tbody>
+</table>
+<p>對香港的 Linux 桌面與開源社群而言，這類驅動層整合長期來看會簡化發行版維護與使用者設定；但以現階段而言，最實際的動作仍是關注 Mesa 26.3 的穩定版進度，再評估是否值得升級嘗試。</p>
+<p><em>資料來源：Phoronix（10 月 16 日報導 Zink VA-API 支援合併至 Mesa 26.3）。</em></p>
+<hr />
+<h3>Hardware Video Decode on Linux Without Proprietary Drivers: Mesa Zink Adds VA-API Support</h3>
+<p>One of the most common frustrations for Linux desktop users is this: 3D acceleration works flawlessly, yet video playback still falls back to CPU software decoding — resulting in dropped frames on 4K content and fans spinning at full speed. That gap is now narrowing. According to a Phoronix report on 16 October, Zink — the generic Gallium3D driver built on top of Vulkan — has merged initial video acceleration support. The change allows users on AMD or Intel hardware to obtain VA-API hardware decoding through Mesa's open-source driver stack, with no proprietary driver required.</p>
+<h4>What Problem Does This Solve?</h4>
+<p>Zink's role is to translate OpenGL commands into Vulkan calls. Over the past few years it has enabled many users to enjoy stable 3D acceleration using fully open-source drivers. However, VA-API — the standard interface Linux players such as mpv, VLC, Firefox, and GStreamer use to invoke hardware codecs — was not enabled alongside it in a Zink setup. The result is the familiar split: games and 3D applications run on the GPU, while video decoding falls back to the CPU. This merge fills that gap.</p>
+<h4>What Changed Architecturally</h4>
+<p>This implementation does not build a new codec stack inside Zink. Instead, it layers VA-API on top of Mesa's existing Vulkan Video interface. Vulkan Video is the extension within the Vulkan standard that handles video encode and decode, and it is provided by Mesa's common Vulkan driver layer.</p>
+<p>The full stack looks roughly like this:</p>
+<pre><code>Applications (mpv / VLC / browsers)
+        │  Call the VA-API interface
+        ▼
+    VA-API (interface layer inside Zink)
+        │  Passed to Mesa's common Vulkan Video frontend
+        ▼
+   Vulkan Video commands
+        │
+        ▼
+ GPU hardware codec engine (AMD / Intel)
+</code></pre>
+<p>One important clarification: the VA-API interface itself is exposed by Zink's Gallium driver layer, but the actual codec operations depend on Mesa's common Vulkan Video frontend — they are not implemented by Zink. In other words, Zink "speaks VA-API on the outside," while the underlying work is handled by Mesa's shared Vulkan Video code.</p>
+<h4>The Long-Term Significance Outweighs Day-One Features</h4>
+<p>The more important signal from this merge is the ongoing convergence of the driver stack onto a single Vulkan abstraction layer. In the past, OpenGL acceleration and video acceleration often required two separate driver components, making distribution packaging more complex. When both the 3D and video paths are built on the same Vulkan implementation, it may gradually become unnecessary to ship standalone VA-API driver packages. That is the lasting value of this architectural direction.</p>
+<h4>Limitations Users Should Be Aware Of</h4>
+<ul>
+<li><strong>This is initial support.</strong> The code has been merged into the Mesa <strong>26.3 development branch</strong> and has not yet appeared in stable packages from major distributions. Users should not expect their current distro update to bring this feature anytime soon.</li>
+<li><strong>Codec coverage varies by GPU.</strong> Support for AV1 and newer HEVC profiles may lag behind mature proprietary drivers. In practice, new interfaces often need several development cycles before catching up with established proprietary drivers — do not assume feature parity with AMD's or Intel's official drivers from day one.</li>
+<li><strong>Wayland compositor passthrough remains another hurdle.</strong> Even with VA-API available at the driver layer, desktop environments such as Mutter and KWin must correctly implement the relevant path in their compositors for hardware decoding to take effect. That part is also outside the scope of this merge.</li>
+<li><strong>The source report includes no performance data.</strong> This is an initial implementation merged on the day of the announcement; no public results exist yet for performance, power consumption, or compatibility. Any claim about "how much faster it is" would be unfounded at this stage. Real-world testing is worth revisiting as Mesa 26.3 approaches its stable release.</li>
+</ul>
+<h4>Glossary</h4>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Mesa</strong></td>
+<td>The open-source graphics driver stack for Linux, containing implementations of OpenGL, Vulkan, VA-API, and more</td>
+</tr>
+<tr>
+<td><strong>Zink</strong></td>
+<td>A generic Gallium3D driver within Mesa that provides OpenGL on top of Vulkan</td>
+</tr>
+<tr>
+<td><strong>VA-API</strong></td>
+<td>Video Acceleration API — the standard Linux interface for invoking hardware video encode and decode</td>
+</tr>
+<tr>
+<td><strong>Vulkan Video</strong></td>
+<td>The video codec extension of the Vulkan standard, provided at Mesa's Vulkan driver layer</td>
+</tr>
+<tr>
+<td><strong>Gallium3D</strong></td>
+<td>Mesa's driver framework that allows different GPU front-ends to share a common state-management layer</td>
+</tr>
+<tr>
+<td><strong>Software / Hardware decode</strong></td>
+<td>Refers to video processing on the CPU versus the GPU's dedicated codec engine; the latter is typically far more power- and performance-efficient</td>
+</tr>
+</tbody>
+</table>
+<p>For Hong Kong's Linux desktop and open-source community, this kind of driver-stack consolidation will, over time, simplify distribution packaging and user configuration. For now, the most practical step is to track Mesa 26.3's progress toward a stable release before deciding whether an upgrade is worthwhile.</p>
+<p><em>Source: Phoronix (16 October report on Zink VA-API support merging into Mesa 26.3).</em></p>
+<p><a href="https://www.phoronix/news/Mesa-Zink-VA-API-On-Vulkan" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
