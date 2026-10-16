@@ -1,0 +1,30 @@
+Date: 2026-10-16 20:06:00
+Author: HKLUG Team
+Title: OpenBSD 7.9 Local Root Chain Traces Flaw Back Nearly Four Decades to Early Unix
+Content:
+<p>An integer overflow that researchers trace back roughly 37 years — to the late 1980s, in shared-memory code inherited from early Unix — survived in OpenBSD 7.9 and could be combined with a second kernel flaw to escalate a local attacker to root, according to security firm Calif, which disclosed the work on 16 October as reported by The Hacker News.</p>
+<p>Calif said it reported both issues to the OpenBSD project, which shipped fixes; the firm subsequently published a detailed technical writeup and full proof-of-concept code. The release follows a conventional coordinated-disclosure sequence — vendor notification, patch, then public detail — and lands squarely in defensive territory: the PoC is now available to administrators who want to verify that their systems are patched, not because exploitation is being observed in the wild.</p>
+<h4>The bug is old. The context is not.</h4>
+<p>What makes the finding notable is not merely that a local privilege escalation exists in a BSD kernel — those turn up regularly — but the age and provenance of the underlying defect. Calif's code archaeology attributes the flaw to shared-memory handling that entered the Unix lineage around 1989, meaning it was inherited into OpenBSD's tree rather than introduced by its own developers. It reportedly persisted undetected in a codebase whose entire reputation rests on relentless source audit.</p>
+<p>The second, co-operating flaw was needed to convert the integer overflow into a workable privilege escalation. Taken together, per Calif's writeup as summarized by The Hacker News, the chain defeated three of OpenBSD's headline defensive features in a single chain: KARL, the project's kernel-address randomization; SMAP, which stops the kernel from directly touching user-space memory; and SMEP, which stops it from executing user-space code.</p>
+<p>That last detail deserves emphasis, because it is easy to misread the result. OpenBSD's mitigations were not broken. They functioned exactly as designed. The problem was that the attack surface in question — a shared-memory code path inherited from a much older Unix — fell outside the scope those mitigations were built to defend. Mitigations harden the front door; this bug opened a side entrance that had been there for decades.</p>
+<h4>The lesson beyond OpenBSD</h4>
+<p>For anyone maintaining a long-lived C codebase, particularly one with BSD or Unix lineage, the uncomfortable takeaway is that age is not the same as scrutiny. OpenBSD is arguably the most heavily audited open-source kernel in existence, and a 37-year-old overflow still shipped in a current release. Code that has been "in the tree forever" is precisely the code that nobody re-reads, on the assumption that someone else already did.</p>
+<p>Administrators running OpenBSD should patch promptly now that working exploit code is public, narrowing the window between disclosure and use. Operators of BSD derivatives, or of systems sharing inherited Unix code, would be well advised to check whether comparable shared-memory logic exists in their own trees — an inherited defect travels with the code, not with the brand. Where patching cannot be completed immediately, restricting local shared-memory access offers a partial holding measure.</p>
+<h4>A disclosure pattern worth repeating</h4>
+<p>It is also worth noting how this story unfolded. Calif did not publicly disclose a zero-day without notice: it found the flaws, notified OpenBSD, waited for patches, and only then published the writeup and PoC. That sequence converts a disclosure into a testable defensive artifact. Security teams can now run the PoC against their own patched and unpatched systems and confirm remediation rather than assume it — a far more useful outcome than a headline about an unpatched kernel.</p>
+<p>The central point stands regardless: the most audited code in the world still has rooms nobody has entered, and someone eventually will.</p>
+<hr>
+<p>安全公司 Calif 於10月16日披露相關研究（據 The Hacker News 報道），研究人員追查出一個整數溢出（integer overflow）漏洞，其歷史可追溯約37年——源自1980年代末期一段從早期 Unix 繼承而來的共享記憶體（shared-memory）代碼。該漏洞一直存留於 OpenBSD 7.9 之內，並可配合第二個 kernel 缺陷，讓本地攻擊者提升至 root 權限。</p>
+<p>Calif 表示已向 OpenBSD 專案報告兩個問題，專案隨後推出修補；該公司亦公布了詳細的技術分析及完整的 proof-of-concept（PoC）代碼。此次發布遵循慣常的協調式披露流程——先通知軟件商、再提供補丁、最後公開細節——定位明確屬於防禦用途：PoC 是供管理員驗證系統是否已修補，並非因為已觀察到在野利用。</p>
+<h4>漏洞本身陳舊，背景卻非如此</h4>
+<p>這項發現之所以值得注意，並非因為 BSD kernel 存在本地提權漏洞——這類問題時有發生——而在於底層缺陷的年份及來源。Calif 的「代碼考古」將漏洞歸因於約1989年進入 Unix 譜系的共享記憶體處理代碼，意味著它是被繼承至 OpenBSD 的代碼庫，而非由其自身開發者引入。據報導，這個漏洞在一個聲譽完全建基於毫不間斷源碼審計的代碼庫中，一直未被察覺地存留下來。</p>
+<p>要將整數溢出轉化為實際可行的提權攻擊，還需要第二個協同作用的缺陷。根據 The Hacker News 整理的 Calif 技術分析，兩個漏洞串連起來，一舉擊穿了 OpenBSD 三項主要防禦功能：KARL（該專案的 kernel 地址隨機化）、SMAP（阻止 kernel 直接訪問用戶空間記憶體），以及 SMEP（阻止 kernel 執行用戶空間代碼）。</p>
+<p>最後一點值得強調，因為結果很容易被誤讀。OpenBSD 的緩解措施並沒有被攻破，它們完全按設計運作。問題在於相關攻擊面——一條從遠古 Unix 繼承而來的共享記憶體代碼路徑——並不在這些緩解措施設計防衛的範圍之內。緩解措施加固的是正門，而這個漏洞則打開了一道已存在數十年的側門。</p>
+<h4>OpenBSD 以外的啟示</h4>
+<p>對於任何維護長壽命 C 代碼庫的人，特別是具有 BSD 或 Unix 譜系的專案，令人不安的結論是：年資不等同於審查。OpenBSD 可以說是世上受審計最多的開源 kernel，但一個37歲的溢出漏洞仍然出現在現行版本之中。那些「一直都在代碼庫裡」的代碼，恰恰就是沒有人會重讀的部分——因為大家都假設其他人早已看過。</p>
+<p>由於可運行的攻擊代碼已公開，縮短了從漏洞披露到實際利用的時間窗口，正在運行 OpenBSD 的管理員應盡快打上補丁。BSD 衍生版本的營運者，或共享繼承 Unix 代碼的系統營運方，應檢查自身代碼庫是否存在同類的共享記憶體邏輯——繼承的缺陷跟隨代碼本身，而非跟隨品牌。若無法即時完成修補，限制本地共享記憶體訪問可作為部分的過渡措施。</p>
+<h4>值得效法的披露模式</h4>
+<p>是次事件的發展方式亦值得一提。Calif 並未在未經通知下直接公開零日漏洞（0-day）：他們先發現漏洞、通知 OpenBSD、等待補丁推出，然後才公開技術分析及 PoC。這一流程將一次披露轉化為可測試的防禦工具。安全團隊現可自行以 PoC 對已修補及未修補的系統進行測試，實地確認補救是否生效——這遠比一則「kernel 未修補」的新聞標題更有實際價值。</p>
+<p>無論如何，核心觀點依然成立：世上受審計最多的代碼，仍然存在沒有人踏足過的房間——而終有一天，會有人進去。</p>
+<p><a href="https://thehackernews.com/2026/10/researchers-demonstrate-openbsd-root.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
