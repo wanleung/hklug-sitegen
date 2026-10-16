@@ -1,0 +1,42 @@
+Date: 2026-10-16 11:38:00
+Author: HKLUG Team
+Title: Upcoming Linux Merge Window Adds Intel Instruction Timeout to Shield TDX Hosts From Malicious Guests
+Content:
+<p>Cloud operators running Intel Trust Domain Extensions (TDX) confidential VMs are about to get a new defence against a class of attack that confidentiality alone cannot solve: a hostile guest that deliberately keeps host CPU resources busy to starve neighbouring workloads.</p>
+<p>According to Phoronix, the upcoming Linux merge window is set to enable support for Intel's Instruction Timeout feature, a hardware mechanism designed to cut off runaway or deliberately sustained instruction execution inside a TDX trust domain before it degrades host availability. The feature previously appeared in kernel development discussions under the name "Notify VM Exit." The rename appears to reflect a shift in how Intel and kernel maintainers describe its purpose — it is not merely a notification hook, but an enforcement boundary on how long a guest may execute before control returns to the host.</p>
+<h4>Why availability is the missing piece in confidential computing</h4>
+<p>TDX, like AMD's SEV-SNP and other confidential-computing technologies, was built primarily to answer a confidentiality question: can the host (or a compromised hypervisor) inspect or tamper with a guest's memory? Hardware-enforced encryption and attestation address that.</p>
+<p>Availability has been the harder problem. A trust domain runs with a degree of isolation from the host by design, and that isolation can be abused. A guest that loops in long-running instruction sequences without yielding effectively burns cycles that the host scheduler intended for other tenants. In a multi-tenant data centre, that is a denial-of-service vector that does not require any memory-access exploit at all — only a CPU.</p>
+<p>Intel Instruction Timeout addresses this at the silicon layer rather than through software scheduling heuristics. If a guest's execution within a trust domain exceeds a configured threshold, the hardware triggers an exit back to the host, giving the hypervisor a chance to account for, throttle, or terminate the offending domain. The upcoming kernel work wires that mechanism into TDX support, so the enforcement boundary can be applied in the mainline kernel.</p>
+<h4>A tuning knob, not a free lunch</h4>
+<p>The trade-offs are the part operators should read carefully. The timeout threshold is, by necessity, a compromise: set it too low, and legitimately compute-heavy guests — particularly those using wide vector instructions such as AVX-512, or matrix workloads on Intel's AMX accelerators — may be interrupted mid-workload, hurting throughput and performance predictability. Set it too high, and a hostile guest has a longer window to consume resources before the host regains control.</p>
+<p>Workloads that depend on sustained, non-interrupted execution of very long instruction sequences will need benchmarking against whatever defaults the kernel ships, rather than assuming out-of-the-box settings suit them.</p>
+<h4>Scope caveats</h4>
+<p>Two limitations are worth flagging plainly. First, this is an Intel-specific feature: it depends on TDX silicon support and does nothing for operators whose confidential-computing fleet is built on AMD SEV-SNP, which has its own and separately evolving host-protection mechanisms. Second, misconfiguration risk is real — the feature's value depends on operators choosing thresholds consistent with their actual workload profiles.</p>
+<h4>Practical takeaways</h4>
+<ul>
+<li><strong>Inventory first.</strong> Confirm whether your confidential VMs run on TDX-capable Intel hardware; SEV-SNP hosts will not benefit.</li>
+<li><strong>Profile long-instruction workloads.</strong> AVX-512 and AMX users should establish baselines before enabling or tightening timeouts.</li>
+<li><strong>Treat it as defence-in-depth.</strong> Instruction Timeout complements, and does not replace, hypervisor-level scheduling isolation and tenant-attribution controls.</li>
+</ul>
+<p>For cloud and data-centre operators generally — in any multi-tenant market, including Hong Kong — the broader significance is that confidential computing is maturing from a memory-privacy story into one that also has something to say about shared-host fairness. The upcoming mainline changes make Intel's answer to that gap applicable in the kernel for the first time, as reported by Phoronix.</p>
+<hr>
+<p>運行 Intel Trust Domain Extensions（TDX）保密 VM 的雲端營運商即將獲得一項新的防禦手段，以應對單靠保密性無法解決的一類攻擊：惡意 guest 刻意令主機 CPU 資源持續佔用，令鄰近工作負載資源匱乏。</p>
+<p>據 Phoronix 報導，即將到來的 Linux merge window 將啟用對 Intel Instruction Timeout 功能的支援。這是一項硬件機制，旨在 TDX trust domain 內部出現失控或刻意持續的指令執行時將其中斷，以免影響主機可用性。此功能先前在 kernel 開發討論中以「Notify VM Exit」之名出現。改名似乎反映 Intel 與 kernel 維護者對其用途描述的轉變——它不只是一個 notification hook，而是對 guest 可執行多久、何時須將控制權交回主機的強制性邊界。</p>
+<h4>為何可用性是保密運算中缺失的一環</h4>
+<p>TDX 與 AMD 的 SEV-SNP 及其他保密運算技術一樣，最初建構是為了回答一個保密性問題：主機（或被入侵的 hypervisor）能否檢視或竄改 guest 的記憶體？硬件強制加密與 attestation 正是針對此問題。</p>
+<p>可用性則是更棘手的難題。Trust domain 在設計上與主機保持一定程度的隔離，而這種隔離可被濫用。若 guest 在長時間運行的指令序列中不斷循環而不讓出控制權，實際上便是白白消耗主機 scheduler 原本分配給其他租戶的運算週期。在多租戶資料中心中，這構成一種拒絕服務途徑，完全無需任何記憶體存取漏洞利用——只需一顆 CPU。</p>
+<p>Intel Instruction Timeout 在晶片層面解決此問題，而非依賴軟件的啟發式排程。若 guest 在 trust domain 內的執行超過設定閾值，硬件便會觸發 exit 返回主機，讓 hypervisor 有機會對該 domain 進行資源記帳、節流或終止。即將到來的 kernel 改動將此機制接入 TDX 支援，使該強制邊界可在主線 kernel 中套用。</p>
+<h4>這是可調校的選項，並非免費午餐</h4>
+<p>營運商需仔細閱讀的正是其中的取捨。逾時閾值無可避免是一項折衷：設定過低，運算密集的合法 guest——尤其是使用 AVX-512 等寬向量指令，或在 Intel AMX 加速器上執行矩陣工作負載的 guest——可能在工作負載運行中途被打斷，損害吞吐量與性能可預測性；設定過高，則惡意 guest 有更長時間窗口消耗資源，主機才能重新取回控制權。</p>
+<p>依賴長時間、不中斷執行超長指令序列的工作負載，需要針對 kernel 預設值進行基準測試，而非想當然假設出廠設定適合自己。</p>
+<h4>適用範圍的注意事項</h4>
+<p>有兩項限制須明確指出。首先，這是 Intel 專屬功能：它依賴 TDX 晶片支援，對保密運算機群建基於 AMD SEV-SNP 的營運商毫無幫助，後者擁有自身且獨立發展的主機保護機制。其次，設定錯誤風險確實存在——此功能的價值取決於營運商選擇的閾值是否切合其實際工作負載特徵。</p>
+<h4>實務建議</h4>
+<ul>
+<li><strong>先作盤點。</strong> 確認你的保密 VM 是否運行於具備 TDX 功能的 Intel 硬件上；SEV-SNP 主機不會受惠。</li>
+<li><strong>為長指令工作負載進行剖析。</strong> AVX-512 與 AMX 用戶應在啟用或收緊逾時設定前建立基準數據。</li>
+<li><strong>將其視為 defence-in-depth。</strong> Instruction Timeout 是對 hypervisor 層面的排程隔離與租戶歸屬控制的補充，並非替代方案。</li>
+</ul>
+<p>對整體雲端與資料中心營運商而言——包括香港在內的任何多租戶市場——更廣泛的意義在於，保密運算正從單純的記憶體私隱議題，逐漸發展為同時能就共享主機公平性發言的技術。正如 Phoronix 所報道，即將到來的主線改動令 Intel 對此缺口的回應首次可在 kernel 中適用。</p>
+<p><a href="https://www.phoronix.com/news/Intel-Instruction-Timeout-Linux" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
