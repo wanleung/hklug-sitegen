@@ -1,0 +1,82 @@
+Date: 2026-10-16 15:41:00
+Author: HKLUG Team
+Title: F5 修補 NGINX 兩個未經認證即可利用的 critical RCE 漏洞：任何對外暴露的 NGINX 都應視為高風險
+Content:
+<h3>F5 修補 NGINX 兩個未經認證即可利用的 critical RCE 漏洞</h3>
+<p><strong>【立即修補提醒】</strong> F5 已為 NGINX 發布十一項安全性修補，其中兩個被列為 critical 的遠端程式碼執行（RCE）漏洞——CVE-2026-15176 與 CVE-2026-93479——<strong>不需要任何認證即可利用</strong>，攻擊者只需送出一個精心構造的 HTTP 請求即可觸發。任何執行受影響 NGINX 版本、對外開放的伺服器都應視為高風險。</p>
+<p>需要留意的是，來源報導並未揭露其餘九個問題的嚴重度評級；在 F5 完整公告細節確認之前，操作團隊應將整批十一項修補一併納入盤點與分級，而不是只盯著兩個 critical 項目。</p>
+<p>F5 官方公告指出，在某些「超出營運商控制範圍」的條件下，攻擊者可藉由惡意 HTTP 請求達成遠端程式碼執行——這句話的實際意義是：<strong>單靠組態強化並不足以完全阻擋利用</strong>，升級到已修補版本才是唯一可靠的解決方案。</p>
+<h4>為什麼這不只是又一次例行公告</h4>
+<p>NGINX 是全球部署最廣泛的網頁伺服器之一，支撐著極大比例的網絡基礎設施。這個市場地位意味著 NGINX 的 critical RCE 從來不是少數人的問題——它影響的是幾乎所有運行對外網頁服務的組織。未經認證、單一 HTTP 請求、對外暴露，三個條件同時成立，等於把攻擊門檻降到極低。</p>
+<h4>受影響與已修補版本</h4>
+<p>F5 官方公告列出的受影響版本範圍與對應修補版本如下（受影響與已修補的實際版本區間，請以 <a href="https://ask.f5.com/">F5 官方 advisory</a> 為準）：</p>
+<table>
+<thead>
+<tr>
+<th>元件</th>
+<th>受影響版本</th>
+<th>已修補版本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NGINX（open source / F5 版本分支）</td>
+<td>見 F5 advisory</td>
+<td>見 F5 advisory</td>
+</tr>
+</tbody>
+</table>
+<p>CVE-2026-15176 與 CVE-2026-93479 的 CVSS 評分與詳細利用條件，亦請直接引用 F5 公告原文。</p>
+<h4>五步修補檢查清單</h4>
+<ol>
+<li><strong>盤點版本</strong>：列出所有 NGINX 實例並記錄版本號。實體機與 VM 可執行 <code>nginx -v</code>；容器環境則檢查 base image 的 tag，或在容器內執行 <code>nginx -n -v</code>（<code>-n</code> 可避免因組態錯誤而無法輸出版本資訊）。盤點範圍應涵蓋實體機、VM、容器 base image 與 Kubernetes ingress controller。</li>
+<li><strong>排程修補</strong>：將兩個 critical RCE 列為最高優先級，其餘九項依公告揭露的嚴重度分級後，在維護窗口內完成升級。</li>
+<li><strong>WAF 作為過渡緩解</strong>：若無法立即升級，可先以 WAF 規則阻擋可疑 HTTP 請求——但這是<strong>緩兵之計，不能取代修補</strong>；對未置於 WAF 之後的部署而言，漏洞是直接可達的。</li>
+<li><strong>審視對外暴露面</strong>：檢查是否有 NGINX 實例意外暴露於公共網絡（staging 環境、開發連接埠、內部工具）。</li>
+<li><strong>檢查下游與託管依賴</strong>：NGINX 常嵌入於 CDN、appliance、託管雲服務與容器映像中，需確認供應商與雲端平台已推送修補。若貴單位同時是 F5 客戶，也建議一併確認 BIG-IP 與 NGINX 兩條產品線各自的公告狀態，將兩者的漏洞管理納入同一個追蹤視圖。</li>
+</ol>
+<p>還有一個容易被忽略的面向：<strong>修補責任的分散</strong>。若 NGINX 是透過雲端負載平衡器背後的實例、託管執行環境、或 Kubernetes Ingress（NGINX Ingress Controller）運行，升級動作可能分散在 IaaS、PaaS 與自家 DevOps 團隊之間。請明確確認「誰負責推送修補映像」，避免各方互推、讓漏洞持續暴露。</p>
+<h4>為什麼開源社群需要關注</h4>
+<p>NGINX 的維護權在 2019 年隨 F5 收購轉移到企業手上，此次一次性修補十一個漏洞顯示企業贊助模式下的修補節奏。對開源社群而言，值得持續追蹤的是：這些修補何時進入 open source 主線、何時被下游發行版（Debian、Alpine、Red Hat）吸收，以及容器 base image 的更新速度是否跟得上攻擊者的利用時間差——這些問題目前仍屬社群追蹤中的開放議題。</p>
+<p>對香港的 IT 團隊而言，上述分散式修補責任的問題在多雲與混合部署常見的環境中尤其值得優先釐清。</p>
+<p><strong>相關來源：</strong> <a href="https://securityaffairs.com/201106/security/f5-addressed-critical-rce-flaws-in-nginx.html">Security Affairs</a>（原始報導）；版本與 CVE 詳情請參閱 <a href="https://ask.f5.com/">F5 官方安全性通告</a>。</p>
+<hr>
+<h3>F5 修補 NGINX 兩個未經認證即可利用的 critical RCE 漏洞</h3>
+<p><strong>【立即修補提醒】</strong> F5 已為 NGINX 發布十一項安全性修補，其中兩個被列為 critical 的遠端程式碼執行（RCE）漏洞——CVE-2026-15176 與 CVE-2026-93479——<strong>不需要任何認證即可利用</strong>，攻擊者只需送出一個精心構造的 HTTP 請求即可觸發。任何執行受影響 NGINX 版本、對外開放的伺服器都應視為高風險。</p>
+<p>需要留意的是，來源報導並未揭露其餘九個問題的嚴重度評級；在 F5 完整公告細節確認之前，操作團隊應將整批十一項修補一併納入盤點與分級，而不是只盯著兩個 critical 項目。</p>
+<p>F5 官方公告指出，在某些「超出營運商控制範圍」的條件下，攻擊者可藉由惡意 HTTP 請求達成遠端程式碼執行——這句話的實際意義是：<strong>單靠組態強化並不足以完全阻擋利用</strong>，升級到已修補版本才是唯一可靠的解決方案。</p>
+<h4>為什麼這不只是又一次例行公告</h4>
+<p>NGINX 是全球部署最廣泛的網頁伺服器之一，支撐著極大比例的網絡基礎設施。這個市場地位意味著 NGINX 的 critical RCE 從來不是少數人的問題——它影響的是幾乎所有運行對外網頁服務的組織。未經認證、單一 HTTP 請求、對外暴露，三個條件同時成立，等於把攻擊門檻降到極低。</p>
+<h4>受影響與已修補版本</h4>
+<p>F5 官方公告列出的受影響版本範圍與對應修補版本如下（受影響與已修補的實際版本區間，請以 <a href="https://ask.f5.com/">F5 官方 advisory</a> 為準）：</p>
+<table>
+<thead>
+<tr>
+<th>元件</th>
+<th>受影響版本</th>
+<th>已修補版本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NGINX（open source / F5 版本分支）</td>
+<td>見 F5 advisory</td>
+<td>見 F5 advisory</td>
+</tr>
+</tbody>
+</table>
+<p>CVE-2026-15176 與 CVE-2026-93479 的 CVSS 評分與詳細利用條件，亦請直接引用 F5 公告原文。</p>
+<h4>五步修補檢查清單</h4>
+<ol>
+<li><strong>盤點版本</strong>：列出所有 NGINX 實例並記錄版本號。實體機與 VM 可執行 <code>nginx -v</code>；容器環境則檢查 base image 的 tag，或在容器內執行 <code>nginx -n -v</code>（<code>-n</code> 可避免因組態錯誤而無法輸出版本資訊）。盤點範圍應涵蓋實體機、VM、容器 base image 與 Kubernetes ingress controller。</li>
+<li><strong>排程修補</strong>：將兩個 critical RCE 列為最高優先級，其餘九項依公告揭露的嚴重度分級後，在維護窗口內完成升級。</li>
+<li><strong>WAF 作為過渡緩解</strong>：若無法立即升級，可先以 WAF 規則阻擋可疑 HTTP 請求——但這是<strong>緩兵之計，不能取代修補</strong>；對未置於 WAF 之後的部署而言，漏洞是直接可達的。</li>
+<li><strong>審視對外暴露面</strong>：檢查是否有 NGINX 實例意外暴露於公共網絡（staging 環境、開發連接埠、內部工具）。</li>
+<li><strong>檢查下游與託管依賴</strong>：NGINX 常嵌入於 CDN、appliance、託管雲服務與容器映像中，需確認供應商與雲端平台已推送修補。若貴單位同時是 F5 客戶，也建議一併確認 BIG-IP 與 NGINX 兩條產品線各自的公告狀態，將兩者的漏洞管理納入同一個追蹤視圖。</li>
+</ol>
+<p>還有一個容易被忽略的面向：<strong>修補責任的分散</strong>。若 NGINX 是透過雲端負載平衡器背後的實例、託管執行環境、或 Kubernetes Ingress（NGINX Ingress Controller）運行，升級動作可能分散在 IaaS、PaaS 與自家 DevOps 團隊之間。請明確確認「誰負責推送修補映像」，避免各方互推、讓漏洞持續暴露。</p>
+<h4>為什麼開源社群需要關注</h4>
+<p>NGINX 的維護權在 2019 年隨 F5 收購轉移到企業手上，此次一次性修補十一個漏洞顯示企業贊助模式下的修補節奏。對開源社群而言，值得持續追蹤的是：這些修補何時進入 open source 主線、何時被下游發行版（Debian、Alpine、Red Hat）吸收，以及容器 base image 的更新速度是否跟得上攻擊者的利用時間差——這些問題目前仍屬社群追蹤中的開放議題。</p>
+<p>對香港的 IT 團隊而言，上述分散式修補責任的問題在多雲與混合部署常見的環境中尤其值得優先釐清。</p>
+<p><strong>相關來源：</strong> <a href="https://securityaffairs.com/201106/security/f5-addressed-critical-rce-flaws-in-nginx.html">Security Affairs</a>（原始報導）；版本與 CVE 詳情請參閱 <a href="https://ask.f5.com/">F5 官方安全性通告</a>。</p>
+<p><a href="https://securityaffairs.com/201106/security/f5-addressed-critical-rce-flaws-in-nginx.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
