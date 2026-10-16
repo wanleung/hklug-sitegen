@@ -1,0 +1,60 @@
+Date: 2026-10-16 13:25:00
+Author: HKLUG Team
+Title: A New Class of 'Decision' AI Models Popped Up in Weeks — And SOC Platforms Are First in Line
+Content:
+<h4>The detection-to-decision shift in SOC architecture — and what security teams should actually test</h4>
+<p>In the space of roughly three weeks, a new category of AI model went from nonexistent to everywhere in security tooling. TypeSafe AI released Jev on 15 September, branding it a "System One" model after Daniel Kahneman's fast, intuitive mode of thinking. OpenAI announced its own Decisions API at its DevDay event and opened a public beta on 6 October. Cribl published <code>cribl-decision</code>, an open LoRA adapter that can be run locally. Others, including a vendor called Laya, have followed.</p>
+<p>The Hacker News, which covered the wave, identifies security operations centres as the first destination for these models. That framing is worth examining carefully — because the interesting story here is not a general advance in AI, but a specific architectural slot in the SOC stack.</p>
+<h5>A component, not a category</h5>
+<p>The defensible technical proposition is narrow: these models produce bounded outputs — escalate, suppress, enrich — under tight latency budgets. That is a detection-to-decision handoff, not cognition. The Kahneman "System One" framing is product positioning, not research lineage; the gap between a fast heuristic classifier and human intuitive judgement is not closed by giving it a name borrowed from behavioural economics.</p>
+<p>The speed of vendor coalescence around the term — three weeks from no shared vocabulary to a claimed category — is a marketing signal, not evidence the term is technically meaningful. At least one of the releases also sits close to the vendor's own commercial interest. Security buyers should treat the label with the same scepticism they would apply to any vendor-invented taxonomy.</p>
+<h5>Why the local adapter matters most</h5>
+<p>Of the releases, Cribl's open LoRA adapter is arguably the strategically significant one, despite attracting less attention than the better-known hosted offerings. Local deployment buys three things procurement teams actually argue about: data residency, predictable cost, and independent testability.</p>
+<p>The residency argument is worth pausing on for Hong Kong organisations specifically. Sending triage telemetry to a hosted inference endpoint is a data-flow decision with compliance implications under the Personal Data (Privacy) Ordinance; running an adapter on-premises keeps the traffic inside the boundary. That said, PDPO obligations attach to the data being processed regardless of where inference happens — local execution simplifies the audit story, it does not remove the obligation. This is an editorial observation about the jurisdictional landscape, not a claim from the source coverage.</p>
+<p>Local deployment also removes an awkward dependency: you are not calling a vendor API whose pricing, rate limits, or deprecation timeline you do not control.</p>
+<h5>An actionable, premise-free test</h5>
+<p>Whether or not "decision model" survives as a category, there is a test any SOC team can run now that does not depend on believing the premise:</p>
+<ol>
+<li>Run the adapter locally against your own historical triage queue.</li>
+<li>Measure precision and recall on your data — not a vendor benchmark.</li>
+<li>Keep the audit trail for every automated decision.</li>
+</ol>
+<p>This is valuable regardless of whether the category survives. It also surfaces the three questions that should carry into any evaluation of this technology:</p>
+<ul>
+<li><strong>True end-to-end latency</strong>, including context retrieval, not just model inference time.</li>
+<li><strong>Behaviour on out-of-distribution inputs</strong> — what does the model do on alert types it was never trained on, and does it fail loudly or silently?</li>
+<li><strong>Where the audit trail lives</strong>, and whether an analyst can reconstruct why a decision was made.</li>
+</ul>
+<h5>What remains unresolved</h5>
+<p>No widely accepted benchmark exists for decision-model performance in security contexts specifically. Integration patterns are also unsettled: these models may land as autonomous triage agents, as analyst-assist tools, or as components in larger agentic pipelines, and the governance implications differ sharply between those designs.</p>
+<p>Finally, automated blocking and escalation carry consequences that pure classification does not. A model that misclassifies an image is an annoyance; a model that suppresses an alert that turned out to be a real intrusion is a liability event. Governance frameworks for that posture remain immature industry-wide.</p>
+<p>The category may or may not survive its own hype cycle. The underlying shift — from detection to decision, under latency pressure — is real, and the open adapter gives teams a way to evaluate it on their own terms.</p>
+<hr>
+<h4>SOC 架構由偵測到決策的轉變 — 以及安全團隊實際上應測試什麼</h4>
+<p>在大約三週之內，一類全新的 AI 模型便從無到有，迅速遍佈安全工具領域。TypeSafe AI 於 9 月 15 日發布 Jev，並將其定位為「System One」模型，援引 Daniel Kahneman 所描述的快速、直覺式思維模式。OpenAI 則在 DevDay 活動上公布自家的 Decisions API，並於 10 月 6 日開放公測。Cribl 發布了 <code>cribl-decision</code>，一個可於本地運行的開源 LoRA adapter。其他廠商，包括一家名為 Laya 的公司，亦相繼跟進。</p>
+<p>The Hacker News 在報導此浪潮時指出，security operations centres（SOC）是這些模型的首個落地場景。這一定位值得仔細審視 — 因為此處真正值得注意的，並非人工智能的普遍進步，而是 SOC 技術架構中一個特定的組件位置。</p>
+<h5>是一個組件，而非一個品類</h5>
+<p>站得住腳的技術論述其實相當有限：這些模型在嚴格的 latency 預算下，輸出範圍明確的結果 — 上報（escalate）、抑制（suppress）、補充資訊（enrich）。這是偵測到決策的交接（detection-to-decision handoff），而非認知（cognition）。Kahneman「System One」的說法是產品定位，並非研究源流；一個快速啟發式分類器與人類直覺判斷之間的差距，不會因為套上一個借自行為經濟學的名稱便告彌合。</p>
+<p>廠商們圍繞此術語迅速凝聚的速度 — 三週之內便從毫無共同詞彙躍升為一個宣稱成立的品類 — 是一個市場推廣信號，而非該術語在技術上具有意義的證據。至少其中一項發布，更與廠商自身的商業利益密切相關。安全方案買方對此標籤應抱持同等程度的審慎，一如對待任何廠商自行發明的分類法。</p>
+<h5>為何本地 adapter 最為關鍵</h5>
+<p>在各項發布之中，Cribl 的開源 LoRA adapter 從策略角度而言可能是最具意義的一項，儘管其受關注程度不及那些較知名的託管服務（hosted offerings）。本地部署（local deployment）為採購團隊真正會據理力爭的三件事提供了保障：data residency（數據駐留）、可預測的成本，以及可獨立測試性。</p>
+<p>就香港機構而言，數據駐留的論點尤其值得停下來思考。將 triage telemetry 傳送至託管的 inference endpoint，是一項在《個人資料（私隱）條例》（PDPO）下涉及合規影響的數據流向決策；在 on-premises 環境運行 adapter，則可將相關流量留在邊界之內。話雖如此，PDPO 的責任隨所處理的數據而生，無論 inference 在何處進行均不例外 — 本地執行可簡化審計流程，但並不能免除相關責任。此段屬編輯就香港法律環境所作的觀察，並非原報導的主張。</p>
+<p>本地部署亦移除了一個尷尬的依賴：你不再需要調用一家其定價、rate limits 及 deprecation timeline 均不受你控制的廠商 API。</p>
+<h5>一個不依賴前提、切實可行的測試</h5>
+<p>無論「decision model」能否作為一個品類存活下來，任何 SOC 團隊現在都可以進行一項測試，而無須先接受此前提：</p>
+<ol>
+<li>本地運行該 adapter，對照你自己的歷史 triage 佇列進行測試。</li>
+<li>在你自己的數據上測量 precision 及 recall — 而非依賴廠商的 benchmark。</li>
+<li>為每一項自動化決策保留完整的 audit trail。</li>
+</ol>
+<p>無論該品類最終能否存活，這項測試都有其價值。它同時揭示了三條應貫穿此類技術任何評估的問題：</p>
+<ul>
+<li><strong>真正的端到端 latency</strong>，包括 context retrieval，而不僅是模型 inference 時間。</li>
+<li><strong>模型在 out-of-distribution 輸入下的行為</strong> — 對於從未訓練過的 alert 類型，模型會如何處理？它會即時發出明確錯誤，還是靜默失敗？</li>
+<li><strong>audit trail 存放於何處</strong>，以及分析員能否還原某一決策背後的原因。</li>
+</ul>
+<h5>尚未解決的問題</h5>
+<p>目前並無廣泛接受的 benchmark，專門衡量 decision model 在安全情境下的表現。Integration 模式亦未有定論：這些模型可能以 autonomous triage agent、分析員輔助工具，或大型 agentic pipeline 中的組件等不同形式落地，而不同設計之間的治理（governance）含義差異甚大。</p>
+<p>最後，自動封鎖及上報所帶來的後果，是純粹分類（classification）所沒有的。一個錯誤歸類圖片的模型只會造成困擾；但一個抑制了實際上屬真實入侵的 alert 的模型，卻會構成 liability event。業界整體而言，針對此種態勢的治理框架仍屬不成熟。</p>
+<p>此一品類未必能在自身 hype cycle 之中存活。但底層的轉變 — 在 latency 壓力下由偵測走向決策 — 是真實的，而開源 adapter 為團隊提供了一個按照自身條件進行評估的途徑。</p>
+<p><a href="https://thehackernews.com/2026/10/ai-decision-models-and-their-impact-on.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
