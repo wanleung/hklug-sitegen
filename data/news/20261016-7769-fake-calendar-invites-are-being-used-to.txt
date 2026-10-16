@@ -1,0 +1,52 @@
+Date: 2026-10-16 18:39:00
+Author: HKLUG Team
+Title: Fake Calendar Invites Are Being Used to Steal Google Credentials From Taiwan Researchers
+Content:
+<p>Researchers have detailed an advanced persistent threat (APT) spear-phishing campaign that uses forged Google Calendar event invitations to push individuals affiliated with Taiwan research organisations into an adversary-in-the-middle (AitM) phishing framework, where their Google account credentials and multi-factor authentication (MFA) codes are captured in real time.</p>
+<p>The activity, tracked as <strong>UAT-11985</strong>, was reported by The Hacker News, and the mechanics matter far beyond the immediate victims. The campaign is a textbook demonstration that the credential-plus-MFA model — long the default assumption for cloud identity security — no longer holds against a capable attacker.</p>
+<h4>How the lure works</h4>
+<p>The entry point is deliberately mundane: a calendar invitation. Unsolicited event invites are routine and high-volume in collaborative research environments, where conference organisers, partner institutions, and ad-hoc working groups routinely reach out to people they have never corresponded with before. That volume is precisely what makes the vector effective — authenticated, high-trust Google Workspace notifications slip past both user suspicion and the mail-security controls that would flag an unexpected attachment or link. Once the target engages, they are routed to an AitM phishing proxy sitting between the victim and the legitimate Google sign-in page.</p>
+<p>This is the part that should concern every identity and security administrator. In an AitM relay, the phishing site is not a crude replica — it is a live pass-through to the real Google authentication flow. The victim types their password into what is functionally the real service, completes their MFA challenge normally, and the framework transparently relays every step. When authentication completes, the attacker inherits the resulting session cookie.</p>
+<p>The consequence is blunt: SMS one-time codes, TOTP authenticator apps, and push approvals all fail transparently. They were never designed to bind the authentication to the legitimate origin — they simply prove that someone holding the second factor approved a sign-in. An AitM attacker satisfies that check on the victim's behalf and then resumes the session from their own infrastructure, often with full access to mail, Drive, and connected applications.</p>
+<h4>Why MFA alone no longer holds</h4>
+<p>For Hong Kong IT teams running Google Workspace or similar SaaS identity stacks, the uncomfortable lesson is that "we enforce MFA" is not a meaningful phishing control. Session cookie theft means the attacker never needs to defeat the second factor — they simply reuse it. This campaign targeting research affiliates shows the pattern is not theoretical; it is being operationalised by APT-level actors against exactly the kind of staff — researchers, academics, collaborators — who receive high volumes of unsolicited calendar invitations.</p>
+<p>The strongest defence is shifting authentication to <strong>origin-bound, phishing-resistant factors</strong> — passkeys and FIDO2 hardware security keys. These cryptographically bind the authentication to the verified domain, so an AitM proxy relays nothing of value: the browser refuses to release the assertion to a look-alike origin. TOTP and push should be treated as fallback, not baseline.</p>
+<h4>What defenders should do now</h4>
+<p>Because open-source AitM tooling is readily available, defenders can — and should — stand up their own instance against a test tenant to empirically verify that TOTP and push MFA fall over while passkeys and FIDO2 do not. It is the fastest way to prove the gap to leadership, and testing strictly against your own tenant is a legitimate red-team exercise, not an offensive capability.</p>
+<p>For teams outside an all-Google shop, the excuse that passkey support is immature no longer holds. Passkey support across Linux desktops via libfido2 and platform authenticators has matured considerably, and self-hosted stacks such as Nextcloud and Matrix now interoperate with FIDO2 credentials. Defer phishing-resistant auth at your peril, regardless of platform.</p>
+<h5>Configuration-level defence checklist</h5>
+<ul>
+<li><strong>Enable passkeys/FIDO2 for Workspace admins first</strong>, then roll out to all users; remove SMS as an MFA option where possible.</li>
+<li><strong>Enforce device-level trust</strong>: context-aware access and managed-device policies that reject stolen cookies replayed from unknown devices.</li>
+<li><strong>Shorten session lifetimes</strong>, and enable cookie or token binding where the platform supports it, to raise the replay cost for stolen tokens.</li>
+<li><strong>Revoke active sessions tenant-wide</strong> immediately after any suspected AitM exposure, and rotate connected application tokens — revoking the password alone is insufficient.</li>
+<li><strong>Hunt for post-compromise indicators</strong>: impossible-travel sign-in alerts, authentication from unfamiliar ASNs, new device enrolments, and unexpected mailbox forwarding rules all survive cookie theft even when the login itself looks legitimate.</li>
+<li><strong>Verify calendar invites</strong> out-of-band; treat unexpected meeting invitations with external senders as a phishing indicator, and alert on the invite-driven sign-in pattern.</li>
+<li><strong>Run phishing simulations</strong> against research and collaboration staff, who are precisely the profile UAT-11985 is targeting.</li>
+</ul>
+<p>The broader point is that this campaign is a preview, not an outlier. As AitM tooling commoditises, origin-bound authentication becomes the only credential model that survives contact with a determined adversary.</p>
+<hr>
+<p>研究人員近日披露一宗高級持續性威脅（APT）定向釣魚攻擊活動。駭客利用偽造的 Google 日曆活動邀請，引誘與台灣研究機構相關的人士進入 adversary-in-the-middle（AitM）釣魚框架，即時擷取其 Google 帳戶登入憑證及多重身份驗證（MFA）代碼。</p>
+<p>該攻擊活動編號為 <strong>UAT-11985</strong>，由 The Hacker News 報道。其攻擊手法的意義遠超直接的受害者範圍——這是一次教科書式的示範，證明「登入憑證加 MFA」這一雲端身份安全的長期基本假設，已不足以抵禦有能力的攻擊者。</p>
+<h4>誘餌如何運作</h4>
+<p>入侵的起點刻意平凡無奇：一個日曆邀請。在協作式研究環境中，突如其來的活動邀請屬家常便飯，數量龐大。會議主辦方、合作機構及臨時工作小組，經常會聯絡從未往來的陌生人。正是這種龐大的數量令該攻擊向量極為有效——經 Google Workspace 認證、可信度極高的通知郵件，既能避開用戶的戒心，也能躲過一般郵件保安系統對可疑附件或連結的標記。一旦目標點開，便會被轉移到一個部署在受害者與真正的 Google 登入頁面之間的 AitM 釣魚代理伺服器。</p>
+<p>這正是每一位身份及保安管理員都應關注的部分。在 AitM 中繼攻擊中，釣魚網站並非粗劣的仿冒品，而是實時貫通真正 Google 認證流程的通道。受害者實際上是在真正的服務上輸入密碼，照常完成 MFA 驗證，而框架則全程透明地中繼每一個步驟。認證完成後，攻擊者即繼承由此產生的 session cookie。</p>
+<p>後果十分直接：SMS 一次性驗證碼、TOTP 驗證器應用程式及 push 推送批准，全部都會被透明地繞過。這些機制從來就不是為了將認證綁定至合法來源而設計——它們只證明持有第二重驗證因素的人批准了登入。AitM 攻擊者可以代受害者通過這項檢查，再從自己的基礎設施接續該 session，往往可完全存取電郵、Drive 及已連接的應用程式。</p>
+<h4>單靠 MFA 已不足恃</h4>
+<p>對於運作 Google Workspace 或類似 SaaS 身份架構的香港 IT 團隊而言，令人不安的教訓是：「我們已強制啟用 MFA」並不算是一項有意義的防釣魚措施。session cookie 被竊，意味攻擊者根本無需破解第二重驗證因素——只需重用便可。這次針對研究機構相關人員的攻擊活動顯示，此模式絕非理論推測，而是已被 APT 級別的攻擊者實際運用，針對的正是這類經常收到大量陌生日曆邀請的人士——研究人員、學者及合作夥伴。</p>
+<p>最有力的防禦，是將認證方式轉為<strong>綁定來源、具防釣魚能力的因素</strong>——即 passkeys 及 FIDO2 硬件安全金鑰。這些機制以加密方式將認證綁定至已驗證的域名，AitM 代理伺服器因此無法中繼任何有價值的內容：瀏覽器會拒絕向貌似相同的來源釋出 assertion。TOTP 及 push 推送應視為後備方案，而非基本配置。</p>
+<h4>防守方現應採取的行動</h4>
+<p>由於開源 AitM 工具隨處可得，防守方可以——而且應該——自行架設一個實例連接測試租戶，以實證方式驗證 TOTP 及 push MFA 確實會失效，而 passkeys 及 FIDO2 則不會。這是向管理層證明差距所在的最快方法；嚴格針對自身租戶進行測試，屬於正當的 red team 演練，並非攻擊性能力。</p>
+<p>對於並非全面使用 Google 產品的團隊而言，「passkey 支援尚不成熟」的藉口已不再成立。透過 libfido2 及平台驗證器，Linux 桌面系統對 passkey 的支援已相當成熟；Nextcloud、Matrix 等自建平台亦已與 FIDO2 憑證互通。不論使用哪個平台，延遲部署防釣魚認證，後果自負。</p>
+<h5>設定層面的防護清單</h5>
+<ul>
+<li><strong>先為 Workspace 管理員啟用 passkeys/FIDO2</strong>，再推廣至所有用戶；盡可能移除 SMS 作為 MFA 選項。</li>
+<li><strong>強制執行設備層級信任</strong>：設定 context-aware access 及受管理設備政策，令系統拒絕從未知設備重播的被竊 cookie。</li>
+<li><strong>縮短 session 有效期</strong>，並在平台支援的情況下啟用 cookie 或 token 綁定，提高被竊 token 的重播成本。</li>
+<li>一旦懷疑遭 AitM 擷取，即時<strong>在整個租戶層面撤銷所有有效 session</strong>，並輪換已連接應用程式的 token——僅撤銷密碼並不足夠。</li>
+<li><strong>搜尋入侵後的指標</strong>：impossible-travel 登入警報、來自陌生 ASN 的認證、新設備註冊，以及異常的信箱轉寄規則——即使登入本身看似正常，這些跡象在 cookie 被竊後依然存在。</li>
+<li><strong>以額外途徑核實日曆邀請</strong>；將外部寄件者發來的意外會議邀請視為釣魚指標，並對由邀請驅動的登入模式發出警報。</li>
+<li><strong>對研究及協作人員進行釣魚演練</strong>——他們正是 UAT-11985 所針對的目標族群。</li>
+</ul>
+<p>更宏觀地看，這次攻擊活動是序幕，而非個別事件。隨著 AitM 工具日益商品化，綁定來源的認證將是唯一能在堅定不移的攻擊者面前存活的憑證模式。</p>
+<p><a href="https://thehackernews.com/2026/10/uat-11985-uses-fake-event-invites-to.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
