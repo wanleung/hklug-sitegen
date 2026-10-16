@@ -1,0 +1,34 @@
+Date: 2026-10-16 09:28:00
+Author: HKLUG Team
+Title: October Windows 11 Update May Lock Smart App Control in the Off Position
+Content:
+<p>Microsoft has warned that some Windows 11 devices may be unable to re-enable Smart App Control after installing this month's security update, KB5127648. Microsoft disclosed the issue in its release notes for KB5127648, as covered by BleepingComputer on 16 October. The advisory does not describe an exploit or a compromise — but for administrators running centrally managed Windows 11 estates, including teams here in Hong Kong, the failure mode deserves a spot on the Patch Tuesday checklist.</p>
+<p>The reason is asymmetry. Smart App Control (SAC) leans on a trust model that cannot simply be switched back on once a device has decided the feature should stay off. A routine cumulative update that quietly drops SAC into the disabled state can therefore convert a maintenance-window patch into a recovery exercise, potentially requiring a device reset or full reimage to restore the control.</p>
+<h5>Who is and isn't affected</h5>
+<p>Smart App Control is only active on devices where the feature is enabled — typically systems that shipped with it turned on, rather than the large population of machines where it was never activated or was already disabled. Devices that have SAC turned off by policy or were never eligible for it are not materially changed by this issue. The risk is concentrated on endpoints where SAC is currently in the "on" or "evaluation" state and is relied upon as part of the endpoint protection baseline.</p>
+<h5>Post-patch verification</h5>
+<p>For fleets that do depend on SAC, the sensible step is to treat it as a post-deployment verification item rather than assuming it persists. Microsoft's SAC state is exposed in the registry under <code>HKLM\SYSTEM\CurrentControlSet\Control\CI\Policy</code>, in the <code>VerifiedAndReputablePolicyState</code> value: <code>0</code> indicates off, <code>1</code> indicates the evaluation period (a temporary state during which SAC is still gathering signal before rendering a verdict), and <code>2</code> indicates on. Administrators running this check across a fleet should validate the query against a known-good test machine first, since registry layouts and management tooling vary between environments, and a bad query in a compliance policy is its own incident.</p>
+<p>An optional but useful practice is to snapshot SAC status before the update roll-out. That baseline makes it far easier to distinguish a change introduced by KB5127648 from a device that was already running with SAC disabled — a distinction that matters during later triage.</p>
+<h5>What to do if SAC drops out</h5>
+<p>If a device does lose Smart App Control, the first resort should be Microsoft's general troubleshooting path for SAC: where the original malware scan results were inconclusive, the feature can be reset so the device re-evaluates and the control can be turned back on again. Administrators should treat that reset path as standard SAC troubleshooting rather than a fix Microsoft has explicitly tied to KB5127648, and should follow the exact wording in Microsoft's Smart App Control documentation rather than ad-hoc steps. This is preferable to immediately reimaging.</p>
+<p>Admins should not attempt to force the feature back on by editing <code>VerifiedAndReputablePolicyState</code> manually. That is not a supported configuration, and tampering with a control that is itself a security mechanism is more likely to create confusion in a future audit than to fix anything.</p>
+<h5>What remains unknown</h5>
+<p>As of this writing, Microsoft has not published a timeline for a servicing-stack or cumulative fix for the issue, nor a detailed account of how many devices are affected. Administrators tracking the change should keep an eye on the Windows release health dashboard and Microsoft's known-issue record for KB5127648, as remediation guidance may evolve.</p>
+<h5>Takeaway</h5>
+<p>For Windows 11 estates where SAC is part of the security baseline, a quick registry check after KB5127648 is cheap insurance against a considerably more expensive recovery later.</p>
+<hr>
+<p>Microsoft 警告，部分 Windows 11 設備在安裝本月的安全更新 KB5127648 後，可能無法重新啟用 Smart App Control。Microsoft 在 KB5127648 的發行說明中披露了此問題，BleepingComputer 於 10 月 16 日已作報道。該通告並未提及任何漏洞利用或入侵事件——但對於集中管理 Windows 11 裝機的管理員而言，包括本港的 IT 團隊，此故障模式值得列入 Patch Tuesday 檢查清單。</p>
+<p>問題在於其不對稱性。Smart App Control（SAC）依賴一套信任模型，一旦設備判定該功能應維持關閉，便無法簡單地重新開啟。因此，一次例行的 cumulative update 若悄悄將 SAC 轉為停用狀態，便可能令一個維護時段內的 patch，變成一項復原工作，甚至需要重置設備或全面重裝系統才能恢復該控制功能。</p>
+<h5>受影響與不受影響的範圍</h5>
+<p>Smart App Control 僅在已啟用該功能的設備上運作——通常是出廠時已預先啟用的系統，而非那些從未啟用或已經停用的大量機器。透過 policy 將 SAC 關閉、或從未符合啟用條件的設備，並不會因是次問題而出現實質變化。風險集中於 SAC 目前處於「開啟」或「評估」狀態，且被視為 endpoint protection baseline 一部分的終端設備。</p>
+<h5>更新後的驗證</h5>
+<p>對於確實依賴 SAC 的機隊，合理做法是將其列為部署後驗證項目，而非假設其狀態會持續不變。SAC 的狀態可在 registry 的 <code>HKLM\SYSTEM\CurrentControlSet\Control\CI\Policy</code> 底下的 <code>VerifiedAndReputablePolicyState</code> 數值中查得：<code>0</code> 代表關閉，<code>1</code> 代表評估期（此為暫時狀態，SAC 仍在收集信號以作出判斷），<code>2</code> 代表開啟。管理員在整個機隊執行此檢查前，應先在一已知正常的測試機器上驗證該查詢，因為不同環境的 registry 結構和管理工具各有差異，而 compliance policy 中的一條錯誤查詢本身就是另一宗事故。</p>
+<p>一項可選但實用的做法，是在更新推出前記錄 SAC 狀態作快照。有了這項基準，日後分辨 KB5127648 所引入的變更，與原本就以 SAC 停用狀態運行的設備，會容易得多——這一區分在後續 triage 時相當重要。</p>
+<h5>SAC 若失效該如何處理</h5>
+<p>如果設備真的失去 Smart App Control，首選方案應是 Microsoft 針對 SAC 的一般故障排除路徑：若最初的 malware scan 結果不明確，可以重置該功能，讓設備重新評估，從而再次啟用該控制。管理員應將該重置路徑視為標準的 SAC 故障排除步驟，而非 Microsoft 明確針對 KB5127648 提供的修復方案，並應按 Microsoft Smart App Control 文件的確切指示操作，而非自行採取權宜步驟。這比立即重裝系統更為可取。</p>
+<p>管理員不應嘗試透過手動修改 <code>VerifiedAndReputablePolicyState</code> 來強行重新啟用該功能。此舉並非受支援的配置，而且改動一個本身就是安全機制的控制項目，與其修復任何問題，不如說更可能在日後的 audit 中造成混亂。</p>
+<h5>仍然未明的事項</h5>
+<p>截至本文撰寫時，Microsoft 尚未公佈針對此問題的 servicing stack 修復或 cumulative fix 的時間表，亦未詳細說明有多少設備受影響。追蹤是次變更的管理員應留意 Windows release health dashboard 及 Microsoft 就 KB5127648 的已知問題記錄，因為補救指引可能會有所更新。</p>
+<h5>總結</h5>
+<p>對於將 SAC 納入安全基準的 Windows 11 環境而言，在 KB5127648 安裝後快速檢查一次 registry，是一項成本低廉的保險，足以避免日後代價高昂得多的復原工作。</p>
+<p><a href="https://www.bleepingcomputer.com/news/microsoft/kb5127648-windows-security-update-may-break-smart-app-control/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
