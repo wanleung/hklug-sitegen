@@ -1,0 +1,30 @@
+Date: 2026-10-16 15:47:00
+Author: HKLUG Team
+Title: Fedora 46 Weighs Move to RPM v6 — What Enterprise Linux Admins Should Know
+Content:
+<p>Fedora Linux is considering a move to the RPM v6 packaging format for its Fedora 46 release, according to a report by Phoronix. If it goes ahead, the switch would be the first change to the core RPM package format version since RPM v4 arrived more than two decades ago — a format that has since underpinned Red Hat Enterprise Linux, Fedora, and their derivatives including AlmaLinux and Rocky Linux.</p>
+<p>It is worth being precise about the status of this: it remains a Fedora 46 proposal, not a done deal, and the transition has only been under community consideration for that release. Enterprise distributions built on RPM v4 will not follow for years even in the best case. RHEL and its rebuild derivatives typically trail Fedora by several release cycles, and Red Hat's packaging changes tend to land only after long stabilisation periods. For administrators running production fleets, nothing changes today.</p>
+<h4>The real migration pain: signing pipelines</h4>
+<p>For enterprise administrators, the headline version bump is less consequential than the operational work it implies. If a format transition happens, the painful part will not be the <code>rpm</code> command on a laptop — it will be everything around it.</p>
+<p>Third-party and internally built package repositories are the primary friction point. Any organisation that builds its own RPMs, signs them with an in-house key hierarchy, and publishes them to internal mirrors will need to confirm that its signing infrastructure produces formats compatible with whatever standard ships. Vendor-signed packages from ISVs will not upgrade in lockstep; during any transition window, a mixed-format environment is possible, and tooling that validates packages before distribution will need to handle both.</p>
+<p>Automation is the second exposure. Scripts that parse <code>rpm -q</code> or <code>rpm -qp</code> output, configuration management code that inspects package metadata, and CI pipelines that verify signatures before deployment all assume the current format's conventions. Any change to how package metadata is laid out or how dependency and trigger information is expressed could break assumptions in tooling that reads it — which means upgrade paths should be tested in staging well before an enterprise distribution adopts the format.</p>
+<p>The wider build ecosystem carries similar risk. Mock, koji, repository managers, and scanners that parse package headers all encode assumptions about the current format; a major version revision propagates further than any single tool.</p>
+<h4>What to do now</h4>
+<p>For RHEL, AlmaLinux, and Rocky administrators, the practical takeaway is preparation rather than action. Audit where locally built RPMs are produced and signed. Document which tools in the build chain interact with package metadata. Note any hard dependencies on exact <code>rpm</code> command output formats.</p>
+<p>None of this needs to happen urgently — enterprise distributions will lag Fedora's adoption by years, if it happens at all. But after more than twenty years on RPM v4, a format transition has been under consideration long enough that mapping the operational groundwork now is cheaper than doing it under a release deadline later.</p>
+<p>Fedora's usual release cadence would place Fedora 46 in 2027, and whether RPM v6 makes the cut will be settled by Fedora's release engineering and engineering steering processes well before then. Administrators tracking the proposal should watch those channels for a formal decision rather than relying on schedule speculation.</p>
+<p><em>Source: Phoronix, "Fedora 46 Looking At Moving To RPM v6 Package Format."</em></p>
+<hr>
+<p>據 Phoronix 報道，Fedora Linux 正考慮在 Fedora 46 版本中轉用 RPM v6 套件打包格式。若最終落實，這將是自 RPM v4 於二十多年前推出以來，核心 RPM 套件格式版本的首次變更——此格式一直支撐著 Red Hat Enterprise Linux、Fedora，以及包括 AlmaLinux 和 Rocky Linux 在內的各種衍生發行版。</p>
+<p>有關此事的現況必須說清楚：這仍然只是 Fedora 46 的一項提案，並非已成定局，該轉型亦僅在社群層面就該版本進行討論。建立於 RPM v4 之上的企業級發行版，即使在最樂觀的情況下，亦需多年才會跟隨。RHEL 及其重新編譯的衍生版本通常落後 Fedora 數個發布周期，而 Red Hat 的打包變更往往要在長期穩定化過程之後才會落實。對於管理生產環境伺服器群組的管理員而言，今天不會有任何改變。</p>
+<h4>真正的遷移痛點：簽署流程</h4>
+<p>對企業管理員而言，表面上的版本號提升，其重要性遠不及它所牽涉的運維工作。若格式轉換真的發生，痛苦的並非在手提電腦上使用 <code>rpm</code> 指令——而是圍繞著它的一切。</p>
+<p>第三方及自行編譯的套件儲存庫是主要的摩擦點。任何自行編譯 RPM、以內部金鑰層級進行簽署，並發佈到內部 mirror 的機構，都需要確認其簽署基礎架構所產生的格式，與正式推出的標準相容。獨立軟件供應商（ISV）所提供的廠商簽署套件不會同步升級；在任何轉型過渡期內，混合格式的環境隨時可能出現，而在分發前驗證套件的工具亦需要同時處理兩種格式。</p>
+<p>自動化流程是第二項風險。解析 <code>rpm -q</code> 或 <code>rpm -qp</code> 輸出的腳本、檢查套件 metadata 的配置管理代碼，以及在部署前驗證簽署的 CI pipeline，全部都依賴現行格式的慣例。任何關於套件 metadata 佈局方式、或依賴關係及 trigger 資訊表達方式的變更，都可能令讀取這些資料的工具原有的假設失效——這表示企業級發行版採用該格式之前，升級路徑必須先在 staging 環境充分測試。</p>
+<p>整個編譯生態系統同樣承擔類似風險。Mock、koji、repository manager，以及解析套件 header 的掃描工具，全部都編碼了對現行格式的假設；一次主要版本修訂所影響的範圍，遠超任何單一工具。</p>
+<h4>現在應做些什麼</h4>
+<p>對於 RHEL、AlmaLinux 和 Rocky 的管理員而言，實務上的重點是 Preparation 而非即時行動。審視本地編譯的 RPM 在何處產生及簽署；記錄 build chain 中有哪些工具會與套件 metadata 互動；留意任何對 <code>rpm</code> 指令輸出格式有精確要求的硬性依賴。</p>
+<p>這些工作都不需要緊急進行——企業級發行版即使真的跟隨，亦會比 Fedora 遲數年。但在 RPM v4 上運行了二十多年之後，格式轉換的討論已醞釀足夠長的時間，現在梳理運維準備工作，成本遠低於日後在版本發布限期的壓力下才倉促應付。</p>
+<p>按照 Fedora 通常的發布節奏，Fedora 46 預計於 2027 年推出，而 RPM v6 能否入選，將在此之前很久便由 Fedora 的 release engineering 及工程指導流程決定。追蹤此提案的管理員應密切留意這些渠道的正式決定，而非依賴時間表推測。</p>
+<p><em>資料來源：Phoronix，〈Fedora 46 Looking At Moving To RPM v6 Package Format〉</em></p>
+<p><a href="https://www.phoronix.com/news/Fedora-46-RPM-v6" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
