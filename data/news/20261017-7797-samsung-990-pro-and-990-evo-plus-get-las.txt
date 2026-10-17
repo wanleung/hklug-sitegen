@@ -1,0 +1,32 @@
+Date: 2026-10-17 11:43:00
+Author: HKLUG Team
+Title: Samsung 990 PRO and 990 EVO Plus get last-minute kernel workarounds ahead of Linux 7.3
+Content:
+<p>```</p>
+<p>Narrowly targeted workarounds for Samsung's 990 PRO and 990 EVO Plus NVMe SSDs were merged into the mainline kernel in the final stretch before the Linux 7.3 stable release, according to a Phoronix report published on 17 October. Stable kernel releases are typically frozen by that point, which makes the timing of these two patches the story in itself.</p>
+<p>Stable releases are deliberately conservative. The bar for merging anything after the release candidate window closes is high, and maintainers normally reserve it for issues serious enough to justify disrupting a tree that would otherwise be locked down. That these workarounds cleared that threshold suggests the affected failure mode was judged significant enough to warrant an eleventh-hour exception.</p>
+<h4>Popular consumer drives, broad exposure</h4>
+<p>The 990 PRO and 990 EVO Plus are not fringe hardware. Both are common choices in enthusiast desktops, creative workstations, home-lab servers, and locally assembled machines — systems where users often compile their own kernels or track close-to-upstream distributions. A problem affecting these models therefore reaches a considerably wider audience than a bug confined to an obscure controller or a datacentre-only part. For self-builders in particular, this is a patch that may apply directly to the machine in front of them.</p>
+<p>It matters that the merged code is described as <strong>workarounds</strong>, not root-cause fixes. The patches route the kernel around the problematic behaviour rather than resolving the underlying defect in how the NVMe stack interacts with these drives. Proper fixes should be expected later — either as follow-up commits in the 7.3.y update series or during the next merge window, once the offending behaviour has been fully diagnosed.</p>
+<p>The Phoronix report does not spell out the specific failure mode or the precise mechanism of the workarounds, though it links through to the merged commits for readers who want to inspect the code directly. Until the root cause is understood, performance claims about the workarounds circulating elsewhere should be treated with caution; nothing in the upstream discussion commits to specific side effects.</p>
+<h4>What different users should do</h4>
+<p><strong>Distribution users</strong> (Ubuntu, Fedora, Arch, and similar) can largely leave this to their maintainers. Distro kernels are patched on a rolling cadence, and these workarounds will be validated and backported on the distro's own schedule. There is nothing to compile and no reason to jump to an untested upstream build.</p>
+<p><strong>Kernel self-builders</strong> carry the most immediate exposure and face a real decision: cherry-pick the two merged workarounds onto your current tree, or move to 7.3 once it is tagged and your toolchain, DKMS modules, and custom configs are confirmed compatible.</p>
+<p><strong>Anyone already seeing problems</strong> should collect evidence before changing anything. Capture <code>dmesg</code> output and NVMe SMART and error logs both before and after any kernel upgrade or backport — that record will be essential if a root-cause fix later needs validation against real hardware.</p>
+<h4>The stable process working as designed</h4>
+<p>The stable kernel workflow exists to make exactly this trade-off: ship late fixes that protect users now, and clean up properly afterward. Linux 7.3's final hours are a textbook example. For users running a 990 PRO or 990 EVO Plus in a locally assembled machine, the practical takeaway is simple — if you build your own kernel, act now; otherwise, wait for your distribution and carry on as normal.</p>
+<hr>
+<p>```</p>
+<p>根據 Phoronix 於10月17日 published 的報導，針對 Samsung 990 PRO 與 990 EVO Plus NVMe SSD 的精準 workaround，已在 Linux 7.3 stable 版本發佈前的最後階段合併至 mainline kernel。Stable kernel 版本在該階段通常已進入凍結狀態，因此這兩個 patch 的合併時機本身已成為新聞焦點。</p>
+<p>Stable 版本的發佈一向極為保守。在 release candidate 期限過後要合併任何改動，門檻非常高，維護者通常只會為足以打亂原本已鎖定的 code tree 的嚴重問題破例。這些 workaround 能夠通過該門檻，意味當局判斷相關故障模式嚴重至需要在最後一刻作出例外處理。</p>
+<h4>主流消費級 SSD，影響範圍廣泛</h4>
+<p>990 PRO 與 990 EVO Plus 並非冷門硬件。兩者皆是發燒友桌面電腦、創意工作坊、家用伺服器（home-lab server）及本地自組電腦的常見選擇——這類系統的用戶往往自行編譯 kernel，或使用貼近 upstream 的發行版本。因此，影響這些型號的問題所觸及的用戶群，遠比局限於冷門控制器或純數據中心部件的 bug 廣泛。對自組電腦用戶尤其如此，這項 patch 很可能直接適用於眼前的機器。</p>
+<p>值得留意的是，已合併的代碼被描述為 workaround，而非根本原因（root cause）的修正。相關 patch 只是讓 kernel 繞過有問題的行為，並未解決 NVMe stack 與這些 SSD 互動方式的深層缺陷。真正的修正應可預期稍後出現——或以 7.3.y 更新系列的後續 commit 形式發佈，或於下一個 merge window 期間推出，前提是相關問題行為已獲全面診斷。</p>
+<p>Phoronix 的報導並未詳述具體故障模式或 workaround 的精確運作機制，但文中附有已合併 commit 的連結，供讀者直接檢視代碼。在根本原因未明之前，流傳於其他渠道的 workaround 性能說法應審慎看待；upstream 討論中並無任何承諾指明具體的副作用。</p>
+<h4>不同用戶應如何應對</h4>
+<p><strong>發行版用戶</strong>（Ubuntu、Fedora、Arch 等）基本上可交由維護者處理。Distro kernel 會以固定節奏持續更新，這些 workaround 亦將按發行版自身的時間表完成驗證及 backport。用戶無需自行編譯，也沒有理由搶先採用未經測試的 upstream 版本。</p>
+<p><strong>自行編譯 kernel 的用戶</strong>面對的風險最為直接，也必須作出實際選擇：將兩個已合併的 workaround cherry-pick 到目前使用的 code tree，或待 7.3 正式標記版本（tag）後升級，前提是工具鏈、DKMS 模組及自訂 config 已確認相容。</p>
+<p><strong>任何已出現問題的用戶</strong>應先蒐集證據，再作任何改動。在任何 kernel 升級或 backport 之前及之後，均應擷取 <code>dmesg</code> 輸出及 NVMe SMART 和錯誤日誌——若日後需要以真實硬件驗證根本原因修正，這些紀錄將至關重要。</p>
+<h4>Stable 程序按設計運作</h4>
+<p>Stable kernel 的工作流程正是為此類取捨而設：即時推出保護用戶的延遲修正，之後再作妥善清理。Linux 7.3 的最後數小時正是教科書式的範例。對在本地自組電腦上使用 990 PRO 或 990 EVO Plus 的用戶，實際結論十分簡單——如果你自行編譯 kernel，請立即行動；否則，安心等待發行版更新，一切如常。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.3-Samsung-990-Immediate" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
