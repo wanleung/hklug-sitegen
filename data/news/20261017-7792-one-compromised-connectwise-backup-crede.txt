@@ -1,0 +1,38 @@
+Date: 2026-10-17 07:24:00
+Author: HKLUG Team
+Title: One Compromised ConnectWise Backup Credential Reached 173 Microsoft 365 Tenants, Researchers Say
+Content:
+<p>An active campaign is abusing a single compromised Microsoft 365 credential belonging to ConnectWise Cloud Backup — a cloud backup and recovery service used by managed service providers and formerly known as SkyKick — to reach into customers' M365 environments, cybersecurity researchers have warned.</p>
+<p>According to researchers cited in a report by The Hacker News, the credential was used by unidentified threat actors to sign in to as many as 173 Microsoft 365 tenants. That figure originates from the researchers' own telemetry rather than a vendor confirmation, and administrators should treat it as an indicative scope marker and cross-check against ConnectWise's own advisories for definitive details.</p>
+<p>The campaign is a reminder that much of the risk facing cloud tenants today is structural rather than technical. There is no indication in the disclosure that the attackers exploited a software vulnerability in ConnectWise Cloud Backup itself. Instead, they appear to have abused the trust relationship the product holds with the tenants it serves. Backup platforms built for MSPs typically authenticate with delegated or service-principal permissions that span every customer environment the provider manages. Those identities are powerful, long-lived, and — because they are workload identities rather than interactive users — often operate outside the multi-factor authentication and conditional access protections that organizations apply to their staff.</p>
+<p>The result is a large blast radius from one set of credentials: an attacker who compromises the MSP-side identity inherits the reach of the service it belongs to, with no phishing of tenant end-users required.</p>
+<p>For Microsoft 365 administrators — including those in Hong Kong's managed-services and in-house IT teams, who run on the same shared platform architecture — the incident points to a concrete audit agenda rather than a purely reactive posture:</p>
+<ul>
+<li><strong>Inventory delegated and service-principal access.</strong> Enumerate every application and service principal with tenant-wide or cross-tenant permissions, and retire any that are no longer required.</li>
+<li><strong>Review OAuth consent grants.</strong> Look for overly broad or legacy consent entries, and monitor new consent activity.</li>
+<li><strong>Extend MFA and conditional access to workload identities.</strong> Verify that policies actually cover service principals and non-interactive sign-ins, not just human accounts.</li>
+<li><strong>Disable legacy authentication protocols</strong> wherever they are still permitted, since they bypass modern authentication protections.</li>
+<li><strong>Apply RMM-level scrutiny to backup and remote access tooling.</strong> These platforms are pre-authorized, broadly scoped, and frequently left unaudited — deserving the same monitoring intensity that MSP remote monitoring software now receives.</li>
+<li><strong>Review sign-in logs</strong> for unusual service-principal or non-interactive authentications, especially from unfamiliar IP ranges or geographies.</li>
+</ul>
+<p>The under-scrutinized status of backup platforms is arguably the sharpest lesson here. MSP tooling has drawn increasing attention since the Kaseya VSA incident, but backup and recovery products remain comparatively opaque in many security programs — despite holding exactly the kind of standing access that makes a single compromise consequential.</p>
+<p>On vendor remediation, the disclosure reviewed here does not indicate whether ConnectWise has rotated the affected credential, revoked the associated access, or issued customer-specific guidance. ConnectWise Cloud Backup customers should monitor the company's advisory channels directly for confirmation of scope and any required action, and treat the researchers' 173-tenant figure as provisional until a primary vendor statement is available. If a formal advisory or Microsoft statement emerges, it may clarify both the true tenant count and what, if anything, affected customers need to do.</p>
+<p>For now, the operative takeaway is simple: in an MSP-driven cloud, one provider-side credential can become everyone's credential.</p>
+<hr>
+<p>網絡保安研究人員警告，一場正在活躍進行的攻擊行動，正濫用一個被盜取的 Microsoft 365 憑證入侵客戶的 M365 環境。該憑證屬於 ConnectWise Cloud Backup——一個由託管服務供應商（MSP）使用的雲端備份及還原服務，前身為 SkyKick。</p>
+<p>根據 The Hacker News 報告所引述的研究人員指出，身份不明的攻擊者利用該憑證登入了多達 173 個 Microsoft 365 租戶。該數字來自研究人員自身的遙測數據，並非廠商確認，管理員應將其視為指示性的影響範圍參考，並與 ConnectWise 官方公佈的資訊交叉核對以取得準確細節。</p>
+<p>這場攻擊提醒我們，今日雲端租戶所面對的風險，很大一部分是結構性而非技術性的。在今次的披露中，並無證據顯示攻擊者利用了 ConnectWise Cloud Backup 本身的軟件漏洞。相反，他們似乎濫用了該產品與其所服務租戶之間的信任關係。為 MSP 而建的備份平台，通常以委託權限（delegated permissions）或 service principal 權限進行身份驗證，涵蓋供應商所管理的每一個客戶環境。這些身份權力龐大、長期有效，而且——因為它們是 workload identity 而非互動式用戶——往往不受組織為員工實施的多因素認證（MFA）及條件式存取（conditional access）保護所規管。</p>
+<p>結果是，一組憑證便造成極大的影響範圍：攻擊者一旦攻破 MSP 一方的身份，即可承繼該服務所擁有的存取能力，完全無須對租戶的最終用戶進行釣魚攻擊。</p>
+<p>對於 Microsoft 365 管理員而言——包括香港託管服務及企業內部 IT 團隊，因為他們都運行在同一個共享平台架構之上——今次事件指向一份具體的審計議程，而非純粹被動應對的態度：</p>
+<ul>
+<li><strong>盤點委託及 service principal 存取權限。</strong> 列舉所有擁有租戶級別或跨租戶權限的應用程式及 service principal，並停用任何已不再需要的項目。</li>
+<li><strong>檢視 OAuth 同意授權記錄。</strong> 留意過於寬泛或舊有的同意條目，並監控新的授權活動。</li>
+<li><strong>將 MFA 及條件式存取擴展至 workload identity。</strong> 確保相關政策實際涵蓋 service principal 及非互動式登入，而不只是人類用戶帳戶。</li>
+<li><strong>停用舊有認證協議</strong>，凡仍然允許使用的地方一律停用，因為這些協議會繞過現代認證保護。</li>
+<li><strong>以監察 RMM 工具的嚴格程度審視備份及遠端存取工具。</strong> 這些平台具有預先授權、範圍廣泛的特性，而且往往未經審計——理應獲得與 MSP 遠端監控軟件同等的監察力度。</li>
+<li><strong>檢視登入日誌</strong>，查找異常的 service principal 或非互動式身份驗證，尤其是來自陌生 IP 範圍或地區的活動。</li>
+</ul>
+<p>備份平台長期缺乏審視，可說是今次事件最深刻的教訓。自 Kaseya VSA 事件以來，MSP 工具已日益受到關注，但備份及還原產品在許多保安計劃中仍然相對不透明——儘管它們正正持有那種一旦被盜用便後果嚴重的長期存取權限。</p>
+<p>就廠商的補救措施而言，本文所審視的披露並未說明 ConnectWise 是否已更換受影響的憑證、撤銷相關存取權限，或發出針對特定客戶的指引。ConnectWise Cloud Backup 客戶應直接監察公司的公佈渠道，以確認影響範圍及所需採取的行動，並在廠商正式聲明出台前，將研究人員所指的 173 個租戶數字視為暫定數字。若日後有正式公告或 Microsoft 聲明，或會澄清實際的租戶數目，以及受影響客戶是否需要採取任何行動。</p>
+<p>目前，最重要的一點很簡單：在 MSP 主導的雲端環境中，一個供應商一方的憑證，可以成為所有人的憑證。</p>
+<p><a href="https://thehackernews.com/2026/10/hackers-use-compromised-connectwise.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
