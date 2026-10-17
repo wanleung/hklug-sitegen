@@ -1,0 +1,104 @@
+Date: 2026-10-17 13:24:00
+Author: HKLUG Team
+Title: npm Supply Chain Brief: Malicious 'imgdecode' Package Hides Its Payload in a Binary, Not JavaScript
+Content:
+<p><strong>If your project depends on npm, spend five minutes on this now:</strong> search your <code>package-lock.json</code>, <code>yarn.lock</code>, and <code>pnpm-lock.yaml</code> for <code>imgdecode</code>, and run <code>npm ls imgdecode</code> in each repository. If it appears anywhere in your dependency tree, remove it and treat the affected environment as potentially compromised.</p>
+<h4>What happened</h4>
+<p>The Hacker News reported on 17 October 2026 that cybersecurity researchers have uncovered a malicious npm package named <code>imgdecode</code>, linked to a recently disclosed software supply chain attack campaign dubbed MALFEX. The package was uploaded to the public npm registry on 30 September 2026 by a user going by "malfexteste8," and had accumulated 979 downloads at the time of The Hacker News's report. According to that report, the package remained available and installable from npm as of writing — though registry takedowns can lag disclosure, so verify the current status before assuming you are safe.</p>
+<p>An important caveat on sourcing: this article is based on The Hacker News's reporting. The original MALFEX researcher write-up was not accessible when we prepared this brief, so the technical details below reflect the secondary account only. Readers seeking primary technical analysis should watch for the underlying disclosure.</p>
+<h4>Why it matters: the evasion trick</h4>
+<p>Plain-language explainer: <code>imgdecode</code> doesn't hide its payload in JavaScript source code you could read during review — it buries a shellcode loader inside a <strong>compiled Windows native addon</strong> (a <code>.node</code> binary), so casual code review and most static-analysis tooling scanning JS files will never see the malicious logic.</p>
+<p>That is the technique's real value to defenders: standard "read the source before you install" hygiene is defeated, because the source is a binary blob.</p>
+<p>One platform note for triage: because the loader is a <code>.node</code> native addon, execution is Windows-specific, so macOS and Linux hosts are unlikely to actually run the payload. That does not make this a Windows-only cleanup task — Windows workstations and CI runners routinely share pipelines and caches with other platforms, so treat any environment where <code>imgdecode</code> was resolved as worth removing from, and check what those hosts touched.</p>
+<h4>What to do now</h4>
+<ol>
+<li><strong>Search lockfiles</strong> (<code>package-lock.json</code>, <code>yarn.lock</code>, <code>pnpm-lock.yaml</code>) in every repository and CI workspace for <code>imgdecode</code>. This matters precisely because <code>imgdecode</code> may sit deep in a transitive dependency tree rather than in your top-level <code>package.json</code> — a lockfile grep catches it, a glance at <code>package.json</code> won't.</li>
+<li><strong>Confirm and remove.</strong> Run <code>npm ls imgdecode</code>; uninstall if present.</li>
+<li><strong>Assume compromise</strong> for any environment where it was installed. Rotate all reachable credentials, API tokens, and secrets that environment could access — dated from <strong>30 September 2026</strong> onward.</li>
+<li><strong>Harden builds.</strong> Pin dependencies by integrity hash and enable registry allow-listing for production builds.</li>
+<li><strong>Internal registries.</strong> Organisations, including those in Hong Kong mirroring npm internally, should add <code>imgdecode</code> (and its publisher, <code>malfexteste8</code>) to denylists in internal proxy registries so the package cannot be pulled in again.</li>
+</ol>
+<h4>Indicators of compromise</h4>
+<table>
+<thead>
+<tr>
+<th>Indicator</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Package name</td>
+<td><code>imgdecode</code></td>
+</tr>
+<tr>
+<td>Registry publisher</td>
+<td><code>malfexteste8</code></td>
+</tr>
+<tr>
+<td>Upload date</td>
+<td>2026-09-30</td>
+</tr>
+<tr>
+<td>Registry</td>
+<td>npm</td>
+</tr>
+<tr>
+<td>Payload delivery</td>
+<td>Compiled Windows native addon (<code>.node</code>) shellcode loader</td>
+</tr>
+</tbody>
+</table>
+<p>This is a defensive brief, not a complete technical teardown — the primary MALFEX disclosure remains the place to look once available.</p>
+<p><em>Source: The Hacker News, reported 17 October 2026.</em></p>
+<hr>
+<p><strong>如果你的專案依賴 npm，請立即花五分鐘檢查：</strong> 在 <code>package-lock.json</code>、<code>yarn.lock</code> 與 <code>pnpm-lock.yaml</code> 中搜尋 <code>imgdecode</code>，並在每個 repository 執行 <code>npm ls imgdecode</code>。若它出現在任何依賴樹中，請移除該套件，並將受影響的環境視為可能已遭入侵。</p>
+<h4>事件概述</h4>
+<p>The Hacker News 於 2026 年 10 月 17 日報道，網絡安全研究人員發現一個名為 <code>imgdecode</code> 的惡意 npm 套件，該套件與近期披露、代號 MALFEX 的軟件供應鏈攻擊行動有關。此套件於 2026 年 9 月 30 日由用戶「malfexteste8」上載至公開的 npm registry，截至 The Hacker News 報道時累計下載 979 次。根據該報道，撰稿時套件仍可從 npm 安裝——但 registry 下架往往滯後於漏洞披露，請先確認目前狀態，勿逕自假設已安全。</p>
+<p>關於消息來源的一項重要說明：本文係基於 The Hacker News 的報道撰寫。原始的 MALFEX 研究人員技術報告在我們準備本快訊時尚未取得，因此以下技術細節僅反映二手來源的內容。需要一手技術分析的讀者請持續關注原始披露。</p>
+<h4>為何重要：規避手法</h4>
+<p>以淺白方式說明：<code>imgdecode</code> 並未將載荷藏在可供審查的 JavaScript 原始碼中——它將 shellcode loader 埋藏在一個<strong>已編譯的 Windows native addon</strong>（一個 <code>.node</code> binary）裡，因此一般性的程式碼審查，與大多數僅掃描 JS 檔案的 static analysis 工具，都不會看到惡意邏輯。</p>
+<p>這正是該手法對防守方構成的真正威脅：標準的「安裝前先閱讀原始碼」守則形同虛設，因為原始碼本身就是一個 binary blob。</p>
+<p>就分類排查而言，還有一點平台注意事項：由於 loader 是 <code>.node</code> native addon，執行為 Windows 專屬，macOS 和 Linux 主機實際上不太可能執行該載荷。但這並不表示只有 Windows 需要清理——Windows 工作站與 CI runner 經常與其他平台共用 pipeline 和快取，因此任何解析到 <code>imgdecode</code> 的環境都值得移除，並檢查這些主機接觸過哪些內容。</p>
+<h4>立即行動</h4>
+<ol>
+<li><strong>搜尋 lockfile</strong>（<code>package-lock.json</code>、<code>yarn.lock</code>、<code>pnpm-lock.yaml</code>）：在每個 repository 與 CI workspace 中搜尋 <code>imgdecode</code>。此步驟之所以關鍵，是因為 <code>imgdecode</code> 可能深埋於 transitive dependency tree 中，而非出現在專案頂層的 <code>package.json</code>——搜尋 lockfile 能夠發現該套件，僅檢視 <code>package.json</code> 則可能遺漏。</li>
+<li><strong>確認並移除。</strong> 執行 <code>npm ls imgdecode</code>；若存在則解除安裝。</li>
+<li><strong>視為已遭入侵。</strong> 對任何曾安裝該套件的環境，輪換該環境可存取的所有 credentials、API tokens 與 secrets——時間範圍自 <strong>2026 年 9 月 30 日</strong>起。</li>
+<li><strong>強化 build 流程。</strong> 以 integrity hash 鎖定依賴版本，並為 production build 啟用 registry allow-listing。</li>
+<li><strong>內部 registry。</strong> 各機構（包括在香港以內部 proxy 鏡像 npm 的團隊）應將 <code>imgdecode</code>（及其發布者 <code>malfexteste8</code>）加入內部 proxy registry 的 denylist，防止該套件再次被拉取。</li>
+</ol>
+<h4>侵入指標（IoC）</h4>
+<table>
+<thead>
+<tr>
+<th>指標</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>套件名稱</td>
+<td><code>imgdecode</code></td>
+</tr>
+<tr>
+<td>Registry 發布者</td>
+<td><code>malfexteste8</code></td>
+</tr>
+<tr>
+<td>上載日期</td>
+<td>2026-09-30</td>
+</tr>
+<tr>
+<td>Registry</td>
+<td>npm</td>
+</tr>
+<tr>
+<td>載荷投遞方式</td>
+<td>已編譯的 Windows native addon（<code>.node</code>）shellcode loader</td>
+</tr>
+</tbody>
+</table>
+<p>本文為防守性快訊，並非完整技術拆解——原始 MALFEX 披露公開後，請以其為深入分析的首要參考。</p>
+<p><em>資料來源：The Hacker News，2026 年 10 月 17 日報道。</em></p>
+<p><a href="https://thehackernews.com/2026/10/malfex-npm-package-imgdecode-hides.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
