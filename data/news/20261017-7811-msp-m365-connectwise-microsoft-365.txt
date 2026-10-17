@@ -1,0 +1,100 @@
+Date: 2026-10-17 19:28:00
+Author: HKLUG Team
+Title: MSP備份工具變成M365萬能匙：ConnectWise供應鏈攻擊入侵多個Microsoft 365租戶
+Content:
+<h3>MSP備份工具變成M365萬能匙：ConnectWise供應鏈攻擊入侵多個Microsoft 365租戶</h3>
+<p>ConnectWise已全面暫停其Cloud Backup服務（前身為SkyKick Cloud Backup）的客戶存取權限，原因是攻擊者入侵了該服務使用的<strong>應用程式身分（application identities）</strong>，並藉此橫向攻入多個Microsoft 365租戶。ConnectWise在BleepingComputer 5月14日的報導中確認事件，但至今未披露受影響租戶數目，亦未提供服務恢復時間表。</p>
+<p>對香港大量倚賴外判服務提供者（MSP）管理Microsoft 365環境的企業而言，這宗事故再次說明一個常被低估的風險：<strong>備份、RMM或PSA等管理工具一旦被攻破，攻擊者取得的並非單一帳戶，而是一條通往所有下游租戶的通道</strong>。</p>
+<h4>應用程式身分為何是「萬能匙」</h4>
+<p>是次攻擊的目標並非用戶密碼，而是<strong>服務主體（service principals）／企業應用程式</strong>及其持有的委託權限（例如Microsoft Graph的tenant-wide consent）。這類工作負載身分（workload identities）有兩個結構性特點：</p>
+<ul>
+<li><strong>不會觸發交互式多重認證（MFA）提示</strong>，因此繞過MFA並非利用漏洞，而是設計使然；</li>
+<li>其登入記錄通常不會被防守團隊常規監察用戶帳戶的儀表板所涵蓋，形成監察盲點。</li>
+</ul>
+<p>換言之，一個外判商的整合工具被入侵，等同於一把可開啟其管理下每個租戶的共用主鎖匙。這與SolarWinds及Kaseya事件的攻擊模式一脈相承——攻擊者利用既有的信任關係，而非正面破解它。</p>
+<h4>企業現在應做的事：偵測與應變Runbook</h4>
+<p><strong>在等待供應商通知之前就應主動搜尋（hunting）</strong>，因為ConnectWise未有公布資料，未收到通知並不代表你的租戶乾淨。以下是可即時執行的檢查：</p>
+<h5>Runbook 1：盤點服務主體與委託權限</h5>
+<p>在 Entra Portal（entra.microsoft.com）→ <strong>身分 → 企業應用程式</strong>，列出所有應用程式，重點標示「已授予組織範圍同意」的項目，或以PowerShell執行：</p>
+<pre><code class="language-powershell"># 列出所有服務主體及其建立日期
+Get-MgServicePrincipal -All | Select-Object DisplayName, AppId, CreatedDateTime |
+  Sort-Object CreatedDateTime -Descending | Export-Csv .\sp-inventory.csv -NoTypeInformation
+
+# 檢視所有 OAuth2 委託權限Grant
+Get-MgOauth2PermissionGrant -All | Select-Object ClientId, ConsentType, Scope, ResourceId
+</code></pre>
+<h5>Runbook 2：覆核工作負載身分登入記錄</h5>
+<p>於 Entra Portal → <strong>監視 → 登入記錄</strong>，篩選工作負載／服務主體登入，留意：</p>
+<ul>
+<li>來源IP地理位置異常（例如非正常營運地區）；</li>
+<li>從未使用過的服務主體出現讀取郵箱或檔案的Graph權限行使。</li>
+</ul>
+<h5>Runbook 3：搜尋信箱規則及委託設定</h5>
+<pre><code class="language-powershell"># 檢視可疑的隱藏收件匣規則（轉發、搬移到已刪除項目資料夾）
+# 大型租戶可加上 -ThrottleLimit（例如 5）避免觸發節流
+Get-MgUser -All | ForEach-Object {
+  Get-MgUserInboxRule -UserId $_.Id -ErrorAction SilentlyContinue |
+    Where-Object { $_.ForwardTo -or $_.MoveToFolder -or $_.StopProcessingRules }
+}
+</code></pre>
+<h5>Runbook 4：輪換機密並使令牌失效</h5>
+<ul>
+<li>輪換所有與受影響整合相關的client secret及certificate；</li>
+<li>在Entra中<strong>撤銷（revoke）相關服務主體的refresh tokens</strong>，單純重設密碼並不足夠；</li>
+<li>收緊條件式存取（Conditional Access），要求工作負載存取套用IP限制或「僅允許合規裝置／受信任網絡」原則。</li>
+</ul>
+<h4>恢復前的關鍵一步</h4>
+<p>企業在信任任何備份作還原用途之前，<strong>必須先確認在受影響控制平面（control plane）之外存在一份最後已知良好的備份</strong>。若備份本身由同一套被入侵的MSP工具管理及儲存，其完整性不能視為已獲保障。</p>
+<h4>供應商風險管理：PDPO及PCPD角度</h4>
+<p>根據《個人資料（私隱）條例》（PDPO），資料使用者須對其委託處理個人資料的服務提供者（包括MSP及雲端供應商）所採取的保安措施負責。換言之，將工作外判予MSP並不會移除企業自身的合規責任；個人資料私隱專員公署（PCPD）過往就雲端運算及資料外判發布的指引亦持相同立場——企業須保留對供應商的監察及覆核能力，不能將保安責任完全轉移。</p>
+<p>在審批MSP合約或續約時，建議明確要求對方披露：工作負載身分的權限管理方式、事件通報時限（例如24至72小時內通知）、以及租戶數據的隔離與備份獨立性。</p>
+<p><strong>持續關注事態：</strong> ConnectWise至今未公布受影響範圍、根因調查結果，亦未說明服務重啟前的架構改動。若日後釋出入侵指標（IOCs）或更詳細技術資料，本文將作更新。</p>
+<hr>
+<h3>MSP備份工具變成M365萬能匙：ConnectWise供應鏈攻擊入侵多個Microsoft 365租戶</h3>
+<p>ConnectWise已全面暫停其Cloud Backup服務（前身為SkyKick Cloud Backup）的客戶存取權限，原因是攻擊者入侵了該服務使用的<strong>應用程式身分（application identities）</strong>，並藉此橫向攻入多個Microsoft 365租戶。ConnectWise在BleepingComputer 5月14日的報導中確認事件，但至今未披露受影響租戶數目，亦未提供服務恢復時間表。</p>
+<p>對香港大量倚賴外判服務提供者（MSP）管理Microsoft 365環境的企業而言，這宗事故再次說明一個常被低估的風險：<strong>備份、RMM或PSA等管理工具一旦被攻破，攻擊者取得的並非單一帳戶，而是一條通往所有下游租戶的通道</strong>。</p>
+<h4>應用程式身分為何是「萬能匙」</h4>
+<p>是次攻擊的目標並非用戶密碼，而是<strong>服務主體（service principals）／企業應用程式</strong>及其持有的委託權限（例如Microsoft Graph的tenant-wide consent）。這類工作負載身分（workload identities）有兩個結構性特點：</p>
+<ul>
+<li><strong>不會觸發交互式多重認證（MFA）提示</strong>，因此繞過MFA並非利用漏洞，而是設計使然；</li>
+<li>其登入記錄通常不會被防守團隊常規監察用戶帳戶的儀表板所涵蓋，形成監察盲點。</li>
+</ul>
+<p>換言之，一個外判商的整合工具被入侵，等同於一把可開啟其管理下每個租戶的共用主鎖匙。這與SolarWinds及Kaseya事件的攻擊模式一脈相承——攻擊者利用既有的信任關係，而非正面破解它。</p>
+<h4>企業現在應做的事：偵測與應變Runbook</h4>
+<p><strong>在等待供應商通知之前就應主動搜尋（hunting）</strong>，因為ConnectWise未有公布資料，未收到通知並不代表你的租戶乾淨。以下是可即時執行的檢查：</p>
+<h5>Runbook 1：盤點服務主體與委託權限</h5>
+<p>在 Entra Portal（entra.microsoft.com）→ <strong>身分 → 企業應用程式</strong>，列出所有應用程式，重點標示「已授予組織範圍同意」的項目，或以PowerShell執行：</p>
+<pre><code class="language-powershell"># 列出所有服務主體及其建立日期
+Get-MgServicePrincipal -All | Select-Object DisplayName, AppId, CreatedDateTime |
+  Sort-Object CreatedDateTime -Descending | Export-Csv .\sp-inventory.csv -NoTypeInformation
+
+# 檢視所有 OAuth2 委託權限Grant
+Get-MgOauth2PermissionGrant -All | Select-Object ClientId, ConsentType, Scope, ResourceId
+</code></pre>
+<h5>Runbook 2：覆核工作負載身分登入記錄</h5>
+<p>於 Entra Portal → <strong>監視 → 登入記錄</strong>，篩選工作負載／服務主體登入，留意：</p>
+<ul>
+<li>來源IP地理位置異常（例如非正常營運地區）；</li>
+<li>從未使用過的服務主體出現讀取信箱或檔案的Graph權限行使。</li>
+</ul>
+<h5>Runbook 3：搜尋信箱規則及委託設定</h5>
+<pre><code class="language-powershell"># 檢視可疑的隱藏收件匣規則（轉發、搬移到已刪除項目資料夾）
+# 大型租戶可加上 -ThrottleLimit（例如 5）避免觸發節流
+Get-MgUser -All | ForEach-Object {
+  Get-MgUserInboxRule -UserId $_.Id -ErrorAction SilentlyContinue |
+    Where-Object { $_.ForwardTo -or $_.MoveToFolder -or $_.StopProcessingRules }
+}
+</code></pre>
+<h5>Runbook 4：輪換機密並使令牌失效</h5>
+<ul>
+<li>輪換所有與受影響整合相關的client secret及certificate；</li>
+<li>在Entra中<strong>撤銷（revoke）相關服務主體的refresh tokens</strong>，單純重設密碼並不足夠；</li>
+<li>收緊條件式存取（Conditional Access），要求工作負載存取套用IP限制或「僅允許合規裝置／受信任網絡」原則。</li>
+</ul>
+<h4>恢復前的關鍵一步</h4>
+<p>企業在信任任何備份作還原用途之前，<strong>必須先確認在受影響控制平面（control plane）之外存在一份最後已知良好的備份</strong>。若備份本身由同一套被入侵的MSP工具管理及儲存，其完整性不能視為已獲保障。</p>
+<h4>供應商風險管理：PDPO及PCPD角度</h4>
+<p>根據《個人資料（私隱）條例》（PDPO），資料使用者須對其委託處理個人資料的服務提供者（包括MSP及雲端供應商）所採取的保安措施負責。換言之，將工作外判予MSP並不會移除企業自身的合規責任；個人資料私隱專員公署（PCPD）過往就雲端運算及資料外判發布的指引亦持相同立場——企業須保留對供應商的監察及覆核能力，不能將保安責任完全轉移。</p>
+<p>在審批MSP合約或續約時，建議明確要求對方披露：工作負載身分的權限管理方式、事件通報時限（例如24至72小時內通知）、以及租戶數據的隔離與備份獨立性。</p>
+<p><strong>持續關注事態：</strong> ConnectWise至今未公布受影響範圍、根因調查結果，亦未說明服務重啟前的架構改動。若日後釋出入侵指標（IOCs）或更詳細技術資料，本文將作更新。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/hackers-breach-microsoft-365-tenants-via-connectwise-supply-chain-attack/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
