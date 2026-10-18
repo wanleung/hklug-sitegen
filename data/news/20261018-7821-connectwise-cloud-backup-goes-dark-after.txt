@@ -1,0 +1,118 @@
+Date: 2026-10-18 11:33:00
+Author: HKLUG Team
+Title: ConnectWise Cloud Backup Goes Dark After Attackers Hijack Service Identities in M365 Tenants
+Content:
+<h3>ConnectWise Cloud Backup Goes Dark After Attackers Hijack Service Identities in M365 Tenants</h3>
+<p>ConnectWise said on Saturday that it has disabled seven of its application identities after threat actors obtained unauthorized access to them and used that access to compromise Microsoft 365 tenants. The same day, the company suspended its Cloud Backup service, saying it will stay offline until the investigation concludes.</p>
+<p>ConnectWise has not said how the attackers first got in, how many tenants were affected, or whether data was exfiltrated versus merely accessed. It has named no threat actor and given no timeline for Cloud Backup returning to service.</p>
+<p>Of the seven identities, ConnectWise has so far published a full GUID for only one — Cloud Backup itself:</p>
+<pre><code>ConnectWise Cloud Backup - 506e08f9-6e9a-4da4-942b-a099a03644ae
+</code></pre>
+<p><strong>This list is not the full seven.</strong> Until ConnectWise publishes the remaining identifiers and any associated indicators of compromise, the absence of an application from this list is not evidence that it is clean. Administrators should track the company's official advisories rather than treating the single published GUID as a complete search set.</p>
+<h4>Why this incident has nothing to do with passwords</h4>
+<p>The real lesson here is the nature of the compromised identities themselves. Service principals, app registrations, and OAuth grants live at the tenant level. They are not protected by multi-factor authentication and they do not generally trip the user-centric anomaly alerts that most security teams watch. Once a vendor's machine identity is taken over, the attacker operates as software, not as a person — and a single compromised vendor identity can propagate across every downstream tenant that MSP manages, without ever touching a user's password.</p>
+<p>ConnectWise's decision to disable all seven identities at once suggests it assessed its exposure as broad. The posture is clearly "stop the bleeding first, recover later."</p>
+<h4>An M365 audit checklist for MSPs and IT managers</h4>
+<p>These steps apply to any organization running Microsoft 365 that has authorized third-party applications:</p>
+<ol>
+<li><strong>Inventory every application grant.</strong> In Entra ID, enumerate your service principals and both their delegated and application permissions. The obvious first command is:</li>
+</ol>
+<p><code>powershell
+   Get-MgOauth2PermissionGrant -All</code></p>
+<p>but note the trap: that cmdlet surfaces <strong>delegated</strong> permissions only. Applications holding <strong>application</strong> permissions — the more dangerous class, and exactly where backups and data-access tools sit — are invisible to it. You must also run:</p>
+<p><code>powershell
+   Get-MgServicePrincipal -All | ForEach-Object {
+       Get-MgServicePrincipalAppRoleAssignment -ServicePrincipalId $_.Id -All
+   }</code></p>
+<p>and inspect the resulting <code>AppRoleAssignments</code>. Skipping this step produces a false all-clear on large tenants, and paging without <code>-All</code> will silently truncate the results on any tenant with more than 100 objects.</p>
+<ol>
+<li>
+<p><strong>Cross-check the known ConnectWise identifiers.</strong> Match the GUID above — and every additional identifier ConnectWise publishes — against your tenant inventory.</p>
+</li>
+<li>
+<p><strong>Review admin-consent records.</strong> Isolate every application that was granted high-privilege permissions via tenant-wide admin consent, and judge whether that consent still makes sense today.</p>
+</li>
+<li>
+<p><strong>Revoke unnecessary grants.</strong> Any OAuth authorization that is unrecognized, unused, or visibly over-scoped should be withdrawn immediately.</p>
+</li>
+<li>
+<p><strong>Examine conditional access and application policies.</strong> Backup-class applications such as Cloud Backup should authenticate through dedicated service accounts, never shared or interactive logins.</p>
+</li>
+<li>
+<p><strong>Enforce least privilege with a real consent workflow.</strong> New high-privilege consent should go through approval, not a single administrator clicking through alone.</p>
+</li>
+</ol>
+<h4>The operational clock: two risks that start now</h4>
+<p>Suspending Cloud Backup opens an immediate <strong>backup-coverage gap</strong> — data changes made during the outage may never be copied anywhere. Hong Kong IT teams using the product should assess, today:</p>
+<ul>
+<li>Whether critical data is still changing during the suspension. If so, coverage needs to be backfilled through another mechanism, whether native M365 tooling such as eDiscovery or an independent backup provider.</li>
+<li><strong>Every restore point from this service should be treated as unverified.</strong> If attackers reached the backup repository, the backups themselves may be tampered with. Validate integrity against known-good copies before any production restore.</li>
+<li>The possibility that a single restore will not be sufficient. Until ConnectWise publishes root cause and scope, teams should plan for multi-point restores and offline retention rather than assume a clean recovery.</li>
+</ul>
+<h4>Five questions every SME should put to its MSP</h4>
+<ul>
+<li>Which third-party application identities exist in our tenant right now? Can you give us the full list?</li>
+<li>What permissions do those applications hold — delegated or application-level?</li>
+<li>How are OAuth grants to your M365 management tooling approved and periodically reviewed?</li>
+<li>If one of your products is compromised, when exactly do we hear about it, and through what channel?</li>
+<li>If your service goes down, where does our backup coverage gap open, and how do we verify your restore points are trustworthy?</li>
+</ul>
+<p>ConnectWise has yet to publish the complete identity list, its root cause, or affected-tenant figures. We will keep watching the company's official channels and update this article as those details land.</p>
+<hr>
+<h3>ConnectWise 雲端備份服務暫停運作，攻擊者劫持 M365 租戶內服務身份</h3>
+<p>ConnectWise 於星期六表示，在威脅行為者未經授權取得其七個 application identities 的存取權，並利用該存取權入侵 Microsoft 365 租戶後，公司已停用該七個身份。同日，公司暫停其 Cloud Backup 服務，表示在調查結束前將維持離線狀態。</p>
+<p>ConnectWise 尚未說明攻擊者最初如何入侵、有多少租戶受到影響，亦未交代數據是被外洩（exfiltrated）抑或僅被存取。公司未指名任何威脅行為者，亦未提供 Cloud Backup 恢復服務的時間表。</p>
+<p>在七個身份之中，ConnectWise 目前只公布了一個完整 GUID——即 Cloud Backup 本身：</p>
+<pre><code>ConnectWise Cloud Backup - 506e08f9-6e9a-4da4-942b-a099a03644ae
+</code></pre>
+<p><strong>此清單並非完整的七個身份。</strong> 在 ConnectWise 公布其餘識別碼及任何相關入侵指標（indicators of compromise）之前，某個應用程式未出現在清單上，並不代表它沒有受影響。管理員應追蹤公司官方安全通告，而非將單一已公布的 GUID 視為完整的搜尋依據。</p>
+<h4>為何今次事件與密碼無關</h4>
+<p>真正的教訓在於被入侵身份本身的性質。Service principals、app registrations 及 OAuth grants 均存在於租戶（tenant）層級。它們不受 multi-factor authentication 保護，通常亦不會觸發大多數安全團隊所監控的以用戶為中心的異常警報。一旦廠商的 machine identity 被接管，攻擊者是以軟件而非以人的身份運作——單一被入侵的廠商身份，便可在 MSP 管理的每一個下游客戶租戶中蔓延，全程無需接觸任何用戶密碼。</p>
+<p>ConnectWise 一次性停用全部七個身份的決定，顯示其評估認為受影響範圍甚廣。其策略明顯是「先止血，後復原」。</p>
+<h4>適用於 MSP 及 IT 管理員的 M365 審計清單</h4>
+<p>以下步驟適用於任何使用 Microsoft 365 並已授權第三方應用程式的機構：</p>
+<ol>
+<li><strong>盤點每一項應用程式授權。</strong> 在 Entra ID 中，列舉所有 service principals 及其 delegated 與 application 權限。最直接的第一條指令是：</li>
+</ol>
+<p><code>powershell
+   Get-MgOauth2PermissionGrant -All</code></p>
+<p>但須留意陷阱：該 cmdlet 只會顯示 <strong>delegated</strong> 權限。持有 <strong>application</strong> 權限的應用程式——這是較危險的一類，備份及數據存取工具正是屬於此類——對它來說是不可見的。你必須同時執行：</p>
+<p><code>powershell
+   Get-MgServicePrincipal -All | ForEach-Object {
+       Get-MgServicePrincipalAppRoleAssignment -ServicePrincipalId $_.Id -All
+   }</code></p>
+<p>並檢視產生的 <code>AppRoleAssignments</code>。省略此步驟會在大型租戶上造成錯誤的「一切正常」結論，而在沒有使用 <code>-All</code> 的情況下分頁，會在任何超過 100 個物件的租戶上靜默截斷結果。</p>
+<ol>
+<li>
+<p><strong>交叉核對已知的 ConnectWise 識別碼。</strong> 將上述 GUID——以及 ConnectWise 公布的每一個額外識別碼——與你的租戶清單逐一比對。</p>
+</li>
+<li>
+<p><strong>檢視管理員同意（admin-consent）記錄。</strong> 隔離每一個透過租戶層級管理員同意而獲授予高權限的應用程式，並判斷該同意於今天是否仍然合理。</p>
+</li>
+<li>
+<p><strong>撤銷不必要的授權。</strong> 任何不獲確認、未被使用或明顯超出所需範圍的 OAuth 授權，應即時撤回。</p>
+</li>
+<li>
+<p><strong>檢查條件式存取（conditional access）及應用程式政策。</strong> 備份類應用程式（例如 Cloud Backup）應透過專用 service accounts 進行身份驗證，切勿使用共享或互動式登入。</p>
+</li>
+<li>
+<p><strong>透過真正的同意審批流程執行最小權限原則。</strong> 新的高權限同意應經審批程序，而非由單一管理員獨自點擊批准。</p>
+</li>
+</ol>
+<h4>營運倒計時：兩項即時開始的風險</h4>
+<p>暫停 Cloud Backup 會即時造成<strong>備份覆蓋缺口</strong>——在停運期間產生的數據變更，可能永遠不會被複製到任何地方。使用該產品的香港 IT 團隊應於今日評估：</p>
+<ul>
+<li>暫停期間關鍵數據是否仍在變更。如果是，須透過其他機制補回覆蓋範圍，例如使用 eDiscovery 等 M365 原生工具，或委託獨立的備份服務供應商。</li>
+<li><strong>來自此服務的每一個還原點均應視為未經驗證。</strong> 若攻擊者已接觸備份儲存庫，備份本身可能已被竄改。在進行任何生產環境還原前，應以已知良好的副本驗證完整性。</li>
+<li>單次還原可能不足夠的可能性。在 ConnectWise 公布根本原因及影響範圍前，團隊應為多點還原及離線保留作好規劃，而非假設可一次過順利復原。</li>
+</ul>
+<h4>每間中小企應向其 MSP 提出的五個問題</h4>
+<ul>
+<li>我們租戶中目前存在哪些第三方應用程式身份？能否提供完整清單？</li>
+<li>這些應用程式持有哪些權限——delegated 還是 application 層級？</li>
+<li>你們 M365 管理工具所獲得的 OAuth grants，是如何審批及定期覆核的？</li>
+<li>若你們其中一項產品被入侵，我們何時、透過什麼渠道得知？</li>
+<li>若你們的服務停擺，我們的備份覆蓋缺口會出現在哪裡？我們如何驗證你們的還原點可信？</li>
+</ul>
+<p>ConnectWise 仍未公布完整的身份清單、根本原因或受影響租戶數字。我們將持續監察公司官方渠道，並在相關詳情公布後更新本文。</p>
+<p><a href="https://thehackernews.com/2026/10/connectwise-suspends-cloud-backup-after.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
