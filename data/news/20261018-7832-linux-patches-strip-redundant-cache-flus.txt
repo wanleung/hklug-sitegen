@@ -1,0 +1,32 @@
+Date: 2026-10-18 19:26:00
+Author: HKLUG Team
+Title: Linux Patches Strip Redundant Cache Flushes From Intel TDX's Encrypted Memory Path
+Content:
+<p>A set of Linux kernel patches now under review aims to remove cache-flushing calls from Intel's Trust Domain Extensions (TDX) memory path — after developers concluded that the flushes, long assumed necessary for correctness, are redundant. Phoronix reported the work on 14 July.</p>
+<p>TDX is Intel's confidential computing technology for protecting virtual machine workloads. Its reliance on Total Memory Encryption with Multi-Key support (TME/MKTME) means memory is encrypted with per-KeyID AES keys, and moving a memory region from one KeyID to another effectively re-encrypts the data under a different key.</p>
+<h4>The background: KeyIDs and why flushes were assumed necessary</h4>
+<p>The vendor specification and the existing virtualization code took the conservative view that stale cache lines holding the old encrypted data had to be explicitly flushed before a KeyID transition — a safety measure intended to prevent data from one encryption context leaking into another.</p>
+<p>In practice, that precaution has turned out to be unnecessary. The hardware handles KeyID transitions safely on its own, meaning the explicit cache flushes in the KVM memory path were performing work the processor already takes care of. The result is a patch series stripping those flush calls from TDX guest-memory handling code.</p>
+<h4>What this means for performance — and what it doesn't</h4>
+<p>No benchmark figures have been published, and quantifying the gains now would be premature. The actual impact depends on how often a given workload triggers KeyID transitions in the first place. Memory-mapping-heavy virtualized workloads that hit those paths frequently could see the removed flushes add up; for others, the difference may be marginal. Organizations evaluating TDX-enabled infrastructure should expect any benefit to be measured against their own workload profiles rather than treated as a blanket speed-up.</p>
+<p>That measured framing matters for teams weighing confidential computing options generally. The technology promises encrypted memory isolation for multi-tenant virtualization, but the practical question for IT has always been how much of the traditional virtualization performance profile survives the encryption overhead. Each change that trims that overhead without weakening isolation brings the stack closer to conventional VM performance.</p>
+<h4>The competitive context: AMD SEV-SNP</h4>
+<p>The comparison point for Intel's TDX is AMD's Secure Encrypted Virtualization-Secure Nested Paging (SEV-SNP), which similarly encrypts VM memory with per-VM keys. The two designs handle key management, memory integrity and cache-coherency protection differently, and both have drawn scrutiny over how they manage sensitive transitions. Intel's decision to drop redundant flushes is a maturation signal for its side of the ledger, but it is not by itself evidence that TDX outperforms or out-secures SEV-SNP. Adopters comparing the two stacks should watch independent security analyses and measured benchmarks before drawing conclusions.</p>
+<h4>Open questions before merge</h4>
+<p>Two items remain open. First, the patches still need review from the KVM maintainers and x86 memory-management maintainers to confirm that removing the flushes introduces no vulnerability — and how Intel's own revised guidance shapes that review will be telling. Second, there is no set timeline for when these changes will land in mainline Linux; the patches surface on the kernel mailing list and will go through the usual revision cycle, so until they are merged and released, the improvement exists only in proposed form.</p>
+<p>The broader narrative is a familiar one in kernel development: an overly conservative reading of a hardware specification gets corrected once developers probe what the silicon actually guarantees. For the confidential computing community, the lesson is that the virtualization stack supporting TDX is still being actively tuned — and that some of the technology's early performance penalties may prove to be implementation artifacts rather than intrinsic costs of encryption.</p>
+<hr>
+<p>一組現正接受審核的 Linux kernel 補丁，旨在移除 Intel Trust Domain Extensions（TDX）記憶體路徑中的快取清除（cache flush）呼叫 — 經開發者研究後確認，這些一直被認為是確保正確性所必需的清除操作其實是多餘的。Phoronix 於 7 月 14 日報道了這項工作。</p>
+<p>TDX 是 Intel 的機密計算（confidential computing）技術，用於保護虛擬機工作負載。它依賴具多鑰匙支援的全記憶體加密技術（TME/MKTME），以每個 KeyID 對應的 AES 鑰匙加密記憶體，而將一個記憶體區域由一個 KeyID 轉移到另一個，實際上就是以另一條鑰匙重新加密資料。</p>
+<h4>背景：KeyID 與為何一直被認為需要清除操作</h4>
+<p>廠商規格文件及現有的 virtualization 代碼均採取保守觀點，認為在 KeyID 轉換之前，必須明確清除仍保存舊加密資料的過時快取行（cache line）— 這是一項防止資料由一個加密 context 滲漏到另一個的安全措施。</p>
+<p>實踐證明，這項預防措施並非必要。硬件本身已能安全處理 KeyID 轉換，意味著 KVM 記憶體路徑中的明確快取清除，一直在做處理器早已自行兼顧的工作。結果是一系列補丁從 TDX guest-memory 處理代碼中移除了這些清除呼叫。</p>
+<h4>對性能的影響 — 以及不影響的部分</h4>
+<p>目前未有公開任何基準測試數據，現在量化收益仍屬過早。實際影響取決於特定工作負載觸發 KeyID 轉換的頻率。頻繁觸及這些路徑、大量使用 memory mapping 的虛擬化工作負載，被移除的清除操作累積效果可能顯著；對其他工作負載而言，差異可能微乎其微。評估 TDX 基礎設施的機構，應預期任何效益須按自身工作負載特性來衡量，而非視為全面性的提速。</p>
+<p>這種審慎的表述，對整體而言正在權衡機密計算選項的團隊十分重要。該技術為多租戶虛擬化承諾加密的記憶體隔離，但 IT 面對的現實問題一直是：傳統虛擬化性能在承受加密開銷後能保留多少。每一個在不削弱隔離前提下削減該開銷的改動，都令整套技術棧更接近傳統 VM 的性能水平。</p>
+<h4>競爭背景：AMD SEV-SNP</h4>
+<p>Intel TDX 的比較對象是 AMD 的安全加密虛擬化 — 安全巢狀分頁（SEV-SNP），後者同樣以每個 VM 專屬鑰匙加密 VM 記憶體。兩者在密鑰管理、記憶體完整性及快取一致性（cache-coherency）保護的處理方式各不相同，且雙方如何處理敏感的轉換過程均曾受到審視。Intel 決定移除多餘的清除操作，是其陣營技術成熟的信號，但這本身並不能證明 TDX 在性能或安全性上勝過 SEV-SNP。比較兩套技術棧的採用者，宜先參考獨立安全分析及實測基準數據，再作結論。</p>
+<h4>合併前的未決事項</h4>
+<p>尚有兩項問題待解決。第一，補丁仍需 KVM 維護者及 x86 記憶體管理維護者審核，以確認移除清除操作不會引入漏洞 — Intel 自身如何修訂指引來配合這審核過程，將是重要觀察點。第二，這些改動何時會進入 mainline Linux 並無既定時間表；補丁已出現於 kernel 郵件列表，將經歷慣常的修訂流程，因此在合併並發布之前，此項改善僅屬建議階段。</p>
+<p>這背後的敘事在 kernel 開發中並不陌生：對硬件規格過於保守的解讀，往往在開發者深入探究芯片實際保證之後得到修正。對機密計算社群而言，教訓在於支援 TDX 的 virtualization 技術棧仍在積極調校之中 — 該技術早期的部分性能代價，可能最終被證明是實作上的產物，而非加密本身固有的成本。</p>
+<p><a href="https://www.phoronix.com/news/Intel-TDX-Less-Cache-Flushing" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
