@@ -1,0 +1,34 @@
+Date: 2025-04-18 05:24:00
+Author: HKLUG Team
+Title: ReactOS NTFS Driver Reaches Milestone: The OS Can Now Be Installed and Run on NTFS
+Content:
+<h3>ReactOS NTFS Driver Reaches Milestone: The OS Can Now Be Installed and Run on NTFS</h3>
+<p>The ReactOS project has crossed a threshold its contributors have been working toward for years. Phoronix reports that the project's NTFS file-system driver now supports read/write operations robustly enough that ReactOS can be installed on, and run from, NTFS-formatted partitions — a capability the project has not previously offered. The same report notes that NTFS formatting support is also available through the driver, closing another gap in ReactOS's storage stack.</p>
+<p>For readers encountering the project for the first time: ReactOS is a GPL-licensed, clean-room reimplementation of the Windows NT architecture, built by volunteers without access to Microsoft's proprietary source code. It aims for binary compatibility with Windows drivers and applications, and is developed entirely in the open.</p>
+<h4>Why This Is a Real Engineering Hurdle</h4>
+<p>On mainstream Windows, installing to NTFS is unremarkable — it has been the default for more than two decades. For ReactOS, it is a different matter. Until now, the project's NTFS driver has been capable of little more than reading files, and installation and daily use have had to rely on FAT — a far simpler file system with minimal metadata and no journaling. NTFS is a layered, transactional file system with a permission model, sparse files, hard links, and a large set of on-disk structures that the operating system leans on heavily.</p>
+<p>A driver that can list and copy files is one problem; a driver stable enough to carry the system partition through formatting, installation, and boot — surviving the metadata churn each of those steps entails — is quite another. Because file-system drivers run in kernel mode, a bug here does not surface as a recoverable userspace error; it takes the whole system down with it. That raises the bar considerably: getting there requires reliable write paths, working format routines, and the ability to handle the corner cases that only appear when the driver is trusted with the OS itself.</p>
+<p>That ReactOS reached this point largely through volunteer effort and community funding, without privileged access to the specification details a first-party implementation would enjoy, makes it a genuine systems-engineering achievement regardless of how one feels about the project's end goal.</p>
+<h4>Honest Limitations</h4>
+<p>It is important to keep the milestone in proportion. ReactOS remains an alpha-quality research project, and is explicitly not recommended for production or mission-critical use. It is not a drop-in replacement for a maintained Windows installation, and should not be pitched as one. Hardware support is incomplete, application compatibility is uneven, and bugs are common — all to be expected from a volunteer effort reimplementing a complex proprietary operating system from the outside.</p>
+<p>Anyone experimenting with ReactOS should do so in a virtual machine or on dedicated test hardware, not on a machine holding anything they care about. Reaching install-capable NTFS support moves the project meaningfully forward technically; it does not change that maturity assessment.</p>
+<h4>Where This Sits in the Ecosystem</h4>
+<p>ReactOS occupies a narrow but valuable niche. It is useful to developers working on Windows interoperability, to preservationists supporting legacy hardware and software, and to anyone studying how NT internals fit together. Components developed for it occasionally cross-pollinate into the broader free-software world.</p>
+<p>The project has not announced a firm timeline for when the NTFS driver will be considered fully stable. The storage layer is now meaningfully closer to matching the expectations of the software ReactOS aims to run, and contributors can turn to the next set of long-standing limitations. For a codebase assembled almost entirely by volunteers, that is real progress — even if the finish line remains distant.</p>
+<p><em>Source: <a href="https://www.phoronix.com/news/ReactOS-NTFS-Driver">Phoronix</a></em></p>
+<hr>
+<h3>ReactOS NTFS 驅動程式達成里程碑：作業系統現可安裝及運行於 NTFS 之上</h3>
+<p>ReactOS 專案已跨過其貢獻者多年來一直努力達成的門檻。Phoronix 報導，該專案的 NTFS 檔案系統驅動程式現已能穩健地支援讀寫操作，足以讓 ReactOS 安裝於 NTFS 格式的分割區，並從中啟動運行——這是該專案以往未曾提供的功能。同一篇報導亦指出，該驅動程式亦已提供 NTFS 格式化支援，填補了 ReactOS 儲存架構中的又一缺口。</p>
+<p>給首次接觸此專案的讀者：ReactOS 是以 GPL 授權、透過乾淨室方式重新實作的 Windows NT 架構，由義工在無法取得 Microsoft 專有源碼的情況下開發而成。它以與 Windows 驅動程式及應用程式達成 binary compatibility（二進制相容）為目標，並完全以開放方式開發。</p>
+<h4>為何這是真正的工程難關</h4>
+<p>在主流 Windows 上，安裝至 NTFS 並無特別之處——二十多年來它一直是預設選項。但對 ReactOS 而言則截然不同。在此之前，該專案的 NTFS 驅動程式僅能做到讀取檔案，安裝及日常使用一直須依賴 FAT——一個遠為簡單的檔案系統，中繼資料極少且沒有日誌功能。NTFS 則是一個分層式、具事務性的檔案系統，配備權限模型、稀疏檔案、硬連結，以及大量作業系統重度依賴的磁碟結構。</p>
+<p>一個能列出及複製檔案的驅動程式是一個問題；一個穩定到足以帶領系統分割區經歷格式化、安裝及開機整個過程——並承受每一步所涉及的中繼資料變動——的驅動程式，則是截然不同的另一回事。由於檔案系統驅動程式在 kernel mode 下運行，此處的 bug 並不會以可恢復的 userspace 錯誤形式浮現，而是會令整個系統崩潰。這大幅提高了標準：要達到目標，必須具備可靠的寫入路徑、可正常運作的格式化例程，以及處理各種極端情況的能力——而這些情況只有在驅動程式獲授權管理作業系統本身時才會出現。</p>
+<p>ReactOS 能在未能取得第一方實作所享有的規範細節的情況下，主要憑藉義工努力及社群資金達到這一步，無論人們對該專案的最終目標有何看法，這都是一項實至名歸的系統工程成就。</p>
+<h4>誠實的局限</h4>
+<p>必須以恰當的角度看待此里程碑。ReactOS 仍是一個 alpha 品質的研究項目，並明確不建議用於生產環境或任務關鍵用途。它並非現行 Windows 安裝的即插即用替代品，也不應被標榜為如此。硬件支援並不完整，應用程式相容性參差，bug 亦十分常見——對於一個由義工從零開始重新實作複雜專有作業系統的專案而言，這些都在預期之內。</p>
+<p>任何試用 ReactOS 的人，都應在虛擬機或專用測試硬件上進行，切勿在載有重要資料的電腦上嘗試。具備可安裝的 NTFS 支援，意味著專案在技術上邁出了實質性的一步；但這並不會改變上述的成熟度評估。</p>
+<h4>在生態系統中的定位</h4>
+<p>ReactOS 佔據一個狹窄但有價值的定位。它對從事 Windows 互通性（interoperability）開發的開發者、支援傳統硬件及軟件的保存工作者，以及任何研究 NT 內部架構運作的人士都有用。為其開發的組件偶爾會反哺至更廣闊的自由軟件世界。</p>
+<p>該專案尚未公布 NTFS 驅動程式被視為完全穩定的明確時間表。儲存層現已大幅接近 ReactOS 期望運行的軟件所要求的水平，貢獻者亦可轉而處理下一批長期存在的限制。對於一個幾乎完全由義工編寫的源碼庫而言，這是實質的進展——即使終點仍然遙遠。</p>
+<p><em>來源：<a href="https://www.phoronix.com/news/ReactOS-NTFS-Driver">Phoronix</a></em></p>
+<p><a href="https://www.phoronix.com/news/ReactOS-NTFS-Driver" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
