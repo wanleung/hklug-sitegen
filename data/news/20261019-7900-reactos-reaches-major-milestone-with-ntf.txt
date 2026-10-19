@@ -1,0 +1,30 @@
+Date: 2026-10-19 22:03:00
+Author: HKLUG Team
+Title: ReactOS reaches major milestone with NTFS install support
+Content:
+<p>ReactOS, the long-running open-source project building a clean-room reimplementation of Windows, can now install onto NTFS thanks to a new filesystem driver — a shift Ars Technica reported on 19 October as a major milestone for the project.</p>
+<p>The practical change is simple to state: ReactOS installers are no longer confined to FAT-family targets. For the first time, the project can write itself to the same filesystem Windows uses by default, instead of demanding an alternate disk layout before anything else can be tested.</p>
+<h4>Why a filesystem counts as compatibility work</h4>
+<p>On the surface, a disk driver is an odd headline for a project whose entire reason for existing is to run Windows applications. The connection is closer than it first appears. Windows software compatibility is not purely an API problem — it is a filesystem problem too. Windows applications routinely probe their environment at runtime: checking for alternate data streams, security descriptors, junction points, case-preserving paths, and the rest of NTFS's semantics, then drawing conclusions about what kind of system they are running on. Host that same application on a FAT filesystem, where none of those assumptions hold, and the result is code tripping over itself in ways that surface as opaque failures rather than diagnosable errors.</p>
+<p>In other words, without an NTFS-capable install path, compatibility testing could never begin on the disk layout a real Windows deployment uses. That is the gap this driver closes.</p>
+<p>There is a second dimension worth noting for the wider open-source community. In principle, work of this kind functions as documentation-by-implementation: each filesystem behaviour the project reverse-engineers and reproduces can feed a body of knowledge shared with Wine and other cross-platform tooling efforts that depend on accurate models of how Windows actually behaves.</p>
+<h4>What the milestone does not cover</h4>
+<p>Ars Technica's account states that install support arrives with the new driver, but it does not break down read/write versus read-only capability, nor does it separate what the driver handles at install time from what it handles during general runtime file operations. Readers who need that level of detail should look to ReactOS's own announcement rather than press coverage.</p>
+<p>This is also a filesystem milestone, not a general release. ReactOS remains in alpha. The project has never claimed production readiness, and this change does not move it there — it removes one category of blocker below the application layer, where failure was previously near-certain.</p>
+<p>For context, NTFS semantics such as alternate data streams and case-preserving names are the general vocabulary of the filesystem the driver targets; the milestone itself, as reported, is that installation onto NTFS is now possible.</p>
+<h4>What to watch next</h4>
+<p>The signal to monitor is whether ReactOS's subsequent releases begin reporting application-compatibility results on NTFS-hosted installs — the environment where such tests could not previously run. If the project's testing baseline shifts to the same default filesystem Windows uses, the practical reach of its compatibility claims changes with it.</p>
+<hr>
+<p>ReactOS 是一個歷史悠久的 open source 專案，以乾淨室（clean-room）方式重新實作 Windows，憑藉全新的檔案系統 driver，現已可安裝至 NTFS。Ars Technica 於 10 月 19 日報道，這對該專案而言是一項重要里程碑。</p>
+<p>實際改變一句話便可說清楚：ReactOS 安裝程式不再局限於 FAT 系列目標。專案首次能夠將自身寫入 Windows 預設採用的同一檔案系統，無須先要求另一種磁碟佈局，方可進行任何測試。</p>
+<h4>為何檔案系統屬兼容性工作</h4>
+<p>表面上看，一個磁碟 driver 對於以運行 Windows 應用程式為存在理由的專案而言，似乎不是什麼搶眼的題材。但兩者的關聯遠比初看之下緊密。Windows 軟件兼容性並不單純是 API 問題，同時也是檔案系統問題。Windows 應用程式通常會在執行時期探測所處環境：檢查 alternate data streams、security descriptors、junction points、保留大小寫的路徑，以及 NTFS 其餘各項語義，據此判斷自己正運行於哪種系統之上。若將同一應用程式置於 FAT 檔案系統，上述假設全不成立，結果便是程式自我絆倒，以難以理解的失效形式呈現，而非可供診斷的錯誤。</p>
+<p>換言之，沒有支援 NTFS 的安裝路徑，兼容性測試便永遠無法在真實 Windows 部署所使用的磁碟佈局上展開。這正是該 driver 所填補的缺口。</p>
+<p>對更廣泛的 open source 社群而言，另有一個層面值得留意。原則上，此類工作可發揮「以實作文獻化」（documentation-by-implementation）的作用：專案逆向工程並重現的每一項檔案系統行為，均可充實一套與 Wine 及其他跨平台工具項目共享的知識體系，而這些項目正依賴關於 Windows 實際行為的準確模型。</p>
+<h4>此里程碑未涵蓋的範圍</h4>
+<p>Ars Technica 的報道說明新 driver 提供安裝支援，但並未細分讀寫與唯讀能力，也未區分 driver 在安裝階段所處理的事項與在一般執行時期檔案操作所處理的事項。讀者如需該等細節，宜查閱 ReactOS 自身的公告，而非依賴新聞報道。</p>
+<p>這是檔案系統里程碑，並非正式版本發佈。ReactOS 仍處於 alpha 階段。專案從未聲稱已達生產就緒狀態，此項變更亦未使其達標——它只是移除了應用程式層以下的其中一類阻礙，過往在該處失敗幾乎確定無疑。</p>
+<p>背景資料方面，alternate data streams 及保留大小寫的名稱等 NTFS 語義，屬於該 driver 所針對檔案系統的一般詞彙；而此里程碑本身，按報導所述，在於安裝至 NTFS 現已可行。</p>
+<h4>下一步值得觀察的信號</h4>
+<p>值得監察的信號，是 ReactOS 後續版本會否開始報告在以 NTFS 為基礎的安裝環境下的應用程式兼容性結果——過往此類測試正因環境所限而無法運行。若該專案的測試基準轉移至 Windows 預設使用的同一檔案系統，其兼容性聲明的實際覆蓋範圍亦將隨之改變。</p>
+<p><a href="https://arstechnica.com/information-technology/2026/10/reactos-reaches-major-milestone-with-ntfs-install-support/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
