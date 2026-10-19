@@ -1,0 +1,44 @@
+Date: 2026-10-19 06:30:00
+Author: HKLUG Team
+Title: Linux Kernel 7.3 Lands on Time: I/O Speedups, Zen 6 Groundwork, and What It Means for Your Rollout Plan
+Content:
+<p><strong>Editor's note:</strong> The factual basis for this piece is Phoronix's release report. The rollout, procurement, and LTS commentary that follows is original analysis by the HKLUG editorial team and should be read as such. Readers should confirm the release date and contents against kernel.org before making decisions based on this article.</p>
+<hr />
+<p><em>Analysis</em> — Linux 7.3 has landed on the mainline tree on schedule, per Phoronix's release report, with I/O performance improvements and early enablement work for AMD's forthcoming Zen 6 processors flagged as the headline changes. The full report is at the source link above.</p>
+<p>For Hong Kong IT teams planning maintenance windows and hardware budgets, the more useful frame is not what the release announcement contains, but how and when 7.3 will reach production systems — and whether any of it should influence this year's server refresh decisions. The rest of this article is that planning analysis, not a summary of kernel changes.</p>
+<h4>What Phoronix reports — and what it doesn't</h4>
+<p>Phoronix confirms the release date and flags I/O improvements and Zen 6 enablement as the leading themes. One important caveat: the article does not enumerate the specific block-layer or filesystem subsystems behind the I/O claims. Operators looking for authoritative detail should go straight to the changelogs on kernel.org rather than trying to reconstruct them from coverage summaries.</p>
+<p>The same caution applies to performance figures. Benchmarks circulating around any new kernel release tend to be hardware-specific and workload-specific; a result measured on one storage controller under one synthetic test says very little about what will happen on your fleet. Treat any percentage you encounter as a single data point until it has been reproduced on hardware resembling your own.</p>
+<h4>The rollout path: expect the lag</h4>
+<p>A kernel.org release is the starting line, not the finish line. For most production environments, 7.3 will arrive only after distribution vendors have built, tested, and promoted it through their own channels — and the timeline varies significantly depending on what you run.</p>
+<p>Distributions that track mainline closely may carry 7.3 within weeks. Enterprise-oriented distributions will take longer, and some will never ship 7.3 at all, treating it as an interim release between long-term support (LTS) points. Teams running vendor-backed kernels — whether from a commercial Linux provider or a cloud hyperscaler — will see it on the vendor's schedule, not Linus's.</p>
+<p>Two habits remain worth keeping. First, avoid <code>.0</code>-series kernels in production where an alternative exists; the first stable point release typically absorbs early regressions. Second, remember that container images and vendor appliances carry their own kernel or dependency lag, so a host kernel upgrade doesn't necessarily mean your workloads are running on new code.</p>
+<p>For teams using custom-built kernels or DKMS modules, add image-rebuild time to the plan. Anything that depends on kernel headers needs to be rebuilt and revalidated before 7.3 goes anywhere near a production host.</p>
+<h4>Zen 6: groundwork, not a procurement trigger</h4>
+<p>The Zen 6 preparation work in 7.3 will tempt some operators to hold off on hardware purchases until the software stack is fully ready. That is probably the wrong call.</p>
+<p>Merge-window enablement for a new processor family is groundwork — early support, register definitions, and plumbing. It tells you nothing about whether Zen 6 parts are available, attractively priced, or shipping in the chassis and SKUs your data centre actually buys. Procurement decisions should follow supply, pricing, and your refresh cycle, not the presence of driver code in a kernel release.</p>
+<p>The relevant signal for buyers is narrower and genuinely useful: by the time Zen 6 hardware lands in your racks, the kernel support will already be in-tree and backported into the LTS lines you will actually be running. That removes a friction point that has historically plagued new-architecture deployments — and it is good news for planning, not a reason to delay a refresh that is otherwise due.</p>
+<h4>The LTS horizon</h4>
+<p>One thing 7.3's launch cannot tell you is which LTS release will anchor your next procurement cycle. That designation comes later, and LTS selection is a multi-year commitment — the kernel you bet on can underpin your infrastructure for the better part of a decade in some cases.</p>
+<p>The sensible approach is unchanged: let your distribution vendor's LTS support window, not the mainline release cadence, drive lifecycle decisions. Track 7.3 as a source of features and fixes that will eventually flow into those supported kernels, and plan refreshes around when that backporting actually lands in your chosen distribution.</p>
+<hr>
+<p>**編者按：**本文的事實基礎來自 Phoronix 的發布報道。隨後關於部署、採購及 LTS 的評論，屬 HKLUG 編輯團隊的原創分析，讀者應以此理解。在根據本文作出決定前，讀者應先在 kernel.org 核實發布日期及內容。</p>
+<hr />
+<p><em>分析</em> — 據 Phoronix 的發布報道，Linux 7.3 已如期登陸 mainline tree，主要改動包括 I/O 性能提升，以及為 AMD 即將推出的 Zen 6 處理器所作的早期 enablement 工作。完整報道請見上方原文連結。</p>
+<p>對於需要規劃維護時間窗和硬件預算的香港 IT 團隊，較有用的切入角度不是發布公告包含甚麼，而是 7.3 會以何種方式、何時抵達 production 系統——以及這些更新是否應影響今年的伺服器更新決策。本文其餘部分正是這方面的規劃分析，而非 kernel 改動的摘要。</p>
+<h4>Phoronix 報導了甚麼——以及沒有報導甚麼</h4>
+<p>Phoronix 確認了發布日期，並將 I/O 改進和 Zen 6 enablement 列為主要主題。一個重要的注意事項：該文章並沒有列出具體涉及 I/O 改進的 block layer 或 filesystem subsystem。需要權威細節的系統管理員，應直接查閱 kernel.org 上的 changelog，而不是試圖從報道摘要中還原細節。</p>
+<p>同樣的謹慎也適用於性能數據。任何新 kernel 發布都會流傳各種 benchmark，而這些測試通常是特定硬件、特定 workload 的產物；在某一款 storage controller 上以某一種 synthetic test 測得的結果，對於你的機器 fleet 會有甚麼表現幾乎說明不了甚麼。在類似於你自身硬件的環境中重複驗證之前，任何你遇到的百分比都應視為單一數據點。</p>
+<h4>部署路徑：預期會有時間差</h4>
+<p>在 kernel.org 發布只是起點，不是終點。對大多數 production 環境而言，7.3 要等到各 distribution 廠商自行 build、測試並透過其渠道推出後才會抵達——而時間表會因你所使用的平台而有顯著差異。</p>
+<p>緊貼 mainline 的發行版可能在數週內就提供 7.3。面向企業的發行版需要更長時間，有些更永遠不會推出 7.3，只會視其為兩個長期支援（LTS）版本之間的過渡版本。使用廠商支援 kernel 的團隊——不論是商業 Linux 供應商還是雲端 hyperscaler——看到的部署時間將取決於廠商的時間表，而非 Linus 的時間表。</p>
+<p>有兩個習慣仍然值得維持。第一，如非必要，避免在 production 環境使用 <code>.0</code> 系列 kernel；首個 stable point release 通常會吸納最初的 regression。第二，請記住 container image 和廠商 appliance 本身也各自帶有 kernel 或依賴項的時間差，因此升級 host kernel 並不必然代表你的 workload 已經運行在新代碼之上。</p>
+<p>對於使用自建 kernel 或 DKMS module 的團隊，則需在計劃中加入 image rebuild 的時間。任何編譯時需使用 kernel headers 的組件，都必須在 7.3 接近任何 production 主機之前重新 build 並重新驗證。</p>
+<h4>Zen 6：先期準備，而非採購觸發點</h4>
+<p>7.3 中的 Zen 6 準備工作，可能會誘使一些系統管理員推遲硬件採購，直至軟件 stack 完全準備就緒。這很可能是錯誤的判斷。</p>
+<p>在 merge window 中為新處理器家族加入 enablement，屬於先期準備工作——早期支援、register 定義以及基礎 plumbing。它並不能告訴你 Zen 6 產品是否已經有貨、定價是否具吸引力、或者是否會以你的數據中心實際採購的機箱和 SKU 出貨。採購決策應根據供應、定價和你的更新週期來決定，而非某個 kernel 發布中是否有驅動代碼。</p>
+<p>對買家而言，真正相關的信號範圍更窄但確實有用：當 Zen 6 硬件進入你的機架時，kernel 支援將已經 in-tree，並 backport 到你實際會運行的 LTS 系列中。這消除了一個長期困擾新架構部署的障礙——對規劃而言這是好消息，而不是推遲一項原本就到期更新的理由。</p>
+<h4>LTS 的視野</h4>
+<p>7.3 的發布有一件事無法告訴你，就是哪一個 LTS 版本將會成為你下一個採購週期的基準。該指定要稍後才會公布，而 LTS 的選擇是一項長達數年的承諾——你押注的 kernel 在某些情況下可以支撐你的基礎設施將近十年。</p>
+<p>合理的做法沒有改變：應由你的 distribution 廠商的 LTS 支援窗口，而非 mainline 的發布節奏，來驅動生命週期決策。追蹤 7.3 作為功能和修復的來源，這些內容最終會流入那些受支援的 kernel，並圍繞 backport 實際抵達你所選發行版的時間來規劃更新。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.3-Released" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
