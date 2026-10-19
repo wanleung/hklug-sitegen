@@ -1,0 +1,42 @@
+Date: 2026-10-19 09:37:00
+Author: HKLUG Team
+Title: OpenCode Says Legacy System Intrusion Leaked Saved AI Provider Keys
+Content:
+<p>Hong Kong teams running OpenCode Console should begin rotating saved provider credentials now: OpenCode is warning that an intruder reached one of its older backend systems on the night of 16 October, and that the intrusion may have exposed the OpenAI, Anthropic, and Google API keys users had stored in the vendor's hosted service. The Hacker News reported the disclosure on 17 October.</p>
+<h4>The immediate checklist for HK teams</h4>
+<p>The exposure is tied to keys saved in the hosted Console — not, on OpenCode's description, to installations that supply keys at runtime and never persist them in the service. That distinction is important, but the safest posture during an incomplete disclosure is to verify rather than assume. For teams here, the first moves are:</p>
+<ul>
+<li><strong>Rotate every provider key saved in Console</strong>, starting with keys that gate production workloads or carry high spending limits. Revoking a key and issuing a new one is cheap; cleaning up unauthorised usage after the fact is not.</li>
+<li><strong>Review provider-side activity logs</strong> for unfamiliar calls, unexpected regions, or spending spikes during and after the incident window.</li>
+<li><strong>Scan codebases, CI configuration, container images, and chat history</strong> for keys that may have been copied around while teams depended on the shared Console setup.</li>
+<li><strong>Check whether the same key has been reused across environments</strong> — a development key saved in Console that also gates production traffic multiplies the blast radius.</li>
+<li><strong>Move to short-lived or scoped credentials</strong> where providers support them, so a single leaked secret cannot grant open-ended access.</li>
+</ul>
+<h4>The key-proxy threat model</h4>
+<p>Console is OpenCode's optional hosted service, sitting alongside the tool's local, self-managed workflow. When a workspace saves its provider key to Console, the hosted service uses that key to call the model provider on the team's behalf, so members can work with the models without each holding their own credentials.</p>
+<p>That convenience is exactly what turns a backend intrusion into a credential incident: the keys live on OpenCode's infrastructure rather than only on developers' machines. Anyone holding a working OpenAI, Anthropic, or Google API key can typically spend against the associated billing account, query models with the account's permissions, and pull usage or, in some configurations, organisation metadata through provider APIs. Stolen keys are also a common entry point for supply-chain abuse, since a key embedded in a CI pipeline or internal service can be replayed from anywhere in the world.</p>
+<h4>Why this deserves a place in HK enterprise credential policy</h4>
+<p>For organisations here, an incident of this shape should trigger two distinct reviews. The first is credential policy: whether AI provider keys are permitted to sit in third-party vaults at all, whether they must be scoped and rate-limited at the provider side, and whether rotation is scheduled or only event-driven. The second is the privacy angle. Under Hong Kong's Personal Data (Privacy) Ordinance, there is no general mandatory breach-notification regime equivalent to the EU's GDPR — and the PCPD's guidance encourages notification as soon as practicable where a notifiable data breach assessment indicates a real risk of harm. Whether leaked AI API keys constitute personal data depends on what the keys can reach: keys tied to individual accounts, or granting access to systems holding customer data, may pull the incident into that assessment. Legal and compliance teams should document that determination now rather than after a regulator asks. Enterprises with cross-border operations should also check whether other applicable regimes impose firmer timelines.</p>
+<h4>The wider lesson</h4>
+<p>This is the recurring failure mode of convenience vaults for AI credentials: every hosted store of third-party API keys becomes a high-value target, and its legacy components are frequently the weakest link. Secrets that once lived in a single developer's <code>.env</code> file now accumulate on vendor infrastructure, where intrusion blast radius is measured in billing accounts rather than laptops.</p>
+<p>OpenCode has not yet published the full detail developers will want — specifically, whether any keys were confirmed exfiltrated versus potentially accessible, and how many workspaces are affected. Until that picture firms up, rotation is the only move that closes the question.</p>
+<hr>
+<p>在香港運行 OpenCode Console 的團隊應立即開始輪換已儲存的供應商憑證：OpenCode 發出警告，指入侵者於 10 月 16 日晚間接觸到其一個較舊的後端系統，這次入侵可能已令用戶存放在該公司託管服務中的 OpenAI、Anthropic 及 Google API key 外洩。The Hacker News 已於 10 月 17 日報道有關披露。</p>
+<h4>香港團隊的即時處理清單</h4>
+<p>此次外洩事件涉及儲存在託管 Console 中的 key——按照 OpenCode 的說法，並非那些在 runtime 提供 key、從未將其儲存於服務中的安裝。這項區別相當重要，但在披露未完整之前，最穩妥的做法仍是逐一查證而非假設。對於本地團隊而言，首要步驟如下：</p>
+<ul>
+<li><strong>輪換所有儲存在 Console 的供應商 key</strong>，優先處理掌管 production 工作負載或設有高額消費上限的 key。撤銷並重新簽發一把 key 成本低廉；事後才清理未經授權的使用則代價高昂。</li>
+<li><strong>檢視供應商端的 activity log</strong>，查看事故時段及事後是否有陌生的 API 呼叫（call）、異常地區的存取或消費額急升。</li>
+<li><strong>掃描 codebase、CI 配置、container image 及聊天記錄</strong>，找出團隊在依賴共享 Console 設定期間可能被隨意傳播的 key。</li>
+<li><strong>檢查同一把 key 是否被跨環境重用</strong>——一把儲存在 Console、同時又掌管 production 流量的開發用 key，會令爆炸半徑倍增。</li>
+<li><strong>改用短有效期或限定範圍（scoped）的憑證</strong>，凡供應商有支援此功能即應採用，令單一外洩的 secret 無法換取無限制的存取權限。</li>
+</ul>
+<h4>Key proxy 的威脅模型</h4>
+<p>Console 是 OpenCode 的可選託管服務，與該工具本地自行管理（self-managed）的工作流程並行運作。當 workspace 將其供應商 key 儲存至 Console，託管服務便會使用該 key 代表團隊呼叫（call）模型供應商，令成員無需各自持有憑證即可使用模型。</p>
+<p>正是這份便利，令後端入侵演變成一宗憑證事故：key 存放在 OpenCode 的基建之上，而非僅存在於開發者的電腦上。任何人只要持有可用的 OpenAI、Anthropic 或 Google API key，通常便可以該 key 對相關 billing account 消費、以該帳號的權限查詢模型，並透過供應商 API 取取使用量資料，在某些配置下更可取得組織（organisation）的 metadata。被盜的 key 亦是供應鏈攻擊（supply-chain abuse）的常見入侵途徑，因為嵌入 CI pipeline 或內部服務中的 key，可由全球任何地方重放（replay）使用。</p>
+<h4>為何此事應納入香港企業的憑證政策</h4>
+<p>對於本地機構而言，此類事故應觸動兩項截然不同的檢討。其一是憑證政策：是否容許 AI 供應商 key 存放於第三方 vault、是否必須在供應商端設定範圍限制及速率限制（rate limit），以及輪換是按固定排程進行抑或僅在事件後才觸發。其二是私隱角度。根據香港《個人資料（私隱）條例》，並無一套與歐盟 GDPR 相若的一般強制性外洩通報機制——而私隱專員公署（PCPD）的指引則鼓勵機構在可評估的資料外洩顯示存在切實的損害風險時，在切實可行的情況下盡快通報。外洩的 AI API key 是否構成個人資料，取決於該等 key 可以存取何物：與個別帳號掛鈎的 key，或可存取載有客戶資料系統的 key，均可能令是次事故納入該項評估範圍。法務及合規團隊應現在便就該項判定作好紀錄，而非待監管機構查詢後才補救。擁有跨境業務的企業亦應查核其他適用的監管制度是否設有更嚴格的通報時限。</p>
+<h4>更廣泛的教訓</h4>
+<p>這正是為 AI 憑證提供便利式 vault 的反覆失效模式：每一個存放第三方 API key 的託管儲存庫都會成為高價值的攻擊目標，而其舊有元件往往正是最薄弱的一環。昔日只存在於個別開發者 <code>.env</code> 檔案中的 secrets，如今逐漸堆積於供應商基建之上，入侵的爆炸半徑不再以電腦計算，而是以 billing account 計量。</p>
+<p>OpenCode 尚未公布開發者亟需了解的完整詳情——具體而言，是有多少 key 被證實遭盜取（exfiltrated）、抑或僅屬可能被存取，以及受影響的 workspace 有多少。在事態明朗之前，輪換 key 是唯一能了結這問題的做法。</p>
+<p><a href="https://thehackernews.com/2026/10/opencode-console-breach-may-have.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
