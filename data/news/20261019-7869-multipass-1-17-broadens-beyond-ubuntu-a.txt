@@ -1,0 +1,148 @@
+Date: 2026-10-19 15:24:00
+Author: HKLUG Team
+Title: Multipass 1.17 Broadens Beyond Ubuntu: A Cross-Distro VM Workflow Worth Revisiting
+Content:
+<p>Canonical's Multipass — the lightweight VM orchestrator known for spinning up Ubuntu instances with a single command across Windows, macOS and Linux — gained a significant new capability with the 1.17 release in mid-2025. As Phoronix reported on 2 July 2025, that version added direct support for launching non-Ubuntu Linux distributions, extending the tool beyond its original Ubuntu-only scope.</p>
+<p>For backend and DevOps engineers in Hong Kong juggling multi-distro test matrices, the change removes a familiar pain point. Before 1.17, validating a service against Debian, Fedora or an Alpine-based image typically meant maintaining a second toolchain — Vagrant, Lima, or a hand-rolled libvirt setup. Multipass's appeal was its friction-free, cloud-init-driven workflow; extending that workflow to other distributions eliminated the main reason teams kept parallel tooling around.</p>
+<h5>What 1.17 Changed</h5>
+<p>The core capability is straightforward: <code>multipass</code> can now provision VMs from images of Linux distributions other than Ubuntu, drawn from the tool's existing image catalogue. Importantly, the change is additive. Existing Ubuntu-based workflows, launch profiles and cloud-init user-data continue to behave as before, so teams with production pipelines built on Multipass should not need to rework them.</p>
+<p>Two practical caveats apply. First, Canonical has not published an exhaustive catalogue of every third-party distribution; the reliable starting point is running <code>multipass find</code> against your installed version to see what your platform actually offers. Second, performance characteristics vary by hypervisor — Multipass on Windows can route through either Hyper-V or WSL2 depending on configuration, and cross-distro guests may not behave identically under each. Benchmark before committing a CI pipeline to it.</p>
+<h5>How It Compares</h5>
+<p>Multipass now sits alongside several established options for throwaway VMs:</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Cross-distro images</th>
+<th>Typical strength</th>
+<th>Trade-off</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Multipass</strong></td>
+<td>Broadened in 1.17</td>
+<td>One-command launch, cloud-init native, cross-platform</td>
+<td>Smaller third-party image ecosystem than Vagrant</td>
+</tr>
+<tr>
+<td><strong>Vagrant</strong></td>
+<td>Extensive (Vagrant Cloud)</td>
+<td>Large box catalogue, mature provider ecosystem</td>
+<td>Heavier setup, slower iteration for quick tests</td>
+</tr>
+<tr>
+<td><strong>Lima</strong></td>
+<td>Growing</td>
+<td>Excellent macOS/Apple Silicon experience</td>
+<td>Limited to macOS/Linux hosts</td>
+</tr>
+<tr>
+<td><strong>OrbStack</strong></td>
+<td>Via containers/VMs</td>
+<td>Fast, macOS-optimised, developer-friendly</td>
+<td>macOS-only, closed-source</td>
+</tr>
+</tbody>
+</table>
+<p>The deciding factor for most teams will be image quality and refresh cadence. Vagrant's long-established box catalogue is its primary moat; if Canonical maintains timely, trustworthy non-Ubuntu images, Multipass's simpler developer experience becomes a credible reason to consolidate tooling.</p>
+<h5>CLI Quick Start</h5>
+<p>For Hong Kong DevOps engineers evaluating the workflow, a basic Multipass session looks like this:</p>
+<pre><code class="language-bash"># List available images (including the non-Ubuntu distributions added in 1.17)
+multipass find
+
+# Launch a VM
+multipass launch --name dev-vm
+
+# Enter the VM's shell
+multipass shell dev-vm
+
+# List running VMs and their IPs
+multipass list
+
+# Copy a file from the host into the VM
+multipass transfer ./app.tar.gz dev-vm:/tmp/
+
+# Stop / delete the VM
+multipass stop dev-vm
+multipass delete dev-vm
+multipass purge
+</code></pre>
+<p>Note that the <code>transfer</code> example targets <code>/tmp/</code> rather than <code>/home/ubuntu/</code> — the latter path exists only in Ubuntu images and will fail on the first non-Ubuntu guest you try. To run commands inside a non-Ubuntu guest or to provision users and directories, use <code>multipass exec dev-vm -- &lt;command&gt;</code> or pass a cloud-init config at launch time with <code>--cloud-init</code>.</p>
+<p>Since the third-party image list in 1.17 is still expanding, confirm that your target distribution appears in <code>multipass find</code> before committing a test pipeline to it.</p>
+<h5>Availability</h5>
+<p>Multipass 1.17 is distributed through Canonical's official channels: as a Snap package on Linux, and via the project's installer downloads for Windows and macOS. For teams standardising on Ubuntu for development but needing to validate deployments against other distributions, the release closes a gap that previously required a second VM toolchain.</p>
+<p><em>Source: Phoronix, "Canonical's Multipass 1.17 Adds Direct Support For Non-Ubuntu Linux Distros," 2 July 2025.</em></p>
+<hr>
+<p>Canonical 的 Multipass 是一款輕量級 VM 編排工具，以能在 Windows、macOS 及 Linux 上以單一指令快速建立 Ubuntu 實例而為人所知；該工具在 2025 年中發布的 1.17 版本中加入了一項重要新功能。據 Phoronix 於 2025 年 7 月 2 日報道，該版本加入了直接啟動非 Ubuntu Linux 發行版的支援，使工具的應用範疇超越了原本僅限 Ubuntu 的定位。</p>
+<p>對於需要兼顧多個發行版測試矩陣的香港後端及 DevOps 工程師而言，這項改動消除了一個熟悉的痛點。在 1.17 之前，針對 Debian、Fedora 或基於 Alpine 的映像驗證服務，通常意味著要維護第二套工具鏈——Vagrant、Lima，或自行搭建的 libvirt 環境。Multipass 的吸引力在於其順暢無阻、由 cloud-init 驅動的工作流程；將這套工作流程延伸至其他發行版，消除了團隊一直保留並行工具的主要原因。</p>
+<h5>1.17 改動了甚麼</h5>
+<p>核心功能相當直接：<code>multipass</code> 現在可以透過該工具既有的映像目錄，以 Ubuntu 以外的 Linux 發行版映像來配置 VM。重要的是，此改動屬增量性質。現有的 Ubuntu 工作流程、launch profiles 及 cloud-init user-data 仍如以往般運作，因此已將 production pipelines 建立在 Multipass 之上的團隊毋須重整流程。</p>
+<p>有兩點實務上的注意事項。第一，Canonical 並未發布詳盡的第三方發行版目錄；可靠的起點是在已安裝的版本上執行 <code>multipass find</code>，以查看你的平台實際提供的映像。第二，效能表現因 hypervisor 而異——Windows 上的 Multipass 可按配置選擇經 Hyper-V 或 WSL2 運作，而跨發行版的客體機在兩者下的表現未必完全一致。在將 CI pipeline 押注其上之前，請先進行基準測試。</p>
+<h5>工具比較</h5>
+<p>Multipass 如今與數款用於一次性 VM 的既有選項並列：</p>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>跨發行版映像</th>
+<th>典型優勢</th>
+<th>取捨</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Multipass</strong></td>
+<td>1.17 起大幅擴充</td>
+<td>單一指令啟動、原生支援 cloud-init、跨平台</td>
+<td>第三方映像生態比 Vagrant 小</td>
+</tr>
+<tr>
+<td><strong>Vagrant</strong></td>
+<td>相當廣泛（Vagrant Cloud）</td>
+<td>大型 box 目錄、成熟的 provider 生態</td>
+<td>安裝較繁複，快速測試迭代較慢</td>
+</tr>
+<tr>
+<td><strong>Lima</strong></td>
+<td>持續增長</td>
+<td>macOS／Apple Silicon 體驗出色</td>
+<td>僅限 macOS／Linux 主機</td>
+</tr>
+<tr>
+<td><strong>OrbStack</strong></td>
+<td>透過容器／VM</td>
+<td>速度快、針對 macOS 優化、對開發者友善</td>
+<td>僅限 macOS、閉源</td>
+</tr>
+</tbody>
+</table>
+<p>對大多數團隊而言，決定因素將是映像質素及更新節奏。Vagrant 那個歷史悠久的 box 目錄是它的主要護城河；若 Canonical 能維持及時、可靠的非 Ubuntu 映像，Multipass 更簡潔的開發者體驗將成為整合工具的有力理由。</p>
+<h5>CLI 快速入門</h5>
+<p>對正在評估此工作流程的香港 DevOps 工程師而言，一個基本的 Multipass 使用流程如下：</p>
+<pre><code class="language-bash"># 列出可用映像（包括 1.17 新增的非 Ubuntu 發行版）
+multipass find
+
+# 啟動一個 VM
+multipass launch --name dev-vm
+
+# 進入 VM 的 shell
+multipass shell dev-vm
+
+# 列出所有執行中的 VM 及其 IP
+multipass list
+
+# 從主機複製檔案到 VM
+multipass transfer ./app.tar.gz dev-vm:/tmp/
+
+# 停止／刪除 VM
+multipass stop dev-vm
+multipass delete dev-vm
+multipass purge
+</code></pre>
+<p>請注意 <code>transfer</code> 範例將檔案傳到 <code>/tmp/</code> 而非 <code>/home/ubuntu/</code>——後者路徑只存在於 Ubuntu 映像，用於第一個非 Ubuntu 客體機時必然失敗。若要在非 Ubuntu 客體機內執行指令或配置使用者與目錄，可用 <code>multipass exec dev-vm -- &lt;指令&gt;</code>，或在啟動時以 <code>--cloud-init</code> 傳入 cloud-init 設定檔。</p>
+<p>由於 1.17 的第三方映像清單仍在擴充中，建議先確認目標發行版本身出現在 <code>multipass find</code> 的結果中，再決定是否把測試管線遷移過去。</p>
+<h5>取得方式</h5>
+<p>Multipass 1.17 透過 Canonical 的官方渠道發行：Linux 版本以 Snap 套件形式提供，Windows 及 macOS 則可從該專案的安裝程式下載頁面取得。對於以 Ubuntu 作為開發標準、但需針對其他發行版驗證部署的團隊而言，此版本填補了過去必須動用第二套 VM 工具鏈的空缺。</p>
+<p><em>資料來源：Phoronix，〈Canonical's Multipass 1.17 Adds Direct Support For Non-Ubuntu Linux Distros〉，2025 年 7 月 2 日。</em></p>
+<p><a href="https://www.phoronix.com/news/Multipass-1.17" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
