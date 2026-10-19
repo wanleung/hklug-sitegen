@@ -1,0 +1,40 @@
+Date: 2025-10-19 15:10:00
+Author: HKLUG Team
+Title: No platform-level opt-out: four tools site owners still hold on their own domains
+Content:
+<h3>No platform-level opt-out: four tools site owners still hold on their own domains</h3>
+<p>Security Affairs reported on October 9, 2025, under the headline "Meta wants to scrape your website to train its AI, and you can't say no," that Meta will revise its commercial terms on October 30, widening the company's contractual licence to put content shared publicly on its platforms to work for AI training and similar purposes; merchants running business accounts on those platforms fall within scope. As the report describes it, whether an account can exercise an opt-out depends on the jurisdiction — accounts outside the EU and other GDPR jurisdictions have no such option. For Hong Kong merchants who cannot lean on GDPR protections, that is the point worth noting.</p>
+<h4>What the terms change — and what they don't</h4>
+<p>The easiest way to misread this revision is to confuse the scope of the licence: does it cover content posted on the platforms, or the site owner's own external website? The remedies Meta offers — deleting a post, or making an account private — logically apply only to content posted inside the platform; a merchant's standalone storefront or e-commerce site does not automatically enter the licence because of this amendment. Whether the full wording of the terms reaches further, onto self-owned domains, should be read against Meta's published text rather than inferred from a headline.</p>
+<p>That said, an independent site is not automatically safe. Meta has long operated outward-facing crawlers; its official robots documentation lists user-agent identifiers including <code>Meta-WebIndexBot</code> and <code>Meta-ExternalAgent</code>, covering indexing and data collection. These crawlers exist independently of the present terms revision. It is worth stressing that robots.txt is, at best, an industry convention — an "honour system" in which well-behaved crawlers comply but nothing enforces it. Crawler names are not a contractual commitment either, so site owners should not rely on any single identifier string.</p>
+<h4>A practical checklist for Hong Kong site administrators</h4>
+<p>With no opt-out available at the platform layer, technical and contractual protection over one's own domain becomes one of the few levers left. What follows is the editorial team's four-part checklist:</p>
+<ul>
+<li><strong>robots.txt</strong>: explicitly disallow known user agents such as <code>Meta-WebIndexBot</code> and <code>Meta-ExternalAgent</code>, as a first — though non-binding — statement of intent.</li>
+<li><strong>WAF / CDN blocking</strong>: block the source by user-agent fingerprint and IP range on Cloudflare, Akamai, or a homegrown WAF. This is currently one of the few measures with real technical force, and should be paired with ongoing monitoring of server access logs for unusual crawling activity.</li>
+<li><strong>Machine-readable markers</strong>: add <code>noai</code> and <code>noimageai</code> style tags to pages as a record of intent; these carry no enforcement either.</li>
+<li><strong>Contractual and legal review</strong>: lean on restrictive clauses in existing NDAs, website terms of service, or data processing agreements, and have counsel assess cross-border data-flow risk.</li>
+</ul>
+<h4>Hong Kong's regulatory vacuum is not a safeguard</h4>
+<p>There is no ready-made statutory answer in Hong Kong for the use of data in AI training. The Personal Data (Privacy) Ordinance (PDPO) contains no mechanism equivalent to GDPR's "legitimate interests" basis; as a general rule, the collection of personal data still rests primarily on informed consent. This is an observation drawn from the text of the ordinance itself, not an official interpretation by any regulator — actual application should be checked against guidance published by the Privacy Commissioner for Personal Data (PCPD) and against legal advice. As of the date of this piece (October 19, 2025), no public response from local regulators on this particular Meta terms change had been seen; that is a regulatory vacuum, not an endorsement or a shield for the industry. Firms handling cross-border data still need to assess for themselves whether their contracts and their actual data flows line up.</p>
+<h4>A longer trend</h4>
+<p>Zoom out, and Meta's move is only the latest instance of a pattern that has gathered pace in recent years: harvesting training material through terms of service. For Hong Kong IT teams, the pragmatic response is not to chase every headline, but to fold crawler governance into routine systems maintenance — inventory the outward-facing exposure range of your own domains, keep blocking rules current, and negotiate AI training usage into the commercial agreements you sign with platforms.</p>
+<hr>
+<h3>平台層沒有 opt-out：站長在自有域名上還有四層工具</h3>
+<p>Security Affairs 於 2025 年 10 月 9 日以〈Meta wants to scrape your website to train its AI, and you can't say no〉為題報導，Meta 將於 10 月 30 日修訂商業條款，擴大公司把平台上公開分享的內容用於 AI 訓練等用途的合約授權範圍；在這些平台上經營商業帳戶的商家同樣在涵蓋範圍之內。按該報導的描述，帳戶能否行使逐項拒絕（opt-out）取決於管轄區——歐盟以外及其他 GDPR 管轄區的帳戶並無此選項。對無法倚賴 GDPR 保障的香港商戶而言，這一點尤其值得注意。</p>
+<h4>條款改了什麼，又沒改什麼</h4>
+<p>這次修訂最容易被誤讀的地方，是混淆授權範圍：它究竟涵蓋<strong>平台上張貼的內容</strong>，還是站長自有的外部網站？Meta 提供的補救手段——刪除貼文、或把帳戶轉為私人——在邏輯上只對平台內張貼的內容成立；商家的獨立店面或電商站並不會因為這次修訂而自動被納入授權。條文的完整措辭是否進一步延伸至自有域名，仍應對照 Meta 公布的原文閱讀，而非僅憑標題推論。</p>
+<p>話雖如此，自有網站並非自動安全。Meta 長期營運對外爬蟲；其官方 robots 文件列出的使用者代理識別碼包括 <code>Meta-WebIndexBot</code> 與 <code>Meta-ExternalAgent</code>，用途涵蓋索引與資料收集。這批爬蟲獨立於本次條款修訂而存在。需要強調的是，robots.txt 至多只是業界慣例——一套「榮譽制度」，守規矩的爬蟲會遵守，但並無任何東西強制執行。爬蟲名稱亦非合約承諾，站長不應只依賴任何單一字串判斷。</p>
+<h4>給香港網站管理員的實務清單</h4>
+<p>在平台層沒有 opt-out 可用的前提下，自有域名的技術與合約防護成為少數仍然有效的槓桿。以下是編輯部整理的四層做法：</p>
+<ul>
+<li><strong>robots.txt</strong>：明確排除 <code>Meta-WebIndexBot</code>、<code>Meta-ExternalAgent</code> 等已知使用者代理，作為第一層（儘管不具約束力）的意向聲明。</li>
+<li><strong>WAF／CDN 封鎖</strong>：在 Cloudflare、Akamai 或自家 WAF 上按使用者代理指紋與 IP 範圍封鎖來源。這是目前少數具實質技術約束力的手段，並應配合持續監測伺服器存取記錄，留意異常抓取行為。</li>
+<li><strong>機器可讀標記</strong>：在頁面加入 <code>noai</code>、<code>noimageai</code> 等標記，作為意圖紀錄，但同樣不具強制力。</li>
+<li><strong>合約與法律檢視</strong>：依賴既有保密協議、網站使用條款或資料處理協議中的限制性條文，並請法律顧問評估跨境資料流動風險。</li>
+</ul>
+<h4>香港的監管真空不是保障</h4>
+<p>香港並無現成的法定答案處理 AI 訓練資料的取用。《私隱條例》（PDPO）並未設有對應 GDPR「合法利益」基礎的機制；一般而言，個人資料的收集仍以知情同意為主要基礎——這是就條例條文本身作出的觀察，並非任何監管機構的正式詮釋；實際適用情況應向個人資料私隱專員公署（PCPD）公布的指引及法律顧問核實。截至本稿發稿日（2025 年 10 月 19 日），就本次 Meta 條款變動未見本地監管機構公開回應；這代表的是一段監管真空，而非對業界的認可或保障。處理跨境資料的企業，仍需自行評估合約條文與實際資料流是否一致。</p>
+<h4>一個更大的趨勢</h4>
+<p>把鏡頭拉遠，Meta 的動作只是近年日趨普遍的一種模式的最新一環：透過服務條款收攏訓練素材。對香港 IT 團隊而言，務實的對應方式不是追逐每一則標題，而是把爬蟲治理納入常規系統維護——盤點自家域名的對外暴露範圍、持續更新封鎖規則，並在與平台簽署商業協議時，把 AI 訓練用途寫入可談判的條款。</p>
+<p><a href="https://securityaffairs.com/201300/ai/meta-wants-to-scrape-your-website-to-train-its-ai-and-you-cant-say-no.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
