@@ -1,0 +1,56 @@
+Date: 2025-10-19 12:33:00
+Author: HKLUG Team
+Title: ConnectWise Confirms Stolen Application Identities Used to Access Customer Microsoft 365 Tenants
+Content:
+<p>Attackers who obtained unauthorised access to seven ConnectWise application identities pivoted into customer Microsoft 365 tenants, prompting the US-based IT management software vendor to take three of its cloud services offline as a containment measure.</p>
+<p>ConnectWise suspended its Cloud Backup service and pulled both SaaS Security and Cloud Management offline over the weekend after determining that unknown attackers had gained access to seven of its application identities, according to Security Affairs. Those identities — the machine-to-machine credentials that applications use to authenticate to cloud APIs — were then abused to target Microsoft 365 environments belonging to ConnectWise customers.</p>
+<h5>Do this first: a five-step checklist</h5>
+<p>The incident is a reminder that application credentials are a perimeter of their own. Defenders should prioritise, in order:</p>
+<ol>
+<li><strong>Rotate application secrets and client secrets</strong> for all service principals and app registrations — including those issued to third-party integrations, backup agents, and RMM tooling.</li>
+<li><strong>Extend conditional access to workload identities.</strong> In most Microsoft Entra ID deployments, conditional access policies apply only to human users; service principals sit outside them unless explicitly included.</li>
+<li><strong>Audit app registrations and enterprise applications</strong>, then revoke any that are no longer required or whose owners cannot be identified.</li>
+<li><strong>Review sign-in logs for non-human identities</strong>, looking for impossible-travel patterns, unfamiliar IP ranges, or permission grants that were never requested.</li>
+<li><strong>Treat vendor-held credentials as privileged infrastructure</strong>: require your MSP and SaaS providers to state where and how they store your tenant's application secrets, and under whose control revocation sits.</li>
+</ol>
+<h5>Why application identities bypass the perimeter</h5>
+<p>The attack path here is the same class of exposure seen in recent Okta and Microsoft service-principal incidents. Passwords and multi-factor authentication protect human sign-ins; service principals and their associated secrets do not go through an MFA prompt. Once an attacker holds a valid application secret, every control that depends on "the user proved who they are" is effectively bypassed.</p>
+<p>CISA and NIST zero-trust guidance has, for several years, pushed organisations to treat non-human identities with the same governance as human ones — least-privilege scoping, regular credential rotation, and continuous verification. Adoption has lagged, in large part because app registrations multiply quietly through integration projects and rarely appear in anyone's access-review inventory.</p>
+<h5>The MSP multiplier</h5>
+<p>ConnectWise's customer base is heavily weighted toward managed service providers, which concentrates the blast radius. A single upstream compromise at a vendor that many MSPs trust with tenant-level access can cascade across dozens or hundreds of downstream Microsoft 365 tenants simultaneously — a dynamic that has driven the sector's growing regulatory and insurance scrutiny.</p>
+<p>For its part, ConnectWise has said little beyond confirming the identity compromise and the service suspensions. The initial access vector that let the attackers obtain the seven application identities has not been disclosed. Equally unclear is how many tenants were actually reached, whether any data was exfiltrated or merely accessed, and when the suspended services will be restored. ConnectWise has not, at time of publication, issued a primary disclosure resolving those questions.</p>
+<p>The company is no stranger to this spotlight: in 2024 it disclosed zero-day vulnerabilities in ScreenConnect and its Authenticate authentication product that were exploited in the wild — incidents that pushed many MSP customers to re-examine the trust they place in remote management tooling.</p>
+<h5>Local lens: why this matters to Hong Kong MSPs</h5>
+<p><em>The following is general context, not a report on any specific Hong Kong organisation or regulator.</em></p>
+<p>Hong Kong managed service providers and IT teams typically run Microsoft 365 as the default productivity and identity backbone, and many resell or wrap it with third-party backup, security, and management tools of the kind ConnectWise provides. For those environments, the operative question is not whether a downstream tenant is named in a vendor's disclosure, but whether anyone can currently enumerate every service principal holding access to the tenant — and who can revoke it. Firms that have never inventoried their enterprise applications will find that audit far harder in the aftermath of an incident than before one.</p>
+<h5>The takeaway</h5>
+<p>ConnectWise's own framing aside, the durable lesson is architectural: application identities are privileged infrastructure. They hold persistent, often high-privilege access to cloud tenants, they sit outside the human MFA perimeter, and — as this incident demonstrates — they can be stolen and reused without ever touching a password field. Organisations that govern them accordingly will fare better than those that treat them as plumbing.</p>
+<p>This article will be updated if ConnectWise issues a fuller disclosure confirming tenant scope, accessed-versus-exfiltrated status, or restoration of the suspended services.</p>
+<p><em>Source: Security Affairs.</em></p>
+<hr>
+<p>攻擊者在未經授權下取得七個 ConnectWise 應用程式身份後，轉而橫向存取客戶的 Microsoft 365 租戶，迫使這家美國 IT 管理軟件供應商將三項雲端服務下線作為遏制措施。</p>
+<p>據 Security Affairs 報導，ConnectWise 在上週末發現不明攻擊者取得了其七個應用程式身份的存取權後，相應暫停 Cloud Backup、SaaS Security 及 Cloud Management 服務。該等身份——即應用程式用來向 cloud API 進行驗證的 machine-to-machine 憑證——其後被濫用，用以攻擊 ConnectWise 客戶所擁有的 Microsoft 365 環境。</p>
+<h5>先做這幾步：五項清單</h5>
+<p>是次事故再次提醒，應用程式憑證本身就是一道防線。防禦方應按以下優先次序處理：</p>
+<ol>
+<li><strong>輪換所有 service principal 及 app registration 的 application secrets 及 client secrets</strong>——包括發予第三方整合、備份 agent 及 RMM 工具的憑證。</li>
+<li><strong>將 conditional access 擴展至 workload identities。</strong> 在多數 Microsoft Entra ID 部署中，conditional access 政策只適用於人類用戶；service principal 除非明確納入，否則並不受其規管。</li>
+<li><strong>審計 app registrations 及 enterprise applications</strong>，然後撤銷任何已不需要或無法確認負責人的項目。</li>
+<li><strong>檢視非人類身份的 sign-in logs</strong>，留意不可能旅行（impossible travel）模式、不熟悉的 IP 範圍，或從未申請過的權限授予。</li>
+<li><strong>將供應商持有的憑證視為特權基礎設施</strong>：要求你的 MSP 及 SaaS 供應商交代他們在何處、以何種方式儲存你租戶的 application secrets，以及撤銷權限由誰掌控。</li>
+</ol>
+<h5>為何應用程式身份能夠繞過防線</h5>
+<p>是次攻擊路徑與近期 Okta 及 Microsoft service principal 事故屬同類風險。密碼及 multi-factor authentication 保護的是人類登入；service principal 及其相關 secrets 則不會經過 MFA 驗證提示。一旦攻擊者持有有效的 application secret，所有依賴「用戶已證明自身身份」的控制措施實際上都會被繞過。</p>
+<p>CISA 及 NIST 的 zero trust 指引多年來一直促請機構以管治人類身份的同一標準處理非人類身份——即最小權限範圍、定期輪換憑證以及持續驗證。惟採用進度一直落後，很大程度上是因為 app registration 會透過各項整合項目悄悄倍增，極少出現在任何人的存取檢視清單之中。</p>
+<h5>MSP 的放大效應</h5>
+<p>ConnectWise 的客戶群以 managed service provider 為主，令影響範圍高度集中。許多 MSP 將租戶層級的存取權交由單一上游供應商，一旦該供應商被入侵，災難可同時波及數十甚至數百個下游 Microsoft 365 租戶——這種動態正推動整個行業面臨日益增加的監管及保險審查壓力。</p>
+<p>至於 ConnectWise 方面，除了確認身份遭入侵及服務暫停外，未有進一步交代。攻擊者如何取得該七個應用程式身份的初始入侵途徑仍未披露。同樣未明的包括實際有多少租戶受影響、是否有資料被外泄抑或僅遭存取，以及暫停的服務何時恢復。截至本稿刊出，ConnectWise 尚未發出正式披露以解答上述問題。</p>
+<p>該公司對此並不陌生：2024 年，它曾披露 ScreenConnect 及其 Authenticate 驗證產品存在被實際利用的 zero-day 漏洞——是次事故促使不少 MSP 客戶重新檢視他們對遠端管理工具的信任。</p>
+<h5>本地視角：為何此事與香港 MSP 息息相關</h5>
+<p><em>以下為一般背景資料，並非針對任何香港特定機構或監管機構的報導。</em></p>
+<p>香港的 managed service provider 及 IT 團隊一般以 Microsoft 365 作為預設的生產力及身份基礎架構，不少更將其與 ConnectWise 所提供的第三方備份、安全及管理工具結合轉售或重新包裝。對這類環境而言，關鍵問題並非下游租戶是否在供應商的披露中被點名，而是目前是否有人能夠列舉出所有持有該租戶存取權的 service principal——以及由誰有權撤銷它。從未對其 enterprise applications 進行過盤點的機構，會發現事後的審計工作遠比事前困難得多。</p>
+<h5>總結</h5>
+<p>撇開 ConnectWise 自身的說法不談，最值得記取的教訓屬架構層面：application identities 是特權基礎設施。它們對雲端平台持有持續且往往高層級的存取權，置身於人類 MFA 防線之外，而且——正如是次事故所示——它們可以在完全不觸及密碼欄位的情況下被竊取並重用。相應地對其進行管治的機構，表現會勝過那些僅視其為一般系統管道的機構。</p>
+<p>如果 ConnectWise 日後發出更完整的披露，確認受影響租戶範圍、資料遭存取抑或被外泄的實際情況，或暫停服務的恢復時間，本文將會更新。</p>
+<p><em>資料來源：Security Affairs。</em></p>
+<p><a href="https://securityaffairs.com/201236/hacking/attackers-abuse-stolen-connectwise-application-credentials-to-target-microsoft-365.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
