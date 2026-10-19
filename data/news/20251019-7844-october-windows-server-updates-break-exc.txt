@@ -1,0 +1,66 @@
+Date: 2025-10-19 09:26:00
+Author: HKLUG Team
+Title: October Windows Server updates break Exchange sign-in and mail flow: Microsoft advises holding deployment
+Content:
+<h3>October Windows Server updates break Exchange sign-in and mail flow: Microsoft advises holding deployment</h3>
+<p>Microsoft has formally confirmed that the October 2025 Windows Server security updates are causing Outlook Web App (OWA) sign-in failures and disrupting mail delivery on some Exchange Server installations, according to BleepingComputer. The affected patches are <strong>KB5066198 (Windows Server 2025)</strong> and <strong>KB5066193 (Windows Server 2022)</strong>. For on-premises Exchange operations teams, this is a deployment decision that needs immediate attention — particularly for those who have not yet pushed the update into production.</p>
+<h4>Scope: partial impact, two symptom classes</h4>
+<p>Microsoft has documented the problem in its support documentation. Based on publicly available information, <strong>some</strong> Exchange Server environments are affected; this is not a universal impact. Two symptom classes are known:</p>
+<ul>
+<li><strong>OWA sign-in failure</strong> — after submitting valid credentials, users are redirected back to the sign-in page or shown an error, and cannot complete authentication through the web front end.</li>
+<li><strong>Mail-flow disruption</strong> — the Transport service is unable to process messages properly, resulting in delivery delays or a full stoppage.</li>
+</ul>
+<p>Both symptoms can occur simultaneously, and this is a critical distinction. An OWA outage alone is, at worst, a user-complaint incident. Once the Transport layer is also affected, however, the situation escalates into a genuine service-availability incident, with an immediate rise in the risk of external outages.</p>
+<h4>Affected KBs: KB5066198 and KB5066193</h4>
+<p>BleepingComputer's report identifies two affected Windows Server updates: <strong>KB5066198</strong> for Windows Server 2025 and <strong>KB5066193</strong> for Windows Server 2022. However, Microsoft has not published a complete compatibility matrix of Windows Server versions against Exchange Cumulative Updates. In other words, information on which combinations are affected remains at the level of "some environments are impacted." The correct course of action for administrators is:</p>
+<ol>
+<li>Inventory every Exchange host in the environment to determine its current Cumulative Update version and whether KB5066198 or KB5066193 has been applied.</li>
+<li>Cross-reference against the latest wording on Microsoft's official support page before taking action; that page is the sole authoritative source.</li>
+</ol>
+<p>In environments with DAG, Edge Transport, or mixed standalone deployments, this inventory must cover every node — spot-checking a single host is not sufficient.</p>
+<h4>Microsoft's guidance: uninstall the affected updates</h4>
+<p>Microsoft's current recommendation is direct and unambiguous: on hosts running Exchange Server, <strong>uninstall KB5066198 or KB5066193</strong> until a corrective update ships. The uninstall can be carried out with standard Windows Server servicing tooling, but the actual cost depends on when the update was installed and whether other patches were bundled alongside it — co-removing other updates is a possible side effect. After rollback, administrators will need to reassess which security fixes have been removed along with the target patch.</p>
+<h4>Exchange Online and hybrid deployments: the source is silent</h4>
+<p>It is worth noting that BleepingComputer's report focuses on <strong>on-premises Exchange Server</strong> and does not explicitly address impact on Exchange Online or hybrid (hybrid) scenarios. We will not speculate on Microsoft's position here. The operational judgement is as follows: pure Exchange Online tenants are not affected by this Windows Server update cycle (as no local servers are running); hybrid environments, however, must verify the update status of every on-premises node, because problems at the local layer will drag down overall mail flow.</p>
+<h4>Deployment hold: the security trade-off</h4>
+<p>For teams that have not yet deployed the October updates, holding is the prudent course. One caveat, however: <strong>holding the update also means holding this month's security fixes</strong>. The following checklist is recommended:</p>
+<ol>
+<li><strong>Hold deployment</strong> — disable Windows Server automatic updates on Exchange Server hosts, specifically excluding KB5066198 and KB5066193, until Microsoft publishes a corrective release.</li>
+<li><strong>Inventory affected hosts</strong> — confirm the current Cumulative Update version on every Exchange Server and which October KBs have been installed.</li>
+<li><strong>Baseline mail flow</strong> — verify that the Transport Queue is draining and that OWA is accessible from multiple clients before making further changes.</li>
+<li><strong>Validate in a staging environment first</strong> — if a staging environment is available, install the update there and verify sign-in and send/receive before pushing to production.</li>
+<li><strong>Track the official fix and assess the security gap</strong> — monitor Microsoft's support page for the corrective KB; in parallel, evaluate the risk of deferring this month's security patches and, where necessary, apply compensating controls such as endpoint detection and network segmentation to close the gap.</li>
+</ol>
+<p>Microsoft has not yet announced a release date for the corrective update. Until then, the recommendation for Exchange administrators is straightforward: hold deployment, and complete the host inventory first.</p>
+<hr>
+<h3>10 月 Windows Server 更新導致 Exchange 登入及郵件流動中斷：Microsoft 建議暫緩部署</h3>
+<p>Microsoft 已正式確認，2025 年 10 月 Windows Server 安全更新會令部分 Exchange Server 安裝出現 Outlook Web App（OWA）登入失敗，並影響郵件遞送，據 BleepingComputer 報導。受影響更新為 <strong>KB5066198（Windows Server 2025）</strong> 及 <strong>KB5066193（Windows Server 2022）</strong>。對本機 Exchange 維運團隊而言，這是一個需要即時處理的部署決定——尤其適用於尚未將更新推送至生產環境的團隊。</p>
+<h4>影響範圍：部分環境受影響，症狀分為兩類</h4>
+<p>Microsoft 已在官方支援文件記錄問題。根據現時公開資料，受影響的是<strong>部分</strong> Exchange Server 環境，並非全面波及。已知症狀有兩類：</p>
+<ul>
+<li><strong>OWA 登入失敗</strong>——用戶提交正確的登入密碼後被重新導向至登入頁，或顯示錯誤訊息，無法通過 Web 前端完成認證。</li>
+<li><strong>郵件流動中斷</strong>——Transport 服務無法正常處理郵件，導致遞送延遲或全面停擺。</li>
+</ul>
+<p>兩類症狀可以同時出現，這一點相當關鍵。單是 OWA 中斷，最嚴重也只是用戶投訴事件；但一旦 Transport 層亦受影響，事態便會升級為真正的服務可用性事故，對外服務中斷的風險即時上升。</p>
+<h4>受影響 KB：KB5066198 及 KB5066193</h4>
+<p>BleepingComputer 的報導指出兩個受影響的 Windows Server 更新：針對 Windows Server 2025 的 <strong>KB5066198</strong>，以及針對 Windows Server 2022 的 <strong>KB5066193</strong>。然而，Microsoft 尚未公佈 Windows Server 版本與 Exchange Cumulative Update 的完整相容性矩陣。換言之，關於哪些組合受影響，現階段資訊仍停留在「部分環境受影響」的層面。管理員的正確做法是：</p>
+<ol>
+<li>盤點環境內每部 Exchange 主機現時的 Cumulative Update 版本，以及是否已套用 KB5066198 或 KB5066193。</li>
+<li>行動前對照 Microsoft 官方支援頁的最新表述；該頁面為唯一權威來源。</li>
+</ol>
+<p>在設有 DAG、Edge Transport 或混合獨立伺服器部署的環境中，此項盤點必須涵蓋全部節點——只抽查單一主機並不足夠。</p>
+<h4>Microsoft 指引：卸載受影響更新</h4>
+<p>Microsoft 現時的建議直接而明確：在執行 Exchange Server 的主機上，<strong>卸載 KB5066198 或 KB5066193</strong>，直至修正更新發佈。卸載可使用標準 Windows Server servicing 工具執行，但實際成本視乎更新何時安裝，以及是否有其他修補一併捆綁——其他更新有可能被一併移除。回滾後，管理員需要重新評估有哪些安全修補隨目標更新一同被移除。</p>
+<h4>Exchange Online 及混合部署影響：來源未有交代</h4>
+<p>值得留意的是，BleepingComputer 的報導重點為<strong>本機 Exchange Server</strong>，並未明確交代 Exchange Online 或混合（hybrid）場景所受的影響。我們不會在此推斷 Microsoft 的立場。操作層面的判斷如下：純 Exchange Online 租用戶不會受今次 Windows Server 更新周期影響（因沒有本機伺服器運行）；混合環境則必須核實每一個本機節點的更新狀態，因為本機層面出現問題同樣會拖累整體郵件流動。</p>
+<h4>暫緩部署：安全修補的取捨</h4>
+<p>對尚未部署 10 月更新的團隊而言，暫緩是穩妥的做法。但須留意一點：<strong>暫緩更新，亦意味著本月的安全修補一併延遲</strong>。以下為建議的操作清單：</p>
+<ol>
+<li><strong>暫緩部署</strong>——在 Exchange Server 主機上停用 Windows Server 自動更新，特別排除 KB5066198 及 KB5066193，直至 Microsoft 公佈修正版本。</li>
+<li><strong>盤點受影響主機</strong>——確認每部 Exchange Server 現時的 Cumulative Update 版本，以及已安裝哪些 10 月 KB。</li>
+<li><strong>建立郵件流動基線</strong>——確認 Transport Queue 正在正常排空，且 OWA 可由多個用戶端正常存取，然後才進行其他變更。</li>
+<li><strong>先於 Staging 環境驗證</strong>——如有 Staging 環境，先在該處安裝更新，並驗證登入及收發正常後，再推送至生產環境。</li>
+<li><strong>追蹤官方修正並評估安全缺口</strong>——留意 Microsoft 支援頁何時發佈修正 KB；同時評估延遲本月安全修補的風險，必要時以端點偵測、網絡分段等緩解措施補足安全缺口。</li>
+</ol>
+<p>Microsoft 尚未公佈修正更新的發佈日期。在此之前，建議 Exchange 管理員採取「暫緩部署、先完成主機盤點」的原則處理。</p>
+<p><a href="https://www.bleepingcomputer.com/news/microsoft/microsoft-october-windows-server-updates-cause-exchange-issues/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
