@@ -1,0 +1,44 @@
+Date: 2026-10-19 22:17:00
+Author: HKLUG Team
+Title: OpenCode Notifies Users to Rotate API Keys After Credential Exposure
+Content:
+<p>OpenCode, the open-source AI coding tool, has told a small number of users that API keys they supplied to the project were exposed in a security breach — credentials that grant direct, standing access to the external model providers they belong to. The warning, carried in OpenCode's disclosure as reported by BleepingComputer on 19 October 2026, affects a limited set of accounts, but the "small number" framing understates the risk: every exposed key is a bearer credential, so blast radius is measured in what each key can reach, not in a headcount.</p>
+<p><strong>If you self-host or use OpenCode, here is your checklist:</strong></p>
+<ol>
+<li><strong>Check whether you received a notification.</strong> OpenCode has contacted affected users directly; absence of a message is not a clean bill of health.</li>
+<li><strong>Rotate every key you stored with OpenCode.</strong> Treat any key the project could see as compromised — provider-side revocation is the only reliable invalidation.</li>
+<li><strong>Audit provider usage logs.</strong> Look for inference requests, model calls, or spend you did not authorise in the days surrounding the exposure.</li>
+<li><strong>Scope your permissions down.</strong> Replace long-lived, wide-permission keys with short-lived, narrowly scoped credentials, and keep them outside any tool that caches them on disk.</li>
+<li><strong>Review what the key could reach.</strong> Beyond billed quota, an exposed key can expose request history — and any source code or secrets pasted into prompts that were logged against that account.</li>
+</ol>
+<p>For Hong Kong readers, an exposure of this kind also has local relevance: leaked keys tied to logged prompts may carry personal information.</p>
+<p>The reason a "small number" of affected users still matters is that API keys are bearer credentials: whoever holds the string is the account. A leaked key converts a developer's paid quota into an attacker's free inference budget, and depending on the provider's logging, may surface previous prompts and their contents.</p>
+<h4>What OpenCode has said</h4>
+<p>According to the disclosure relayed by BleepingComputer, the exposed keys were ones users had configured for external model providers — the credentials OpenCode uses to call out to those services on a user's behalf. OpenCode has notified the affected users, and rotation of the exposed keys is the expected response.</p>
+<p>Details that would sharpen the picture — precisely which providers' keys were involved, and whether the compromise sat in OpenCode's own infrastructure or a downstream dependency — have not been established from the available reporting, and no claim is made on either point until further source material confirms it.</p>
+<p>For the self-hosting community, the incident is a familiar reminder of the trade-off inherent in local-first AI tooling. Running a coding assistant on your own machine gives you control over where code goes, but the tool still holds live credentials to third-party clouds, and any weakness anywhere along that chain — the app, its dependency tree, or its update channel — inherits those credentials. Secrets managers, environment-scoped keys, and rotation discipline are not glamorous, but they are the difference between a contained incident and an unexpectedly large invoice.</p>
+<h4>The adjacent story: AI distillation attacks</h4>
+<p>The BleepingComputer report appears alongside a separate, developing thread: attacks in which adversaries abuse exposed or hijacked API access to run automated "distillation" campaigns — hammering a victim's model endpoints with high-volume prompt traffic in order to extract system prompts, model behaviour, and proprietary instruction sets. Rather than outright disruption, the goal is replication: harvesting enough query/response pairs to rebuild a replica of a paid or private model's capabilities. No causal chain between that coverage and the OpenCode incident has been established.</p>
+<p>What connects the two in practice is the position of anyone whose key was exposed: they face both a financial-exposure problem and, if their endpoints are logged, a prompt-exfiltration surface. Rotating promptly closes the first; auditing logs and restricting what the key can call closes the second.</p>
+<p><em>Source: OpenCode's disclosure via BleepingComputer, published 19 October 2026.</em></p>
+<hr>
+<p>開源 AI 編程工具 OpenCode 已通知少量用戶，他們向該項目提供的 API keys 在一次保安事故中遭外洩——這些憑證可直接、持續地存取其所屬的外部模型供應商。根據 BleepingComputer 於 2026 年 10 月 19 日報道的 OpenCode 通告，受影響的帳戶數目有限，但「少量」一詞低估了風險：每一把外洩的 key 都是 bearer credential，因此影響範圍應以每把 key 能存取什麼來衡量，而非以人頭計算。</p>
+<p><strong>如果你自行託管或使用 OpenCode，以下是你的檢查清單：</strong></p>
+<ol>
+<li><strong>確認你有否收到通知。</strong> OpenCode 已直接聯絡受影響用戶；沒有收到訊息並不等於完全沒有問題。</li>
+<li><strong>更換你存放在 OpenCode 的每一把 key。</strong> 視任何該項目曾可見的 key 為已遭洩露——只有供應商端的撤銷才是可靠的作廢方式。</li>
+<li><strong>審核供應商的使用日誌。</strong> 檢視外洩前後數日內有否你沒有授權的 inference requests、模型呼叫或開支。</li>
+<li><strong>收窄權限範圍。</strong> 以短有效期、範圍精窄的憑證取代長有效期、權限寬泛的 keys，並避免將它們存放在任何會在磁碟上快取這些 keys 的工具內。</li>
+<li><strong>檢視該 key 可存取的範圍。</strong> 除了已計費的配額，外洩的 key 還可能暴露 request history——以及任何貼入 prompts 並以該帳戶名義記錄下來的源代碼或 secrets。</li>
+</ol>
+<p>對香港讀者而言，這類外洩事故亦有本地關聯：與已記錄 prompts 相連的外洩 keys 可能載有個人資料。</p>
+<p>「少量」受影響用戶之所以仍然重要，是因為 API keys 屬 bearer credentials：誰持有該字串，誰就是該帳戶。一把外洩的 key 可將開發者付費購買的配額變成攻擊者的免費 inference 預算，並視乎供應商的日誌記錄方式，可能曝光過往 prompts 及其內容。</p>
+<h4>OpenCode 的說法</h4>
+<p>根據 BleepingComputer 轉述的通告，遭外洩的 keys 是用戶為外部模型供應商設定的憑證——即 OpenCode 用來代表用戶呼叫這些服務的 credentials。OpenCode 已通知受影響用戶，更換外洩 keys 是預期的應對措施。</p>
+<p>能夠使情況更清晰的細節——究竟是哪些供應商的 keys 受影響，以及漏洞是出於 OpenCode 自身的基礎設施還是下游 dependency——從現有報道中尚無法確定，在進一步核實來源資料之前，本報對此兩點不作任何聲稱。</p>
+<p>對自行託管社群而言，是次事故再次提醒本地優先（local-first）AI 工具固有的取捨：在自己的機器上運行編程助手，固然能掌控代碼的去向，但該工具仍然持有對第三方雲端的活憑證，而這條鏈上任何一環——應用程式、其 dependency tree、或其更新渠道——的任何弱點，都會繼承這些憑證。Secrets manager、環境限定的 keys 和定期更換憑證的紀律雖然毫不光鮮，卻是受控事故與意外巨額帳單之間的分別。</p>
+<h4>相鄰事件：AI distillation 攻擊</h4>
+<p>BleepingComputer 的報道與另一條發展中的線索並列：攻擊者濫用遭外洩或被劫持的 API 存取權限，進行自動化「蒸餾（distillation）」行動——以大量 prompt 流量轟擊受害者的模型端點，藉此提取 system prompts、模型行為及專有指令集。其目標並非直接癱瘓服務，而是複製：收集足夠的查詢／回應配對，以重建對收費或私有模型能力的仿製版本。目前尚無證據確立該報道與 OpenCode 事故之間存在因果關係。</p>
+<p>兩者在實務上的共通點，是任何 key 遭外洩者所處的處境：他們同時面對財務損失的問題，以及（若其端點有日誌記錄）prompt 被竊取的攻擊面。及時更換 keys 可解決前者；審核日誌並限制該 key 可呼叫的範圍則可封堵後者。</p>
+<p><em>資料來源：OpenCode 透過 BleepingComputer 發布的通告，2026 年 10 月 19 日刊出。</em></p>
+<p><a href="https://www.bleepingcomputer.com/news/security/opencode-hack-exposes-api-keys-amid-ai-distillation-attacks/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
