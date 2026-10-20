@@ -1,0 +1,37 @@
+Date: 2026-10-20 15:15:00
+Author: HKLUG Team
+Title: OpenBSD 8.0 Ships With arm64 Suspend-to-Disk, Wider amd64 Kernel Address Space
+Content:
+<hr />
+<h3>OpenBSD 8.0 Ships With arm64 Suspend-to-Disk, Wider amd64 Kernel Address Space</h3>
+<p>OpenBSD 8.0 is out, and the announcement puts three changes at the front: suspend-to-disk support on arm64, a kernel virtual address space on amd64 that now reaches 512GB, and a batch of fixes and refinements to the <code>qwx</code> driver for Qualcomm WiFi 6 hardware. The release was reported by LWN.net, which directs readers to the project's own release notes and full changelog for the complete accounting.</p>
+<h4>arm64 suspend-to-disk lands</h4>
+<p>Writing system state to disk, powering off, and resuming later is the kind of feature desktop users rarely think about — until it is missing. It also demands tight coordination across the kernel, the bootloader, and architecture-specific power-management code, which is why its arrival on arm64 is being read as a marker of port maturity: the change exercises several layers of the system simultaneously rather than a single subsystem.</p>
+<p>For operators running arm64 boards in edge or battery-constrained settings, the practical payoff is concrete. A machine can be parked to disk instead of staying energised or going through a full reboot, which matters when the hardware is deployed somewhere unattended or on limited power.</p>
+<h4>amd64 kernel address space expands to 512GB</h4>
+<p>The amd64 kernel virtual address space now extends to 512GB. The announcement itself does not elaborate on the rationale — it points readers to the full changelog — but the practical effect appears to be more headroom for the kernel to map physical memory. The kernel's address space is finite: it must accommodate the kernel image, its data structures, and everything it maps, and the previous ceiling becomes visible only once a machine carries enough RAM to brush against it.</p>
+<p>That makes this a quiet constraint removal rather than a headline feature. As large-memory servers and appliances become ordinary, extra headroom matters for workloads where the kernel maps user pages or keeps per-connection state at scale.</p>
+<h4><code>qwx</code> driver sees continued work</h4>
+<p>The third item the announcement singles out is the <code>qwx</code> driver, which supports Qualcomm WiFi 6 devices and has received "quite a few improvements" in this cycle. Wireless support is a perennial sore point across open-source systems, where firmware quirks and hardware revisions tend to outrun driver maintenance; WiFi 6 silicon is now common in both laptops and access points, so the driver's health directly determines whether OpenBSD users can depend on built-in interfaces rather than carrying external dongles.</p>
+<h4>Upgrading: read the changelog first</h4>
+<p>Beyond these three highlights, the project points to the full changelog for everything else bundled into 8.0. As with any major release, administrators should review it carefully before touching a production system — both to understand what has changed and to catch anything that might affect specific hardware or configuration. The release notes alone are not a sufficient basis for an upgrade decision.</p>
+<h4>Why this release matters beyond the desktop</h4>
+<p>As background: OpenBSD's reputation rests heavily on <code>pf</code>, the packet filter the project originated and that has since been taken up by other BSD derivatives. That heritage gives the project's releases an audience well beyond its size, particularly among network engineers and firewall administrators who run OpenBSD-based edge appliances and small firewall deployments on arm64 and amd64.</p>
+<p>OpenBSD 8.0 is available now, with downloads and the complete change list published at openbsd.org; the announcement appeared on LWN.net.</p>
+<hr>
+<h3>OpenBSD 8.0 發佈：支援 arm64 睡眠至磁碟、擴大 amd64 kernel 位址空間</h3>
+<p>OpenBSD 8.0 已正式發佈，官方公告重點列出三項改動：arm64 平台新增 suspend-to-disk（睡眠至磁碟）支援、amd64 kernel 虛擬位址空間擴大至 512GB，以及針對 Qualcomm WiFi 6 硬件的 <code>qwx</code> 驅動程式作出一系列修正與優化。是次發佈由 LWN.net 報道，並引導讀者前往項目官方的 release notes 及完整 changelog 以查閱詳情。</p>
+<h4>arm64 睡眠至磁碟功能登場</h4>
+<p>將系統狀態寫入磁碟、關閉電源、日後再喚醒恢復，是一般桌面用戶鮮少察覺的功能——直至它缺席。此功能同時要求 kernel、bootloader 及針對特定架構的電源管理代碼之間緊密協作，因此其在 arm64 上的落地被視為移植成熟度的指標：該改動同時牽動系統的多個層次，而非單一 subsystem。</p>
+<p>對於在邊緣運算或電池供電環境中運行 arm64 板卡的營運者而言，實際回報相當具體：機器可以「停放」至磁碟，而不必持續供電或經歷完整重新開機，這對於部署在無人值守或電力受限場所的硬件尤其重要。</p>
+<h4>amd64 kernel 位址空間擴展至 512GB</h4>
+<p>amd64 kernel 虛擬位址空間現已擴展至 512GB。公告本身未有詳述其理據——只引導讀者查閱完整 changelog——但實際效果看來是為 kernel 映射實體記憶體提供更大餘裕。kernel 的位址空間是有限的：它必須容納 kernel image、其數據結構，以及所有由它映射的內容，而舊有上限只有當機器配備足夠 RAM、接近該界限時才會顯現。</p>
+<p>這意味著該改動是一項低調的限制解除，而非頭條級功能。隨著大記憶體伺服器及 appliance 變得普及，額外的餘裕對於需要由 kernel 映射用戶頁面（user pages）或大規模維護 per-connection 狀態的工作負載而言至關重要。</p>
+<h4><code>qwx</code> 驅動程式持續改進</h4>
+<p>公告特別點名的第三項，是支援 Qualcomm WiFi 6 裝置的 <code>qwx</code> 驅動程式，其在本週期獲得「相當多的改進」。無線網絡支援一直是開源系統的長期痛點，固件差異及硬件修訂版本往往超出驅動程式的維護速度；WiFi 6 芯片現已廣泛應用於手提電腦及 access point，因此該驅動程式的健康狀況直接決定 OpenBSD 用戶能否依賴內置網絡介面，而毋須隨身攜帶外置 dongle。</p>
+<h4>升級前：先閱覽 changelog</h4>
+<p>除上述三項重點外，項目建議查閱完整 changelog，以了解 8.0 內包含的所有其他改動。與任何主要版本一樣，管理員在接觸生產系統前應仔細閱覽——既要了解有何變化，也要留意任何可能影響特定硬件或配置的事項。單憑 release notes 並不足以作為升級決定的依據。</p>
+<h4>為何是次發佈的重要性超越桌面平台</h4>
+<p>作為背景資料：OpenBSD 的聲譽很大程度上建基於 <code>pf</code>——由該項目首創的 packet filter，其後亦獲其他 BSD 衍生版本採用。這份遺產令該項目的發佈觸及遠超其自身規模的受眾，尤其在網絡工程師及防火牆管理員之間——他們在 arm64 及 amd64 平台上運行基於 OpenBSD 的邊緣 appliance 及小型防火牆部署。</p>
+<p>OpenBSD 8.0 現已可供下載，完整改動清單已於 openbsd.org 公佈；發佈公告則刊載於 LWN.net。</p>
+<p><a href="https://lwn.net/Articles/1101536/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
