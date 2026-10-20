@@ -1,0 +1,44 @@
+Date: 2026-10-20 14:03:00
+Author: HKLUG Team
+Title: Windows Server 2025 gains automated boot-repair tool with October 2026 update
+Content:
+<p>Microsoft is extending its Quick Machine Recovery (QMR) feature to Windows Server 2025, giving administrators an automated path out of the kind of boot-loop failure that typically turns into a 3am hands-on incident. According to BleepingComputer, which reported the announcement, the capability becomes available once the October 2026 security update is installed. Beyond that prerequisite, the announcement as reported did not spell out further availability details, so administrators should confirm feature presence on their own hosts rather than assume uniform availability on patch day.</p>
+<h4>What QMR actually does</h4>
+<p>QMR is an automated startup-repair mechanism. When a Windows machine fails to boot and enters the Windows Recovery Environment, it can reach out to Microsoft's recovery endpoints, receive a targeted remediation package — effectively a patch or configuration fix delivered through Windows Update infrastructure — and apply it without an administrator physically intervening.</p>
+<p>For a server estate, the practical shift is one of recovery time rather than update risk. A boot failure that previously required someone to drive to a datacentre, attach recovery media, and work through a manual repair cycle can instead be remediated automatically, provided the machine can reach the network and a suitable fix exists.</p>
+<p>The feature is most valuable for sites where hands-on access is scarce or slow to arrange: remote branches, hyper-converged clusters in unattended rooms, and small teams covering large numbers of machines. For those environments, QMR converts an hours-long break-fix job into a background operation.</p>
+<h4>Scope: what it does not cover</h4>
+<p>The caveats matter as much as the capability. QMR addresses only startup failures that Windows Update can remediate. It is not a general-purpose repair tool. Hardware faults, storage subsystem corruption, and application-level breakage that prevents a clean boot are outside its remit — those still require traditional troubleshooting.</p>
+<p>QMR also assumes network reachability during the failure state. In segmented server VLANs where hosts have restricted egress, administrators will need to confirm that the recovery environment can reach Microsoft's update and recovery endpoints; otherwise the automated path silently falls back to manual repair. The same applies to sites that route traffic through proxy infrastructure — recovery-time connectivity is a separate question from normal patch-day connectivity.</p>
+<p>Equally, QMR does not replace backup and disaster-recovery tooling. It handles a specific class of boot failure; it does not restore data, roll back a failed application deployment, or substitute for a tested recovery plan.</p>
+<p>There is also a governance angle worth stating plainly: QMR creates a new change-control failure mode. An automated remediation package applied during a boot failure is effectively an unattended change arriving outside the normal patch window and outside any ticket — something for change-advisory boards and patch-ring owners to account for before the first unattended fix lands at 2am.</p>
+<h4>What admins should do next</h4>
+<ol>
+<li><strong>Confirm the prerequisite.</strong> Verify that the October 2026 security update is deployed to Windows Server 2025 hosts before expecting QMR to be present.</li>
+<li><strong>Verify the feature state.</strong> Check that Quick Machine Recovery is enabled on representative systems after the update lands, and document where the setting is managed in your environment.</li>
+<li><strong>Audit recovery-time connectivity.</strong> Test whether servers in segmented VLANs can reach Microsoft's recovery endpoints from the Windows Recovery Environment, including proxy and firewall paths.</li>
+<li><strong>Review patch-ring governance.</strong> Understand how remediation packages will be staged during a failure, and whether that interacts with your existing update rings or change-control process.</li>
+<li><strong>Keep DR tooling in place.</strong> Treat QMR as an additional layer under existing backup and disaster-recovery procedures, not a substitute for them.</li>
+</ol>
+<p>For Hong Kong IT teams running Windows Server 2025 across distributed or lightly staffed sites, the feature's value will hinge on those last two points: whether the recovery path is actually reachable from the network design, and whether automated remediation fits comfortably inside existing change-management controls.</p>
+<hr>
+<p>Microsoft 正將 Quick Machine Recovery（QMR）功能擴展至 Windows Server 2025，讓管理員獲得一條自動化途徑，脫離那種通常會演變成凌晨三時親身處理事故的開機循環故障。據率先報道該公告的 BleepingComputer 指出，此功能在安裝 2026 年 10 月安全更新後便會啟用。除這項先決條件外，據報道的公告並未列明進一步的可用性細節，因此管理員應在各自的主機上確認功能是否存在，而非假定修補日當天全面可用。</p>
+<h4>QMR 實際上如何運作</h4>
+<p>QMR 是一項自動啟動修復機制。當 Windows 機器無法啟動並進入 Windows Recovery Environment（Windows 復原環境）時，它可以連絡 Microsoft 的復原端點，接收針對性的修復組合——實際上是透過 Windows Update 基礎設施發放的修補程式或配置修正——並在管理員無需親自介入的情況下套用。</p>
+<p>對伺服器環境而言，實際上的轉變在於復原時間，而非更新風險。以往開機故障需要有人驅車到數據中心、接上復原介質、逐步進行手動修復；現在只要機器能連接網絡，且存在合適的修正方案，便可自動補救。</p>
+<p>此功能對難以取得現場支援或安排緩慢的場所最有價值：偏遠分支辦事處、無人值守房間內的 hyper-converged 叢集，以及以少數人手看管大量機器的小型團隊。對這些環境而言，QMR 將需時數小時的現場搶修工作轉化為後台操作。</p>
+<h4>適用範圍：不包括什麼</h4>
+<p>注意事項與功能本身同樣重要。QMR 只處理 Windows Update 能夠補救的啟動故障，並非通用修復工具。硬件故障、存儲子系統損壞，以及妨礙正常開機的應用層面破壞均不在其職責範圍——這些仍需傳統排錯程序。</p>
+<p>QMR 亦假定故障狀態期間網絡可達。在主機出口流量受限的分隔伺服器 VLAN 中，管理員需確認復原環境能連絡 Microsoft 的更新及復原端點；否則自動化途徑會悄然退回手動修復。透過 proxy 基礎設施路由流量的場所亦同——復原時的連線能力與平日修補日的連線能力是兩回事。</p>
+<p>同樣地，QMR 不能取代備份及災難復原工具。它只處理特定類別的開機故障；不會還原數據、回退失敗的應用部署，亦不能替代經過測試的復原計劃。</p>
+<p>另有一個治理角度值得明確指出：QMR 引入了一種新的變更控制失效模式。在開機故障期間自動套用的修復組合，實質上是一項在正常修補窗口之外、亦在任何工單之外送達的無人值守變更——這是變更顧問委員會（change-advisory boards）及修補環負責人在首次無人值守修正於凌晨二時降臨之前，必須納入考慮的事項。</p>
+<h4>管理員下一步應做的事</h4>
+<ol>
+<li><strong>確認先決條件。</strong> 在預期 QMR 存在之前，先確認 2026 年 10 月安全更新已部署至 Windows Server 2025 主機。</li>
+<li><strong>核實功能狀態。</strong> 更新完成後，檢查代表性系統上的 Quick Machine Recovery 是否已啟用，並記錄該設定在貴方環境中的管理位置。</li>
+<li><strong>審核復原時連線能力。</strong> 測試分隔 VLAN 中的伺服器能否從 Windows Recovery Environment 連絡 Microsoft 的復原端點，包括 proxy 及防火牆路徑。</li>
+<li><strong>檢視修補環治理。</strong> 瞭解修復組合在故障期間如何分階段部署，以及這是否與現有的更新環或變更控制流程產生交互影響。</li>
+<li><strong>維持 DR 工具到位。</strong> 將 QMR 視為現有備份及災難復原程序之下的額外一層，而非其替代品。</li>
+</ol>
+<p>對於在分散或人手精簡的場所營運 Windows Server 2025 的香港 IT 團隊而言，此功能的價值將取決於最後兩點：復原路徑在實際網絡設計下是否真的可達，以及自動修復能否安然納入現有的變更管理控制之內。</p>
+<p><a href="https://www.bleepingcomputer.com/news/microsoft/windows-server-2025-gets-support-for-quick-machine-recovery/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
