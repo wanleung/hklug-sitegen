@@ -1,0 +1,46 @@
+Date: 2026-10-20 18:05:00
+Author: HKLUG Team
+Title: One in Four New Open-Source Pull Requests Is AI Slop, Linux Foundation Estimates
+Content:
+<h3>One in Four New Open-Source Pull Requests Is AI Slop, Linux Foundation Estimates</h3>
+<p>The Linux Foundation has published a study on how generative AI is reshaping open-source development, and its headline estimate lands on the ecosystem's tightest bottleneck: maintainer attention. Roughly one in four new open-source pull requests now consists of low-quality, machine-generated contributions — the material the industry has taken to calling "AI slop." The figure was surfaced in Phoronix's coverage of the study, and should be read as an industry-level estimate rather than a measured, project-by-project audit.</p>
+<p>That framing matters. The underlying Linux Foundation release was not directly retrievable at the time of writing, so this report cites Phoronix as the source of record and attributes the 25% figure to the Foundation's own estimation. Sample size, repository coverage, and the criteria used to classify a pull request as "slop" are not detailed in the secondary coverage; those details, plus whether 25% represents an average, a ceiling, or a segment-level figure, should be confirmed against the Foundation's primary material before the number is relied on for planning.</p>
+<h4>Why review, not generation, is the scarce resource</h4>
+<p>The asymmetry at the heart of this story is straightforward: generative AI has collapsed the cost of producing code, but it has done comparatively little to reduce the cost of evaluating it. Review effort does not scale with authoring effort. When a tool lets one developer submit ten times as many changes, the downstream queue grows accordingly, and it is maintainers — frequently unpaid, frequently few — who absorb the growth.</p>
+<p>Two second-order consequences follow. First, burnout risk: volunteers deciding whether a stream of marginal contributions justifies their continued involvement. Second, and more sensitive, supply-chain exposure. Code review is the primary human control point for catching injected or careless code before it reaches a release. If submission volume rises while reviewer headcount stays flat, the scrutiny applied per change falls — and diluted scrutiny is precisely the condition under which malicious or fragile code slips through. That is analysis rather than a stated finding of the study, but it is the logical extension of the workload picture the Foundation describes.</p>
+<p>To be clear about what the statistic does and does not say: 25% measures volume, not intent. The great majority of machine-generated submissions are careless rather than hostile; the concern is that a larger queue of low-signal changes consumes the same finite reviewer hours, whatever the author's purpose. Volume alone is what degrades the control.</p>
+<h4>Practical gating for AI-authored pull requests</h4>
+<p>For teams responsible for reviewing incoming contributions — including those consuming upstream dependencies — the following checks are a reasonable starting posture:</p>
+<ul>
+<li><strong>Require disclosure:</strong> Ask contributors to flag AI-assisted submissions in the PR description, and treat undisclosed machine-generated patches as a review flag in themselves — a policy choice, not a universal norm.</li>
+<li><strong>Verify provenance:</strong> Confirm author identity, DCO sign-off, and commit history coherence; squashed, untraceable histories deserve extra scrutiny.</li>
+<li><strong>Automate the mechanical layer first:</strong> Linting, formatting, static analysis, and unit-test coverage should gate before a human spends time, so reviewers focus on design and intent.</li>
+<li><strong>Check for dependency drift:</strong> AI-generated patches frequently introduce or bump third-party packages; diff dependency manifests as a distinct review step.</li>
+<li><strong>Sample, don't assume:</strong> Periodically audit merged PRs classified as low-risk to test whether automated gates are actually filtering what they claim to filter.</li>
+<li><strong>Track review latency:</strong> Rising time-to-review on a repository is an early indicator that AI-assisted volume is outrunning reviewer capacity.</li>
+</ul>
+<h4>The broader trend</h4>
+<p>The study lands amid an ongoing industry debate about whether AI-generated contributions represent leverage or noise for open-source projects, which have historically depended on a thin layer of volunteer maintainers. The one-in-four estimate is a signal about direction, not a precise census — but even taken conservatively, it indicates that a meaningful share of reviewer time is now consumed by contributions that add little value. For any organisation whose security posture depends on upstream code, that is a resourcing question as much as a developer-experience one.</p>
+<p><em>Source: Phoronix coverage of the Linux Foundation study. Readers should consult the Foundation's own release for methodology and full figures.</em></p>
+<hr>
+<h3>Linux Foundation 估計：每四個新增開源 pull request 就有一個是 AI 垃圾內容</h3>
+<p>Linux Foundation 發表了一項研究，探討生成式 AI 如何重塑開源開發模式，其核心估算直指整個生態系統最緊絀的瓶頸：maintainer 的注意力。目前約每四個新增開源 pull request 中，就有一個屬於低質素、機器生成的貢獻——業界已將這類內容稱為「AI slop」（AI 垃圾內容）。該數字出自 Phoronix 對此研究的報道，應理解為一個業界層面的估算，而非逐個項目進行實測審計所得的結果。</p>
+<p>這個框架界定十分重要。撰稿時 Linux Foundation 的原始新聞稿並未能直接取得，因此本報道以 Phoronix 作為記錄來源，並將 25% 這一數字歸因於 Linux Foundation 自身的估算。樣本規模、涵蓋的 repository 範圍，以及將 pull request 歸類為「slop」所採用的準則，均未在二手報道中詳述；在依賴此數字進行規劃之前，應先對照 Linux Foundation 的原始資料，核實上述細節，以及 25% 究竟代表平均值、上限抑或某一層面的數字。</p>
+<h4>為何審查而非生成才是稀缺資源</h4>
+<p>這則報導的核心不對稱相當直白：生成式 AI 大幅降低了產取代碼的成本，但在降低評估代碼的成本方面成果有限。審查所需的工作量並不會隨撰寫工作量同比例擴張。當某項工具令一名開發者可以提交十倍的改動時，下游的審查隊列便相應膨脹，而承受這份增長的正是 maintainer——他們往往無償、往往人數稀少。</p>
+<p>由此衍生兩項後果。其一是 burnout 風險：志願者需要不斷判斷一批批邊際價值不高的貢獻是否仍值得自己繼續投入。其二，也是更敏感的一點，是供應鏈風險。代碼審查是防止被植入或粗疏的代碼流入發布版本的主要人為控制關卡。如果提交量上升而 reviewer 人數維持不變，每項改動所獲得的審視便會減少——而審視被稀釋，恰恰是惡意或脆弱代碼得以蒙混過關的條件。這屬於分析推論，並非研究明文列出的發現，但卻是 Linux Foundation 所描述的工作量現況的合理延伸。</p>
+<p>須明確指出此統計數字說了甚麼、沒說甚麼：25% 衡量的是數量，而非意圖。絕大多數機器生成的提交屬於粗疏而非敵意；問題在於，無論作者動機如何，一個更龐大的低訊號改動隊列會消耗同樣有限的 reviewer 工時。單純是數量本身，就足以令這道控制關卡失效。</p>
+<h4>對 AI 撰寫的 pull request 實行實務把關</h4>
+<p>對於負責審查外來貢獻的團隊——包括消費 upstream 依賴的團隊——以下各項檢查是合理的起點：</p>
+<ul>
+<li><strong>要求披露：</strong>要求貢獻者在 PR 描述中標明有 AI 輔助的提交，並將未經披露的機器生成 patch 視為需要審查的警號——這是一項政策選擇，而非普世準則。</li>
+<li><strong>核實來源：</strong>確認作者身份、DCO sign-off 及 commit 歷史的一致性；經過 squash、無法追溯的歷史值得額外審視。</li>
+<li><strong>先自動化機械層：</strong>linting、格式化、靜態分析及單元測試覆蓋率應先於人手投入時間設下關卡，讓 reviewer 專注於設計與意圖。</li>
+<li><strong>檢查依賴版本漂移：</strong>AI 生成的 patch 經常引入或升級第三方套件；應將比對 dependency manifests 列為獨立的審查步驟。</li>
+<li><strong>抽樣，勿假設：</strong>定期審計已合併並被歸類為低風險的 PR，以檢驗自動化關卡是否確實在過濾其聲稱過濾的內容。</li>
+<li><strong>追蹤審查延遲：</strong>repository 的 review 時間持續上升，是 AI 輔助提交量超出 reviewer 承載能力的早期指標。</li>
+</ul>
+<h4>更廣泛的趨勢</h4>
+<p>這項研究正值業界持續辯論之際：AI 生成的貢獻對開源項目而言究竟是槓桿還是噪音。開源項目歷來依賴一層稀薄的志願 maintainer 支撐。四分之一這一估算傳遞的是方向性訊號，而非精確普查——但即使保守解讀，它也表明 reviewer 的寶貴工時已有相當比例消耗在增值無多的貢獻上。對於任何安全態勢取決於 upstream 代碼的機構而言，這既是資源配置問題，也是開發者體驗問題。</p>
+<p><em>來源：Phoronix 對 Linux Foundation 研究的報道。讀者如需了解方法論及完整數據，應參閱 Linux Foundation 自身發布的資料。</em></p>
+<p><a href="https://www.phoronix.com/news/Linux-Foundation-25p-AI-Slop" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
