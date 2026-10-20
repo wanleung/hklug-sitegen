@@ -1,0 +1,42 @@
+Date: 2026-10-20 20:04:00
+Author: HKLUG Team
+Title: SUSE Weighs a System-Wide Ban on setuid Binaries — Here's What SLES Admins Should Audit Now
+Content:
+<p>SUSE is weighing a proposal to stop setuid and setgid binaries from executing on its systems — not merely from shipping in its packages. Put forward by SUSE developer Thorsten Kukuk and reported by LWN.net, the plan would be one of the most forceful steps any major distribution has taken against a privilege-escalation mechanism that has underpinned Unix-like systems for decades, and that has been a recurring source of security vulnerabilities.</p>
+<p>The proposal remains at the discussion stage. Nothing has changed for deployed SUSE Linux Enterprise Server or openSUSE machines today, and its eventual form will depend on how the conversation in SUSE's project spaces develops.</p>
+<p><strong>From a packaging rule to an execution rule</strong></p>
+<p>The distinction is the substance of the story. SUSE's security team already forbids setuid or setgid binaries in packages unless each has been individually reviewed and approved, as set out in the distribution's published openSUSE package security guidelines. That policy governs what SUSE builds and ships.</p>
+<p>Kukuk's proposal would govern what runs. Third-party installers, locally compiled utilities, and anything else landing on an installed system would face the same constraint — closing the gap between what the distro packages and what a live machine actually permits.</p>
+<p><strong>Why setuid keeps losing ground</strong></p>
+<p>Setuid and its setgid counterpart let a binary execute with the privileges of its file owner rather than the invoking user. That is what makes <code>su</code>, <code>sudo</code>, <code>passwd</code>, and <code>ping</code> behave as users expect. It is also the problem: any flaw in the code runs with elevated rights, which makes setuid binaries a perennial target for privilege-escalation bugs.</p>
+<p>SUSE is not moving alone. Debian, Fedora, and Arch have each stripped setuid from parts of their default installations in recent years in favour of privileges granted through narrower, policy-controlled paths. The trend is ecosystem-wide rather than a SUSE quirk, and the same audit advice applies to Linux practitioners well beyond SUSE's installed base.</p>
+<p><strong>What takes its place</strong></p>
+<p>Three mechanisms cover most of the ground. File capabilities (<code>setcap</code>) grant a specific right — <code>cap_net_bind_service</code>, say — without handing over root, keeping the privilege envelope as small as possible. Polkit relocates authorization decisions into a configurable, service-aware policy layer, so unprivileged users can perform approved privileged actions without a setuid helper. Landlock, the kernel's sandboxing facility, confines what a process may do and can reduce the need for elevated helpers in the first place.</p>
+<p><strong>Audit first, migrate second</strong></p>
+<p>The practical starting point is inventory. Enumerate setuid and setgid files with a bounded single pass:</p>
+<pre><code>find / -xdev \( -perm -4000 -o -perm -2000 \) -type f
+</code></pre>
+<p>Then sort every result into one of three buckets: replaceable with a file capability, convertible to a polkit rule, or requiring vendor engagement. Cross-reference the output against vendor documentation before you reclassify anything.</p>
+<p><strong>Where it hurts</strong></p>
+<p>The migration cost is not SUSE's own packages, which have already been reviewed. It is the legacy and vendor estate: backup agents, monitoring daemons, hardware-management utilities, and in-house tools written years ago on the assumption that root-owned setuid binaries are available. Under hard enforcement those tools fail — sometimes silently.</p>
+<p>In-house binaries are usually the quickest to rework; third-party software is where the timeline stretches. Administrators who inventory their setuid files now will have far fewer surprises than those who discover the problem after enforcement lands.</p>
+<hr>
+<p>SUSE 正在考慮一項建議，禁止 setuid 及 setgid 二進制在其系統上執行 —— 而非僅僅禁止它們隨套件一同發布。該建議由 SUSE 開發者 Thorsten Kukuk 提出，並由 LWN.net 報道，將會是任何主要 Linux 發行版針對這項權限提升機制所採取的最強硬措施之一。此機制長期支撐著 Unix 類系統，亦一直是安全漏洞的反覆來源。</p>
+<p>該建議目前仍處於討論階段。現時已部署的 SUSE Linux Enterprise Server 及 openSUSE 機器並未受任何影響，其最終形式亦將取決於 SUSE 項目空間內討論的發展方向。</p>
+<p><strong>由打包規則到執行規則</strong></p>
+<p>兩者的區別正是事件的核心。SUSE 安全團隊早已禁止套件中包含 setuid 或 setgid 二進制，除非個別經過審查及批准，詳情載於發行版公開的 openSUSE 套件安全指引。該政策規管的是 SUSE 如何構建及發布軟件。</p>
+<p>Kukuk 的建議則會規管哪些程式可以運行。第三方安裝程式、本地編譯的實用工具，以及任何落入已安裝系統的檔案，都將面臨同一限制 —— 縮窄發行版套件所包含的內容與運行中機器實際允許運行的內容之間的差距。</p>
+<p><strong>為何 setuid 日趨式微</strong></p>
+<p>setuid 及其 setgid 對應功能，令二進制以檔案擁有者而非呼叫使用者的權限執行。這正是 <code>su</code>、<code>sudo</code>、<code>passwd</code> 及 <code>ping</code> 能如使用者預期般運作的原因，同時也是問題所在：程式碼中任何缺陷都會以提升後的權限運行，使 setuid 二進制成為權限提升漏洞的常年目標。</p>
+<p>SUSE 並非孤軍作戰。近年來，Debian、Fedora 及 Arch 均已從部分預設安裝中移除 setuid，改為透過範圍更窄、受政策規管的途徑授予權限。這趨勢遍及整個 Linux 生態系統，並非 SUSE 獨有的做法，而同樣的審計建議適用於所有 Linux 從業者，遠超 SUSE 的安裝基礎。</p>
+<p><strong>取代方案</strong></p>
+<p>三項機制可涵蓋大部分情況。File capabilities（<code>setcap</code>）授予特定權限 —— 例如 <code>cap_net_bind_service</code> —— 而毋須交出 root 權限，將權限範圍保持在最小程度。Polkit 將授權決定移至一個可配置、服務感知的政策層，令無權限使用者毋須 setuid helper 亦可執行已獲批准的高權限操作。Landlock 是 kernel 的沙盒設施，限制 process 可執行的操作範圍，從而減少對高權限 helper 的需求。</p>
+<p><strong>先審計，後遷移</strong></p>
+<p>實際的起點是盤點。以單次有限範圍掃描列出所有 setuid 及 setgid 檔案：</p>
+<pre><code>find / -xdev \( -perm -4000 -o -perm -2000 \) -type f
+</code></pre>
+<p>然後將每一項結果歸入三類之一：可以 file capability 取代、可以轉換為 polkit 規則、或需要供應商介入處理。在重新分類任何項目之前，請先將輸出結果與供應商文件相互核對。</p>
+<p><strong>痛點所在</strong></p>
+<p>遷移成本並不在於 SUSE 自家的套件 —— 這些已經過審查。真正的成本在於遺留及供應商所屬的軟件：備份代理程式、監控 daemon、硬件管理實用工具，以及多年前基於「root 擁有的 setuid 二進制可用」這一假設編寫的內部工具。在強制執行之下，這些工具將會失效 —— 有時更會靜默失敗。</p>
+<p>內部編寫的二進制通常最快可以改裝；時間表拉長的是第三方軟件。現時立即盤點自身 setuid 檔案清單的管理員，將比那些在強制執行落實後才發現問題的人少面對許多意外。</p>
+<p><a href="https://lwn.net/Articles/1100257/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
