@@ -1,0 +1,28 @@
+Date: 2026-10-20 22:02:00
+Author: HKLUG Team
+Title: Lazy Bounce Buffering Trims Overhead on Checksummed Reads in Linux 7.4
+Content:
+<p>A VFS optimization merged as part of the initial material for the in-development Linux 7.4 kernel promises improved performance and lower resource usage for checksummed reads, with XFS set as the primary beneficiary. Phoronix reported that the change arrived through the VFS IOmap pull request, which introduced "lazy bounce buffering" for checksummed read paths.</p>
+<h4>What the change actually does</h4>
+<p>When a filesystem verifies data checksums on read, the data sometimes has to be copied into an intermediate "bounce buffer" before the checksum can be computed or the data can be handed to the caller. Bounce buffering itself is not new; what is new is deferring that work so the copy happens only when it is genuinely required, rather than eagerly on every read.</p>
+<p>Because the implementation lives in shared IOmap infrastructure in the virtual filesystem layer, the benefit is not inherently XFS-specific. In principle, other filesystems that adopt the same interface for checksummed reads could inherit the same reduction in copies, though today XFS is the concrete beneficiary — it is one of the main users of this code path, so the improvement shows up there first.</p>
+<h4>Why it matters at scale</h4>
+<p>Checksumming has become a mainstream expectation for production storage. Filesystems increasingly protect against silent corruption caused by hardware faults, firmware bugs, or bit rot, and administrators have generally accepted the trade-off of some read-path overhead in exchange for that protection. The cost, however, is paid on every read across an entire fleet, so even incremental savings in memory copies compound meaningfully in I/O-heavy environments such as databases, virtualization hosts, and large-scale object storage nodes.</p>
+<p>XFS has long enforced checksummed metadata and remains a widely deployed choice for large-scale storage, which makes it a natural first home for this kind of read-path efficiency work.</p>
+<h4>The bigger picture</h4>
+<p>For storage administrators, the practical takeaway is straightforward: fewer bounce-buffer copies mean less time spent in the read path, freeing cycles for application work on storage-dense nodes, and reducing the overhead of existing verification makes it easier to justify extending integrity checks without a visible performance penalty. That fits a broader pattern in this cycle's VFS work — performance improvements built once at the layer where all filesystems converge, then reaped by each adopter.</p>
+<p>The usual merge-window caveat applies, however. Linux 7.4 is still in development, so administrators planning upgrades should watch release candidates and eventual distribution backports rather than treating the change as available today, and final numbers should be validated against those candidates before any tuning decisions are made.</p>
+<p>Source: Phoronix.</p>
+<hr>
+<p>一項作為開發中 Linux 7.4 核心初步合併材料一部分的 VFS 優化，有望為附有校驗和的讀取帶來更佳性能及更低資源消耗，其中 XFS 將成為主要受益者。Phoronix 報道稱，該項改動透過 VFS IOmap pull request 引入，為附有校驗和的讀取路徑加入「lazy bounce buffering」機制。</p>
+<h4>改動的實際作用</h4>
+<p>當檔案系統在讀取時驗證資料校驗和，資料有時須先複製至中間的「bounce buffer」，才能計算校驗和或將資料交回呼叫方。Bounce buffering 本身並非新概念；新穎之處在於將該工作延後處理，只有在確實需要時才進行複製，而非不論是否需要，每次讀取都提前執行。</p>
+<p>由於相關實作位於虛擬檔案系統層的共用 IOmap 基礎架構中，其好處並非 XFS 專屬。原則上，其他採用相同介面處理附有校驗和讀取的檔案系統亦可同樣減少複製次數，不過目前 XFS 是具體的受益者——它是該程式碼路徑的主要使用者之一，因此改進首先在 XFS 上顯現。</p>
+<h4>規模化運行下的重要性</h4>
+<p>校驗和已成為生產環境儲存的主流要求。檔案系統日益著重防範由硬件故障、韌體缺陷或 bit rot 引致的靜默損壞，管理員普遍已接受以部分讀取路徑開銷換取這層保護的取捨。然而，這項成本會在整個機群的每次讀取中支付，因此即使只是節省部分記憶體複製，在資料庫、虛擬化主機及大規模物件儲存節點等 I/O 密集環境中，亦會累積成顯著效益。</p>
+<p>XFS 長期以來一直強制對 metadata 執行校驗和，至今仍是大規模儲存的廣泛部署選擇，因此成為此類讀取路徑效率改進的天然首選對象。</p>
+<h4>更宏觀的圖景</h4>
+<p>對儲存管理員而言，實際結論相當直接：更少的 bounce buffer 複製意味著讀取路徑耗時減少，令儲存密集節點可釋出更多運算週期供應用程式使用；同時，降低現有驗證機制的開銷，亦令擴展完整性檢查更易於合理化，而不會帶來明顯的性能代價。這與本輪 VFS 工作的整體模式一致——性能改進只需在所有檔案系統彙聚的同一層級建立一次，隨後各採用者均可受益。</p>
+<p>不過，慣常的 merge window 免責聲明仍然適用。Linux 7.4 仍在開發中，計劃升級的管理員應關注 release candidate 及最終發行版的 backport，而非將該改動視為現時可用；在作出任何調校決定之前，最終數值應以相關 release candidate 進行驗證。</p>
+<p>來源：Phoronix。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.4-XFS-Checksumming" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
