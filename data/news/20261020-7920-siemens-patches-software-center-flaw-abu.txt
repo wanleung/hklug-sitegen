@@ -1,0 +1,42 @@
+Date: 2026-10-20 16:14:00
+Author: HKLUG Team
+Title: Siemens Patches Software Center Flaw Abused in ClickFix Campaigns to Drop RATs
+Content:
+<p>Attackers are combining a browser-driven social-engineering trick known as ClickFix with a high-severity flaw in Siemens Software Center to plant a remote access trojan on compromised machines, according to a report published by The Hacker News.</p>
+<p>Siemens has issued a patch for the issue, tracked as CVE-2026-110936 and scored 8.4 under CVSS v4.0, and acknowledged that the vulnerability has been exploited in ClickFix-based attacks.</p>
+<h4>How the attack works</h4>
+<p>The flaw sits in Siemens Software Center, a desktop client used to discover, download and install Siemens software updates. At its core is a classic DLL search-order weakness: an attacker can place a specially crafted dynamic-link library in a directory that the application searches at runtime, causing that library to be loaded and its code executed in the context of the running process.</p>
+<p>DLL search-order issues are an old and well-documented bug class — applications that resolve dependencies by walking a list of directories in a fixed order can be steered into loading an attacker-controlled file if that file can be written somewhere earlier in the search path than the legitimate one. The vulnerability mechanics are straightforward; the specifics of Siemens' own write-up, including any statement about the privileges inherited by the loaded code, should be taken from the vendor advisory directly.</p>
+<p>What elevates this particular case is the delivery chain. ClickFix, in general technique terms, is a social-engineering method that persuades a user to paste or type a command — often into a Run dialog, terminal or PowerShell prompt — under the guise of fixing a captcha, verifying a browser, or resolving a technical error. Rather than relying on a memory-corruption exploit, the attacker gets the victim to run the payload themselves. In this campaign, the technique is being used to set up the conditions under which the malicious DLL is loaded by Siemens Software Center, ultimately dropping a remote access trojan on the endpoint.</p>
+<h4>Why it matters</h4>
+<p>Management utilities are a privileged beachhead. Utilities of this type exist precisely to distribute and install software across an estate, frequently operating with elevated rights on the machines they manage. A foothold in a component that is trusted to update other software does not stay contained for long: it inherits both the permissions of the process and the trust relationship with the wider deployment pipeline.</p>
+<p>The impact straddles the IT/OT line. This is an endpoint and patch-management story rather than an operational-technology compromise — there is no indication in the reporting that programmable controllers or field devices are directly affected. But the workstations that run Siemens engineering and configuration software are frequently the same machines used to maintain industrial and building-automation systems, which makes a foothold on them a meaningful step toward the process network.</p>
+<p>That relevance is general rather than specific: the reporting does not attribute activity to any particular region or sector.</p>
+<h4>What to do</h4>
+<ul>
+<li><strong>Patch Siemens Software Center</strong> to the fixed release identified in Siemens' official advisory; confirm affected and fixed version ranges against that document rather than third-party summaries.</li>
+<li><strong>Treat ClickFix prompts as hostile.</strong> Users should never paste commands into a Run dialog or shell on the instruction of a webpage, even one that appears to be a captcha or verification screen.</li>
+<li><strong>Restrict DLL search paths</strong> and apply application allow-listing on engineering workstations where feasible.</li>
+<li><strong>Review software-installation tooling</strong> for standing elevated privileges and monitor for unexpected DLL loads from user-writable directories.</li>
+</ul>
+<p>For teams running Siemens estates, the underlying lesson is broader than one CVE: the utilities trusted to keep a fleet patched are themselves a target, and a user-assisted delivery method like ClickFix can be enough to reach them.</p>
+<hr>
+<p>據 The Hacker News 發布的報告，攻擊者正將一種名為 ClickFix 的瀏覽器驅動社會工程伎倆，與 Siemens Software Center 的高嚴重性漏洞結合，在受感染的機器上植入 remote access trojan（遠端存取木馬，RAT）。</p>
+<p>西門子已就此事發布修補程式，該漏洞編號為 CVE-2026-110936，在 CVSS v4.0 評分為 8.4，公司並承認該漏洞已被用於基於 ClickFix 的攻擊。</p>
+<h4>攻擊運作方式</h4>
+<p>該漏洞位於 Siemens Software Center，這是一款用於搜尋、下載及安裝西門子軟件更新的桌面客戶端。其核心問題是典型的 DLL search-order（搜尋次序）缺陷：攻擊者可將一個經特殊構造的 dynamic-link library 放入應用程式在執行時會搜尋的目錄中，令該函式庫被載入，並在執行中處理程序的上下文內執行其代碼。</p>
+<p>DLL search-order 問題屬舊有且有充分文獻記錄的缺陷類別——依賴按固定次序遍歷目錄清單來解析相依性的應用程式，若攻擊者能將檔案寫入搜尋路徑中早於合法檔案的位置，便可能被誤導載入攻擊者控制的檔案。該漏洞的機制相當直接；至於西門子自身技術文件的細節，包括任何關於已載入代碼所繼承權限的說明，應直接參閱廠商公告。</p>
+<p>令本案特別之處在於其投放鏈（delivery chain）。就一般技術而言，ClickFix 是一種社會工程方法，以修復 captcha、驗證瀏覽器或解決技術錯誤為藉口，說服用戶貼上或輸入一條指令——通常是在 Run 對話方塊、終端機或 PowerShell 提示字元中。攻擊者無需依賴 memory-corruption 漏洞利用，而是讓受害者自行執行 payload。在此次攻擊活動中，該技術被用來營造惡意 DLL 被 Siemens Software Center 載入的條件，最終在端點上投放 remote access trojan。</p>
+<h4>為何重要</h4>
+<p>管理工具是具特權的橋頭堡。此類工具的存在目的正是在整個環境中分發及安裝軟件，通常以提升的權限在其所管理的機器上運作。在一個獲信任用來更新其他軟件的組件上取得立足點，不會長時間局限於該處：它既繼承該處理程序的權限，也繼承與更廣泛部署 pipeline 之間的信任關係。</p>
+<p>是次事件的影響橫跨 IT／OT 界線。這是一宗端點及 patch-management 事件，而非 operational technology（OT，營運技術）入侵——報導並無顯示 programmable controllers 或現場裝置（field devices）直接受影響。然而，用於執行西門子工程及組態軟件的工作站，往往正是維護工業及樓宇自動化系統的機器，因此在這些工作站上取得立足點，可說是邁向 process network 的有意義一步。</p>
+<p>該關聯性屬一般性而非特定性：報導並未將相關活動歸因於任何特定地區或行業。</p>
+<h4>應採取的措施</h4>
+<ul>
+<li><strong>修補 Siemens Software Center</strong> 至西門子官方公告所指明的已修復版本；請根據該文件核實受影響及已修復的版本範圍，而非依賴第三方摘要。</li>
+<li><strong>將 ClickFix 提示視為敵意行為。</strong> 用戶不應按網頁指示，將指令貼入 Run 對話方塊或 shell，即使該網頁貌似 captcha 或驗證畫面也不例外。</li>
+<li><strong>限制 DLL 搜尋路徑</strong>，並在可行的情況下於工程工作站實施 application allow-listing。</li>
+<li><strong>檢視軟件安裝工具</strong>是否存在常駐的提升權限，並監察來自用戶可寫入目錄的異常 DLL 載入。</li>
+</ul>
+<p>對於管理西門子環境的團隊而言，根本教訓遠超單一 CVE：獲信任用來維護整批系統更新的工具本身已是攻擊目標，而 ClickFix 這類需用戶配合的投放方法，已足以觸及這些工具。</p>
+<p><a href="https://thehackernews.com/2026/10/clickfix-attackers-exploit-siemens.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
