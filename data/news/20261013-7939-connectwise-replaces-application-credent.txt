@@ -1,0 +1,62 @@
+Date: 2026-10-13 16:00:00
+Author: HKLUG Team
+Title: ConnectWise Replaces Application Credentials Following Cloud Backup Intrusion
+Content:
+<p>ConnectWise says it has reset accounts and replaced application credentials as part of an ongoing response to a security incident that gave an attacker unauthorized access to application identities tied to its Cloud Backup service — which remains offline.</p>
+<p>The managed-service-platform vendor disclosed the latest remediation steps on Monday, according to The Hacker News, which reported the update on 13 October. ConnectWise said it has strengthened administrative-access protections alongside the credential resets, and that it continues to investigate and respond to the intrusion.</p>
+<p>The core detail security teams should not gloss over is <em>what</em> was accessed: application identities associated with Cloud Backup. These are non-human credentials — service tokens, API keys and machine accounts — that authenticate automated processes rather than individual staff members. They are attractive to attackers precisely because they often carry elevated privileges, run continuously without interactive login prompts, and typically sit outside the password-change routines and user-account audits that most organizations rely on. When one is stolen, no employee gets a "your password was changed" notification.</p>
+<p>ConnectWise has not disclosed how the intruders initially gained access, how long they were present, or whether customer data was exfiltrated. Those gaps matter: managed service providers (MSPs) and IT partners that resell or integrate ConnectWise tooling often need concrete scope information before they can make their own breach-notification decisions. Until the vendor publishes more, downstream providers are working with an incomplete picture.</p>
+<p><strong>Why this is a supply-chain story, not just a vendor story</strong></p>
+<p>For MSPs, ConnectWise is infrastructure. The same platform that backs up client data or manages endpoints is also a conduit into dozens or hundreds of downstream customer environments. Compromise at the platform layer does not stay at the platform layer — it propagates along the same integration paths that partners use for legitimate automation. That is what makes the "application identities" framing significant: the credentials attackers want are the ones with the reach.</p>
+<p>The still-offline Cloud Backup service adds a second-order risk. Partners who assumed their backup copy lived safely in ConnectWise's cloud now have to ask whether their most recent independent restore point exists anywhere else. An incident that begins as a credential compromise can become a recovery problem if the backup channel itself is unavailable.</p>
+<p><strong>What HK MSPs and IT providers should check today</strong></p>
+<p>Hong Kong tenant impact has not been confirmed, and ConnectWise has not published a regional breakdown. The following steps are general hygiene for any partner running ConnectWise tooling, not a response to a verified local incident:</p>
+<ul>
+<li><strong>Rotate everything that touches ConnectWise.</strong> Treat the vendor's own credential reset as a starting point, not a finish line. Audit administrative accounts, API keys, OAuth tokens and automation scripts that authenticate against the platform.</li>
+<li><strong>Map your application identities.</strong> List every non-human credential that can reach client environments through ConnectWise, and confirm who owns each one.</li>
+<li><strong>Verify an independent backup.</strong> Confirm you hold a restore point outside ConnectWise Cloud Backup while the service is offline, and test that it is actually restorable.</li>
+<li><strong>Shorten rotation cycles</strong> for management platforms that hold multi-tenant access, and review privileged-access logs for anomalies since the earliest plausible exposure window.</li>
+<li><strong>Check downstream obligations.</strong> If you resell or integrate ConnectWise, determine whether your own client contracts require notification while scope remains undisclosed.</li>
+</ul>
+<p>We will update this story as ConnectWise publishes further details — particularly any restoration timeline for Cloud Backup or a disclosure of incident scope.</p>
+<p><em>Source: The Hacker News, https://thehackernews.com/2026/10/connectwise-resets-credentials-as-cloud.html</em></p>
+<hr />
+<h4>繁體中文版本</h4>
+<p>ConnectWise 表示，它已重設帳戶並更換應用程式憑證，作為持續回應一宗安全事故的措施之一；該事故令攻擊者未經授權存取與其 Cloud Backup 服務相關的應用程式身份——該服務目前仍處於離線狀態。</p>
+<p>這家託管服務平台供應商於星期一披露最新補救步驟，《The Hacker News》在 10 月 13 日報道了相關更新。ConnectWise 表示，除憑證重設外，亦已加強管理員存取權限的防護，並持續調查及回應該入侵事件。</p>
+<p>安全團隊不應略過的核心細節是<em>被存取的內容</em>：與 Cloud Backup 相關的應用程式身份。這些屬於非人類憑證——服務權杖、API 金鑰與機器帳戶——用於驗證自動化流程而非個別員工。它們之所以令攻擊者垂涎，正是因為通常具備較高權限、無需互動式登入提示即可持續運行，而且往往不在多數機構依賴的密碼更換流程及使用者帳戶稽核範圍之內。一旦被盜，沒有任何員工會收到「您的密碼已被更改」的通知。</p>
+<p>ConnectWise 尚未披露入侵者如何取得初始存取權、在系統中停留多久，或客戶資料是否外洩。這些資訊缺口至關重要：轉售或整合 ConnectWise 工具的託管服務供應商（MSP）與 IT 合作夥伴，往往需要具體的影響範圍資訊，才能作出自身的資料外洩通知決定。在供應商公布更多細節之前，下游服務供應商只能在資料不全的情況下作業。</p>
+<p><strong>為何這是供應鏈故事，而不只是供應商故事</strong></p>
+<p>對 MSP 而言，ConnectWise 就是基礎設施。同一個平台既備份客戶資料、管理端點，也是通往數十乃至數百個下游客戶環境的管道。平台層的入侵不會停留在平台層——它會沿著合作夥伴用於合法自動化的同一批整合路徑擴散。這正是「應用程式身份」這個說法關鍵之處：攻擊者想要的憑證，正是那些具備廣泛觸及範圍的憑證。</p>
+<p>仍然離線的 Cloud Backup 服務帶來間接風險。一直假設備份副本安全存放於 ConnectWise 雲端的合作夥伴，如今必須追問：他們最近的獨立還原點是否還存在於其他地方。一宗始於憑證被盜的事故，若備份通道本身不可用，隨時會演變成復原難題。</p>
+<p><strong>香港 MSP 與 IT 服務供應商今天應檢查的事項</strong></p>
+<p>香港租戶的影響尚未獲得證實，ConnectWise 亦未公布地區分佈。以下步驟是針對任何使用 ConnectWise 工具的合作夥伴的一般保安措施，並非針對已證實的本地事故：</p>
+<ul>
+<li><strong>輪換所有涉及 ConnectWise 的憑證。</strong>把供應商自身的憑證重設視為起點而非終點。稽核管理員帳戶、API 金鑰、OAuth 權杖及對平台進行驗證的自動化腳本。</li>
+<li><strong>盤點你的應用程式身份。</strong>列出每一項可經 ConnectWise 觸及客戶環境的非人類憑證，並確認各自負責人。</li>
+<li><strong>確認獨立備份。</strong>在服務離線期間，確認你持有 ConnectWise Cloud Backup 之外的還原點，並測試其確實可還原。</li>
+<li><strong>縮短輪換週期</strong>，針對持有多重租戶存取權的管理平台，並檢視特權存取日誌，排查自最早可能曝光時間窗口以來的異常。</li>
+<li><strong>檢查下游義務。</strong>如果你轉售或整合 ConnectWise，請確認自身客戶合約在範圍未披露期間是否要求通知。</li>
+</ul>
+<p>當 ConnectWise 公布更多細節——尤其是 Cloud Backup 的復原時間表或事故範圍披露——我們將更新本報道。</p>
+<p><em>Source: The Hacker News, https://thehackernews.com/2026/10/connectwise-resets-credentials-as-cloud.html</em></p>
+<hr>
+<p>ConnectWise 表示，它已重設帳戶並更換應用程式憑證，作為持續回應一宗安全事故的措施之一；該事故令攻擊者未經授權存取與其 Cloud Backup 服務相關的應用程式身份——該服務目前仍處於離線狀態。</p>
+<p>這家託管服務平台供應商於星期一披露最新補救步驟，《The Hacker News》在 10 月 13 日報道了相關更新。ConnectWise 表示，除憑證重設外，亦已加強管理員存取權限的防護，並持續調查及回應該入侵事件。</p>
+<p>安全團隊不應略過的核心細節是<em>被存取的內容</em>：與 Cloud Backup 相關的應用程式身份。這些屬於非人類憑證——服務權杖、API 金鑰與機器帳戶——用於驗證自動化流程而非個別員工。它們之所以令攻擊者垂涎，正是因為通常具備較高權限、無需互動式登入提示即可持續運行，而且往往不在多數機構依賴的密碼更換流程及使用者帳戶稽核範圍之內。一旦被盜，沒有任何員工會收到「您的密碼已被更改」的通知。</p>
+<p>ConnectWise 尚未披露入侵者如何取得初始存取權、在系統中停留多久，或客戶資料是否外洩。這些資訊缺口至關重要：轉售或整合 ConnectWise 工具的託管服務供應商（MSP）與 IT 合作夥伴，往往需要具體的影響範圍資訊，才能作出自身的資料外洩通知決定。在供應商公布更多細節之前，下游服務供應商只能在資料不全的情況下作業。</p>
+<p><strong>為何這是供應鏈故事，而不只是供應商故事</strong></p>
+<p>對 MSP 而言，ConnectWise 就是基礎設施。同一個平台既備份客戶資料、管理端點，也是通往數十乃至數百個下游客戶環境的管道。平台層的入侵不會停留在平台層——它會沿著合作夥伴用於合法自動化的同一批整合路徑擴散。這正是「應用程式身份」這個說法關鍵之處：攻擊者想要的憑證，正是那些具備廣泛觸及範圍的憑證。</p>
+<p>仍然離線的 Cloud Backup 服務帶來間接風險。一直假設備份副本安全存放於 ConnectWise 雲端的合作夥伴，如今必須追問：他們最近的獨立還原點是否還存在於其他地方。一宗始於憑證被盜的事故，若備份通道本身不可用，隨時會演變成復原難題。</p>
+<p><strong>香港 MSP 與 IT 服務供應商今天應檢查的事項</strong></p>
+<p>香港租戶的影響尚未獲得證實，ConnectWise 亦未公布地區分佈。以下步驟是針對任何使用 ConnectWise 工具的合作夥伴的一般保安衛生措施，並非針對已證實的本地事故：</p>
+<ul>
+<li><strong>輪換所有涉及 ConnectWise 的憑證。</strong>把供應商自身的憑證重設視為起點而非終點。稽核管理員帳戶、API 金鑰、OAuth 權杖及對平台進行驗證的自動化腳本。</li>
+<li><strong>盤點你的應用程式身份。</strong>列出每一項可經 ConnectWise 觸及客戶環境的非人類憑證，並確認各自負責人。</li>
+<li><strong>確認獨立備份。</strong>在服務離線期間，確認你持有 ConnectWise Cloud Backup 之外的還原點，並測試其確實可還原。</li>
+<li><strong>縮短輪換週期</strong>，針對持有多重租戶存取權的管理平台，並檢視特權存取日誌，排查自最早可能曝光時間窗口以來的異常。</li>
+<li><strong>檢查下游義務。</strong>如果你轉售或整合 ConnectWise，請確認自身客戶合約在範圍未披露期間是否要求通知。</li>
+</ul>
+<p>當 ConnectWise 公布更多細節——尤其是 Cloud Backup 的復原時間表或事故範圍披露——我們將更新本報道。</p>
+<p><em>來源：The Hacker News, https://thehackernews.com/2026/10/connectwise-resets-credentials-as-cloud.html</em></p>
+<p><a href="https://thehackernews.com/2026/10/connectwise-resets-credentials-as-cloud.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
