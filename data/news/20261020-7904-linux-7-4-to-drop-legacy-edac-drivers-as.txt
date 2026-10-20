@@ -1,0 +1,32 @@
+Date: 2026-10-20 02:03:00
+Author: HKLUG Team
+Title: Linux 7.4 to Drop Legacy EDAC Drivers as AI-Generated Patches Outrun Reviewers
+Content:
+<p>The Linux kernel's Error Detection And Correction (EDAC) subsystem is set to retire a batch of older hardware drivers in Linux 7.4, and the stated reason is as notable as the change itself: an influx of automated bug reports and proposed fixes aimed at drivers that are likely unused or only rarely exercised. Phoronix, reporting on the pending merge window changes, quoted the EDAC maintainers describing the situation as an "AI generated fixes frenzy."</p>
+<p>Alongside the retirements, Phoronix reports that the release also introduces a new driver from Intel — referred to in its coverage as the "BFF" driver — expanding support for newer error-reporting hardware even as the subsystem sheds support for older, low-traffic silicon.</p>
+<p><strong>Why legacy drivers absorb the noise</strong></p>
+<p>EDAC sits in an awkward corner of the kernel. It monitors memory and other hardware for errors, and much of its driver surface targets embedded, embedded-adjacent, or ageing server platforms that few active users still run. That profile makes these drivers an attractive target for automated tooling: the code is small, the patterns are repetitive, and plausible-looking fixes are easy to generate at scale — a combination that helps explain why the problem surfaces so acutely there.</p>
+<p>The imbalance is one of simple economics. Producing a candidate patch with a language model costs effectively nothing. Validating one costs roughly what a human-written patch costs — and often more, because a reviewer must first establish whether the reported bug exists at all before assessing the proposed fix. That burden lands hardest precisely where oversight is thinnest: dormant drivers with few subscribers, little test coverage, and no obvious stakeholder to vouch for them.</p>
+<p>Rather than scale up review capacity to keep pace, the EDAC maintainers appear to be choosing a different lever: retiring low-traffic code outright so that there is nothing left to referee. In our reading of the trade-off, that amounts to a "prune rather than filter" posture — deprecation as a deliberate defence against patch noise, not merely a response to bit rot. It is an interpretation of the maintainers' move, not a policy the subsystem has published.</p>
+<p><strong>A case-by-case precedent</strong></p>
+<p>Nothing in the reported changes points to a uniform, kernel-wide rule governing AI-assisted contributions; instead, the decision reads as a subsystem maintainer setting a norm locally. EDAC's move offers a template others may weigh: if the cost of validating automated patches exceeds the value of the code being patched, removing the code can be the rational play.</p>
+<p>But the approach cuts both ways. Some of the affected drivers may genuinely be obsolete. Others may still serve niche hardware that is merely obscure rather than dead — and could lose upstream support not because it is unused, but because it attracted automated campaigns. Obscurity, in other words, is becoming a liability in itself.</p>
+<p>The arithmetic holds well beyond the kernel. Enterprise teams maintaining long-tailed legacy and ECC-memory infrastructure routinely work through internal bug and patch streams, and AI-assisted contributions remain cheap to produce but expensive to trust. Validation effort migrates to whatever systems nobody is actively monitoring — old integrations kept alive out of caution, maintained by no one in particular, until the day the cost of checking them outweighs their apparent worth.</p>
+<p><strong>What to expect next</strong></p>
+<p>The open question is whether other subsystems with comparable dormant code tails adopt EDAC's retire-rather-than-referee posture in Linux 7.4 and beyond. A second question lingers behind it: as automated patch campaigns grow more pervasive, will support for obscure but still-functional hardware quietly disappear from the kernel — not because it is obsolete, but because reviewing it is no longer worth the maintainer's time.</p>
+<p>According to Phoronix, the EDAC changes are slated for the Linux 7.4 merge window. Full coverage is available at https://www.phoronix.com/news/Linux-7.4-EDAC.</p>
+<hr>
+<p>Linux 核心的錯誤偵測與修正（EDAC）子系統將於 Linux 7.4 退役一批較舊的硬件驅動程序，而所列理由與該變更本身同樣值得注意：大量自動化程式錯誤報告及修正建議湧現，針對的驅動程序很可能無人使用或極少運作。Phoronix 報導即將合併視窗（merge window）的變更時，引述 EDAC 維護者形容情況為「AI 生成修正的狂潮」。</p>
+<p>Phoronix 另外報導，與退役舊驅動的同時，該版本亦引入 Intel 的全新驅動——其報導稱之為「BFF」驅動——擴展對較新錯誤報告硬件的支援，與此同時子系統則剔除對舊式、低流量晶片的支援。</p>
+<p><strong>為何舊式驅動承受最多噪音</strong></p>
+<p>EDAC 在核心中處於一個尷尬的位置。它監察記憶體及其他硬件的錯誤，而其驅動程序大部分針對嵌入式、類嵌入式或逐漸老化的伺服器平台，仍然使用這些平台的活躍用戶寥寥無幾。這種特性使其成為自動化工具的理想目標：代碼量小、模式重複性高，看似合理的修正很容易大量生成——這正是問題在此特別嚴重的原因。</p>
+<p>這種失衡源自簡單的成本計算。利用語言模型生成候選補丁幾乎不花分文，驗證補丁的成本卻大致等同於人工撰寫的補丁——而且往往更高，因為審核者必須先確定所報告的程式錯誤是否真的存在，才能評估建議的修正。這項負擔恰恰落在監督最薄弱之處：休眠驅動程序訂閱者寥寥、測試覆蓋不足，亦沒有明顯的利益相關者為其背書。</p>
+<p>EDAC 維護者似乎選擇了另一條路，而非擴大審核能力以應付需求：直接退役低流量代碼，令問題無須再裁決。按本報對此取捨的理解，這可說是「修剪而非過濾」的立場——將退役作為對抗補丁噪音的主動防禦，而不僅是應對代碼腐化的手段。這只是對維護者舉動的詮釋，該子系統並無就此公布任何政策。</p>
+<p><strong>逐案處理的先例</strong></p>
+<p>已報導的變更中，並無任何內容指向一套適用於整個核心、規管 AI 輔助貢獻的統一規則；相反，該決定更像是子系統維護者在本地樹立的規範。EDAC 的做法為其他人提供了一個可參考的範本：若驗證自動化補丁的成本超過被修補代碼的價值，移除代碼可能才是理性之舉。</p>
+<p>但這種做法有利有弊。部分受影響的驅動程序可能確實已過時，另一些則可能仍服務於小眾硬件，只是鮮為人知而非已經消亡——它們可能因吸引自動化行動而失去上游支援，而非因為無人使用。換言之，「鮮為人知」本身正在成為一種負擔。</p>
+<p>同樣的成本計算亦適用於核心以外的範疇。企業團隊日常處理長尾舊式及 ECC 記憶體基礎設施的內部程式錯誤及補丁流，AI 輔助的貢獻生成成本低廉，但信任成本高昂。驗證工作會逐漸轉移到那些沒有人積極監察的系統——那些出於謹慎而保留、並無專人負責維護的舊式整合，直至核查它們的成本超過其表面上的價值為止。</p>
+<p><strong>下一步可預期之事</strong></p>
+<p>懸而未決的問題是：其他擁有類似休眠代碼尾巴的子系統，是否會在 Linux 7.4 及以後採納 EDAC「退役而非裁決」的立場。其後還有一個問題：隨著自動化補丁行動日益普及，對鮮為人知但仍然可用的硬件的支援，會否悄然從核心中消失——並非因為其已過時，而是因為審核它已不值得維護者花費時間。</p>
+<p>據 Phoronix 報導，EDAC 的變更預計納入 Linux 7.4 合併視窗。完整報導請參閱 https://www.phoronix.com/news/Linux-7.4-EDAC。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.4-EDAC" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
