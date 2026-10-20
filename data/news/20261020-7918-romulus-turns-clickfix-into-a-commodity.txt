@@ -1,0 +1,40 @@
+Date: 2026-10-20 08:05:00
+Author: HKLUG Team
+Title: ROMULUS Turns ClickFix Into a Commodity Malware Delivery Service, Forescout Says
+Content:
+<h3>ROMULUS Turns ClickFix Into a Commodity Malware Delivery Service, Forescout Says</h3>
+<p>A decade of user training told people never to paste a command from a website into a terminal. A newly documented delivery platform called ROMULUS is turning that instinct against them — and, according to Forescout Research - Vedere Labs, operating ClickFix-style lures almost as a service for distributing malware including LegionLoader.</p>
+<p>Rather than exploiting a software flaw to run code itself, the technique persuades the victim to execute it. Bogus landing pages display fake error messages, "verification" steps or troubleshooting instructions that tell the visitor to press Win+R, open a command prompt or paste a script. The user becomes the intrusion's operator. What has traditionally been the hard part of an attack — getting code running on a target machine — shifts from the attacker's tooling to the target's keyboard.</p>
+<h4>A delivery service, not a one-off lure</h4>
+<p>Forescout's findings, reported by The Hacker News, describe ROMULUS as a malware delivery service in miniature: lures are served on fraudulent landing pages, visitors arriving by various routes are talked into running the malicious commands, and the resulting infection delivers payloads such as LegionLoader.</p>
+<p>The commoditisation angle is what matters. Campaigns that once required bespoke social-engineering copy and per-target infrastructure can now be sourced from a platform, lowering the bar for attackers who lack exploit development skills but are willing to script a convincing fake browser warning. It also means defenders hunting for vulnerability scans or exploit attempts in initial logs may find nothing unusual — the "exploit" ran in a terminal window the user opened voluntarily.</p>
+<p>LegionLoader's job in the chain is to open the door further: once on the system it pulls down additional tooling, extending the compromise past the initial foothold. Any confirmed ClickFix execution should therefore be handled as a potential multi-stage incident, not closed as a single failed phishing attempt.</p>
+<h4>Mitigations: configuration, not signatures</h4>
+<p>Because the attack rides on legitimate system binaries, signature-based detection has limited value. The highest-fidelity controls sit in endpoint configuration and process telemetry:</p>
+<ul>
+<li><strong>Restrict interactive shells for standard users.</strong> Disable or tightly limit <code>cmd</code>, <code>powershell</code> and the Run dialog (Win+R) for accounts that do not need them.</li>
+<li><strong>Alert on browser-to-shell process chains.</strong> A web browser spawning a terminal, script host or PowerShell session is anomalous in almost every legitimate workflow and should raise a high-fidelity alert.</li>
+<li><strong>Apply application allowlisting</strong> on endpoints — particularly kiosks, servers and shared workstations — so unapproved scripts cannot run even when a user is persuaded to invoke them.</li>
+<li><strong>Rewrite awareness training around instructions, not attachments.</strong> ClickFix lures carry no payload in the email; they teach the user a command. Training should explicitly cover fake error messages and "press Win+R" prompts.</li>
+</ul>
+<p>Defenders should also watch for any indicators Forescout releases alongside its advisory and fold lure domains into blocklists as they become available.</p>
+<p>Source: Forescout Research - Vedere Labs, reported by The Hacker News.</p>
+<hr>
+<h3>Forescout：ROMULUS 將 ClickFix 變成商品化惡意軟件投放服務</h3>
+<p>十年來的用戶教育一直告訴人們：切勿把網頁上的指令貼到終端機執行。現有一個名為 ROMULUS 的新投放平台，正把這種本能反應反過來對付用戶——根據 Forescout Research - Vedere Labs 的說法，它幾乎是以「服務形式」運作 ClickFix 式的釣魚引誘，用來投放包括 LegionLoader 在內的惡意軟件。</p>
+<p>此手法並非利用軟件漏洞自行執行代碼，而是說服受害者親自執行。虛假的 landing page 會顯示假的錯誤訊息、「驗證」步驟或故障排除指示，要求訪客按下 Win+R、開啟 command prompt 或貼上一段 script。用戶就此成為入侵行動的執行者。過往攻擊中最困難的部分——在目標機器上讓代碼運行——由攻擊者的工具轉移到目標的鍵盤上。</p>
+<h4>是投放服務，不是一次性釣魚</h4>
+<p>The Hacker News 報道的 Forescout 研究發現，把 ROMULUS 形容為一個縮微版的惡意軟件投放服務：釣魚引誘放在詐騙 landing page 上，經不同途徑到訪的訪客被說服執行惡意指令，隨後的感染便投放 LegionLoader 等 payload。</p>
+<p>關鍵在於商品化這一點。過往需要量身訂造的社會工程學文案和針對個別目標的基建才能發動的攻擊行動，如今可以直接從平台獲取，降低了門檻——攻擊者即使沒有漏洞開發技能，只要肯寫出一個貌似可信的虛假瀏覽器警告即可。這也意味著防禦者在初始日誌中搜尋漏洞掃描或 exploit 嘗試時，可能找不到任何異常——「exploit」其實是在用戶自願開啟的終端機視窗中運行的。</p>
+<p>LegionLoader 在整個鏈條中的作用，是進一步打開大門：一旦進入系統，它便下載更多工具，把入侵範圍擴展至最初的立足點之外。因此，任何確認的 ClickFix 執行事件，都應視為潛在的多階段事故處理，而不應以單純的釣魚嘗試失敗來結案。</p>
+<h4>緩解措施：靠配置，而非特徵碼</h4>
+<p>由於攻擊騎劫的是合法系統 binary，以特徵碼為基礎的偵測作用有限。最高準確度的防護來自端點配置與 process telemetry：</p>
+<ul>
+<li><strong>限制標準用戶使用互動式 shell。</strong> 對無此需要的帳戶停用或嚴格限制 <code>cmd</code>、<code>powershell</code> 及 Run 對話框（Win+R）。</li>
+<li><strong>對瀏覽器至 shell 的 process chain 發出警報。</strong> 網頁瀏覽器衍生終端機、script host 或 PowerShell session，在幾乎所有合法工作流程中都屬異常，應觸發高準確度警報。</li>
+<li><strong>在端點實施 application allowlisting</strong>——尤其是 kiosk、伺服器和共享工作站——使未獲批准的 script 即使用戶被說服執行也無法運行。</li>
+<li><strong>將安全意識培訓改為圍繞指示內容，而非附件。</strong> ClickFix 引誘的電郵不含 payload；它教用戶一條指令。培訓應明確涵蓋虛假錯誤訊息和「按 Win+R」提示。</li>
+</ul>
+<p>防禦者亦應留意 Forescout 隨 advisory 公布的任何 indicator，並在相關釣魚 domain 出現時將其納入 blocklist。</p>
+<p>資料來源：Forescout Research - Vedere Labs，由 The Hacker News 報道。</p>
+<p><a href="https://thehackernews.com/2026/10/romulus-clickfix-platform-tricks-users.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
