@@ -1,0 +1,46 @@
+Date: 2026-10-21 13:04:00
+Author: HKLUG Team
+Title: Linux 7.4 Move Would Make File Descriptor Closing Synchronous on exit, exec and close_range
+Content:
+<p>A set of Virtual File System (VFS) changes targeting the Linux 7.4 merge window would make file descriptor closure synchronous for <code>close_range()</code>, <code>exec</code>, and <code>exit</code> paths — a shift that Phoronix reports should cut the time spent tearing down large numbers of open files, while also making when that cleanup happens far more predictable for operations teams.</p>
+<h4>What Is Changing</h4>
+<p>Today, when a process exits, executes a new program, or bulk-closes descriptors via <code>close_range()</code>, much of the actual teardown work can be deferred: the calling thread returns quickly while cleanup continues asynchronously elsewhere. Under Linux 7.4, those operations would instead complete the closure before returning — the work happens inline, in the call the application (or shell, init system, or container runtime) actually made.</p>
+<p>In VFS terms, the file-closure lifecycle moves from deferred, best-effort scheduling onto a deterministic path. For operators, the practical consequence matters more than the mechanism: the cost of closing thousands of descriptors shows up where you can measure it, rather than at some uncontrolled later moment.</p>
+<h4>Why It Matters for Ops and SRE</h4>
+<p>The most immediate benefit is latency. Workloads that open and discard files in bulk — connection-heavy proxies, load balancers, and API gateways; container and PaaS hosts running short-lived processes; batch and pipeline workers; and applications deliberately calling <code>close_range()</code> — are expected to see lower time to complete mass descriptor teardown. Phoronix reports that closing many file descriptors this way provides much lower latency than the status quo, though concrete figures should be treated as provisional until the patches land.</p>
+<p>The subtler, arguably more valuable gain is predictability. Synchronous closing narrows the window in which a process is logically finished while its cleanup is still in flight. That window is a known source of intermittent, load-dependent problems: file locks held a moment too long, descriptors recycled before prior cleanup settles, and resource accounting that lags behind observable state. Moving cleanup into <code>exit</code>, <code>exec</code>, or <code>close_range()</code> itself largely closes that gap.</p>
+<p>Because shells, init systems, runtimes, and container tooling invoke these paths indirectly, the change propagates to effectively every service on a host — even though no application code needs to be modified to take advantage of it.</p>
+<h4>The Trade-Off</h4>
+<p>The relocation of work is not free. The thread that calls <code>close()</code> now absorbs work previously offloaded to deferred contexts. Individual close operations on very large descriptor sets may therefore take marginally longer, even as system-wide behaviour smooths out. Teams that both churn descriptors aggressively and enforce a hard per-call latency budget should treat this as a validation item post-upgrade rather than an assumed win.</p>
+<h4>Practical Guidance Before You Upgrade</h4>
+<ul>
+<li><strong>No application changes are required.</strong> The behaviour shift is transparent to user-space code.</li>
+<li><strong>Re-baseline latency metrics in advance.</strong> Process restart, shutdown, and exit/cleanup latency numbers are expected to shift. Capture a pre-upgrade baseline and adjust alerting thresholds before the upgrade, so the new profile is not misread as a regression.</li>
+<li><strong>Validate assumptions about locks and shared descriptors.</strong> Applications that reason about file-lock release or descriptor reuse timing across process boundaries should be tested under load after the change.</li>
+<li><strong>Watch the merge window.</strong> Phoronix reports this work is expected as part of the Linux 7.4 VFS changes; the merge window has not opened, no release date is set, and final semantics and any performance figures should be confirmed when the patches actually land.</li>
+</ul>
+<h4>Timeline Considerations</h4>
+<p>Expect a multi-stage path from merge to production: merge window, mainline stabilisation, then distribution kernel adoption through stable and LTS channels. Planning should work backwards from when your distro's kernel is expected to carry the change — the metric re-baselining and lock-timing validation above are best completed on a staging host running a candidate kernel, not after the fleet upgrade.</p>
+<p>For IT professionals running Linux at scale — including Hong Kong teams operating container platforms and high-connection services — this is a general-interest change worth tracking through the 7.4 cycle: transparent to applications, but visible in latency dashboards and potentially significant for shutdown and reload behaviour.</p>
+<hr>
+<p>一批針對 Linux 7.4 merge window 的 Virtual File System（VFS）改動，將令 <code>close_range()</code>、<code>exec</code> 及 <code>exit</code> 路徑的檔案描述項關閉改為同步執行——據 Phoronix 報道，此轉變可縮短大量已開啟檔案的拆除時間，同時令清理工作何時發生變得更可預測，對運維團隊而言更具可掌握性。</p>
+<h4>改動內容</h4>
+<p>現時，當程序退出、執行新程序，或透過 <code>close_range()</code> 批量關閉描述項時，大部分實際拆除工作均可延後處理：呼叫執行緒迅速返回，清理工作則在其他地方異步繼續。在 Linux 7.4 下，這些操作將改為在返回前完成關閉——相關工作會即時執行於實際作出呼叫的那一次呼叫之內（即應用程序、shell、init system 或 container runtime 所發出的呼叫）。</p>
+<p>以 VFS 的術語來說，檔案關閉的生命週期由延後、盡力而為（best-effort）的排程轉移到一條確定性路徑上。對運維人員而言，實際後果比運作機制更為重要：關閉數以千計描述項的開銷，會在你可以量度之處顯現，而非發生在某個日後不受控的時刻。</p>
+<h4>對 Ops 及 SRE 的重要性</h4>
+<p>最立竿見影的好處是延遲（latency）。以下負載預期可縮短大規模描述項拆除的完成時間——大量開啟及丟棄檔案的工作負載，包括連接密集型 proxy、load balancer 及 API gateway；運行短命程序的 container 及 PaaS 主機；batch 及 pipeline worker；以及刻意呼叫 <code>close_range()</code> 的應用程序。Phoronix 報道指出，以此方式關閉大量檔案描述項的延遲遠低於現行做法，不過具體數字在 patch 正式合入前應視為暫定。</p>
+<p>更細微、但可謂更有價值的收益是可預測性。同步關閉收窄了一個時間窗口——在此窗口內，程序在邏輯上已告完成，但其清理工作仍在進行。這個窗口正是間歇性、隨負載波動問題的已知根源：檔案鎖多持了一刻、描述項在前次清理尚未完成前已被重新使用，以及資源記帳（resource accounting）落後於可觀察狀態。將清理工作移入 <code>exit</code>、<code>exec</code> 或 <code>close_range()</code> 本身，基本上能彌合這一落差。</p>
+<p>由於 shell、init system、runtime 及 container 工具均間接調用這些路徑，此改動實際上會傳遍主機上的每一項服務——儘管應用程序本身並不需要修改任何代碼即可受惠。</p>
+<h4>代價與取捨</h4>
+<p>工作位置的轉移並非沒有代價。呼叫 <code>close()</code> 的執行緒如今要承擔原本卸載至延後上下文（deferred context）的工作。因此，對極大描述項集合進行個別關閉操作可能略為需時更長，即使整體系統行為趨於平穩。既有大量頻繁轉換描述項、又嚴格執行每次呼叫延遲預算的團隊，應將此列為升級後的驗證項目，而非理所當然的收益。</p>
+<h4>升級前的實務建議</h4>
+<ul>
+<li><strong>無需修改應用程序。</strong> 行為轉變對 user-space 代碼完全透明。</li>
+<li><strong>提前重新設定延遲指標基線。</strong> 進程重啟、關機及 exit/copy 延遲數據預期會有所改變。請在升級前擷取基線，並於升級前調整警報閾值，以免新數據被誤讀為性能回歸。</li>
+<li><strong>驗證有關鎖及共享描述項的假設。</strong> 就跨程序邊界的檔案鎖釋放或描述項重用時機作出推理的應用程序，應在改動後於負載下進行測試。</li>
+<li><strong>留意 merge window。</strong> Phoronix 報道此項工作預計納入 Linux 7.4 的 VFS 改動之中；merge window 尚未開放，未有確定發布日期，最終語義及任何性能數字應待 patch 實際合入後再行確認。</li>
+</ul>
+<h4>時間表考量</h4>
+<p>預期由 merge 到投入生產需經多個階段：merge window、mainline 穩定化，再經 stable 及 LTS 渠道由各 Linux 發行版採用。規劃時應從發行版內核預計載入此改動的時間點倒推——上述指標基線重設及鎖時序驗證，最好在運行候選內核的 staging 主機上完成，而非在整個 fleet 升級之後才進行。</p>
+<p>對於大規模運行 Linux 的 IT 專業人員——包括營運 container 平台及高連接服務的香港團隊——這是值得在 7.4 週期持續跟進的一項普遍關注改動：對應用程序透明，但在延遲儀表板上清晰可見，並可能顯著影響關機及重新載入的行為。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.4-Sync-Close-Files" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
