@@ -1,0 +1,42 @@
+Date: 2026-10-21 23:04:00
+Author: HKLUG Team
+Title: PHP Foundation Reveals Why the Security Patch Was Delayed: Every OOM Fix Came at a Cost
+Content:
+<h3>PHP Foundation Reveals Why the Security Patch Was Delayed: Every OOM Fix Came at a Cost</h3>
+<p>PHP shipped a security update on October 21, 2026, and the same day the PHP Foundation published a post-mortem explaining why the vulnerabilities disclosed that day took so long to fix. In a report also published that day, LWN.net noted that the Foundation's account is a rare airing of its internal trade-off process — how the candidate patches weighed one risk against another.</p>
+<h4>The official advisory is the source of record</h4>
+<p>For teams still maintaining legacy PHP stacks, the first step is to check whether their version falls within the scope of this advisory and to assess how its severity affects production. Exact affected version numbers and CVE identifiers should be taken from thephp.foundation and the official PHP security advisory; reprinted version lists tend to go stale as updates roll out.</p>
+<h4>Why the fix took so long: an OOM dilemma</h4>
+<p>The technical core of this release is an out-of-memory (OOM) issue. According to LWN.net's account of the Foundation's post, the PHP security team developed several competing fixes, each carrying its own trade-off: backward-compatibility breaks, new denial-of-service potential, or requiring changes across a large number of third-party extensions. None of the three costs was something to ship quietly.</p>
+<p>In other words, the delay was not neglect — it was a "fix A, break B" situation. A security fix that swaps memory exhaustion for compatibility breakage, or moves the DoS risk from one entry point to another, or pushes the burden onto the entire extension ecosystem, is no improvement. By publishing this process, the Foundation acknowledged that simply shipping the fastest patch was not an option in this case.</p>
+<p>The post also says the Foundation intends to strengthen PHP's security process; readers can consult the original Foundation post for the specifics. For the open-source community, the value of a post-mortem like this is that it turns "why so slow?" into reviewable engineering judgment rather than a boilerplate "still investigating."</p>
+<h4>Upgrade and version-audit checklist</h4>
+<p>Teams maintaining PHP websites can work through the following steps:</p>
+<ol>
+<li><strong>Get the official advisory</strong>: Treat thephp.foundation and the official PHP security advisory as the sole source for versions and CVEs.</li>
+<li><strong>Inventory runtime versions</strong>: Confirm the PHP version actually running in production, staging, and CI — including hidden versions in shared hosting and container images.</li>
+<li><strong>Assess severity and exposure</strong>: Determine whether the site sits on an attack path for these vulnerabilities, especially for public-facing applications.</li>
+<li><strong>Schedule the upgrade window</strong>: Validate compatibility in staging first, then deploy the patched release; if an upgrade isn't possible short-term, record the exception and set a follow-up date.</li>
+<li><strong>Run regression tests</strong>: Pay particular attention to old code paths that backward-compatibility changes may affect.</li>
+</ol>
+<p>Legacy PHP stacks remain common in long-running web deployments — today's release is a good moment to re-audit what version you are actually running. The value of a security update lies not only in the patch itself, but in forcing teams to answer an old question: which version are we still running?</p>
+<hr>
+<h3>PHP 基金會揭開安全補丁延誤內情：OOM 修復方案各有代價</h3>
+<p>PHP 於 2026 年 10 月 21 日發布安全更新，同日 PHP Foundation 發布一篇 post-mortem，解釋當日披露的 vulnerabilities 為何需要這麼久才完成修復。LWN.net 於同日刊出的報導指出，Foundation 的說明罕見地把內部權衡過程攤在陽光下——候選 patch 如何在不同風險之間取捨。</p>
+<h4>以官方 advisory 為版本依據</h4>
+<p>對仍在維護 legacy PHP stack 的團隊而言，第一步是核對自身版本是否落在本次 advisory 範圍之內，並評估 severity 對生產環境的影響。具體的 affected version numbers 與 CVE 編號應以 thephp.foundation 及 PHP 官方 security advisory 為準——轉載的版本清單往往隨更新推出而失實。</p>
+<h4>為什麼修復拖了這麼久：一個 OOM 問題的兩難</h4>
+<p>本次更新的技術核心是 out-of-memory（OOM）問題。根據 LWN.net 轉述 Foundation 文章的內容，PHP security team 開發了數個互相競爭的修復方案，每一項都附帶 trade-off：可能造成 backward compatibility breaks、引入新的 denial-of-service potential，或要求大量第三方 extension 配合改動。三項代價都不適宜默默上線。</p>
+<p>換言之，延遲並非疏於處理，而是陷入「修 A 壞 B」的局面——一項安全修復如果把 memory exhaustion 換成相容性崩壞，或把 DoS 風險由一個入口搬到另一個入口，又或把負擔轉嫁給整個 extension 生態，都談不上改善。Foundation 選擇公開這段過程，等於承認單純追求「最快出 patch」在此案例並不可行。</p>
+<p>文章亦提到 Foundation 打算加強 PHP 的 security 流程；有關具體的 process change，讀者可直接查閱 Foundation 原文。對開源社群而言，這類 post-mortem 的價值在於：它把「為什麼慢」轉化為可檢視的工程判斷，而非一句制式的「還在調查」。</p>
+<h4>升級與版本核對清單</h4>
+<p>維護 PHP 網站的團隊可按以下步驟處理：</p>
+<ol>
+<li><strong>取得官方 advisory</strong>：以 thephp.foundation 及 PHP 官方 security advisory 為版本與 CVE 的唯一來源。</li>
+<li><strong>盤點 runtime 版本</strong>：逐一確認 production、staging 及 CI 環境實際執行的 PHP version，包括共用主機及容器 image 中的隱藏版本。</li>
+<li><strong>評估 severity 與暴露面</strong>：判斷網站是否位於本次 vulnerabilities 的攻擊路徑上，尤其是 public-facing 應用。</li>
+<li><strong>安排升級窗口</strong>：先在 staging 驗證相容性，再部署 patched release；如短期內無法升級，記錄例外並設定跟進日期。</li>
+<li><strong>執行回歸測試</strong>：特別留意 backward compatibility 變動可能影響的舊 code path。</li>
+</ol>
+<p>Legacy PHP stack 在長期運行的 web 部署中相當常見——今天的 release 正是重新核對自身實際運行版本的好時機。安全更新的價值不只在於 patch 本身，也在於迫使團隊回答一個老問題：我們究竟還在跑哪個版本？</p>
+<p><a href="https://lwn.net/Articles/1102060/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
