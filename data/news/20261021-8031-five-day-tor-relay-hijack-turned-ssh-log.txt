@@ -1,0 +1,44 @@
+Date: 2026-10-21 13:04:00
+Author: HKLUG Team
+Title: Five-Day Tor Relay Hijack Turned SSH Logins Into Stolen Passwords
+Content:
+<p>Attackers hijacked more than 300 Tor exit relays in early October and used the compromised nodes to redirect SSH connections to attacker-controlled servers, harvesting login passwords in the process, according to research reported by The Hacker News.</p>
+<p>The interception was active for a narrow window — 1 to 5 October — and its reach was constrained by a specific set of conditions: the victim had to be connecting to an SSH server over Tor, using password authentication, and had to click through the host-key mismatch warning that SSH presented when the connection was quietly rerouted.</p>
+<h4>How the interception worked</h4>
+<p>Exit relays are the final hop in a Tor circuit, the point where traffic leaves the anonymity network and travels in the clear to its destination. That visibility is a deliberate property of Tor's design, not a flaw — but it makes exit operators a valuable target for anyone wanting to observe or alter traffic.</p>
+<p>In this case, whoever compromised the relays used that position to swap the destination of SSH sessions. When a user's client reached what it believed was their server, it was instead talking to an impostor. SSH's built-in defence — host-key verification — did exactly what it is designed to do and flagged the mismatch. The attack only succeeded where the user dismissed that warning and proceeded anyway.</p>
+<p>In other words: the security control worked; the human step did not.</p>
+<h4>Who was exposed</h4>
+<p>It is worth being precise about scope, because the exposure is genuinely narrow. Private keys were not compromised, SSH daemons were not broken, and Tor's protocol itself was not vulnerable. The attack captured plaintext passwords only where all four conditions aligned — Tor routing, password authentication, the 1–5 October window, and a user who accepted the interception warning.</p>
+<p>That said, narrow scope does not mean trivial impact. Stolen SSH passwords remain valid credentials after the attack ends, and any reuse of those passwords elsewhere multiplies the damage.</p>
+<h4>What operators should do</h4>
+<p>For system administrators who administer servers remotely, the incident can serve as a practical hardening checklist:</p>
+<ol>
+<li><strong>Enforce key-based authentication.</strong> Setting <code>PasswordAuthentication no</code> on internet-facing SSH daemons eliminates this entire attack class, Tor or no Tor. It is the single highest-value change an operator can make.</li>
+<li><strong>Treat host-key warnings as hard stops.</strong> A fingerprint mismatch should never be clicked through, particularly on unfamiliar or anonymised network paths.</li>
+<li><strong>Audit early-October activity.</strong> Review SSH authentication logs for the 1–5 October period for failed attempts or connections from unexpected sources, and check <code>known_hosts</code> for any fingerprints that were added around that time and cannot be accounted for.</li>
+<li><strong>Rotate any exposed passwords.</strong> Do so across every system where the credential was reused, not just the SSH server in question.</li>
+</ol>
+<h4>Open questions</h4>
+<p>No attribution for the campaign has been made public, and the specific services targeted have not been disclosed, according to The Hacker News's report. Tor exit relays are volunteer-operated, and the network's security model has always depended on relay vetting and monitoring rather than assuming every exit is benign — a reminder that traffic exiting Tor should be treated as leaving an untrusted hop, exactly as the architecture intends.</p>
+<hr>
+<p>據 The Hacker News 報導的研究指出，攻擊者於十月初劫持了超過 300 個 Tor exit relay，並利用這些被入侵的節點將 SSH 連線重新導向至攻擊者控制的伺服器，從中竊取登入密碼。</p>
+<p>這次攔截的活躍時間極短——僅限 10 月 1 至 5 日——而且其影響範圍亦受一組特定條件所限制：受害者必須透過 Tor 連接 SSH 伺服器、使用密碼認證，並且在連線被悄悄重新導向時，仍然點擊確認 SSH 所顯示的 host-key 不符警告。</p>
+<h4>攔截如何運作</h4>
+<p>Exit relay 是 Tor circuit 的最後一跳，即流量離開匿名網絡、以明文形式傳往目的地的位置。這種可見性是 Tor 設計上的刻意安排，並非缺陷——但正因如此，exit 節點營運者成為任何希望觀察或篡改流量的人士的高價值目標。</p>
+<p>在本案中，入侵中繼節點的人士利用該位置調換了 SSH 會話的目的地。當用戶的客戶端連接至它以為是自己的伺服器時，實際上對話的卻是冒充者。SSH 內建的防禦機制——host-key 驗證——完全按照設計運作，標示出不符情況。攻擊只在用戶漠視該警告並繼續操作時才會得逞。</p>
+<p>換言之：保安控制生效了；人為這一步則沒有。</p>
+<h4>受影響的範圍</h4>
+<p>有必要準確說明影響範圍，因為實際暴露面確實很窄。私鑰（private key）並未外洩、SSH daemon 並未被攻破，Tor 協議本身亦無漏洞。攻擊只在以下四項條件同時成立時才擷獲到明文密碼——Tor 路由、密碼認證、10 月 1 至 5 日的時段，以及用戶接受了攔截警告。</p>
+<p>話雖如此，範圍窄並不代表影響輕微。被竊取的 SSH 密碼在攻擊結束後仍然是有效的認證憑據，而任何在其他系統重用這些密碼的做法都會令損害倍增。</p>
+<h4>系統管理者應採取的措施</h4>
+<p>對於透過遠端方式管理伺服器的系統管理員而言，今次事件可作實用的防護清單參考：</p>
+<ol>
+<li><strong>強制使用 key-based 認證。</strong> 在面向互聯網的 SSH daemon 上設定 <code>PasswordAuthentication no</code>，即可完全消除這一類攻擊，不論有無使用 Tor。這是營運者所能作出最有價值的單一改動。</li>
+<li><strong>將 host-key 警告視為絕對停止點。</strong> 指紋（fingerprint）不符的情況絕不應點擊略過，尤其在不熟悉或經過匿名化的網絡路徑上。</li>
+<li><strong>審核十月初的活動記錄。</strong> 檢查 10 月 1 至 5 日期間的 SSH 認證日誌，留意失敗的嘗試或來自預期以外來源的連線，並檢查 <code>known_hosts</code> 中在該段時間新增、卻無法解釋來源的指紋。</li>
+<li><strong>更換所有可能外洩的密碼。</strong> 應在所有重用該憑據的系統上進行更換，而不只是涉及的 SSH 伺服器。</li>
+</ol>
+<h4>未解的疑問</h4>
+<p>據 The Hacker News 的報道，該攻擊行動尚未有任何歸因（attribution）公開，被針對的具體服務亦未披露。Tor exit relay 由志願者營運，而該網絡的保安模式一向依賴對中繼節點的審查與監測，而非假設每個 exit 都是善意的——這提醒我們，離開 Tor 的流量應被視為來自一個不受信任的跳點，正如架構設計的原意。</p>
+<p><a href="https://thehackernews.com/2026/10/attackers-hijacked-over-300-tor-exit.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
