@@ -1,0 +1,32 @@
+Date: 2026-10-21 17:33:00
+Author: HKLUG Team
+Title: fwupd Wants to Run the Same Signed Firmware Pipeline on Android as It Does on Chromebooks
+Content:
+<h3>fwupd Wants to Run the Same Signed Firmware Pipeline on Android as It Does on Chromebooks</h3>
+<p>The fwupd project has started work on proper Android integration, according to Phoronix — an effort that would extend the signed, vendor-hosted firmware-update infrastructure ChromeOS already depends on to phones and tablets.</p>
+<p>Chromebooks have effectively set the template. Google's update flow pulls Chromebook firmware from the Linux Vendor Firmware Service (LVFS) and applies it through fwupd, so payloads are published upstream as signed artifacts and installed by a shared daemon instead of a pile of per-vendor utilities. The current effort aims to put Android on comparable footing.</p>
+<h4>Two fleets, two firmware stories</h4>
+<p>Whether that work matures has direct consequences for anyone running a mixed estate. Organisations managing ChromeOS laptops alongside Android handsets or tablets are today running two separate firmware-update narratives: one anchored to LVFS, the other at the mercy of device-maker channels and Android's own update stack. Folding both into a single signed, versioned, auditable pipeline would trim tool sprawl and simplify a question that recurs at every audit — is each device in the fleet on current firmware?</p>
+<p>It is a direction of travel, not a shipped feature. Phoronix describes development in progress, with no target device classes, participating vendors, or timeline disclosed. Fleet planners should file Android support under construction, not available.</p>
+<h4>Two questions that will decide it</h4>
+<p><strong>The technical one.</strong> Android's Verified Boot and rollback-protection machinery exists to stop devices from accepting older, vulnerable firmware — which makes it the natural friction point for any externally driven update daemon. fwupd has to satisfy those protections rather than route around them, and how signed LVFS payloads get delivered into a rollback-protected mobile boot chain is the crux of the integration. The source does not yet explain how that resolves.</p>
+<p><strong>The adoption one.</strong> A technically complete integration yields nothing unless manufacturers ship hardware that publishes firmware to LVFS and permits it to be applied outside their own update channel. OEM uptake has historically been the bottleneck for projects of this shape, and there is no signal here about which vendors, if any, are involved. Until that changes, the value proposition stays theoretical.</p>
+<h4>Why firmware keeps surfacing in audits</h4>
+<p>Firmware sits below the operating system and below the endpoint agents most patch-management tooling leans on. A missed firmware update is effectively invisible to vulnerability scanners running above it — which is why firmware blind spots tend to surface in audit findings rather than in day-to-day monitoring. Any move that renders firmware coverage legible from one trusted source carries more weight than the underlying plumbing suggests.</p>
+<p>For IT teams running diverse device populations, the relevance is strategic rather than immediate: the story is about whether one patching model can span two ecosystems that have been managed apart for years.</p>
+<p>ChromeOS has shown the LVFS/fwupd model holds up at fleet scale. Whether Android follows remains to be seen — and depends largely on OEM uptake the source does not yet address.</p>
+<hr>
+<h3>fwupd 希望在 Android 上運行與 Chromebooks 相同的簽名 firmware pipeline</h3>
+<p>據 Phoronix 報導，fwupd 項目已開始著手進行正式的 Android 整合工作——這項努力將把 ChromeOS 現已依賴的、由廠商託管的簽名 firmware 更新基礎設施延伸至手機和平板電腦。</p>
+<p>Chromebooks 實質上已為業界立下範本。Google 的更新流程從 Linux Vendor Firmware Service（LVFS）提取 Chromebook firmware，並透過 fwupd 應用，因此 firmware 負載（payload）會以已簽名的 artifact 形式在上游發佈，並由一個共用的 daemon 安裝，而非各自為政的一堆廠商專屬工具。目前的努力目標是令 Android 達到同等水平。</p>
+<h4>兩支 fleet，兩套 firmware 敘事</h4>
+<p>這項工作能否成熟，對任何營運混合設備組合的人士都有直接影響。同時管理 ChromeOS 手提電腦與 Android 手機或平板的機構，今日實際上要應對兩套各自獨立的 firmware 更新敘事：一套以 LVFS 為錨，另一套則任由設備製造商渠道及 Android 自身的更新機制擺佈。將兩者整合為單一經簽名、有版本管理、可審計的 pipeline，將可減少工具氾濫，並簡化一個每次審計都會反覆出現的問題——fleet 中每部設備是否都在使用最新的 firmware？</p>
+<p>這是一個發展方向，而非已推出的功能。Phoronix 形容開發仍在進行中，未有透露目標設備類別、參與廠商或時間表。fleet 規劃者應將 Android 支援歸類為「建設中」，而非「現已可用」。</p>
+<h4>將決定成敗的兩個問題</h4>
+<p><strong>技術問題。</strong> Android 的 Verified Boot 及回滾保護機制，用意在於阻止設備接受較舊、有漏洞的 firmware——這使它成為任何外來驅動的更新 daemon 的天然摩擦點。fwupd 必須滿足這些保護機制，而非繞道而行；而已簽名的 LVFS payload 究竟如何送入受回滾保護的流動啟動鏈（boot chain），正是整項整合的關鍵所在。消息來源尚未解釋這一點將如何解決。</p>
+<p><strong>採納問題。</strong> 技術上完整的整合毫無意義，除非製造商出貨的硬件會將 firmware 發佈到 LVFS，並允許在其自有更新渠道以外應用。OEM 的採納向來是此類項目的瓶頸，而目前沒有任何跡象顯示哪些廠商（如有）參與其中。在此之前，其價值主張仍只屬理論層面。</p>
+<h4>為何 firmware 總在審計中現身</h4>
+<p>firmware 位於作業系統之下，亦在大多數修補管理工具所依賴的 endpoint agent 之下。一次遺漏的 firmware 更新，實際上對其上方運行的漏洞掃描器而言形同隱形——這正是 firmware 盲點往往出現在審計發現之中，而非日常監控中的原因。任何令 firmware 覆蓋情況可從單一可信來源清楚辨識的舉措，其份量都比其背後的基礎配套所顯示的更為重大。</p>
+<p>對於營運多元設備群體的 IT 團隊而言，其關聯性是策略性而非即時性的：這個故事的重點在於一種 patching 模式能否涵蓋兩個多年來一直分開管理的生態系統。</p>
+<p>ChromeOS 已證明 LVFS/fwupd 模式在 fleet 規模下經得起考驗。Android 是否跟隨仍有待觀察——而很大程度上取決於消息來源尚未涉及的 OEM 採納情況。</p>
+<p><a href="https://www.phoronix.com/news/Fwupd-To-Android-Integration" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
