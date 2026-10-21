@@ -1,0 +1,48 @@
+Date: 2026-10-21 00:21:00
+Author: HKLUG Team
+Title: Zeabur to Shut Down After Leaked Plaintext Credentials Exposed 3.2M Environment Variables — Its Second Breach in Two Months
+Content:
+<p>Zeabur is winding down operations after an attacker used leaked internal credentials — stored in plaintext — to reach its infrastructure and steal more than 3.2 million environment variable records along with account information for 321,810 users, BleepingComputer reports. It was the platform's second breach in roughly two months. No shutdown date has been announced.</p>
+<p>For teams still running workloads on the platform, the immediate sequence is unchanged: export everything, rotate every secret that ever passed through Zeabur, and line up a replacement host. Those steps are now a race against an exit timetable that has not yet been published.</p>
+<h4>What happened</h4>
+<p>BleepingComputer's reporting describes an intrusion that required nothing more exotic than a leaked credential. The internal credentials were kept in plaintext, and that was enough to move inside Zeabur's systems. From there the operator exfiltrated the platform's environment variable store — where deployment platforms keep the API keys, database connection strings, tokens and other machine credentials that customers inject into their applications at build and runtime.</p>
+<p>The theft of 321,810 account records draws the headlines, but the operationally dangerous figure is the environment variable haul. A platform sitting between a developer's repository and its running containers sees every secret it is asked to inject. The working assumption for any Zeabur customer should therefore be that every secret the platform ever handled is compromised.</p>
+<h4>Two incidents, one failure</h4>
+<p>BleepingComputer attributes the shutdown decision to the second breach, and Zeabur has confirmed the closure itself. Two security failures in approximately two months is the pattern the reporting establishes; the reasoning that led Zeabur's operators to wind down rather than rebuild has not been set out publicly.</p>
+<p>Nor does the reporting resolve the questions a forensic review would turn to. How long the attacker had access, and whether the stolen data has surfaced publicly, are both left unestablished in the account available so far — so affected teams should treat the exposure as potentially total rather than bounded.</p>
+<h4>What to do now</h4>
+<p>For teams affected — and for anyone deploying through an offshore PaaS provider — the sequence matters:</p>
+<ol>
+<li><strong>Export.</strong> Pull application code, build artefacts, logs and configuration out of Zeabur before the exit timetable removes access.</li>
+<li><strong>Rotate.</strong> Regenerate every credential that was ever injected as an environment variable: cloud access keys, database passwords, third-party API tokens, signing secrets and CI credentials. Rotation should be treated as mandatory, not contingent on evidence of misuse.</li>
+<li><strong>Audit.</strong> Review where those secrets were reused. A key shared between Zeabur and another service extends the blast radius beyond the platform itself.</li>
+<li><strong>Migrate.</strong> Stand up a replacement host and validate performance before decommissioning.</li>
+</ol>
+<p>When shortlisting replacements, weigh latency to your user base, pricing model (monthly versus usage-based billing diverges sharply under real traffic), supported runtimes and regions, and — most importantly — how narrowly the provider scopes and encrypts its own access to customer secrets.</p>
+<h4>The wider lesson</h4>
+<p>A shutdown removes the vendor-side recovery path altogether. There is no Zeabur to contact for scope confirmation, remediation support or a fuller accounting of what was taken; rotation, audit and containment fall on the customer alone, even though the secrets were shared with the vendor. That asymmetry is the durable lesson here — remediation rests entirely with the customer, but the exposure was never private to them.</p>
+<p>It also sharpens a plainer point: vendor blast radius scales with integration depth, and the closer a tool sits to both build and runtime pipelines, the more damaging its failure modes become. Scoped, encrypted secrets management, explicit vendor limits and a tested exit plan are baseline engineering practice — an exit plan is only useful if it is exercised before the vendor needs one.</p>
+<p><em>Reporting based on BleepingComputer's coverage of the Zeabur disclosure.</em></p>
+<hr>
+<p>據 BleepingComputer 報導，Zeabur 正在結束運作。攻擊者利用以明碼（plaintext）儲存的內部洩露憑證進入其基礎設施，盜取超過 320 萬項環境變數（environment variable）記錄，以及 321,810 名用戶的帳戶資料。這是該平台約兩個月內的第二次安全事故。公司方面尚未公布停止運作的日期。</p>
+<p>對於仍在該平台上執行工作負載的團隊，當務之急的應對步驟並無改變：匯出所有資料、輪換（rotate）所有曾經通過 Zeabur 的機密憑證，並安排替代主機。然而，這些步驟如今變成了一場與尚未公布的退出時間表的競賽。</p>
+<h4>事件經過</h4>
+<p>BleepingComputer 的報導描述了一次入侵，其手法並不比一枚洩露的憑證更為 exotic。這些內部憑證以明碼儲存，已足以令攻擊者進入 Zeabur 的系統。其後，攻擊者竊取了平台的環境變數儲存庫 — 部署平台正是在此保存 API key、資料庫連接字串、token 及其他機器憑證，供客戶在建置（build）及執行（runtime）階段注入應用程式。</p>
+<p>321,810 份帳戶記錄的失竊固然成為頭條，但在操作層面真正危險的數字是環境變數的外洩量。一個介乎開發者 repository 與其執行中 container 之間的平台，會見到所有它被要求注入的機密。因此，任何 Zeabur 客戶都應以以下假設為前提：該平台曾經處理過的每一個機密憑證，均已外洩。</p>
+<h4>兩次事故，同一個失誤</h4>
+<p>BleepingComputer 將停止運作的決定歸因於第二次事故，而 Zeabur 亦已證實關閉一事。約兩個月內發生兩次保安失誤，正是報導所確立的模式；至於促使 Zeabur 營運方選擇結束運作而非重建的原因，則未有公開說明。</p>
+<p>報導亦未有解答一次法證（forensic）審查所會追查的問題。攻擊者究竟持有多久的訪問權限，以及被盜資料是否已在公開場合出現，在目前可得的敘述中均未有定論 — 受影響的團隊因此應將外洩範圍視為可能全面，而非有所限制。</p>
+<h4>現在應該怎麼做</h4>
+<p>對於受影響的團隊 — 以及所有透過境外 PaaS 供應商進行部署的用戶 — 行動先後次序至關重要：</p>
+<ol>
+<li><strong>匯出（Export）。</strong> 在退出時間表切斷訪問權限之前，將應用程式代碼、build artefacts、日誌及設定從 Zeabur 中取出。</li>
+<li><strong>輪換（Rotate）。</strong> 重新產生所有曾經以環境變數形式注入的憑證：雲端 access key、資料庫密碼、第三方 API token、簽署機密及 CI 憑證。輪換應視為必須執行的措施，而非視乎有否濫用證據才決定是否進行。</li>
+<li><strong>審計（Audit）。</strong> 檢視這些機密在何處被重複使用。若某個 key 同時在 Zeabur 與另一項服務之間共用，其 blast radius 將超出平台本身。</li>
+<li><strong>遷移（Migrate）。</strong> 架設替代主機，在正式停用前驗證效能。</li>
+</ol>
+<p>在篩選替代方案時，應考慮以下因素：到用戶群的延遲、定價模式（月費制與按用量計費在真實流量下差異極大）、支援的 runtime 及地區，以及 — 最重要的一點 — 供應商在存取客戶機密時，其權限範圍收得有多窄、加密措施有多嚴密。</p>
+<h4>更廣泛的教訓</h4>
+<p>停止運作意味著供應商一方的補救途徑徹底消失。沒有了 Zeabur 可以聯絡以確認外洩範圍、取得補救支援，或獲取更完整的被竊資料清單；輪換、審計及遏制措施只能由客戶獨力承擔，儘管這些機密當初是與供應商共享的。這種不對稱正是此事留下的深遠教訓 — 補救完全由客戶承擔，但外洩從來都不是只限於客戶的私人事。</p>
+<p>這亦突顯了一個更平實的重點：供應商的 blast radius 隨整合深度而擴大，一項工具越接近 build 及 runtime pipeline，其故障模式所造成的破壞就越大。範圍受限（scoped）、加密的機密管理、明確的供應商權限限制，以及經過測試的退出計劃，都是基本的工程實踐 — 退出計劃只有在供應商尚未需要它之前就已實際演練過，才算真正有用。</p>
+<p><em>報導內容基於 BleepingComputer 就 Zeabur 事件披露的報導。</em></p>
+<p><a href="https://www.bleepingcomputer.com/news/security/zeabur-shutting-down-after-second-security-breach-in-two-months/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
