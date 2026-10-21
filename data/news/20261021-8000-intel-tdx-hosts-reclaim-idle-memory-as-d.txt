@@ -1,0 +1,36 @@
+Date: 2026-10-21 03:16:00
+Author: HKLUG Team
+Title: Intel TDX Hosts Reclaim Idle Memory as Dynamic PAMT Lands in Linux 7.4
+Content:
+<p>Linux 7.4 has picked up Dynamic PAMT, a new mechanism that reduces the memory overhead Intel Xeon hosts pay to run confidential virtual machines under TDX (Trust Domain Extensions) — with the savings concentrated on machines that are not densely packed with guests.</p>
+<p>The feature landed during the 7.4 merge window, as Phoronix reported in its coverage of the window, which means it will reach operators only once distributions rebase on the released kernel — and sooner only for those that choose to backport it into enterprise kernels.</p>
+<h4>What Dynamic PAMT actually does</h4>
+<p>Confidential computing on Intel TDX works by keeping each virtual machine's memory isolated from the host, including the host's own hypervisor. To make that isolation enforceable, the hardware and the kernel maintain per-page bookkeeping: the state of each memory page has to be tracked so the processor knows which pages belong to which trust domain, and so access and dirty bits are handled without handing the host a window into guest memory.</p>
+<p>Those bookkeeping structures have historically been sized pessimistically. A host provisioned for, say, a full complement of guests and a large share of physical RAM ends up reserving tracking memory on that worst-case basis — whether or not the guests actually exist yet.</p>
+<p>Dynamic PAMT changes the accounting so those structures are maintained in step with what is really populated, rather than what could theoretically be populated. On a TDX host where only a handful of VMs are running, or where guests occupy a fraction of the machine, the host reclaims the difference. On a densely packed host running guests across most of its memory, the reduction is small to negligible — the win is specific to under-filled or partially provisioned systems.</p>
+<p>Neither the source nor this report attaches a concrete figure to the saving; the kernel commits would be the place to look for hard numbers.</p>
+<h4>Why it matters as a capacity story</h4>
+<p>For infrastructure teams, the practical framing is cost per usable gigabyte. Confidential-VM deployments have historically carried a "confidential computing tax": memory reserved for security bookkeeping is memory that cannot be sold to a tenant or handed to a workload. On high-capacity Xeon systems, even a modest percentage translates into real capacity.</p>
+<p>In colocation environments, floor space and power are priced per rack, and usable memory density determines how much revenue a chassis produces. This is a general economic observation rather than a claim about any particular market or operator.</p>
+<p>Against that backdrop, a kernel change that returns RAM to the operator on sparsely populated hosts improves the economics of running confidential workloads at low occupancy — the awkward middle ground many operators sit in before a new fleet fills up.</p>
+<p>It also eases the practical burden on capacity planning. Operators no longer need to size TDX hosts as if their first VM were their last, which makes it cheaper to pilot confidential computing on a machine that is not yet full.</p>
+<h4>What to watch next</h4>
+<p>The feature's real-world availability depends on distribution decisions that are not yet settled. Operators running enterprise kernels should watch for backports as 7.4 stabilises; those on mainline-tracking distributions will need to wait for the 7.4-based release cycle. Confirming which distributions carry the change, and whether any published benchmarks quantify the reclaimed memory, would be the natural follow-up once the release settles.</p>
+<p>For now, the takeaway for sysadmins is simple: confidential computing on Intel TDX just got cheaper on the machines you have not filled yet.</p>
+<hr>
+<p>Linux 7.4 已納入 Dynamic PAMT，這項新機制可減少 Intel Xeon 主機在 TDX（Trust Domain Extensions）下運行 confidential virtual machine 時所付出的記憶體開銷——而且節省主要集中在沒有大量密集部署 guest 的機器上。</p>
+<p>該功能在 7.4 merge window 期間合入，Phoronix 在其 merge window 報導中已作出披露；這意味著要待各發行版基於已發布的 kernel 重新建置後，營運商才會受惠，至於只有一部分選擇將 patch backport 至企業級 kernel 的營運商，才會更早見到成效。</p>
+<h4>Dynamic PAMT 實際運作方式</h4>
+<p>Intel TDX 上的 confidential computing，是透過將每部虛擬機的記憶體與主機（包括主機自身的 hypervisor）互相隔離來運作。為了令這種隔離真正可執行，硬件與 kernel 會維護逐頁（per-page）的 bookkeeping：每個記憶體頁的狀態都必須受到追蹤，令處理器知道哪些頁屬於哪個 trust domain，同時確保 access bits 和 dirty bits 的處理不會讓主機有窺探 guest 記憶體的空間。</p>
+<p>歷來這些 bookkeeping 結構的規模都是按悲觀情況設定的。一部按例如滿額 guest 及大量實體 RAM 來配置的主機，最終會以最壞情況為基準預留追蹤用記憶體——即使相關 guest 根本尚未存在。</p>
+<p>Dynamic PAMT 改變了這套計算方式，令這些結構按照實際已填充（populated）的狀況來維護，而非按照理論上可能填充的狀況。在一部只有數部 VM 正在運行、或 guest 只佔機器一小部分的 TDX 主機上，主機就能回收當中差額。至於在大部分記憶體都用來運行 guest 的密集主機上，減少幅度則微乎其微——這項好處專屬於未充分使用或部分配置的系統。</p>
+<p>原始碼及本文報道均未為此項節省附上具體數字；要查找確切數據，可查閱 kernel commits。</p>
+<h4>為何以容量角度而言值得關注</h4>
+<p>對基礎設施團隊來說，實際的著眼點是每個可用 gigabyte 的成本。Confidential-VM 部署歷來存在一項「confidential computing 稅」：為安全 bookkeeping 預留的記憶體，就是無法出售給租戶或交付給工作負載的記憶體。在高容量 Xeon 系統上，即使是不算高的百分比，轉化出來也是實實在在的容量。</p>
+<p>在 colocation 環境中，樓面面積和電力均按機架計價，而可用記憶體密度則決定一個機箱能產生多少收益。這是一項普遍性的經濟觀察，並非針對任何特定市場或營運商的說法。</p>
+<p>在這樣的背景下，一項能在稀疏填充主機上將 RAM 歸還營運商的 kernel 改動，改善了在低使用率下運行 confidential 工作負載的經濟效益——這正是許多營運商在新一批機群填滿之前所身處的尷尬中間地帶。</p>
+<p>這同時減輕了容量規劃的實際負擔。營運商不再需要按「第一部 VM 就是最後一部 VM」的心態來規劃 TDX 主機規模，這令在尚未填滿的機器上試行 confidential computing 的成本更低。</p>
+<h4>接下來值得留意的事項</h4>
+<p>該功能的實際可用性，取決於尚未確定的發行版決策。使用企業級 kernel 的營運商應留意 7.4 穩定期間是否出現 backport；追蹤主線的發行版用戶則需等待基於 7.4 的發布周期。待版本確定後，確認哪些發行版已納入此改動，以及是否有已發布的 benchmark 對回收的記憶體作出量化，將是自然的後續跟進。</p>
+<p>現階段，對系統管理員而言結論很簡單：Intel TDX 上的 confidential computing，現在在你尚未填滿的機器上變得更便宜了。</p>
+<p><a href="https://www.phoronix.com/news/Linux-74-Intel-TDX-Dynamic-PAMT" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
