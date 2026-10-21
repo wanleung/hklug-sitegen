@@ -1,0 +1,42 @@
+Date: 2026-10-21 03:18:00
+Author: HKLUG Team
+Title: Canonical Updates Ubuntu Trust Store Following eMudhra Signing Key Breach
+Content:
+<p>Ubuntu's Security Team has shipped an update to the <code>ca-certificates</code> package after the private keys of the eMudhra Certificate Authority were demonstrated to be compromised on 20 October 2026, according to an advisory published on the Ubuntu Official blog.</p>
+<p>The refresh updates the system PKI root CA store distributed with Ubuntu. The disclosure carries a notable caveat: eMudhra is not directly trusted as a root certificate authority on Ubuntu installations. Certificates issued under eMudhra can still reach machines indirectly, however — through intermediate chains signed by cross-signing roots, third-party bundle imports, enterprise VPN and middleware configurations, and layers baked into container images. The advisory identifies two cross-signing roots of particular relevance: emSign Root TLS CA – G3 and Comodo AAA Certificate Services.</p>
+<p>For administrators, the first step is routine. Apply the update through the normal APT channel:</p>
+<pre><code>sudo apt update &amp;&amp; sudo apt upgrade
+</code></pre>
+<p>Verify the installed version with <code>dpkg -l ca-certificates</code> and confirm the package timestamp reflects the post-disclosure build. The exposure closes only once a system has actually consumed the new store. Systems configured with <code>unattended-upgrades</code> will pick up the fix automatically on their normal cycle.</p>
+<p>One related note in the advisory concerns snaps: snap-packaged browsers do not use the <code>ca-certificates</code> system trust store at all, so this fix does not apply to them. The post simply reminds users who have disabled automatic snap updates to refresh their snaps manually.</p>
+<p>Canonical's post lists fixed package versions in a per-release table covering the supported Ubuntu releases, referenced against USN-8944-1 and USN-8944-2.</p>
+<p><strong>The gap outside the package manager</strong></p>
+<p>Two classes of systems will not be remediated by an APT upgrade, and both deserve explicit attention.</p>
+<p>Container images frequently carry certificate bundles copied into a layer at build time. Upgrading the host does not touch those baked-in copies, so images must be rebuilt against updated base images — including CI runner images and any downstream artifacts produced from them. Organisations that pin, mirror, or vendor their own CA bundles — common in enterprise proxy, outbound-filtering, and network appliance deployments — also sit outside APT's reach and require a manual audit.</p>
+<p>Once hosts and images are updated, services that cache certificate stores should be restarted: web servers, VPN gateways, mail transfer agents, and any process that loaded the old bundle at startup.</p>
+<p>Administrators who want independent corroboration can check certificate transparency logs for eMudhra-issued certificates and review which endpoints their estate actually trusts. Non-Ubuntu deployments — Debian, Fedora, Arch and others — need to follow their own vendor advisories rather than assuming Ubuntu's fix applies.</p>
+<p><strong>Why a CA breach is high-leverage</strong></p>
+<p>A certificate authority vouches for an arbitrary number of endpoints, which is why CA compromises are treated as ecosystem-wide events rather than single-vendor incidents. Remediation — revocation, root ejection, trust store refreshes — plays out simultaneously across distributions, browsers, and device-management fleets, with one upstream dependency forcing coordinated updates across the packaging ecosystem.</p>
+<p>Ubuntu's response continues a trend that began with DigiNotar in 2011: root and intermediate authorities are now ejected from trust stores far more quickly than in the past. The long tail remains embedded and enterprise systems that rarely pull updates, which is the persistent argument for keeping security patches current.</p>
+<p>The advisory does not enumerate which specific eMudhra keys were exposed or what an attacker could mint with them. Until Canonical publishes further detail, administrators should treat the scope of exposed key material as unknown rather than assume the impact is narrow.</p>
+<p>For Linux administrators running Ubuntu estates, this is a patch to apply through the standard update channel — with the container and bundle audit, and the restart of any service caching the old store, the steps that will not happen automatically.</p>
+<hr>
+<p>根據 Ubuntu 官方網誌刊發的安全公告，Ubuntu 安全團隊已發布 <code>ca-certificates</code> 套件更新，起因是 eMudhra 證書授權機構（CA）的私鑰於 2026 年 10 月 20 日被證實遭到入侵。</p>
+<p>是次更新刷新了 Ubuntu 隨附的系統 PKI 根 CA 儲存庫。公告同時附有一項值得注意的說明：eMudhra 並未在 Ubuntu 安裝中被直接列為根證書授權機構受信任。不過，由 eMudhra 簽發的證書仍可能間接送達機器——途徑包括由交叉簽署根簽名的中間證書鏈、第三方證書組匯入、企業 VPN 及 middleware 配置，以及燒錄在容器鏡像中的各個層面。公告特別指出兩個高度相關的交叉簽署根：emSign Root TLS CA – G3 及 Comodo AAA Certificate Services。</p>
+<p>對系統管理員而言，第一步屬例行工作。透過一般 APT 渠道套用更新：</p>
+<pre><code>sudo apt update &amp;&amp; sudo apt upgrade
+</code></pre>
+<p>可用 <code>dpkg -l ca-certificates</code> 核實已安裝的版本，並確認套件時間戳反映的是披露事件之後的構建版本。只有當系統實際載入新的儲存庫後，相關風險才算真正關閉。設定啟用了 <code>unattended-upgrades</code> 的系統會在其正常週期內自動取得修補。</p>
+<p>公告另有一則與 snap 有關的說明：以 snap 打包的瀏覽器根本不會使用 <code>ca-certificates</code> 系統信任儲存庫，因此是次修補並不適用於它們。該文僅提醒已停用 snap 自動更新的用戶手動執行 snap refresh。</p>
+<p>Canonical 的網誌文章以逐版本表格列出各受支援 Ubuntu 發行版本的已修復套件版本，並對照 USN-8944-1 及 USN-8944-2 兩則安全公告參考。</p>
+<p><strong>套件管理器以外的範圍</strong></p>
+<p>有兩類系統不會因 APT 升級而獲得修補，兩者均須特別留意。</p>
+<p>容器鏡像通常在建置時將證書組複製到某個層中。升級宿主機並不會影響這些已燒錄的副本，因此必須以更新後的基礎鏡像重新建置鏡像——包括 CI runner 鏡像及由其產生的所有下游產物。至於固定使用（pin）、自設鏡像站（mirror）或自行封裝自有 CA 組的機構——這在企業代理（proxy）、對外流量過濾及網絡設備（network appliance）部署中十分常見——同樣不在 APT 的觸及範圍之內，須進行人工審計。</p>
+<p>宿主機與鏡像更新後，應重啟所有快取證書儲存庫的服務：網絡伺服器、VPN 閘道、郵件傳輸代理（MTA），以及任何在啟動時載入舊證書組的程序。</p>
+<p>如系統管理員希望獨立核實，可查閱證書透明度（certificate transparency）日誌中有關 eMudhra 簽發的證書，並檢視自身系統範圍內實際信任哪些端點。非 Ubuntu 的部署——包括 Debian、Fedora、Arch 等——則須跟隨各自供應商的安全公告，不應假設 Ubuntu 的修補同樣適用。</p>
+<p><strong>為何 CA 入侵事件影響深遠</strong></p>
+<p>證書授權機構可為數量不限的端點提供信任擔保，正因如此，CA 失陷事件被視為整個生態系統的事件，而非單一供應商事故。相關補救措施——包括吊銷證書、剔除根證書、刷新信任儲存庫——會同時在各發行版、瀏覽器及裝置管理隊伍中展開，單一上游依賴的變動便會牽動整個軟件打包生態系統的協調更新。</p>
+<p>Ubuntu 的應對延續了自 2011 年 DigiNotar 事件以來的趨勢：根 CA 與中間 CA 現今從信任儲存庫中被剔除的速度，遠比以往為快。餘下的長尾問題，在於甚少更新的嵌入式系統及企業系統——這正是持續保持安全補丁更新的理據。</p>
+<p>公告並未逐一列明哪些特定 eMudhra 金鑰已遭外洩，亦未說明攻擊者可憑此偽造哪些內容。在 Canonical 發布進一步詳情之前，系統管理員應視外洩金鑰材料的影響範圍為未知，而非假設影響有限。</p>
+<p>對於管理 Ubuntu 系統範圍的 Linux 系統管理員而言，是次更新應透過標準更新渠道儘早套用——至於容器及證書組審計，以及重啟任何快取舊儲存庫的服務，則是不會自動完成的步驟。</p>
+<p><a href="https://ubuntu.com/blog/emudhra-ca-compromise-fixes-available" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
