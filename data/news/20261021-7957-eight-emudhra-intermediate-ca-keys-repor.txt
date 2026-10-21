@@ -1,0 +1,44 @@
+Date: 2026-10-21 15:49:00
+Author: HKLUG Team
+Title: Eight eMudhra Intermediate CA Keys Reported Compromised, Prompting Mozilla Action
+Content:
+<h3>Eight eMudhra Intermediate CA Keys Reported Compromised, Prompting Mozilla Action</h3>
+<p>Mozilla says it has received a report that private keys associated with <strong>eight eMudhra intermediate certificates</strong> have been compromised, and the affected certificates have already been blocked through OneCRL while Firefox's network security services stack has been updated to NSS 3.131.1. Chrome has blocked them since 17 October, with Apple following on 19 October and Microsoft on 20 October.</p>
+<p>Mozilla's announcement describes the exposure in direct terms: the keys "could allow attackers to issue fraudulent HTTPS certificates for websites they do not control." While the intermediates remain trusted anywhere, that capability is functionally indistinguishable from control of a CA itself — an attacker can sign leaf certificates for any hostname, and browsers will treat them as legitimate.</p>
+<h4>What is publicly known</h4>
+<p>The disclosure rests on Mozilla's announcement and the underlying report it links to, with LWN.net covering the story in turn. Mozilla has also published a dedicated single-page site with a status table for the affected certificates; operators who need serial numbers, fingerprints and per-browser status should consult those primary sources directly rather than rely on secondary summaries.</p>
+<p>Not every platform has published matching detail. NetBSD, for example, has issued its own guidance, and administrators running other stacks should check their vendor's advisories rather than assume Firefox's timeline applies.</p>
+<h4>Why this matters to operators</h4>
+<p>An intermediate CA sits between a widely trusted root and the leaf certificates served by individual websites. If an intermediate's private key leaks, the attacker can sign new certificates for bank portals, internal SSO endpoints or partner APIs until the intermediate is distrusted everywhere. This is the failure mode seen with DigiNotar in 2011, whose collapse after a rogue certificate incident reshaped how root programmes handle CA compromises.</p>
+<p>The practical difference for site operators: your own certificate may be perfectly well-issued and still become untrusted if it chains through a distrusted intermediate.</p>
+<h4>Verification checklist</h4>
+<ol>
+<li><strong>Map your chain.</strong> Run <code>openssl s_client -connect your.domain:443 -showcerts</code> (or use your load balancer's certificate inspection) and record the issuer of each intermediate on the path to a trusted root.</li>
+<li><strong>Identify affected leaves.</strong> If any issuer is eMudhra, query Certificate Transparency logs — crt.sh searches by issuer name — to enumerate leaf certificates chaining through the suspect intermediates, including ones on forgotten hosts.</li>
+<li><strong>Check for cross-signatures.</strong> A leaf may have an alternative path to a different root; verify whether an unaffected chain exists before planning reissuance.</li>
+<li><strong>Plan reissuance.</strong> Request replacements from eMudhra or migrate to a different CA, staged so deployment is a single change window.</li>
+<li><strong>Re-validate after the change.</strong> Confirm the new chain in Firefox and Chrome, then re-run the CT query to ensure no stragglers remain.</li>
+</ol>
+<h4>What happens next</h4>
+<p>The incident is a reminder that enterprise certificate inventories — often assembled from CT data rather than internal records — are a prerequisite for incident response. Organisations that cannot answer "which of our hosts chains through this issuer?" within minutes will find the current distrust window uncomfortable, regardless of which root programme acts first. Further platform statements and any revised status table entries will be worth watching as the disclosure develops.</p>
+<hr>
+<h3>eMudhra 八個中間 CA 私鑰據報遭外洩，Mozilla 隨即採取行動</h3>
+<p>Mozilla 表示已接獲舉報，指與<strong>八張 eMudhra 中間憑證</strong>相關的私鑰已遭外洩；受影響的憑證已透過 OneCRL 封鎖，Firefox 的網絡安全服務組件亦已更新至 NSS 3.131.1。Chrome 自 10 月 17 日起已封鎖相關憑證，Apple 於 10 月 19 日跟進，Microsoft 則於 10 月 20 日採取行動。</p>
+<p>Mozilla 的公告以直接的措辭描述此次外洩範圍：相關私鑰「可能令攻擊者簽發虛假的 HTTPS 憑證，用於其並不控制的網站」。只要該等中間憑證在任何地方仍然受信任，此能力在實際效果上與直接控制一個 CA 無異——攻擊者可為任何 hostname 簽發 leaf 憑證，而瀏覽器會視之為合法。</p>
+<h4>公開已知的情況</h4>
+<p>此次披露依據為 Mozilla 的公告及其所連結的原始報告，LWN.net 其後亦報導了此事。Mozilla 另外設有一個專屬單頁網站，當中載有受影響憑證的狀態一覽表；需要序號、指紋（fingerprint）及各瀏覽器狀態的營運者，應直接查閱這些一手資料，而非依賴二手摘要。</p>
+<p>並非每個平台都公布了相應的詳情。例如 NetBSD 已另行發布指引，使用其他技術堆疊的管理員應查閱其供應商的公告，而非假定 Firefox 的時間表同樣適用。</p>
+<h4>對營運者為何重要</h4>
+<p>中間 CA 位於廣受信任的 root 與各個網站所提供的 leaf 憑證之間。一旦中間憑證的私鑰外洩，攻擊者即可為銀行入口網站、內部 SSO 端點或合作夥伴 API 簽發新的憑證，直至該中間憑證在所有地方被不信任為止。這正是 2011 年 DigiNotar 事件的失敗模式，該機構在一宗惡意憑證事故後倒閉，其後重塑了各 root programme 處理 CA 事故的方式。</p>
+<p>對網站營運者的實際影響在於：即使你的憑證本身簽發完全正常，只要其憑證鏈經過一個已不被信任的中間憑證，該憑證同樣會失去信任。</p>
+<h4>核實清單</h4>
+<ol>
+<li><strong>梳理你的憑證鏈。</strong>執行 <code>openssl s_client -connect your.domain:443 -showcerts</code>（或使用 load balancer 的憑證檢查功能），記錄通往受信任 root 之路上每個中間憑證的簽發者（issuer）。</li>
+<li><strong>識別受影響的 leaf。</strong>若任何簽發者為 eMudhra，即查詢 Certificate Transparency logs——crt.sh 可按簽發者名稱搜尋——以列舉經過可疑中間憑證的 leaf 憑證，包括那些存在於遭遺忘主機上的憑證。</li>
+<li><strong>檢查交叉簽署（cross-signature）。</strong>某張 leaf 可能另有通往另一個 root 的替代路徑；在規劃重新簽發之前，先確認是否存在未受影響的憑證鏈。</li>
+<li><strong>規劃重新簽發。</strong>向 eMudhra 申請更換憑證或轉用其他 CA，並預先做好準備，使部署可於單一變更窗口內完成。</li>
+<li><strong>變更後重新驗證。</strong>在 Firefox 及 Chrome 確認新的憑證鏈，然後重新執行 CT 查詢，確保沒有遺漏。</li>
+</ol>
+<h4>事件後續</h4>
+<p>此次事故提醒我們，企業的憑證清單——通常由 CT 數據而非內部紀錄彙整而成——是事件應變的先決條件。無法在數分鐘內回答「我們哪些主機的憑證鏈經由這位簽發者？」的組織，面對目前的不信任窗口將相當難熬，不論哪個 root programme 先行動。隨著披露事態發展，各平台的進一步聲明以及狀態一覽表的任何修訂條目，均值得持續關注。</p>
+<p><a href="https://lwn.net/Articles/1101643/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
