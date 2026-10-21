@@ -1,0 +1,50 @@
+Date: 2026-10-21 22:04:00
+Author: HKLUG Team
+Title: Faster AES Lands in the Kernel's Shared Crypto Library for x86 and RISC-V
+Content:
+<h4>Kernel <code>lib/crypto</code> Unifies AES Fast Paths, Benefitng x86 and RISC-V Alike</h4>
+<p>For infrastructure teams in Hong Kong, how fast the kernel handles AES is not an academic question. TLS termination, disk encryption and inline encryption for VM hosts are all CPU-bound cryptographic work. When each subsystem inside the kernel carries its own AES implementation, the best hardware instructions often go underused. According to Phoronix's coverage of the current Linux 7.4 development cycle, Google engineer Eric Biggers is moving the optimised AES implementations for x86/x86_64 and RISC-V into the kernel's shared crypto library, <code>lib/crypto</code>, so that other in-kernel consumers can benefit too.</p>
+<h5>The real story is consolidation, not new instructions</h5>
+<p>It is worth stressing that this is not the debut of hardware acceleration. The x86 AES-NI and AVX/VAES vector paths, along with RISC-V's vector crypto instructions, already existed within the crypto API. What changes is the plumbing: those optimised implementations now live in <code>lib/crypto</code>, a shared library inside the kernel, letting every in-kernel caller take the fastest route without paying the indirection cost of going through the crypto API.</p>
+<p>The dual benefit deserves to be unpacked. <strong>On performance</strong>, removing one layer of API translation lowers the fixed cost of small operations — such as header handling that touches only a handful of blocks per call — which is exactly what connection-heavy TLS workloads care about most. <strong>On maintenance</strong>, consolidating scattered crypto implementations into a single library reduces duplication and shrinks the audit surface. For crypto code, where the cost of a mistake is exceptionally high, one fewer copy means one fewer place for a bug to hide.</p>
+<h5>RISC-V: the more consequential long-term win</h5>
+<p>For the RISC-V ecosystem, this step may matter even more than it does for x86. On a platform still maturing, every vendor BSP carrying its own AES implementation creates long-term divergence: patches, audits and tuning have to be redone vendor by vendor. Folding the optimised implementations into <code>lib/crypto</code> gives the ecosystem a single reference point and should, over time, ease fragmentation across vendor BSPs. This is a forward-looking judgement, however — the benefits will only materialise as real-world BSPs gradually align, and teams watching RISC-V server and edge deployments should treat it as such.</p>
+<h5>Why infrastructure teams should watch</h5>
+<ul>
+<li><strong>TLS termination nodes</strong>: inline AES dominates CPU usage when handling tens of thousands of connections per second.</li>
+<li><strong>Disk and volume encryption</strong>: throughput in <code>dm-crypt</code> and filesystem encryption is directly affected by in-kernel AES performance.</li>
+<li><strong>VM hosts</strong>: host-side disk encryption stacks on top of guest workloads, effectively doubling the encryption bill.</li>
+</ul>
+<p>AES-NI and VAES have long delivered hardware-level throughput on modern cores; the value of this change lies in putting more in-kernel callers on that fast path rather than in a single benchmark figure. Phoronix's report focuses on the structural shift and its direction, and ships no comparison charts, so rather than quoting a number that may not fit your environment, the more practical approach is to measure it yourself.</p>
+<h5>Measure it yourself</h5>
+<p>On a test machine:</p>
+<ul>
+<li><strong>Kernel level</strong>: use the <code>tcrypt</code> module to run crypto self-tests and throughput tests. This is primarily a self-check of module-level behaviour rather than a precise benchmark, but it will confirm whether the fast path is actually being taken.</li>
+<li><strong>Storage level</strong>: use <code>fio</code> for sequential and random I/O against an encrypted device, and compare before and after the upgrade.</li>
+<li><strong>Application level</strong>: use <code>openssl speed</code> or nginx TLS to measure per-connection CPU usage and p99 latency.</li>
+</ul>
+<p>Run the same workload before and after switching kernels, and the headroom created by the <code>lib/crypto</code> consolidation will show up in your own numbers. For infrastructure teams, that headroom eventually turns into costs you can amortise — not figures that live only in a benchmark chart.</p>
+<hr>
+<h4>kernel <code>lib/crypto</code> 統一 AES 快路徑，x86 與 RISC-V 同受其惠</h4>
+<p>對香港的基建團隊而言，kernel 處理 AES 的速度並非學術問題。TLS 終結、磁碟加密以及 VM host 的 inline 加密，全都是 CPU 密集的加密運算。當 kernel 內部每個 subsystem 各自攜帶一套 AES 實現，最頂級的硬體指令往往未被用盡。據 Phoronix 就目前 Linux 7.4 開發周期的報道，Google 工程師 Eric Biggers 正將 x86/x86_64 與 RISC-V 的最佳化 AES 實現搬入 kernel 的共享加密函式庫 <code>lib/crypto</code>，讓其他 in-kernel 使用者同樣受惠。</p>
+<h5>真正的新聞在於整合，而非新指令</h5>
+<p>須要強調的是，今次並非硬體加速的首次登場。x86 的 AES-NI 與 AVX/VAES 向量路徑，以及 RISC-V 的向量加密指令，本已存在於 crypto API 之中。改變的是管線：這些最佳化實現現已納入 <code>lib/crypto</code>——kernel 內的共享函式庫——令每個 in-kernel 呼叫者都可以走最快那條路，毋須再付出繞經 crypto API 的間接開銷。</p>
+<p>這一雙重收益值得細加說明。<strong>在效能方面</strong>，減少一層 API 轉換，可降低小型運算的固定成本——例如每次調用只處理少數幾個 block 的封頭處理——而這正是連線密集的 TLS workload 最為重視的部分。<strong>在維護方面</strong>，將分散各處的加密實現收歸單一函式庫，可減少重複、縮小審計面積。對出錯代價極高的 crypto code 來說，少一份副本，便少一處 bug 可以藏身。</p>
+<h5>RISC-V：影響更為深遠的長期收益</h5>
+<p>對 RISC-V 生態而言，這一步的重要性可能更甚於 x86。在一個仍在成熟的平台上，每個 vendor BSP 各自攜帶一份 AES 實現，將造成長期分歧：補丁、審計與調校都要逐個 vendor 重做。將最佳化實現納入 <code>lib/crypto</code>，等於為整個生態提供一個單一參考點，長遠應有助減輕 vendor BSP 之間的碎片化。然而，這是一個向前看（forward-looking）的判斷——效益須待實際 BSP 逐步對齊才會顯現，關注 RISC-V 伺服器與邊緣部署的團隊宜據此衡量。</p>
+<h5>基建團隊為何應加以留意</h5>
+<ul>
+<li><strong>TLS 終結節點</strong>：在每秒處理數以萬計連線時，inline AES 佔用絕大部分 CPU。</li>
+<li><strong>磁碟與卷加密</strong>：<code>dm-crypt</code> 與 filesystem encryption 的吞吐量，直接受 kernel AES 效能影響。</li>
+<li><strong>VM host</strong>：host-side 磁碟加密疊加在 guest workload 之上，實際上令加密開支倍增。</li>
+</ul>
+<p>AES-NI 與 VAES 在現代核心上早已提供硬件級吞吐；今次變動的價值，在於令更多 in-kernel 呼叫者真正走上這條快路徑，而非依賴單一 benchmark 數字。Phoronix 的報道重點在於結構性的轉變及其方向，並未附上對照圖表，因此與其引用一個未必適用於閣下環境的數字，更實際的做法是自行量度。</p>
+<h5>自行動手量度</h5>
+<p>在測試機上：</p>
+<ul>
+<li><strong>kernel 層</strong>：使用 <code>tcrypt</code> 模組執行 crypto self-test 與吞吐測試。這主要是模組層面的自我檢查，而非精確 benchmark，但可確認快路徑是否真的被採用。</li>
+<li><strong>儲存層</strong>：使用 <code>fio</code> 對加密 device 進行順序與隨機 I/O，對比升級前後。</li>
+<li><strong>應用層</strong>：使用 <code>openssl speed</code> 或 nginx TLS，量度每條連線的 CPU 用量與 p99 延遲。</li>
+</ul>
+<p>在更換 kernel 前後執行同一 workload，<code>lib/crypto</code> 整合所創造的 headroom 便會反映在閣下的數據之中。對基建團隊而言，這些 headroom 最終會轉化為可攤薄的成本，而不只是存在於 benchmark 圖表上的數字。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.4-Crypto-Library" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
