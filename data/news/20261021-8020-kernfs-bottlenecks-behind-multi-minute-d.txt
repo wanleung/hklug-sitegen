@@ -1,0 +1,36 @@
+Date: 2026-10-21 11:05:00
+Author: HKLUG Team
+Title: Kernfs Bottlenecks Behind Multi-Minute Daemon Stalls Set for Linux 7.4 Fixes
+Content:
+<p>A batch of kernfs scalability fixes is lined up for Linux 7.4, according to Phoronix, after Meta engineers traced multi-minute stalls in system daemons back to that layer of the kernel.</p>
+<p>The work was prompted by an operational problem rather than a benchmark: across Meta's very large fleet of servers, system daemons were observed stalling for minutes at a time. Investigating those stalls, the engineers traced the delays to scalability bottlenecks inside kernfs — and the resulting fixes now appear destined for the 7.4 merge window.</p>
+<h4>Why kernfs matters</h4>
+<p>kernfs is the underlying machinery that lets the kernel present in-kernel objects as file-system hierarchies. It backs sysfs (<code>/sys</code>), the cgroup hierarchies, configfs, debugfs, BPF's file-system interface, and pstore, among others. Anything that walks or mutates those trees — hardware discovery, resource controllers, container and monitoring tooling — ultimately passes through this layer.</p>
+<p>That reach is what gives the story its weight. A bottleneck in kernfs does not stay confined to one subsystem; it surfaces anywhere a daemon or agent traverses these pseudo file systems at speed. At Meta's scale, apparently small per-operation costs compound into multi-minute stalls.</p>
+<p>Container runtimes, monitoring agents, hardware management utilities, and udev-style device services all interact heavily with kernfs-backed interfaces, so the fixes are of practical interest well beyond Meta's own datacentres. Smaller deployments are far less likely to have noticed the problem, but they inherit the improvement.</p>
+<h4>Scale as a debugging instrument</h4>
+<p>What makes the story notable for the wider Linux community is how it began: not with a performance target or a profiling exercise, but with a concrete operational symptom — daemons repeatedly getting stuck. That diagnosis led engineers into one of the kernel's less glamorous foundational layers.</p>
+<p>The contribution underscores the ongoing role that hyperscale operators play in kernel maintenance. Because Meta runs one of the largest known Linux deployments, problems that only manifest at fleet scale — and that smaller installations would likely dismiss as noise — get surfaced, diagnosed, and fixed upstream for everyone.</p>
+<h4>The pseudo file-systems nobody looks at</h4>
+<p>Pseudo file systems are easy to overlook precisely because they appear to do so little: no data is stored, the entries are generated on the fly, and the trees are consulted constantly by tools that take them for granted. Yet everyday activity — a container starting, a monitoring agent polling, a device settling into place — depends on that consultation being quick. Infrastructure of this kind attracts little scrutiny until it becomes the thing standing between a daemon and its next instruction, which is roughly where kernfs found itself.</p>
+<h4>What is and is not known</h4>
+<p>Phoronix reports that the identified bottlenecks are addressed by changes proposed for Linux 7.4. No public benchmark figures have accompanied the work, so the magnitude of the improvement is not yet quantifiable from outside the company; the claim rests on the reported elimination of the stalls that prompted the investigation. Whether percentages appear once the patches land in the 7.4 merge window remains to be seen.</p>
+<p>Even then, the gains are likely to be most visible on dense container hosts and large hardware fleets, where kernfs trees are biggest and hottest. On a conventional desktop or lightly loaded server, the difference may be imperceptible.</p>
+<p>Linux 7.4 is expected to collect the changes as part of its normal merge cycle. For administrators and developers working with cgroups, sysfs-heavy hardware stacks, or container tooling, the practical takeaway is straightforward: some long-standing scaling rough edges in the pseudo file-system layer are lined up for repair.</p>
+<hr>
+<p>據 Phoronix 報道，一批 kernfs 可擴展性修正即將納入 Linux 7.4；此前 Meta 工程師追查系統守護程序（daemon）長達數分鐘的停頓問題，最終溯源至內核的這一層。</p>
+<p>促成今次修補的是實際運維問題，而非基準測試結果：在 Meta 規模龐大的伺服器集群中，工程師發現系統守護程序不時停頓長達數分鐘。經追查，延遲源自 kernfs 內部的可擴展性瓶頸，相關修正看來將進入 7.4 merge window。</p>
+<h4>為何 kernfs 值得關注</h4>
+<p>kernfs 是底層機制，讓內核得以把 in-kernel 物件以檔案系統層級結構的方式呈現。它支撐著 sysfs（<code>/sys</code>）、cgroup 層級結構、configfs、debugfs、BPF 的檔案系統介面以及 pstore 等。任何遍歷或修改這些樹狀結構的操作——無論是硬件發現、資源控制器，還是容器及監控工具——最終都要經過這一層。</p>
+<p>正是這種影響範圍令事件受到重視。kernfs 的瓶頸不會局限於單一子系統；凡有守護程序或 agent 高速遍歷這些 pseudo file systems 的地方，問題便會浮現。在 Meta 的規模下，每次操作看似微小的成本累積起來，最終變成長達數分鐘的停頓。</p>
+<p>Container runtime、監控 agent、硬件管理工具以及 udev 式的設備服務，都與 kernfs 支撐的介面有大量互動，因此今次修正的實際意義遠超 Meta 自身的數據中心。較小規模的部署未必察覺過此問題，但同樣會受惠於改善。</p>
+<h4>以規模作為除錯工具</h4>
+<p>令事件在更廣泛 Linux 社群間受到注目的，是問題的起始方式：並非源於性能目標或 profiling 分析，而是一個具體的運維症狀——守護程序反覆卡住。這一診斷把工程師帶進內核較少人留意的基礎層面。</p>
+<p>今次貢獻凸顯了 hyperscale 營運商在內核維護中的持續角色。由於 Meta 運營著已知最大型的 Linux 部署之一，那些只在整個 fleet 規模才顯現、而且小型安裝很可能會視為雜訊的問題，得以在 upstream 被揭示、診斷並修正，讓所有人受惠。</p>
+<h4>無人注目的 pseudo file systems</h4>
+<p>Pseudo file systems 之所以容易被人忽略，正因為它們看似無所作為：不儲存資料、條目即時生成，而相關樹狀結構則被工具視為理所當然地頻繁查閱。然而日常運作——容器啟動、監控 agent 輪詢、設備就位——全賴這類查閱能迅速完成。這類基礎設施在成為阻隔守護程序與下一道指令的障礙之前，幾乎不會受到 scrutiny——kernfs 正是落入了這個處境。</p>
+<h4>已知與未知</h4>
+<p>Phoronix 報道，已識別的瓶頸將透過為 Linux 7.4 提出的改動來處理。今次工作並無附帶公開的基準測試數據，因此改善幅度暫時無法從公司外部量化；有關成效的說法，建基於據報已消除引發是次調查的停頓問題。補丁落實到 7.4 merge window 後是否會公布百分比數字，仍有待觀察。</p>
+<p>即便如此，收益預計在容器主機密度高、硬件 fleet 規模大的環境中最為明顯，因為這些地方的 kernfs 樹狀結構最龐大、訪問最頻繁。在一般桌面電腦或負載較輕的伺服器上，差異可能難以察覺。</p>
+<p>Linux 7.4 預計會按正常 merge cycle 收錄這些改動。對於處理 cgroups、以 sysfs 為主的硬件堆疊或 container 工具的管理員和開發者而言，實際結論相當直接：pseudo file systems 層部分長期存在的擴展性粗糙邊角，已排上修補議程。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.4-Kernfs-Scalability" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
