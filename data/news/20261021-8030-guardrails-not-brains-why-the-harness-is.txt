@@ -1,0 +1,44 @@
+Date: 2026-10-21 13:13:00
+Author: HKLUG Team
+Title: Guardrails, Not Brains: Why the Harness Is Where Agentic Pentesting Gets Hard
+Content:
+<p>Pointing an AI agent at your own web applications takes an afternoon. Getting it to run safely against anything that matters takes considerably longer — and that gap, according to an analysis published by The Hacker News, is where the real engineering of agentic pentesting actually sits.</p>
+<p>The model, the argument goes, is increasingly the easy part. It writes the payloads, chains the steps, and explains the findings in fluent prose. Everything that determines whether those attacks are safe to fire at production infrastructure, and whether the output is trustworthy enough to act on, lives in the harness wrapped around the model: scope enforcement, execution controls, session and secret handling, output filtering, and triage.</p>
+<p><strong>The failure modes aren't about reasoning</strong></p>
+<p>The case is strongest when it is stated concretely rather than as a benchmark. An agent that follows a redirect off the authorised target, a retry loop that hammers a fragile endpoint until it drops, a report that hands a senior engineer a finding she spends a day disproving — none of these are fixed by a stronger model. They are scoping bugs, execution bugs, and verification bugs. A larger parameter count does not enforce a scope boundary that was never encoded.</p>
+<p>The news peg is the intrusion at Hugging Face that OpenAI disclosed in July. Framed in this light, that incident is a blast-radius problem rather than a reasoning problem: credentials, integrations, and network reach determine what an intrusion costs, and those are properties of plumbing and permissioning — that is, of the harness — not of how well a model reasons about a target.</p>
+<p><strong>Four controls worth demanding</strong></p>
+<p>For teams moving beyond demos, the practical checklist is short and unglamorous:</p>
+<ul>
+<li><strong>Scope enforced in code, not prompt text.</strong> A "stay within example.com" instruction in a system prompt is a request, not a boundary. Authorised hosts, methods, and ports belong in a machine-checked allowlist the agent cannot talk its way past.</li>
+<li><strong>Hard gates on destructive actions.</strong> Account lockouts, record deletions, and retry floods should require a blocking check independent of the model's judgement, with per-endpoint rate limits applied underneath.</li>
+<li><strong>Deterministic re-verification before anything reaches a ticket queue.</strong> "Deterministic" needs to mean something specific: replay the finding's proof-of-concept against a non-production mirror under a scripted assertion — the expected status code, the mutated parameter, the response marker — and only auto-file the ticket when that assertion passes. What fails replay is routed to a human with the raw request and response attached, not discarded and not trusted.</li>
+<li><strong>Audit trails detailed enough to replay.</strong> Every prompt, tool call, response, and decision should be reconstructable after the fact. For teams in audit-sensitive and regulated environments, the session record is becoming the evidence a compliance assessor will actually ask for, not a nice-to-have.</li>
+</ul>
+<p><strong>Procurement: ask what it won't do</strong></p>
+<p>The commercial implication is straightforward. Foundation models are commoditising at speed; the harness is where vendors will differentiate, and where the meaningful comparison between two "AI pentesting" products actually lies. The question to put to a vendor is not what the model can exploit, but what the harness won't let the agent do — and how the system proves it.</p>
+<p><strong>The open-source angle</strong></p>
+<p>That framing also points to where open-source scrutiny would pay off. Sandboxes, scoping policies, rate limiting, deduplication, and replay verification are deterministic, auditable components with clean interfaces — ideal candidates for shared implementations that the community can read line by line. Collective scrutiny of a scoping engine is far better spent than scrutiny of a training corpus nobody can inspect.</p>
+<p>The agent writes the attack. The harness decides whether the attack is contained, credible, and accountable. That division of labour is where the hard work now lives.</p>
+<p><em>Source: The Hacker News, 21 October 2026.</em></p>
+<hr>
+<p>將 AI agent 指向自己的網頁應用，一個下午便能完成。但要讓它安全地針對任何真正重要的目標運行，所需時間則長得多——而根據 The Hacker News 刊登的一篇分析，這道鴻溝正是 agentic pentesting 真正的工程難點所在。</p>
+<p>文章的論點是：模型正日益成為較容易的一環。它能撰寫 payload、串連攻擊步驟，並以流暢文字解釋發現結果。至於這些攻擊能否安全地向生產基礎設施發動、輸出是否可靠到足以據以行動，一切取決於包裹模型之外的 harness：範圍執行（scope enforcement）、執行控制、session 及 secret 處理、輸出過濾，以及分級處理（triage）。</p>
+<p><strong>故障模式與推理能力無關</strong></p>
+<p>這個論點以具體案例而非 benchmark 來陳述時最具說服力。一個 agent 因追隨 redirect 而離開授權目標、一個重試 loop 不斷轟擊脆弱 endpoint 直至其崩潰、一份報告將某項發現交給資深工程師、她花上一整天才能證偽——這些問題沒有一個能靠更強的模型解決。它們是範圍界定 bug、執行 bug 和驗證 bug。參數數量再多，也無法執行一個從未被編碼進去的範圍邊界。</p>
+<p>相關新聞背景是 OpenAI 於七月披露的 Hugging Face 入侵事件。從這個角度看，該事故屬 blast radius 問題而非推理問題：憑證、integration 和網絡可達範圍決定一次入侵的代價，而這些是管道（plumbing）與權限設定的屬性——即 harness 的屬性——與模型對目標的推理能力無關。</p>
+<p><strong>四項值得要求的控制措施</strong></p>
+<p>對於已超越 demo 階段的團隊，實務 checklist 簡短而不花哨：</p>
+<ul>
+<li><strong>範圍以代碼執行，而非 prompt 文本。</strong> system prompt 中一句「留在 example.com 之內」只是請求，不是邊界。授權主機、方法和端口應寫入機器可檢查的 allowlist，agent 無法以言辭繞過。</li>
+<li><strong>破壞性操作須設硬性關卡。</strong> 帳戶鎖定、記錄刪除及重試洪流，應要求一項獨立於模型判斷的阻斷式檢查，底下另設 per-endpoint rate limit。</li>
+<li><strong>任何結果進入 ticket queue 前須作確定性再驗證。</strong>「確定性」須有具體含義：在 script 化 assertion 下，將該發現的 proof-of-concept 重放於非生產 mirror——檢查預期狀態碼、被篡改的參數、回應標記——只有 assertion 通過才自動建立 ticket。重放失敗者連同原始 request 及 response 轉交人手處理，既不丟棄也不盲信。</li>
+<li><strong>審計記錄須詳盡至可重放。</strong> 每一個 prompt、tool call、response 及決策，事後均應可重建。對於身處審計敏感及受監管環境的團隊，session 記錄正成為合規評估員真正會索要的證據，而非可有可無的附加品。</li>
+</ul>
+<p><strong>採購：要問它不會做什麼</strong></p>
+<p>商業含意直接了當。Foundation model 正迅速商品化；harness 才是廠商差異化所在，也是兩款「AI pentesting」產品之間有意義比較的真正所在。向廠商提出的問題，不應是模型能利用什麼漏洞，而是 harness 不會允許 agent 做什麼——以及系統如何證明這一點。</p>
+<p><strong>開源角度</strong></p>
+<p>這個框架同時指出了開源審查最能發揮作用的地方。Sandbox、範圍界定 policy、rate limiting、去重及重放驗證，都是介面清晰、具確定性且可審計的元件——最適合由社群逐行閱讀的共享實現。集體審查一個範圍引擎，遠比審查任何人都無法檢視的訓練 corpus 更值得。</p>
+<p>Agent 撰寫攻擊。Harness 決定攻擊是否受控、可信、可問責。這道分工，正是當前艱難工作所在。</p>
+<p><em>來源：The Hacker News，2026年10月21日。</em></p>
+<p><a href="https://thehackernews.com/2026/10/the-harness-is-hard-part-of-agentic.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
