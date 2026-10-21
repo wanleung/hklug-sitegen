@@ -1,0 +1,34 @@
+Date: 2026-10-21 21:04:00
+Author: HKLUG Team
+Title: LiteLLM 1.107.0 Quarantined on PyPI After Malicious Release Ships Credential Stealer and Backdoor
+Content:
+<p>The widely used LiteLLM Python package has been caught up in a software supply chain attack, with the compromised release — version 1.107.0 — shipped through both PyPI wheels and Docker images, according to The Hacker News. The malicious version has since been quarantined on the Python Package Index (PyPI).</p>
+<p>The compromise was reported by four separate security vendors — SafeDep, Socket, StepSecurity and Upwind — whose independent disclosures point to the same affected release. Their findings indicate that the poisoned package carried a credential stealer and a backdoor, though the precise mechanics of the payload and any downstream mirror persistence remain under review as the vendors continue to publish details.</p>
+<h4>Why it matters</h4>
+<p>LiteLLM is a common abstraction layer for calling multiple large language model APIs, which means environments running it frequently hold upstream API keys and service credentials in close proximity to the compromised code. A credential stealer positioned at that layer can harvest the most commercially sensitive secrets an AI team holds — the keys that gate paid model usage across the organisation.</p>
+<p>The attack also underscores a familiar but persistent weakness: a single published version number, propagated through a public registry and container images, can reach production build pipelines before anyone notices. Docker distribution matters here — quarantining the wheel on PyPI does not, by itself, purge an image that already baked the package into a base layer.</p>
+<p>For IT and DevOps professionals broadly — including AI engineering teams in Hong Kong that assemble LLM tooling from open-source dependencies — this is a prompt to check version scope and rotate secrets rather than a story about any single organisation's response.</p>
+<h4>Incident-response checklist</h4>
+<ol>
+<li><strong>Verify version scope.</strong> Check installed environments, lockfiles, requirements pins and container image histories for <code>litellm==1.107.0</code>. Confirm against the advisories from SafeDep, Socket, StepSecurity and Upwind whether any additional versions fall in the affected range before assuming 1.107.0 is the only one.</li>
+<li><strong>Rotate upstream LLM API keys.</strong> Any host that ran the compromised wheel or image should be treated as potentially credential-exposed. Rotate OpenAI, Anthropic, Azure and other provider keys, plus any other secrets co-located in the environment — a reinstalled package does not un-steal a token already exfiltrated.</li>
+<li><strong>Rebuild, don't just upgrade.</strong> Cached pip wheels, vendored directories and Docker base layers survive a registry quarantine. Delete caches, pull a clean base image, and rebuild artifacts from verified sources rather than relying on a version bump alone.</li>
+<li><strong>Harden supply-chain hygiene.</strong> Pin dependencies to verified hashes, enable lockfile verification in CI, and consider tooling that flags unexpected version publishes or maintainer changes. The gap between a package's last trusted release and a sudden new one is exactly where these attacks land.</li>
+</ol>
+<p>The Python community has seen this pattern before: a trusted, high-download package becomes the shortest path into thousands of build systems. With details from SafeDep, Socket, StepSecurity and Upwind still emerging, teams should treat the current version range as provisional and watch for follow-up advisories that may broaden the scope of the compromise.</p>
+<hr>
+<p>據 The Hacker News 報導，廣泛使用的 LiteLLM Python 套件捲入一宗軟件供應鏈攻擊，被入侵的版本 1.107.0 經 PyPI wheels 及 Docker images 兩個途徑發佈。該惡意版本現已在 Python Package Index（PyPI）上遭到隔離。</p>
+<p>今次入侵由四間獨立保安廠商——SafeDep、Socket、StepSecurity 及 Upwind——分別揭發，四方的獨立披露均指向同一個受影響版本。調查顯示，被下毒的套件攜帶 credential stealer 及後門程式，惟 payload 的確切運作方式，以及是否存在下游 mirror 持久化感染，仍有待各廠商陸續公布詳情後進一步確認。</p>
+<h4>事件為何重要</h4>
+<p>LiteLLM 是常見的抽象層，用於呼叫多家大型語言模型 API，這意味著運行該套件的環境通常會在受入侵代碼附近存放上游 API keys 及服務憑證。部署於該層的 credential stealer，足以收割 AI 團隊所持有、商業上最敏感的機密——即掌管全公司付費模型使用權限的門匙。</p>
+<p>今次攻擊亦凸顯一個屢見不鮮卻長期存在的弱點：單一一個已發佈的版本號，經公開 registry 及 container images 傳播，可在任何人察覺之前進入生產 build pipelines。Docker 分發渠道在此尤為關鍵——在 PyPI 上隔離 wheel，本身並不能清除已經將該套件燒錄進 base layer 的 image。</p>
+<p>對整體 IT 及 DevOps 專業人士而言——包括香港利用開源依賴組裝 LLM 工具的 AI 工程團隊——今次事件的啟示是應即時檢查版本範圍及輪換 secrets，而非只當作某間機構的個別事故處理。</p>
+<h4>事故應變檢查清單</h4>
+<ol>
+<li><strong>核實版本範圍。</strong> 檢查已安裝的環境、lockfiles、requirements 釘定版本及 container image 歷史，搜尋 <code>litellm==1.107.0</code>。在假定 1.107.0 是唯一受影響版本之前，先對照 SafeDep、Socket、StepSecurity 及 Upwind 的安全通告，確認是否另有版本落入受影響範圍。</li>
+<li><strong>輪換上游 LLM API keys。</strong> 任何運行過受入侵 wheel 或 image 的主機，均應視作可能已洩露憑證。輪換 OpenAI、Anthropic、Azure 及其他供應商的 keys，以及環境內共存的其他 secrets——重新安裝套件，並不能令已外洩的 token 失效。</li>
+<li><strong>重新構建，而非僅僅升級。</strong> 經快取的 pip wheels、vendored 目錄及 Docker base layers 不會因 registry 隔離而消失。刪除快取、拉取乾淨的 base image，並從已驗證來源重新構建 artifacts，切勿只依賴版本號升級。</li>
+<li><strong>強化供應鏈衞生。</strong> 將依賴釘定至已驗證的 hashes，在 CI 中啟用 lockfile 驗證，並考慮採用可標記異常版本發佈或維護者變更的工具。套件上一個可信版本與突如其來的新版本之間的空檔，正是此類攻擊的落點。</li>
+</ol>
+<p>Python 社群並非首次見到這種模式：一個受信任、下載量高的套件，會成為入侵數千個 build systems 的最短路徑。隨著 SafeDep、Socket、StepSecurity 及 Upwind 的資料陸續浮現，各團隊應將當前版本範圍視為暫定結論，並留意可能擴大入侵範圍的後續安全通告。</p>
+<p><a href="https://thehackernews.com/2026/10/litellm-compromised-in-supply-chain.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
