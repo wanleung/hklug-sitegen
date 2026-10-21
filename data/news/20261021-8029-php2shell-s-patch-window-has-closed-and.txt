@@ -1,0 +1,42 @@
+Date: 2026-10-21 18:37:00
+Author: HKLUG Team
+Title: PHP2Shell's Patch Window Has Closed — And the php.ini Workaround Still Isn't a Fix
+Content:
+<p><strong>The clock has run out.</strong> The PHP project's scheduled release window for the two critical remote-code-execution flaws tracked collectively as <strong>PHP2Shell</strong> — <strong>14:00 UTC on 21 October (22:00 HKT)</strong> — has passed. Whether the fix shipped in full and on time is not something we can independently confirm, but for any team still running unpatched PHP the practical position is unchanged: the timeline is public, the deadline is behind you, and the period for quiet preparation is over.</p>
+<p>According to The Hacker News, PHP rated both flaws <strong>9.2 out of 10</strong> and, unusually for a release of this severity, published no workaround of its own. In the hours before the window closed, that vacuum was filled by a single <code>php.ini</code> configuration change — advice that originated with a security firm that has since walked back any suggestion that it is sufficient on its own.</p>
+<p>That retraction is the real story. A mitigation offered by its own author as risk reduction, later recanted by the same source as something that must not be mistaken for a fix, is exactly the pattern that produces false confidence. The argument worth taking seriously is that a team applying one configuration toggle and standing down may be worse positioned than a team that applies nothing and stays alert — the first has bought a sense of safety that the flaw does not honour.</p>
+<h5>If you are not patched yet</h5>
+<p>Treat everything below as a stack, not a menu. None of these measures closes PHP2Shell on its own; they are general defence-in-depth practice — not guidance issued by the PHP project — intended to shrink the attack surface until the running binary is replaced.</p>
+<ul>
+<li><strong>Apply the shared <code>php.ini</code> change as one layer</strong> — useful, incomplete, and never a substitute for the release.</li>
+<li><strong>Restrict PHP entry points and upload paths.</strong> Disable script execution in directories that only serve static files; remove writable upload directories from the PHP include path.</li>
+<li><strong>Filter at the edge.</strong> A WAF or reverse proxy with rules targeting the vulnerable request patterns buys time for hosts you cannot reach immediately.</li>
+<li><strong>Tighten PHP process permissions.</strong> The worker should not run as a user capable of writing to web roots or reading credentials it does not need.</li>
+<li><strong>Log aggressively.</strong> Keep request, error, and process logs at high verbosity and forward them off-host — you may need them for triage later.</li>
+</ul>
+<h5>After the release: verify, don't assume</h5>
+<p>Once you begin rolling the patch out, sequence by exposure rather than convenience: <strong>internet-facing hosts first, then systems holding customer data, then the remainder of the estate.</strong> In each case, confirm the running version from the process itself rather than trusting a package manager's success message — container images, shared hosting, and bundled runtimes are the usual reasons a fleet reported as patched turns out not to be.</p>
+<p>The decisive factor at this point is not what happens after 14:00 UTC but what was done before it: whether teams had already inventoried their PHP estate, tested the upgrade in staging, and prepared a rollback path. For those who did, the next few hours are an execution exercise. For those who did not, the layered measures above are buying time — and only time.</p>
+<p>PHP2Shell also offers a broader lesson for anyone running widely deployed open-source runtimes: when a fix has a publicly known release time, assume the exploit timeline starts then too, and treat any single-setting workaround circulating online as a floor, never a ceiling.</p>
+<p><em>Editor's note: the source summary available to us was truncated mid-sentence, so CVE identifiers, affected version branches, and the specific vulnerable component are not named here rather than guessed at. We will update this piece if the full text becomes available.</em></p>
+<p><em>Source: The Hacker News, "PHP2Shell: What Actually Protects You Before the 14:00 UTC PHP RCE Patch, and What Doesn't" — https://thehackernews.com/2026/10/php2shell-what-actually-protects-you.html</em></p>
+<hr>
+<p><strong>限時已到。</strong> PHP 專案就兩項被統稱為 <strong>PHP2Shell</strong> 的嚴重遠端代碼執行（RCE）漏洞所安排的定期發布窗口 — <strong>10 月 21 日 14:00 UTC（香港時間 22:00）</strong> — 已經過去。修補程式是否已完整及時發布，我們無法獨立核實，但對於任何仍在執行未修補 PHP 的團隊而言，實際處境並無改變：時間表早已公開，限期已過，靜默準備的階段已經結束。</p>
+<p>據 The Hacker News 報道，PHP 專案將兩項漏洞評為 <strong>10 分之 9.2</strong>，而且有別於同級嚴重程度的慣常做法，並未自行發布任何權宜方法。在窗口關閉前數小時，這空缺由一項 <code>php.ini</code> 設定修改填補 — 該建議源自一間安全公司，而該公司其後已收回任何指此方法本身已足夠的說法。</p>
+<p>這項撤回才是事件的真正焦點。一項由提出者自身標示為降低風險的緩解措施，後來遭同一來源撤回並指不應誤認為修復方案 — 這正是催生虛假信心的典型模式。值得認真看待的論點是：只套用一個設定選項便掉以輕心的團隊，可能比什麼都不做但保持警覺的團隊處境更差 — 前者用漏洞並不認帳的方式，買來了一份安全感。</p>
+<h5>如尚未完成修補</h5>
+<p>請把以下措施視為一個整體堆疊，而非一份選擇清單。以下任何單一措施本身都不能堵住 PHP2Shell；這些只是一般的深度防禦（defence-in-depth）實踐 — 並非 PHP 專案發出的指引 — 目的是在執行中的二進位檔被更換之前收窄攻擊面。</p>
+<ul>
+<li><strong>套用共通的 <code>php.ini</code> 修改作為其中一層</strong> — 有用，但不完整，永遠不能取代正式版本的發布。</li>
+<li><strong>限制 PHP 入口點及上載路徑。</strong> 在只提供靜態檔案的目錄中停用腳本執行；把可寫入的上載目錄從 PHP include path 中移除。</li>
+<li><strong>在邊緣節點過濾。</strong> 部署針對漏洞請求模式設定規則的 WAF 或反向代理，可為無法即時接觸的主機爭取時間。</li>
+<li><strong>收緊 PHP 進程權限。</strong> worker 不應以具備寫入 web root 權限、或讀取其不需要的憑證權限的用戶身份執行。</li>
+<li><strong>積極記錄日誌。</strong> 以高詳細程度保留請求、錯誤及進程日誌，並轉發至主機以外 — 事後研判分類時可能用得上。</li>
+</ul>
+<h5>發布之後：核實，不要假設</h5>
+<p>開始推出修補程式時，應按暴露程度而非方便程度排序：<strong>連接互聯網的主機優先，其次是存有客戶資料的系統，最後才是其餘環境。</strong> 每一步都應從進程本身確認實際運行的版本，而非相信套件管理器的成功訊息 — container image、共享主機及捆綁的 runtime，通常是整批機群回報已裝上修補、最終卻查出並未生效的常見原因。</p>
+<p>此階段的決定性因素，不是 14:00 UTC 之後發生什麼，而是在此之前做了什麼：團隊是否已盤點其 PHP 環境、在 staging 環境測試升級，並準備好還原路徑。已做到的，未來數小時只是一場執行工作。未做到的，上述分層措施只是在爭取時間 — 而僅僅是時間。</p>
+<p>PHP2Shell 對任何運行廣泛部署的 open source runtime 的人，也提供了一個更廣泛的教訓：當修補有公開已知的發布時間，便應假設 exploit 的時間表亦由此開始，並把網上流傳的任何單一設定權宜方法視為底線，而非上限。</p>
+<p><em>編按：我們取得的來源摘要在句子中間被截斷，因此 CVE 編號、受影響的版本分支及具體漏洞組件均未在此列明，以免作猜測。如取得全文，我們將更新此文。</em></p>
+<p><em>來源：The Hacker News，"PHP2Shell: What Actually Protects You Before the 14:00 UTC PHP RCE Patch, and What Doesn't" — https://thehackernews.com/2026/10/php2shell-what-actually-protects-you.html</em></p>
+<p><a href="https://thehackernews.com/2026/10/php2shell-what-actually-protects-you.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
