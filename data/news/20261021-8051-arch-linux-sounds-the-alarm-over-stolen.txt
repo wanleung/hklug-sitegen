@@ -1,0 +1,38 @@
+Date: 2026-10-21 15:06:00
+Author: HKLUG Team
+Title: Arch Linux Sounds the Alarm Over Stolen eMudhra Certificates in the Shared CA Bundle
+Content:
+<p><strong>Any system still carrying an unpatched CA bundle can be intercepted silently, following the disclosure that several certificates belonging to the eMudhra intermediate Certificate Authority have been compromised. The affected bundle is not Arch-specific — it is the same Mozilla-derived trust material that underpins most of the Linux ecosystem.</strong></p>
+<p>Arch Linux published a top-level news advisory on 21 October urging users to upgrade immediately to <code>ca-certificates-mozilla</code> 3.131.1-1 or later, the release that removes and invalidates the compromised certificates. The compromise itself was revealed on 20 October. Anything older than 3.131.1-1 remains exposed.</p>
+<p>"Without an update to this central certificate bundle, systems are susceptible to man-in-the-middle attacks," the distribution wrote, adding that it urges "everyone to upgrade their systems immediately." Arch users can apply the fix with <code>pacman -Syu ca-certificates-mozilla</code>.</p>
+<p>The technical account of the failure does not come from Arch: the distribution links out to a dedicated disclosure page for the incident, and that page is the authoritative source for what was compromised and how. Arch's role is narrower — distributing a remediated bundle, not investigating the key-management breakdown behind it.</p>
+<h4>Why one intermediate can break TLS</h4>
+<p>An intermediate certificate authority sits between a root CA and the end-entity certificates it signs. Compromising one is attractive to attackers because it does not require breaking the root itself: with a stolen intermediate private key, an attacker can mint certificates for arbitrary domains that chain up to an already-trusted root. Victims see no browser warning, because the forged chain validates against a trust store the system already accepts.</p>
+<p>Revocation upstream does little on its own. Until each local trust bundle is refreshed — on servers, containers, developer machines and network appliances alike — the compromised material stays trusted. That gap is what makes this a local patching problem as much as an upstream one.</p>
+<h4>Scope: shared bundle, uneven patching</h4>
+<p>Arch's advisory is the news peg, but the Mozilla root store it consumes is shared across much of the Linux ecosystem. Debian, Ubuntu, Fedora and Alpine all build their CA packages from that same upstream. Each will ship the fix through its own package; administrators should confirm the current status and package name against their distribution's advisory rather than assuming coverage.</p>
+<p>The remediation pattern is consistent: upgrade the relevant package — commonly <code>ca-certificates</code> or the distribution's NSS build — then regenerate the system bundle with <code>update-ca-certificates</code> (Debian/Ubuntu/Alpine) or <code>update-ca-trust extract</code> (Fedora/RHEL). Regeneration matters. A package upgrade does not always rewrite the concatenated PEM file the system actually reads, so a fresh upgrade can leave stale certificates in place. Verify by grepping the regenerated bundle for the eMudhra issuer names and confirming nothing comes back, rather than assuming the upgrade applied.</p>
+<p>Windows, macOS and iOS are out of scope: those platforms maintain independent trust stores that are not distributed through the Mozilla CA bundle package.</p>
+<h4>The real blind spot: frozen trust stores</h4>
+<p>The highest-risk population is anything that fixes a bundle in place at build time and rarely updates. Stale container images — particularly minimal Alpine and Debian-slim base layers inside long-lived build pipelines — CI runners, VM templates, embedded devices, appliance firmware, vendor SDKs and golden images all commonly carry a trust store frozen when the artifact was created. A host-level upgrade will not reach them, and in many cases there is no routine mechanism to do so.</p>
+<p>Rebuilding images from current base layers, or explicitly installing the updated package inside running containers, is the only reliable remediation for that fleet. For Hong Kong IT professionals running hybrid or multi-cloud estates, the practical version of the same lesson is an inventory question: trust material embedded in golden images, appliance firmware and vendor SDKs is easy to overlook during an incident-response window.</p>
+<h4>The takeaway</h4>
+<p>Treat the CA bundle as a security-critical component with its own patch cadence, not a byproduct of the OS release. Audit where it is embedded, upgrade the package, regenerate the bundle, and verify the removal — the compromised certificates are usable right now, and mitigation only exists where the local bundle has actually been refreshed.</p>
+<hr>
+<p><strong>在披露數張屬於 eMudhra 中間層 Certificate Authority 的證書已被攻破之後，任何仍未修補 CA bundle 的系統都可能被悄然攔截。受影響的 bundle 並非 Arch 專有——它正是支撐大部分 Linux 生態系統的同一套源自 Mozilla 的信任材料。</strong></p>
+<p>Arch Linux 於 10 月 21 日發布了一則頂層新聞公告，敦促用戶立即升級至 <code>ca-certificates-mozilla</code> 3.131.1-1 或更新版本，該版本會移除並使被攻破的證書失效。攻破事件本身於 10 月 20 日曝光。任何早於 3.131.1-1 的版本仍處於風險之中。</p>
+<p>「若不更新這份核心證書 bundle，系統將容易遭受 man-in-the-middle 攻擊」，該發行版如此寫道，並補充指其促請「所有人立即升級其系統」。Arch 用戶可用 <code>pacman -Syu ca-certificates-mozilla</code> 套用修復。</p>
+<p>有關故障的技術細節並非來自 Arch：該發行版連結至一個專門的事件披露頁面，該頁面才是什麼被攻破以及如何被攻破的權威來源。Arch 的角色較為有限——分發經修復的 bundle，而非調查其背後的 key management 失誤。</p>
+<h4>為何一個中間層 CA 足以瓦解 TLS</h4>
+<p>中間層 certificate authority 位於 root CA 與其簽發的 end-entity 證書之間。攻破其中一個對攻擊者頗具吸引力，因為這並不需要攻破 root 本身：憑藉被盜的中間層 private key，攻擊者可以為任意網域鑄造證書，而這些證書可向上鏈接至一個已獲信任的 root。受害者不會看到任何瀏覽器警告，因為偽造的證書鏈會通過系統本身已接受的 trust store 驗證。</p>
+<p>上游的吊銷措施本身作用有限。在每個本地 trust bundle——不論位於伺服器、container、開發人員電腦還是網絡設備——獲刷新之前，被攻破的材料仍會維持受信任狀態。正是這個落差，使今次事件既是上游問題，也是本地修補問題。</p>
+<h4>影響範圍：共享 bundle，修補進度不一</h4>
+<p>Arch 的公告只是今次事件的報導引子，但它所採用的 Mozilla root store 由 Linux 生態系統廣泛共享。Debian、Ubuntu、Fedora 和 Alpine 的 CA 軟件包全部建基於同一上游。各發行版將透過自身軟件包推出修復；管理員應對照所屬發行版的公告核實現況與軟件包名稱，而非假設已受涵蓋。</p>
+<p>修復模式是一致的：升級相關軟件包——通常是 <code>ca-certificates</code> 或該發行版的 NSS build——然後以 <code>update-ca-certificates</code>（Debian/Ubuntu/Alpine）或 <code>update-ca-trust extract</code>（Fedora/RHEL）重新產生系統 bundle。重新產生這一步很重要。軟件包升級未必會重寫系統實際讀取的那份串接 PEM 檔案，因此單靠升級可能令舊證書仍然保留。應以 grep 方式在重新產生的 bundle 中搜尋 eMudhra 的 issuer 名稱，確認搜尋結果為空，而非逕行假設升級已生效。</p>
+<p>Windows、macOS 和 iOS 則不在影響範圍之內：這些平台維護獨立的 trust store，並非透過 Mozilla CA bundle 軟件包分發。</p>
+<h4>真正的盲點：被凍結的 trust store</h4>
+<p>風險最高的群體，是那些在 build 階段便把 bundle 固定下來、事後甚少更新的系統。陳舊的 container image——尤其是長久運行的 build pipeline 中使用的精簡 Alpine 和 Debian-slim 基礎層——CI runner、VM 範本、嵌入式裝置、設備韌件、供應商 SDK 以及 golden image，往往帶有在產物生成當刻便被凍結的 trust store。主機層級的升級無法觸及它們，而在許多情況下亦沒有例行機制可做到。</p>
+<p>以現時的基礎層重新建構 image，或在運行中的 container 內明確安裝更新後的軟件包，是唯一可靠的修復方法。對於管理混合雲或多重雲環境的香港 IT 專業人士而言，同一教訓的實際應用方式其實是一個資產盤點問題：嵌入 golden image、設備韌件及供應商 SDK 的信任材料，在事故應對期間非常容易被忽略。</p>
+<h4>要點</h4>
+<p>應將 CA bundle 視為一個具備自身修補節奏的安全關鍵組件，而非作業系統版本的副產品。審視它在哪些地方被嵌入、升級相關軟件包、重新產生 bundle，並驗證移除結果——被攻破的證書現時即可使用，而緩解措施只存在於本地 bundle 確實已獲刷新的地方。</p>
+<p><a href="https://archlinux.org/news/update-to-ca-certificates-mozilla-31311-1-to-prevent-man-in-the-middle-attacks/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
