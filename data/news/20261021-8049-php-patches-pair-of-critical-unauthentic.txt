@@ -1,0 +1,54 @@
+Date: 2026-10-21 18:22:00
+Author: HKLUG Team
+Title: PHP Patches Pair of Critical, Unauthenticated RCE Flaws Across Four Branches
+Content:
+<p>```</p>
+<h3>PHP Patches Pair of Critical, Unauthenticated RCE Flaws Across Four Branches</h3>
+<p>On 21 October, the PHP project shipped fixes across all four maintained branches — <strong>8.5.12, 8.4.27, 8.3.36 and 8.2.35</strong> — closing two critical vulnerabilities that, in the project's own wording, could allow <strong>unauthenticated remote code execution</strong>. LWN.net reported on the releases the same day, and the PHP team published the corresponding advisories through its official archive.</p>
+<h4>Why this is an emergency-response patch, not a maintenance-window patch</h4>
+<p>The qualifier that matters is "unauthenticated." An attacker needs no valid account, no API key and no stolen session token — only a reachable endpoint that routes through vulnerable PHP code. That is what lifts this out of routine patch news: unauthenticated RCE flaws historically attract mass scanning within days once exploit details start to circulate.</p>
+<p>The two flaws reach across essentially every common PHP deployment — <strong>mod_php, PHP-FPM, php-cgi, FrankenPHP and LiteSpeed</strong> are all affected — and they arrive by two different routes: one corrupts process memory through an out-of-memory condition, the other re-enters PHP with stale global state still in place. Neither mechanism depends on an attacker being logged in.</p>
+<p>Of the affected implementations, <strong>mod_php carries the highest risk</strong>: a demonstrated exploit triggers before any of the application's own code runs, which means no application-level authentication or input filter stands between the request and the vulnerable path. Administrators running Apache with mod_php should treat that configuration as their first patch target.</p>
+<p>Both advisories carry CVE identifiers — <strong>CVE-2026-109618 and CVE-2026-109619</strong> — recorded in php.net's 2026 advisory archive, with matching GHSA entries in GitHub's advisory database. Administrators should read the primary advisories directly for per-issue, affected-function detail rather than relying on secondary summaries.</p>
+<p>Two points of context worth flagging for operations teams:</p>
+<ul>
+<li><strong>Patch availability is not patch deployment.</strong> Linux distributions and hosting vendors received the patches in advance, so updated packages should be arriving shortly — but container base images and vendor appliances each follow their own release lag. Upstream availability on 21 October does not mean your production servers are fixed.</li>
+<li><strong>The demonstrated exploit is not a reason to wait for more proof.</strong> Whether or not a proof-of-concept has been published, exploit details tend to surface after fixes begin propagating — and waiting for wider confirmation means waiting for attackers to catch up.</li>
+</ul>
+<h4>Patch-now checklist</h4>
+<p>For PHP-heavy environments still pinned to a legacy branch — a common configuration in long-lived internal tools and older CMS deployments — the sequence is short:</p>
+<ol>
+<li><strong>Upgrade</strong> to the fixed release for your branch: 8.5.12, 8.4.27, 8.3.36 or 8.2.35. <strong>If you are on PHP older than 8.1, note that no fixed release is coming:</strong> the project will not update those branches, and the backport helpers offered for 7.4, 8.0 and 8.1 are a stopgap, not a substitute for a supported runtime.</li>
+<li><strong>Restart</strong> PHP-FPM (and the web server if it embeds or caches PHP), so the running process actually picks up the new binary.</li>
+<li><strong>Verify</strong> the version your web server reports — check <code>phpinfo()</code> output or the CLI version — rather than assuming the package manager did the job.</li>
+</ol>
+<p>If you are on shared hosting, a managed platform, or a container image maintained by a provider, open a ticket or check the provider's status page: your patch timeline is theirs, and the only thing that confirms remediation is the <em>running</em> version, not the installed package.</p>
+<h4>The blast radius is wider than the web front end</h4>
+<p>An internet-facing PHP application is rarely the only component executing that code. Cron jobs, queue workers, mail scripts, admin panels and internal tooling often run the same interpreter behind the firewall, and a foothold gained through any of them can be pivoted further before anyone notices the public site misbehaving. Treat the affected interpreter as one inventory item, patch everywhere it appears, and re-check the running version on each host rather than the one you upgraded first.</p>
+<p>The attribution chain for this story runs from LWN.net's report to the php.net advisory archive. Administrators should confirm their status against the upstream advisories directly.</p>
+<hr>
+<p>```</p>
+<h3>PHP 於四個分支修補兩個嚴重的未經認證 RCE 漏洞</h3>
+<p>10月21日，PHP 項目在其所有四個維護中的分支推出修復版本 —— <strong>8.5.12、8.4.27、8.3.36 及 8.2.35</strong> —— 關閉兩個嚴重漏洞。按項目本身的措辭，這些漏洞可導致<strong>未經認證的遠端程式碼執行（unauthenticated remote code execution）</strong>。LWN.net 於同日報道了有關版本發布，PHP 團隊亦透過其官方存檔發出相應安全公告。</p>
+<h4>為何這是緊急應變級別的補丁，而非一般維護窗口補丁</h4>
+<p>關鍵修飾語是「未經認證」（unauthenticated）。攻擊者不需要有效帳戶、不需要 API key，亦不需要被盜的 session token —— 只要有一個可連接、且會經由存在漏洞的 PHP 程式碼運行的端點即可。正因如此，這則消息脫離了一般補丁新聞的範疇：歷來，未經認證的 RCE 漏洞一旦 exploit 詳情開始流傳，數天之內便會吸引大規模掃描。</p>
+<p>兩個漏洞幾乎波及所有常見的 PHP 部署方式 —— <strong>mod_php、PHP-FPM、php-cgi、FrankenPHP 及 LiteSpeed</strong> 均屬受影響的 PHP 實現方式 —— 而它們透過兩條不同途徑觸發：其一透過 out-of-memory 情況損壞程序記憶體，其二則在殘留過時全域狀態（stale global state）的情況下重新進入 PHP。兩種機制均不依賴攻擊者已登入。</p>
+<p>在受影響的實現方式之中，<strong>mod_php 所帶來的風險最高</strong>：已演示的 exploit 可在應用程式自身的任何程式碼執行之前觸發，這意味著請求與漏洞路徑之間，並無任何應用程式層面的認證或輸入過濾作阻隔。以 Apache 配合 mod_php 運行的系統管理員，應將該配置列為首要修補目標。</p>
+<p>兩則公告均載有 CVE 識別碼 —— <strong>CVE-2026-109618 及 CVE-2026-109619</strong> —— 該等編號記錄於 php.net 的 2026 年公告存檔，GitHub 的 advisory database 亦載有相應的 GHSA 條目。系統管理員應直接查閱第一手公告，以取得逐項漏洞及受影響功能的細節，而非依賴二手摘要。</p>
+<p>有兩點背景值得營運團隊留意：</p>
+<ul>
+<li><strong>有補丁並不等於已部署補丁。</strong> 各 Linux 發行版及託管服務供應商已預先收到補丁，更新的 package 應即將推出 —— 但容器基礎鏡像及廠商 appliance 均有各自的發布滯後時間。上游於10月21日發布，並不意味你的生產伺服器已獲修補。</li>
+<li><strong>已演示的 exploit，並非等待更多佐證的理由。</strong> 無論 proof-of-concept 是否已公開發布，exploit 詳情往往在修復開始推廣後才浮現 —— 等待更廣泛的確認，等於等待攻擊者追上。</li>
+</ul>
+<h4>立即修補清單</h4>
+<p>對於仍鎖定舊有分支、PHP 佔比甚高的環境 —— 這在長期運行的內部工具及舊版本 CMS 部署中十分常見 —— 步驟相當簡短：</p>
+<ol>
+<li><strong>升級</strong>至你所用分支的修復版本：8.5.12、8.4.27、8.3.36 或 8.2.35。<strong>若你使用的是 8.1 以前的 PHP，請留意不會有修復版本推出：</strong> 項目不會再更新該等分支，而為 7.4、8.0 及 8.1 提供的 backport helper 只是權宜之計，並非受支援 runtime 的替代品。</li>
+<li><strong>重啟</strong> PHP-FPM（以及內嵌或快取 PHP 的 web server），令實際運行的程序載入新的 binary。</li>
+<li><strong>核實</strong>你的 web server 所回報的版本 —— 檢查 <code>phpinfo()</code> 輸出或 CLI 版本 —— 而非假設 package manager 已完成工作。</li>
+</ol>
+<p>若你使用共享託管、託管平台，或由服務供應商維護的容器鏡像，請提交工單或查看供應商的 status page：你的修補時間表就是他們的時間表，而唯一能確認已補救的，是<em>正在運行</em>的版本，而非已安裝的 package。</p>
+<h4>影響範圍比網頁前台更廣</h4>
+<p>一個面向互聯網的 PHP 應用程式，很少是唯一執行該程式碼的組件。Cron job、queue worker、郵件腳本、管理後台及內部工具往往在防火牆後運行同一個 interpreter，而透過其中任何一個取得的據點，早在有人察覺公開網站運作異常之前，便已可進一步橫向移動（pivot）。應將受影響的 interpreter 視作一項 inventory item，在它出現的每一處進行修補，並在每部主機上重新核實正在運行的版本，而非只檢查你首先升級的那一部。</p>
+<p>本則報道的引用鏈由 LWN.net 的報道開始，經 php.net 公告存檔。系統管理員應直接對照上游公告，確認自身狀況。</p>
+<p><a href="https://lwn.net/Articles/1102014/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
