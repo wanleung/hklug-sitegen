@@ -1,0 +1,33 @@
+Date: 2026-10-22 08:09:00
+Author: HKLUG Team
+Title: Microsoft Ties Storm-0940 to ConnectWise Cloud Backup Supply Chain Compromise, Citing AI Penetration Agents
+Content:
+<p>```</p>
+<p>Microsoft disclosed on Wednesday that a China state-aligned threat actor tracked as Storm-0940 carried out the recent supply chain compromise of the ConnectWise Cloud Backup application, according to reporting by The Hacker News. What distinguishes the intrusion is not only the target — a widely deployed managed-service provider (MSP) product — but the tooling: the attackers reportedly used ARTEX, a Go-based agentic AI penetration testing framework, to accelerate scanning and reconnaissance.</p>
+<p>The report marks one of the clearest public signposts that autonomous, agent-driven offensive tooling has moved from research demonstrations into live operations. ARTEX is designed to operate as an unsupervised penetration-testing agent: it iterates through scanning, correlates findings, and queues follow-up actions with limited human direction. According to The Hacker News, Microsoft said that in a campaign setting the capability compressed the reconnaissance phase — historically the window in which defenders have the best chance to spot and disrupt an intrusion before it spreads.</p>
+<p>The disclosure also illustrates a durable tension in the security-tool community. ARTEX was originally available as open-source software, but was withdrawn from public circulation after it was abused against financial institutions in South Korea. Its reappearance in this campaign indicates that closing a repository does not, by itself, eliminate risk: copies can persist, forks can be modified, and capable tooling tends to outlive the governance decisions made around it. The reporting does not resolve which variant was deployed — whether an internal copy, an altered fork, or software still circulating unofficially — and that question remains open.</p>
+<p>For MSPs and their customers, the incident underscores a structural exposure rather than a single vendor's failure. Cloud backup and monitoring platforms typically hold privileged access across many downstream tenants, meaning one supply-chain foothold can cascade widely. Microsoft did not indicate that the compromise extended beyond the Cloud Backup application, and no indicators of compromise (IOCs) or a comprehensive affected-customer list accompanied the disclosure as reported.</p>
+<p>That gap matters for practitioners. Hong Kong IT teams, like their counterparts across the region, frequently rely on managed providers for backup, monitoring, and patching — a general observation about how the territory's mid-market and enterprise estates are typically operated, and not a claim that any local organisation was affected here.</p>
+<p><strong>General defensive guidance</strong> — the following steps are standard hardening practices and are not drawn from Microsoft's advisory, which as reported did not include IOCs:</p>
+<ul>
+<li><strong>Verify update provenance.</strong> Treat backup and RMM-style agents as high-value software; confirm signing, distribution channels, and changelogs before applying vendor updates.</li>
+<li><strong>Segment management planes.</strong> Isolate provider management access per tenant where possible, so that a compromise of a shared console does not grant universal reach.</li>
+<li><strong>Watch for automated reconnaissance.</strong> Agent-driven scanning tends to produce rapid, high-volume probes from a single host with quickly varying targets — a pattern worth encoding into detection rules rather than treating as ordinary scan noise.</li>
+<li><strong>Harden identity.</strong> Privileged credentials and service accounts backing backup integrations are a natural objective for any actor that has established a foothold; strong authentication and rotation remain baseline controls.</li>
+</ul>
+<p>Two follow-up questions will shape how this story develops: whether Microsoft or ConnectWise issues IOCs and rebuild or credential-rotation guidance, and how the security community responds to the governance gap that let a withdrawn agentic tool reappear in the wild. For open-source and security-tool maintainers, the ARTEX episode is a pointed reminder that licensing and disclosure controls, not just code, are part of the threat model — and that defenders will increasingly need to detect behaviour patterns characteristic of autonomous agents, not only known signatures.</p>
+<hr>
+<p>據 The Hacker News 報道，Microsoft 於星期三披露，一個與中國政府有關聯、代號 Storm-0940 的 threat actor 策劃了近期針對 ConnectWise Cloud Backup 應用程式的供應鏈入侵事件。是次入侵的特點不僅在於目標——一款廣泛部署的 managed service provider（MSP）產品——更在於所用的工具：據報攻擊者使用了 ARTEX，一個以 Go 編寫的 agentic AI 滲透測試框架，以加速掃描及偵察工作。</p>
+<p>是份報告是迄今最明確的公開信號之一，顯示自主、由 agent 驅動的攻擊工具已由研究階段的示範，進入實戰操作。ARTEX 的設計是以無需人手監督的滲透測試 agent 運作：它會反覆進行掃描、關聯發現結果，並在有限的人工指示下排隊執行後續行動。據 The Hacker News 引述，Microsoft 指在實戰行動中，這項能力大幅壓縮了偵察階段——歷來這正是防禦方最有機會在入侵擴散前察覺並阻截的時段。</p>
+<p>是次披露同時凸顯了安全工具社群中一項長期存在的張力。ARTEX 最初以 open source 形式公開，但在被濫用攻擊南韓金融機構後，已從公開流通中撤下。它在此行動中再度現身，表明關閉 repository 本身並不能消除風險：副本可以存續、fork 可以被改動，功能強大的工具往往比圍繞它作出的治理決定更長壽。報道並未確認實際部署的是哪一個版本——是內部副本、經改動的 fork，抑或仍以非官方渠道流通的軟件——此問題仍然懸而未決。</p>
+<p>對 MSP 及其客戶而言，是次事件凸顯的是結構性風險，而非單一供應商的失誤。雲端備份及監控平台通常擁有多個下游租戶的權限存取，意味著一個供應鏈立足點可以廣泛蔓延。Microsoft 並未表示入侵範圍超出 Cloud Backup 應用程式，而據報道，披露亦未附有 indicators of compromise（IOCs）或完整的受影響客戶名單。</p>
+<p>這個缺口對從業人員至關重要。本港 IT 團隊與區內同業一樣，經常依賴 managed provider 進行備份、監控及修補程式管理（patch management）；此為對本港中型市場及企業系統運作方式的概括觀察，並非指任何本地機構在此事件中受影響。</p>
+<p><strong>一般防禦建議</strong> — 以下步驟屬標準加固做法，並非取自 Microsoft 的通告（據報該通告並未包含 IOC）：</p>
+<ul>
+<li><strong>核實更新來源。</strong> 將備份及 RMM 類 agent 視為高價值軟件；在套用供應商更新前，確認簽署、分發渠道及 changelog。</li>
+<li><strong>分隔管理平面。</strong> 盡可能按租戶隔離供應商的管理存取，使共享 console 遭入侵時不致擴及全域。</li>
+<li><strong>留意自動化偵察。</strong> Agent 驅動的掃描往往會由單一主機快速發出大量探測，且目標迅速轉換——這種模式值得納入 detection rules，而非視為一般掃描雜訊。</li>
+<li><strong>加強身分防護。</strong> 支援備份整合的特權憑證及服務帳戶，是任何已建立立足點的行為者的天然目標；強制驗證及定期輪換仍是基本控制措施。</li>
+</ul>
+<p>兩個後續問題將左右事件的發展方向：Microsoft 或 ConnectWise 是否會發布 IOC 及重建系統或憑證輪換指引，以及安全社群如何回應令一個已撤下的 agentic 工具在野外重現的治理缺口。對 open source 及安全工具維護者而言，ARTEX 事件是一個尖銳的提醒：licensing 及披露控制與代碼本身同樣屬威脅模型的一部分——而防禦方將越來越需要偵測自主 agent 所特有的行為模式，而不僅依賴已知 signatures。</p>
+<p><a href="https://thehackernews.com/2026/10/china-linked-hackers-use-artex-ai.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
