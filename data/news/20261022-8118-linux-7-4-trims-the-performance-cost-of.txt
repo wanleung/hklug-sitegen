@@ -1,0 +1,36 @@
+Date: 2026-10-22 19:18:00
+Author: HKLUG Team
+Title: Linux 7.4 Trims the Performance Cost of AMD Zen 6 Security Mitigations
+Content:
+<p>The x86/bugs pull request targeting the Linux 7.4 kernel was merged this week, and its most notable change is an adjustment to how CPU security mitigations are applied on AMD Zen 6 processors, as Phoronix reported earlier this week.</p>
+<p>In practice, the branch-target-buffer (BTB)-related mitigations the kernel applies on Zen 6 systems are being reworked so that they impose less of a runtime penalty than the current approach. For system administrators and desktop users running AMD hardware, the headline is straightforward: the same class of speculative-execution protection should cost less in throughput once 7.4-based distributions ship.</p>
+<h4>Less costly, not removed</h4>
+<p>The distinction matters, and it is the part most likely to be misread. A cheaper mitigation is still a mitigation. Nothing in the merged pull request disables protection or reverts the kernel to an unguarded state — it changes how the defence is implemented so that the security posture is preserved while the performance tax shrinks. Operators should treat this as a reduction in overhead, not as a reason to relax any hardening policy.</p>
+<p>The change arrives against a research lineage familiar to anyone who has followed x86 side-channel work over the past several years. BranchScope, Inception and Retbleed, among others, established that branch-prediction structures such as the BTB can be abused to leak data across privilege boundaries, and kernels have carried various mitigations — some expensive — ever since. Zen 6 support shipped with mitigations inherited from that earlier work; 7.4 reworks them.</p>
+<p>It is also worth scoping what the change does <em>not</em> mean. The adjustment targets Zen 6 specifically. Owners of Zen 5 and older AMD parts should not expect their mitigation overhead profile to shift as a direct result of this merge, and performance figures for 7.4 on those parts will depend on separate work. The merge itself also does not quantify the improvement: absent benchmark numbers in the pull request or from distribution maintainers, any claim about specific percentage gains would be speculation. Validation will have to wait for benchmarking on 7.4-based releases.</p>
+<h4>What this means for operators</h4>
+<p>The practical takeaway is that mitigation cost profiles change at the 7.4 rebase — a shift that arrives without requiring any configuration change, and one that is equally relevant to IT teams in Hong Kong running AMD server or desktop fleets. Mainline merging is only the starting point; when the change reaches production depends on your distribution's rebase and backport schedule. A few checklist items for the upgrade cycle:</p>
+<ul>
+<li><strong>Re-verify mitigation state after upgrade.</strong> Inspect <code>/sys/devices/system/cpu/vulnerabilities/</code> on representative hosts to confirm which mitigations are active and how the kernel reports them for your exact CPU model.</li>
+<li><strong>Re-baseline performance.</strong> Workloads profiled on a pre-7.4 kernel should be measured again; throughput, latency and tail-latency numbers may shift simply from the new mitigation implementation.</li>
+<li><strong>Do not disable mitigations to "recover" performance.</strong> If a workload was previously justified with <code>mitigations=off</code> under an accepted risk decision, re-evaluate that decision against the new, lower-overhead defaults rather than assuming the old trade-off still holds.</li>
+</ul>
+<p>Kernel security mitigations sit in an unusual position: invisible when working, quietly expensive when crude, and easy to misunderstand when they change. The Zen 6 adjustment in 7.4 is a small, targeted refinement of that balance — protection held constant, cost reduced — and the responsible way to react is to verify it on your own hardware rather than take either the performance or the security claim on faith.</p>
+<p><em>Source: <a href="https://www.phoronix.com/news/AMD-Zen-6-BTB-Linux-7.4-Merged">Phoronix</a></em></p>
+<hr>
+<p>針對 Linux 7.4 內核的 x86/bugs pull request 已於本週合併，其中最值得注意的改動，是調整了 CPU 安全緩解措施（mitigation）在 AMD Zen 6 處理器上的應用方式，Phoronix 本週早些時候已作報道。</p>
+<p>實際而言，內核在 Zen 6 系統上套用的 branch-target-buffer（BTB）相關緩解措施正在重新設計，以使其執行時期的懲罰低於目前的做法。對於使用 AMD 硬件的系統管理員和桌面用戶而言，重點十分直接：在基於 7.4 的發行版推出後，同類型的 speculative execution 保護應會消耗更少的 throughput。</p>
+<h4>代價減輕，而非移除</h4>
+<p>這一點分別很重要，亦是最容易被誤讀的部分。成本較低的緩解措施仍然是緩解措施。已合併的 pull request 並沒有停用任何保護，也沒有將內核還原至毫無防護的狀態——它改變的是防禦的實施方式，從而在保留安全防護水平的同時縮減效能稅。系統管理者應將此視為開銷的減少，而非放鬆任何 hardening 政策的理由。</p>
+<p>此改動的背景，是過去數年關注過 x86 side-channel 研究的人士所熟悉的一系列研究脈絡。BranchScope、Inception 和 Retbleed 等研究已證實，BTB 等分支預測結構可被濫用以跨越 privilege boundary 洩漏數據，自此各內核一直搭載各式緩解措施——部分代價高昂。Zen 6 的支援推出時，沿用了早期研究衍生的緩解措施；7.4 則將其重新設計。</p>
+<p>同樣值得界定的是，此改動<em>並不</em>代表什麼。該調整專門針對 Zen 6。Zen 5 及更早期 AMD 產品的用家不應預期其緩解措施開銷分佈會因這次合併而直接改變，而這些產品在 7.4 上的效能數據將取決於另一批獨立工作。是次合併本身亦沒有量化改進幅度：在 pull request 或發行版維護者未提供 benchmark 數據的情況下，任何關於特定百分比提升的說法均屬推測。相關驗證須待基於 7.4 的版本進行 benchmark 測試後才能落實。</p>
+<h4>對系統管理者意味著什麼</h4>
+<p>實質結論是，緩解措施的成本分佈會在 7.4 rebase 時改變——這項轉變無需任何配置修改便會出現，而對在香港運行 AMD 服務器或桌面機隊的 IT 團隊同樣具參考價值。合併至主線（mainline）僅是起點；該改動何時到達生產環境，取決於你所用發行版的 rebase 和 backport 排程。以下是升級周期的幾項 checklist：</p>
+<ul>
+<li><strong>升級後重新核實緩解措施狀態。</strong> 檢視具代表性主機上的 <code>/sys/devices/system/cpu/vulnerabilities/</code>，確認哪些緩解措施正在生效，以及內核如何就你的確切 CPU 型號回報這些措施。</li>
+<li><strong>重新建立效能基準。</strong> 在 7.4 之前內核上進行 profiling 的工作負載應重新量度；throughput、延遲（latency）及 tail-latency 數據可能僅因新的緩解措施實現方式而出現變化。</li>
+<li><strong>切勿為「追回」效能而停用緩解措施。</strong> 若某工作負載先前是基於獲接納的風險決策而以 <code>mitigations=off</code> 運行，應以新的、開銷更低的預設值重新評估該決策，而非假設舊有取捨仍然成立。</li>
+</ul>
+<p>內核安全緩解措施處於一個特殊位置：運作正常時隱形無蹤，做法粗糙時代價悄然高昂，而當其改變時則容易遭誤解。7.4 中針對 Zen 6 的調整，是對此平衡的一次小範圍、針對性的優化——保護水平維持不變，成本則有所降低——負責任的應對方式，是在自己的硬件上加以驗證，而非不論效能抑或安全方面的聲稱都照單全收。</p>
+<p><em>資料來源：<a href="https://www.phoronix.com/news/AMD-Zen-6-BTB-Linux-7.4-Merged">Phoronix</a></em></p>
+<p><a href="https://www.phoronix.com/news/AMD-Zen-6-BTB-Linux-7.4-Merged" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
