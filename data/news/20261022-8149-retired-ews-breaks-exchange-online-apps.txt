@@ -1,0 +1,42 @@
+Date: 2026-10-22 18:05:00
+Author: HKLUG Team
+Title: Retired EWS Breaks Exchange Online Apps — Microsoft Confirms Admins Can Switch It Back On
+Content:
+<p>Microsoft has published guidance for IT administrators whose applications depend on the retired Exchange Web Services (EWS) interface in Exchange Online, confirming that the API can be switched back on to restore functionality while longer-term migration work proceeds.</p>
+<p>According to BleepingComputer, Microsoft says admins can re-enable EWS in Exchange Online to fix EWS-connected apps that have stopped working since the interface was retired. The acknowledgement effectively gives enterprise teams a sanctioned rollback path for production breakages, rather than leaving them to troubleshoot failed automations unaided.</p>
+<h4>Two paths, one decision</h4>
+<p>The guidance places administrators at a familiar fork. The immediate option is to re-enable EWS and stabilise the environment — a remediation step for sync jobs, mailbox tooling, and third-party integrations that silently stopped authenticating or returning data. The second, more durable option is to move each dependent workload to Microsoft Graph, the interface Microsoft has pointed administrators toward as the better-supported and more secure successor for Exchange-related functionality.</p>
+<p>For most teams, the sensible sequence is both: re-enable EWS as a short-term stabiliser to stop the bleeding, then use the resulting visibility into which applications actually depend on the interface to drive a prioritised Graph migration plan. Re-enabling without an inventory simply resets the clock on an outage that will recur the next time the setting changes.</p>
+<h4>Guardrails before you flip the switch</h4>
+<p>Admins considering the re-enable route should treat it as a controlled exception rather than a permanent architecture decision. Practically, that means:</p>
+<ul>
+<li><strong>Scope the change.</strong> Confirm with your tenant's change-management process who owns the setting and who can reverse it, and record the change with an expiry or review date.</li>
+<li><strong>Inventory first, enable second.</strong> Before touching the toggle, identify every application, connector, and script that touches EWS — including vendor appliances and monitoring agents that may not appear in obvious documentation. Untracked dependencies are how retirements turn into incidents.</li>
+<li><strong>Verify after the change.</strong> Re-test authentication and data flows for each dependent app rather than assuming the re-enable resolved silent failures; partial outages often look like success from the admin console.</li>
+<li><strong>Watch for caveats.</strong> A re-enabled interface that has been retired may not receive the same level of support or parity as before, so treat any restored behaviour as provisional and validate it against Microsoft's current documentation.</li>
+</ul>
+<h4>The longer game: Graph migration</h4>
+<p>Microsoft's directional guidance has long favoured Graph, and this announcement does not change that. The pragmatic reading for administrators is that re-enablement buys time, not certainty. The durable fix is a per-interface migration plan: map each EWS dependency to its Graph equivalent, assign an owner and a target date, and track progress the way you would any other deprecation programme.</p>
+<p>That discipline matters because API retirements rarely announce themselves in a change advisory — they surface as failed sync jobs, unanswered webhooks, or authentication errors in a system nobody has touched in months. Teams that maintain an up-to-date inventory of integration touchpoints, together with a successor-API plan for each, recover in hours instead of weeks.</p>
+<p>For IT professionals running Microsoft 365 estates in mixed enterprise environments — including those managing hybrid deployments with on-premises Exchange components — the exposed integrations are typically the oldest and least documented: legacy mailbox migration scripts, archival tools, and line-of-business connectors built when EWS was the default choice. Those are the candidates worth auditing first.</p>
+<p>Administrators can review Microsoft's full instructions via the BleepingComputer report linked above.</p>
+<hr>
+<p>微軟已為依賴 Exchange Online 中已停用的 Exchange Web Services（EWS）介面的 IT 管理員發布指引，確認該 API 可以重新啟用以恢復功能，與此同時則繼續進行較長期的遷移工作。</p>
+<p>據 BleepingComputer 報導，微軟表示管理員可在 Exchange Online 中重新啟用 EWS，以修復自該介面停用以來停止運作的 EWS 連接應用。這項確認實際上為企業團隊提供了一條獲官方認可的回退路徑，以處理生產環境故障，而非讓其孤立無援地自行排查自動化流程失效的問題。</p>
+<h4>兩條路徑，一個抉擇</h4>
+<p>指引將管理員置於一個熟悉的分岔點。即時選項是重新啟用 EWS 並穩定環境——這是針對同步任務（sync job）、郵箱工具及第三方集成悄然停止驗證或返回資料的補救措施。第二個、亦是更持久的選項，是將每個依賴的工作負載遷移至 Microsoft Graph，即微軟一直指引管理員採用、支援更完善且更安全的 Exchange 相關功能替代介面。</p>
+<p>對大多數團隊而言，合理的次序是兩者並行：先將 EWS 重新啟用作為短期穩定措施以止血，再利用由此獲得的可視性，掌握究竟哪些應用真正依賴該介面，從而推動有優先次序的 Graph 遷移計劃。若未經盤點便重新啟用，只會為即將再次發生的故障重置倒計時——只要設定再有變動，故障便會重演。</p>
+<h4>按下開關前的防護措施</h4>
+<p>考慮走重新啟用路線的管理員，應將其視為受控的例外處理，而非永久性的架構決定。具體而言：</p>
+<ul>
+<li><strong>界定變更範圍。</strong>循貴方租戶（tenant）的變更管理流程確認誰擁有該設定的管轄權、誰能將其復原，並為該變更記錄到期日或複審日期。</li>
+<li><strong>先盤點，後啟用。</strong>在觸碰開關之前，先識別所有涉及 EWS 的應用、connector 及腳本——包括可能未見於明顯文檔的供應商設備及監控代理（monitoring agent）。未被追蹤的依賴關係，正是停用演變為事故的根源。</li>
+<li><strong>變更後驗證。</strong>逐一重新測試每個依賴應用的驗證及資料流程，而非假設重新啟用已解決靜默故障；部分故障在管理員控制台（admin console）看來往往與成功無異。</li>
+<li><strong>留意附帶條件。</strong>已遭停用的介面即使重新啟用，所獲支援程度或功能對等性未必與從前相同，因此應將任何恢復的行為視為暫定，並對照微軟現行文檔加以驗證。</li>
+</ul>
+<h4>長遠之計：遷移至 Graph</h4>
+<p>微軟的方向性指引長期以來傾向 Graph，今次公告並未改變這一點。對管理員而言務實的解讀是：重新啟用爭取的是時間，而非確定性。持久的解決方案是針對每個介面的遷移計劃：將每項 EWS 依賴對應至其 Graph 等效方案，指定負責人及目標日期，並如同追蹤其他棄用計劃般追蹤進度。</p>
+<p>這份紀律至關重要，因為 API 停用極少會在變更通知（change advisory）中預告——它們往往以同步任務失敗、webhook 無人回應，或某個數月來無人觸碰的系統出現驗證錯誤等形態浮現。能維護集成接觸點最新清單、並為每一項備有後繼 API 方案的團隊，恢復所需時間以小時計，而非以星期計。</p>
+<p>對於在混合企業環境中管理 Microsoft 365 資產的 IT 專業人士——包括管理結合本地 Exchange 組件的混合部署（hybrid deployment）者——外露的集成通常是最古老且文檔最不完善的：傳統郵箱遷移腳本、歸檔工具，以及在 EWS 當年為預設選擇時建立的關鍵業務 connector。這些正是最值得優先審計的對象。</p>
+<p>管理員可透過上文所連結的 BleepingComputer 報道查閱微軟的完整說明。</p>
+<p><a href="https://www.bleepingcomputer.com/news/microsoft/microsoft-shares-how-to-fix-broken-exchange-online-ews-apps/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
