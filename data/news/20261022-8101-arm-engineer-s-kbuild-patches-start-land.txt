@@ -1,0 +1,36 @@
+Date: 2026-10-22 08:24:00
+Author: HKLUG Team
+Title: Arm Engineer's Kbuild Patches Start Landing With Promised Cuts To Kernel Build Times
+Content:
+<p>Phoronix reports that patches aimed at shortening Linux kernel compile times have begun landing in the kernel tree — work whose effects could reach well past upstream maintainers and into the CI/CD pipelines that build the kernel day in, day out.</p>
+<p>According to the report, the work is attributed to Lorenzo Stoakes, an Arm engineer, and is directed at Kbuild, the build system that compiles the kernel and its modules. Phoronix describes the changes as capable of producing "significant reductions" in kernel build time, but has published no before-and-after benchmark figures, leaving the claim directional rather than quantified. The report also names Linux 7.4 as the target release; recent mainline versions have sat in the 6.x series, and Phoronix's 7.4 designation has not been independently confirmed against kernel release announcements.</p>
+<h4>Why build time matters outside the kernel tree</h4>
+<p>Kernel build speed is easy to write off as a maintainer's problem, the concern of people with fast processors and idle compute cycles. In practice, build time acts as a multiplier: it determines the floor on how quickly a failing test can be diagnosed, how many CI jobs fit inside a billing window, and how long a developer waits for actionable feedback.</p>
+<p>For teams running kernel or driver CI on a schedule, a broad-based reduction in Kbuild overhead compounds across every job in the pool. Quicker incremental builds translate into tighter feedback loops for patches under review, lower compute spend for an unchanged number of runs, and headroom for extra checks — hardware-in-the-loop tests, static analysis, matrix builds across configurations — without stretching wall-clock time. That calculus holds wherever kernel compilation sits in a delivery pipeline: the cost of the compile rides along with it.</p>
+<h4>What is actually changing</h4>
+<p>Phoronix does not spell out what the patches change, so only a general point about build systems of this size is warranted: a tree like the kernel's carries real overhead in dependency resolution and in redundant recompilation, and a well-aimed change to Kbuild can trim both.</p>
+<p>What the report does say is that the patches "have begun landing," wording that ordinarily points to work entering the merge window for an upcoming kernel release rather than shipping in a stable build. Real-world gains from a build-system change of this scope will vary with hardware, configuration, and how much of the tree is rebuilt between runs.</p>
+<h4>A practical tip: measure before you optimise</h4>
+<p>Teams weighing the impact on their own pipelines should start by timing builds rather than guessing. Setting aside configuration checks like <code>make kernelversion</code>, the simplest approach is to wrap both a clean build and an incremental build in timing output:</p>
+<pre><code class="language-bash">time make -j$(nproc)
+</code></pre>
+<p>Capture a from-scratch build and a small-change rebuild, ideally on the same runner class CI uses, and compare against a baseline taken before and after upgrading the toolchain or kernel source. A warm <code>ccache</code> or persistent build cache will move the numbers materially — so measure with and without it. Publishing that baseline internally makes it far easier to tell whether a Kbuild improvement surfaces as genuine pipeline savings or gets absorbed by surrounding variance.</p>
+<p>If Phoronix publishes hard before-and-after figures and they bear out the promised reductions, a follow-up piece will be warranted. For now the signal is clear enough: the kernel's build system is reported to be getting a speed pass, and anyone whose delivery pipeline compiles the kernel has a reason to watch the merge window.</p>
+<p>Source: <a href="https://www.phoronix.com/news/Linux-7.4-Kbuild">Phoronix — Linux 7.4 Begins Landing Patches To Speed Up The Kernel Build Process</a></p>
+<hr>
+<p>Phoronix 報道，旨在縮短 Linux kernel 編譯時間的補丁已開始合入 kernel tree——有關工作的影響可能遠遠超越 upstream 維護者，延伸至日復一日編譯核心的 CI/CD pipelines。</p>
+<p>據該報道，有關工作據悉由 Arm 工程師 Lorenzo Stoakes 提出，針對 Kbuild 而來，即負責編譯核心及其模組的 build system。Phoronix 形容有關改動可令核心 build time「顯著縮減」，惟未有發布改動前後的 benchmark 數字，故此說法只屬方向性，未能量化。報道並將 Linux 7.4 列為目標版本；近期 mainline 版本一直處於 6.x 系列，Phoronix 所述的 7.4 版本編號尚未通過核心 release announcements 核實。</p>
+<h4>編譯時間為何在 kernel tree 之外同樣重要</h4>
+<p>核心編譯速度很容易被視為維護者自身的問題，是擁有高速處理器及閒置運算資源人士才需操心的事。實際上，build time 具倍數效應：它決定了一項失敗測試最快何時可以診斷、一個計費時段內可以容納多少個 CI job，以及開發者要等候多久才能取得可用的反饋。</p>
+<p>對於按排程運行核心或驅動 CI 的團隊，Kbuild 開銷的全面下降會在整個作業池的每個 job 中疊加。更快的增量編譯，意味著審核中的 patch 擁有更緊湊的 feedback loop、在執行次數不變下降低運算開支，以及騰出餘裕加入額外檢查——hardware-in-the-loop 測試、static analysis、跨配置的 matrix builds——而不會拖長 wall-clock time。此一計算方式在 pipeline 的任何位置同樣成立：編譯成本始終隨編譯環節同行。</p>
+<h4>實際上改動了甚麼</h4>
+<p>Phoronix 未有說明補丁的具體改動，因此只能就這類大規模 build system 作一般性說明：像 kernel 這樣龐大的 tree，在 dependency resolution 及重複重新編譯方面確實存在開銷，而一項對症下藥的 Kbuild 改動可以同時削減兩者。</p>
+<p>報道確實提到，補丁「已開始合入」（have begun landing），這個措辭通常指向工作進入即將發布核心的 merge window，而非已在 stable build 中出貨。此規模的 build system 改動，實際收益會因硬件、配置，以及每次執行之間重編譯的 tree 範圍而異。</p>
+<h4>實用建議：先量測，再優化</h4>
+<p>評估對自身 pipeline 影響的團隊，應先為 build 計時，而非靠猜測。撇開 <code>make kernelversion</code> 等配置檢查不談，最簡單的做法是分別為 clean build 及增量 build 加上計時輸出：</p>
+<pre><code class="language-bash">time make -j$(nproc)
+</code></pre>
+<p>擷取一次從頭 build 及一次小改動 rebuild 的數據，最好使用 CI 所採用的同級 runner，並與升級 toolchain 或 kernel source 前後取得的 baseline 作比較。預熱的 <code>ccache</code> 或持久 build cache 會顯著改變數字——因此要在有及沒有 cache 的情況下分別量測。在內部發布該 baseline，可令團隊更容易判斷 Kbuild 的改進究竟是轉化為真正的 pipeline 節省，還是被周邊變異性所吸收。</p>
+<p>若 Phoronix 公布確實的改動前後數字，並證實所承諾的縮減，跟進一篇報道將屬合理。目前訊號已足夠清晰：據報核心的 build system 正在獲得提速調校，凡 delivery pipeline 需要編譯核心的人士，都有理由留意 merge window。</p>
+<p>來源：<a href="https://www.phoronix.com/news/Linux-7.4-Kbuild">Phoronix — Linux 7.4 Begins Landing Patches To Speed Up The Kernel Build Process</a></p>
+<p><a href="https://www.phoronix.com/news/Linux-7.4-Kbuild" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
