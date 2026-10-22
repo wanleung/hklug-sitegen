@@ -1,0 +1,26 @@
+Date: 2026-10-22 11:21:00
+Author: HKLUG Team
+Title: From gaming to servers: inside LAVD's evolution, as told at Kernel Recipes 2026
+Content:
+<h3>From gaming to servers: inside LAVD's evolution, as told at Kernel Recipes 2026</h3>
+<p>Changwoo Min and Gavin Guo delivered an overview of how the LAVD scheduler has evolved beyond its gaming roots to serve server workloads, in a presentation covered by LWN.net on October 7, 2026.</p>
+<p>The talk comes against a broader trend in the kernel. The extensible scheduler class — <code>sched_ext</code>, which lets developers write CPU schedulers as BPF programs instead of patching the kernel's core scheduler — has produced a burst of innovation since it landed in mainline Linux. LAVD, maintained in the <code>sched-ext/scx</code> repository, has been one of the most noteworthy schedulers to emerge from that framework. It was originally designed for gaming applications, but, as LWN's account sets out, it has since grown to serve other types of workloads.</p>
+<h4>How LAVD actually schedules</h4>
+<p>LAVD's approach is latency-criticality aware virtual deadline scheduling. Each task is assigned a virtual deadline that reflects how sensitive it is to delay, and tasks with tighter deadlines run first.</p>
+<p>Criticality — the value that scales those deadlines — is derived from three measured quantities: the frequency with which a task waits, how frequently it wakes, and its average run time. The formula multiplies wait frequency by wake frequency and divides the result by average run time. The scheduler then divides the task's virtual deadline by that criticality score, so the more latency-sensitive a task scores, the sooner it is eligible to run.</p>
+<p>The original tuning targeted the shape of a gaming session: a handful of latency-sensitive threads chasing a millisecond-scale frame deadline, with the rest of the machine mostly idle. Since then, LWN's account reports, the scheduler has grown more complex heuristics, been adapted to other CPU types, and eventually become useful for data-centre workloads as well.</p>
+<h4>Why the trajectory matters</h4>
+<p><code>sched_ext</code> was argued for on the premise that scheduler innovation could move out of kernel release cycles and into user space, where BPF programs can be iterated on quickly and safely. LAVD's path is a test of that premise: a scheduler written for one niche, then extended toward server workloads. Its continued broadening is part of what has made it one of the framework's most-watched examples.</p>
+<p>LWN's full account, including the details of the Kernel Recipes presentation, is <a href="https://lwn.net/Articles/1097209/">behind its paywall</a>. The scheduler's own design documentation lives in the <a href="https://github.com/sched-ext/scx/tree/main/scheds/rust/scx_lavd"><code>scx_lavd</code> repository</a>.</p>
+<hr>
+<h3>從遊戲到伺服器：Kernel Recipes 2026 細說 LAVD 的演進</h3>
+<p>Changwoo Min 和 Gavin Guo 在一場於 2026 年 10 月 7 日由 LWN.net 報導的演講中，綜述了 LAVD 調度器如何走出遊戲根源、轉而服務伺服器工作負載的演進過程。</p>
+<p>這場演講的背景，是 Linux 核心的一股更大趨勢。可擴展的調度器類別 <code>sched_ext</code> 讓開發者可以撰寫 BPF 程式來實作 CPU 調度器，毋須修改核心的調度器；自納入 Linux 主線以來，它已催生了一輪創新。在 <code>sched-ext/scx</code> 儲存庫中維護的 LAVD，是從該框架湧現的調度器中最值得注意的一個。它最初是為遊戲應用而設計，但正如 LWN 的報導所述，此後已逐步擴展，以服務其他類型的工作負載。</p>
+<h4>LAVD 實際上如何調度</h4>
+<p>LAVD 採用的是 latency-criticality aware virtual deadline scheduling。每個 task 會獲分配一個反映其對延遲敏感程度的 virtual deadline，virtual deadline 較緊迫的 task 優先運行。</p>
+<p>Criticality 是用來縮放這些 deadline 的數值，由三項量度得出：task 等候的頻率、喚醒的頻率，以及其平均運行時間。公式將等候頻率乘以喚醒頻率，再除以平均運行時間。調度器其後會以 task 的 virtual deadline 除以該 criticality 分數，因此一個 task 的延遲敏感度評分越高，就越早具備運行資格。</p>
+<p>最初的調校是針對遊戲場景的形態：數個對延遲敏感的 thread 追逐以毫秒計的幀 deadline，機器其餘部分則大部分時間閒置。據 LWN 的報導，自此之後，該調度器逐步發展出更複雜的啟發式規則、適配了其他 CPU 類型，最終亦變得對數據中心工作負載同樣有用。</p>
+<h4>為何這條發展路徑值得注意</h4>
+<p><code>sched_ext</code> 當初的立論前提是：調度器創新可以脫離核心的發佈周期，轉移至 user space，在那裡 BPF 程式可以快速且安全地反覆迭代。LAVD 的路徑正是對這一前提的考驗：一個為單一利基市場編寫的調度器，其後擴展至伺服器工作負載。它持續擴展應用範圍，正是使其成為該框架最受矚目的範例之一的原因。</p>
+<p>LWN 的完整報導，包括 Kernel Recipes 演講的詳情，<a href="https://lwn.net/Articles/1097209/">設有付費牆</a>。調度器本身的設計文件則載於 <a href="https://github.com/sched-ext/scx/tree/main/scheds/rust/scx_lavd"><code>scx_lavd</code> 儲存庫</a>。</p>
+<p><a href="https://lwn.net/Articles/1097209/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
