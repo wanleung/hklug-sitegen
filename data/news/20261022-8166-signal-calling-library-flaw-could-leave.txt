@@ -1,0 +1,34 @@
+Date: 2026-10-22 20:04:00
+Author: HKLUG Team
+Title: Signal calling library flaw could leave microphone and camera running after hang-up
+Content:
+<p>A critical vulnerability in Signal's calling library could allow a malicious caller to interfere with call termination, potentially leaving the victim's microphone and camera active after they believe the conversation has ended, Security Affairs reported. The flaw is tracked as CVE-2026-113380 and carries a CVSS score of 9.3 out of 10.</p>
+<p>Users are advised to update Signal on iOS, Android, or desktop to a fixed build immediately. Security Affairs does not enumerate which vulnerable versions are affected or name the specific patched release, and Signal has not published version-level guidance beyond pointing users to the fixed build. The publication also does not report that the flaw has been exploited in the wild.</p>
+<h4>What the flaw does</h4>
+<p>The vulnerability sits in Signal's calling stack rather than in its messaging or encryption layer. By exploiting the way call teardown is handled, an attacker who is a participant in the call can interfere with the hang-up process. The practical consequence is that a victim who has ended a call could remain live — microphone and camera still streaming — without any visible indication in the Signal interface that the session continues.</p>
+<p>That invisibility is central to the risk. Because the app appears to behave normally after hang-up, the user has no cue to investigate or re-check permissions. Any detection has to come from an external signal, such as the operating system's own microphone and camera activity indicators, which remain the most trustworthy confirmation that a sensor is in use.</p>
+<h4>Why it scores 9.3</h4>
+<p>Security Affairs attributes the critical severity to a combination of factors: the flaw is triggerable during a normal call, the victim only has to answer it, and the direct outcome is a breach of audio and visual confidentiality. The attacker's reach is bounded — they must be a party to the call, not an unauthenticated stranger reaching a device over the network — but that requirement is a low bar in practice, since answering a call from an unknown or spoofed contact is routine.</p>
+<h4>Who should care</h4>
+<p>Signal is a consumer messaging app, but its user base extends well beyond casual conversations. Journalists, activists, NGOs, and corporate teams handling sensitive discussions routinely rely on the app's end-to-end encryption for calls. The same calling library ships in every install, which means managed-device administrators tracking CVE identifiers across mobile fleets should treat this as a patching item, not just a consumer notice. Desktop deployments warrant the same attention, though the disclosure does not confirm whether every platform is affected.</p>
+<p>The same patching discipline applies to any organisation running Signal on managed devices.</p>
+<p>For Hong Kong IT professionals and privacy-conscious users broadly, the story is a useful reminder that end-to-end encryption protects data in transit — it does not guarantee that a device stops listening when the call is supposed to be over. A secure channel is only as trustworthy as the endpoint controlling the sensor.</p>
+<h4>What to do now</h4>
+<p>Update Signal to the fixed build as the first and primary action, and enable automatic updates so subsequent fixes land without manual intervention. If an update is unavailable, pause Signal calls until it is. If you suspect a call did not terminate correctly, rely on your operating system's microphone and camera indicators rather than the app's own interface.</p>
+<p>The source does not enumerate vulnerable versions or provide a Signal-side advisory beyond the patched build, and it does not report exploitation in the wild. This article will be updated if the project publishes further details or if credible reports of active exploitation emerge.</p>
+<hr>
+<p>據 Security Affairs 報道，Signal 通話函式庫存在一項嚴重漏洞，可讓惡意通話者干擾通話終止程序，令受害者的咪高風及鏡頭在他們以為對話已結束後仍維持運作。該漏洞編號為 CVE-2026-113380，CVSS 評分達 10 分制的 9.3 分。</p>
+<p>用戶應立即將 iOS、Android 或桌面版 Signal 更新至已修復的版本。Security Affairs 未有列明哪些受影響的漏洞版本，亦未指名具體的修復版本號；Signal 除指引用戶更新至已修復版本外，亦未發布版本層面的說明。該刊物亦未報道漏洞已在野外被利用。</p>
+<h4>漏洞運作方式</h4>
+<p>該漏洞位於 Signal 的通話協議棧（calling stack），而非其訊息傳遞或加密層。攻擊者只需為通話參與者之一，即可利用通話終止（call teardown）的處理方式，干擾掛線程序。實際後果是，已結束通話的受害者可能仍然「在線」——咪高風及鏡頭持續傳送數據——而 Signal 介面完全沒有任何跡象顯示通話仍在繼續。</p>
+<p>這種隱蔽性正是風險的核心。由於應用程式在掛線後看來運作正常，用戶不會有線索去查究或重新檢查權限。任何偵測只能依賴外部訊號，例如作業系統本身的咪高風及鏡頭活動指示燈，這仍然是感應器正被使用的最可靠確認方式。</p>
+<h4>為何評分 9.3</h4>
+<p>Security Affairs 將嚴重程度歸因於多重因素：漏洞可在一般通話期間觸發、受害者只需接聽，以及直接後果是音訊及視像私密性被侵犯。攻擊者的觸及範圍有所限制——必須是通話一方，而非透過網絡連接至裝置的未經認證陌生人——但此門檻在實踐中相當低，因為接聽來自未知或偽冒聯絡人的來電十分常見。</p>
+<h4>誰應該關注</h4>
+<p>Signal 是一款消費級通訊應用程式，但其用戶群遠超一般閒聊用途。記者、社運人士、非政府組織及處理敏感討論的企業團隊，經常依賴該應用程式的通話端對端加密（end-to-end encryption）。同一套通話函式庫隨每次安裝一併出貨，這意味着在流動裝置機隊中追蹤 CVE 編號的受管裝置管理員，應將此視為修補項目，而非僅僅是消費者公告。桌面版部署同樣值得關注，惟是次披露未確認所有平台均受影響。</p>
+<p>同一修補紀律適用於任何在受管裝置上運行 Signal 的機構。</p>
+<p>對香港 IT 專業人員及重視私隱的廣大用戶而言，這則報道是一次有用的提醒：端對端加密保護的是傳輸中的數據，並不能保證裝置在通話應已結束時停止接收。安全通道是否可信，取決於控制感應器的終端裝置。</p>
+<h4>現在應採取的措施</h4>
+<p>首要及首要行動是將 Signal 更新至已修復版本，並啟用自動更新，使後續修復毋須手動介入即可套用。如更新尚未提供，請暫停使用 Signal 通話直至更新到位。若懷疑通話未正確終止，請依賴作業系統的咪高風及鏡頭指示燈，而非應用程式本身的介面。</p>
+<p>消息來源未有列明受漏洞影響的版本，亦未提供修復版本以外的 Signal 官方通告，同時未報道野外利用情況。如項目方公布更多詳情，或出現可信的積極利用報告，本文將作更新。</p>
+<p><a href="https://securityaffairs.com/201490/security/signal-vulnerability-could-keep-calls-alive-after-users-hang-up.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
