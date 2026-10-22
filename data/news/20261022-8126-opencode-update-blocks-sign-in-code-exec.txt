@@ -1,0 +1,42 @@
+Date: 2026-10-22 14:36:00
+Author: HKLUG Team
+Title: OpenCode Update Blocks Sign-In Code Execution via Rogue MCP Servers on Windows and WSL
+Content:
+<h3>OpenCode Update Blocks Sign-In Code Execution via Rogue MCP Servers on Windows and WSL</h3>
+<p>Developers running the OpenCode AI coding agent on Windows or Windows Subsystem for Linux (WSL) should treat version 1.18.33 as a priority upgrade. The release patches a flaw that let a malicious — or quietly hijacked — Model Context Protocol (MCP) server execute code on a developer's machine at the moment of sign-in, running with the developer's own privileges.</p>
+<p>The Hacker News disclosed the issue on 5 October, reporting that Anomaly, the company behind OpenCode, shipped the fix in version 1.18.33 in September.</p>
+<h4>What happened</h4>
+<p>OpenCode, like a growing category of AI-assisted development tools, connects to external MCP servers to extend its capabilities with third-party tooling. In this case, a rogue or compromised MCP server could trigger code execution during a normal sign-in routine on Windows and WSL environments.</p>
+<p>The timing is what makes the flaw notable. Because the payload fires during routine authentication rather than after an unusual user action, it blends into ordinary startup traffic — making it both easy to trigger and difficult to spot in logs. The attacker does not need the developer to click anything suspicious; signing in is enough.</p>
+<p>Compounding the risk, MCP servers typically operate without a sandbox boundary. Code executed this way inherits the developer's own access: SSH keys, cloud credentials, repository tokens and source code are all within reach. In effect, each MCP server a developer adds is a supply-chain dependency — and the threat model has to account for previously benign servers turning hostile after upstream compromise, not just tools that were hostile from the start.</p>
+<h4>Why it matters</h4>
+<p>For IT managers and development teams, the incident is a reminder that AI coding agents sit squarely inside the trust perimeter. An MCP server is not a lightweight plugin; it is an integration point carrying the blast radius of the account that runs it. A missed patch does not simply degrade functionality — it can hand an attacker the keys to a developer workstation. The good news is that the fix itself is straightforward, and the episode offers a template for hardening the wider MCP setup.</p>
+<h4>Practical hardening checklist</h4>
+<ol>
+<li><strong>Update first</strong> — Upgrade to OpenCode 1.18.33 or later across both Windows and WSL environments without delay.</li>
+<li><strong>Audit MCP servers</strong> — Review the list of enabled MCP servers, remove anything unfamiliar or unused, and establish an allowlist of approved integrations.</li>
+<li><strong>Watch for hijacks, not just malice</strong> — Servers that were once trusted can still be compromised; periodically re-check their provenance and versions.</li>
+<li><strong>Scope credentials</strong> — Give the agent short-lived tokens and restricted accounts rather than mounting personal SSH keys or global cloud credentials directly.</li>
+</ol>
+<p>Applied together, these steps limit the damage even if a future patch is missed. For Hong Kong IT teams rolling out AI-assisted development tools, the broader lesson is that an MCP integration decision is a trust decision — and should be governed like any other third-party dependency.</p>
+<p><em>Source: The Hacker News, 5 October 2026.</em></p>
+<hr>
+<h3>OpenCode 更新封堵 Windows 及 WSL 上惡意 MCP 伺服器於登入時執行代碼漏洞</h3>
+<p>在 Windows 或 Windows Subsystem for Linux（WSL）上運行 OpenCode AI 編碼代理程式的開發者，應將 1.18.33 版列為優先升級項目。該版本修補了一項漏洞，該漏洞曾令惡意——或被悄悄劫持的——Model Context Protocol（MCP）伺服器，於開發者登入瞬間在其機器上執行代碼，並以開發者本人的權限運行。</p>
+<p>The Hacker News 於 10 月 5 日披露此事，並報道 OpenCode 開發商 Anomaly 已於 9 月在 1.18.33 版中推出修復。</p>
+<h4>事件經過</h4>
+<p>OpenCode 與日益增多的 AI 輔助開發工具類別相同，會連接外部 MCP 伺服器，透過第三方工具擴展其功能。在是次事件中，一個惡意或已被入侵的 MCP 伺服器，可在 Windows 及 WSL 環境的正常登入程序期間觸發代碼執行。</p>
+<p>漏洞之所以值得注意，在於其觸發時機。由於惡意負載（payload）是在例行身份驗證期間而非在用戶作出不尋常操作之後觸發，它便混入了正常的啟動流量之中——既容易觸發，又難以在日誌中察覺。攻擊者無須開發者點擊任何可疑項目；只需登入便已足夠。</p>
+<p>風險更為加劇的是，MCP 伺服器通常在沒有沙箱邊界的情況下運行。以此方式執行的代碼會繼承開發者本身的權限：SSH 金鑰、雲端憑證、代碼倉庫（repository）令牌及原始碼全部唾手可得。實際上，開發者加入的每一個 MCP 伺服器都是一項供應鏈依賴——威脅模型必須納入原本良善的伺服器在上游被入侵後轉為敵對的情況，而不只是從一開始就屬惡意的工具。</p>
+<h4>問題為何重要</h4>
+<p>對 IT 管理層及開發團隊而言，此事件提醒我們 AI 編碼代理程式正好處於信任邊界（trust perimeter）之內。MCP 伺服器並非輕量級外掛程式；它是一個整合點，承載着運行它的帳戶所牽涉的影響範圍（blast radius）。一個未及時安裝的補丁，不單會令功能受損——更可能將開發者工作站的鑰匙拱手交予攻擊者。好消息是修復本身相當直接，而是次事件亦為強化整體 MCP 設置提供了一個範本。</p>
+<h4>實用防護清單</h4>
+<ol>
+<li><strong>先升級</strong> — 立即將 Windows 及 WSL 環境一併升級至 OpenCode 1.18.33 或更新版本。</li>
+<li><strong>審核 MCP 伺服器</strong> — 檢視已啟用的 MCP 伺服器清單，移除任何不熟悉或不再使用的項目，並建立已核准整合的允許清單（allowlist）。</li>
+<li><strong>留意「被劫持」而非只防「惡意」</strong> — 曾經可信的伺服器同樣可能被入侵；應定期重新檢查其來源與版本。</li>
+<li><strong>權限最小化</strong> — 為代理程式提供短效期令牌與受限帳戶，而非直接掛載個人 SSH 金鑰或全域雲端憑證。</li>
+</ol>
+<p>上述步驟一併推行，即使日後遺漏某個補丁，亦能將損失限制於最低。對於部署 AI 輔助開發工具的香港 IT 團隊而言，更廣泛的教訓是：MCP 整合的決定，就是信任的決定——應與任何其他第三方依賴一樣受到同等嚴格的管理。</p>
+<p><em>來源：The Hacker News，2026 年 10 月 5 日。</em></p>
+<p><a href="https://thehackernews.com/2026/10/opencode-flaw-lets-malicious-mcp.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
