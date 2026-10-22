@@ -1,0 +1,30 @@
+Date: 2026-10-22 11:05:00
+Author: HKLUG Team
+Title: One Unauthenticated Connection: QPACK Bugs Let Attackers Exhaust HTTP/3 Server Memory
+Content:
+<p>Security firm FoxIO has disclosed flaws in QPACK, the header-compression layer HTTP/3 uses to encode request headers, saying an unauthenticated remote attacker can drive a web server to exhaust its memory over a single connection. FoxIO has released working proof-of-concept code, and The Hacker News reported the disclosure on 22 October.</p>
+<p>For operators running HTTP/3 edges, the practical headline is that this is not a bandwidth attack: the defences most teams reach for first address the wrong layer.</p>
+<h4>How the amplification works</h4>
+<p>HTTP/3 runs over QUIC, and header data is compressed with QPACK rather than the HPACK scheme used by HTTP/2. Compression means a small payload on the wire can stand in for a far larger set of headers held in the server's memory. FoxIO's finding is that this ratio can be pushed to an extreme — the firm puts the worst case at roughly 4,000-fold expansion of memory relative to bytes received, as reported by The Hacker News.</p>
+<p>Translated into plain terms: a batch of compressed headers arriving as roughly 10 KB of network traffic can leave something on the order of a 40 MB footprint once the server materialises the decompressed state. Sustained on one connection, that is enough to drain a default-configured server while it is still processing request headers — before authentication, a session, or even a valid request line comes into play.</p>
+<p>The expansion happens inside the victim's own process. There is no reflected traffic, no oversized response for the network to throttle, and no upstream rate limit that applies to bytes the server expands on itself. Volumetric scrubbing, added transit, or autoscaling against traffic spikes therefore leave the economics unchanged: the attacker's cost stays small and fixed, while the victim's memory cost scales.</p>
+<h4>Response status and mitigation guidance</h4>
+<p>Neither The Hacker News report nor FoxIO's public material accompanying the disclosure has so far attached a CVE identifier, named the affected implementations, published vendor-by-vendor patch status, or pointed to any in-the-wild exploitation. Until those details surface, the authoritative reference for any given deployment is the advisory for the specific component in the HTTP/3 path.</p>
+<p>Mitigation guidance reported alongside the disclosure clusters around three areas. The first is the HTTP/3 component itself — the QPACK implementation inside a given server, proxy, cloud load balancer or appliance — rather than only the TLS or reverse-proxy layer wrapped around it, since each vendor ships on its own schedule. The second is tightening the QPACK dynamic table size and the maximum header list size, which bounds how much state a single connection can inflate. The third combines connection-level limits with visibility: per-source QUIC connection concurrency rather than per-request rate budgets, which never trigger on an attack that succeeds on one connection, alongside memory monitoring for the HTTP/3 path, which default dashboards often do not watch. Disabling QUIC and falling back to HTTP/2 over TLS remains a legitimate interim measure where patches have not arrived, at some performance cost rather than an availability one.</p>
+<h4>Background: an inherited assumption</h4>
+<p><em>Context, not part of FoxIO's disclosure:</em> the bug class has a lineage. HTTP/2's HPACK-bomb technique exploited the same trust in compressed header data. QPACK inherited HTTP/2's assumptions about resource consumption during decompression, but has had far less than a decade of adversarial scrutiny behind it. Protocol modernisation shifts the risk profile rather than retiring it — teams that hardened HTTP/2 should not assume the successor shipped with equivalent hardening.</p>
+<p><em>Source: The Hacker News, reporting on FoxIO's disclosure.</em></p>
+<hr>
+<p>網絡安全公司 FoxIO 披露了 QPACK 的漏洞。QPACK 是 HTTP/3 用來編碼請求標頭的標頭壓縮層。該公司指出，一名無需認證的遠端攻擊者只需透過單一連線，便可令網絡伺服器耗盡記憶體。FoxIO 已發布可實際運行的 proof-of-concept 代碼，The Hacker News 於 10 月 22 日報道了這次披露。</p>
+<p>對於營運 HTTP/3 邊緣節點的維運人員而言，最實際的重點是：這並非帶寬攻擊——大多數團隊首先採用的防禦措施，針對的是錯誤的層面。</p>
+<h4>放大機制如何運作</h4>
+<p>HTTP/3 運行於 QUIC 之上，標頭數據以 QPACK 壓縮，而非 HTTP/2 所用的 HPACK 方案。壓縮意味著線路上的一小段載荷，可以代表伺服器記憶體中一大組標頭。FoxIO 的發現是，這一比例可以被推至極端——該公司指出最壞情況下，記憶體用量相對於接收位元組約擴大 4,000 倍，據 The Hacker News 報道。</p>
+<p>以白話來說：一批壓縮標頭以約 10 KB 網絡流量的形式抵達，一旦伺服器將解壓狀態實體化，便可能留下約 40 MB 的記憶體佔用。若在單一連線上持續進行，這已足以令一部預設配置的伺服器在仍在處理請求標頭期間被耗盡——在認證、session，甚至有效請求行介入之前便已發生。</p>
+<p>這種膨脹發生在受害者的自身處理程序之內。不存在反射流量，沒有網絡可以節流的超大回應，也沒有上游 rate limit 適用於伺服器自行展開的位元組。因此，容量型流量清洗、增加 transit 頻寬或針對流量高峰的自動擴容，均無法改變成本格局：攻擊者的成本維持低廉且固定，而受害者的記憶體成本則不斷攀升。</p>
+<h4>回應狀況與緩解指引</h4>
+<p>無論是 The Hacker News 的報道，還是 FoxIO 隨披露一同公開的材料，迄今均未附上 CVE 編號、點名受影響的實作、公布逐家廠商的修補狀態，亦未指出有任何漏洞在野外被利用的情況。在這些細節浮現之前，任何特定部署的權威參考，仍是 HTTP/3 路徑上相關組件的安全公告。</p>
+<p>與披露一同報道的緩解指引集中在三個範疇。第一是 HTTP/3 組件本身——即特定伺服器、proxy、雲端 load balancer 或 appliance 內的 QPACK 實作——而非僅僅是包覆在外的 TLS 或 reverse proxy 層，因為各家廠商的更新進度不一。第二是收緊 QPACK dynamic table size 及 maximum header list size，從而限制單一連線可以膨脹的狀態量。第三是將連線層級限制與可見性結合：針對 per-source 的 QUIC 連線並發限制，而非 per-request 的速率預算——後者在單一連線即可得手的攻擊中永遠不會觸發——同時加強 HTTP/3 路徑的記憶體監控，而預設 dashboard 往往並不會監察這一環。在補丁尚未到位的情況下，停用 QUIC 並回退至經 TLS 的 HTTP/2，仍是合理的臨時措施，代價是部分效能損失而非可用性受損。</p>
+<h4>背景：一個沿襲而來的假設</h4>
+<p><em>以下為背景脈絡，並非 FoxIO 披露的內容：</em>此類漏洞有其淵源。HTTP/2 的 HPACK-bomb 技術利用的正是對壓縮標頭數據的同一份信任。QPACK 承襲了 HTTP/2 對於解壓過程中資源消耗的假設，但其背後所經歷的對抗性檢驗，遠不足十年。協議現代化改變的是風險面貌，而非將風險消除——曾為 HTTP/2 加固的團隊，不應假設其後繼者已內建同等水平的加固措施。</p>
+<p><em>來源：The Hacker News，就 FoxIO 披露所作的報道。</em></p>
+<p><a href="https://thehackernews.com/2026/10/new-qpack-flaws-can-crash-http3-servers.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
