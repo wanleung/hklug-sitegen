@@ -1,0 +1,44 @@
+Date: 2026-10-22 18:04:00
+Author: HKLUG Team
+Title: Short-Slice Scheduling Tweaks Land in In-Development Kernel, With NVIDIA Vera SMT Hint Alongside
+Content:
+<p>The scheduler pull for the in-development kernel has landed, bringing changes aimed squarely at one of the more quietly felt performance problems in Linux: the wait a very short-lived task endures before it gets scheduled at all.</p>
+<p>The work is part of the merge-window updates covered in Phoronix's report on Linux 7.4<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>, and it improves scheduling latency for short-slice tasks — work that runs for fractions of a millisecond and never stays on a CPU long enough to benefit from the throughput-oriented logic that dominates scheduler design.</p>
+<h4>Why short slices matter in practice</h4>
+<p>The Linux scheduler divides CPU time into slices. Long-running, CPU-bound jobs — compilers, video encodes, batch analytics — are relatively forgiving: a few extra milliseconds of dispatch delay is invisible against seconds or minutes of total run time. Short-slice tasks are the opposite. A keystroke event, an HTTP handler that answers and returns, a single build step in a container pipeline, a health-check probe: these are dominated by dispatch latency rather than execution time. Every millisecond spent waiting in a run queue is a millisecond added directly to tail latency.</p>
+<p>That asymmetry is why this class of change tends to be disproportionately visible to operations teams even when the patch is small. In containerised environments, where many small tasks contend across cgroups on shared hosts, dispatch delay compounds across process spawns, sidecar proxies and IPC handoffs. The practical promise of the merged work is that latency-sensitive and interactive workloads should see shorter scheduling waits — and, importantly, with no application code changes required to benefit. The kernel does the work underneath.</p>
+<p>For DevOps and platform engineers running mixed workloads on shared Kubernetes nodes — API gateways alongside build workers, for instance — tail-latency improvements of this kind tend to show up in p99 request timings and in the perceived responsiveness of internal tooling, rather than in headline throughput numbers.</p>
+<h4>NVIDIA Vera and an ARM server signal</h4>
+<p>The second notable item in the scheduler merge, as reported by Phoronix, is an SMT preference mechanism tied to NVIDIA's upcoming Vera CPU platform. The patch is described as expressing a preference for how simultaneous multithreading is handled on that hardware, rather than as an unconditional mandate — a distinction that matters for how strongly it can be read as a behavioural guarantee.</p>
+<p>Phoronix reports that Vera is expected to succeed NVIDIA's Grace processor line and to underpin the company's AI infrastructure hardware. Read in that context, the patch is less an isolated scheduler tweak than a signal: ARM-based server silicon from NVIDIA appears close enough to mainline for the kernel community to be landing platform-specific scheduling accommodations during a merge window. For infrastructure teams tracking the ARM server ecosystem, that is a more consequential datapoint than the specific SMT hint itself — one plausible reading is that it points to sustained upstream investment in the platform's scheduling behaviour as deployments move from test clusters to production.</p>
+<p>Taken together, the two beats of this merge point in the same direction. One improves how the kernel treats the smallest, most latency-exposed tasks by default; the other shows scheduler policy being tuned for a new class of ARM server hardware before it is broadly deployed. Neither will appear in a release note most operators read, but both shape the tail-latency numbers those operators actually get paged about.</p>
+<hr />
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>The "Linux 7.4" version identifier follows Phoronix's wording. Mainline numbering should be confirmed against Linus Torvalds's official merge-window announcement, and the final scope of the scheduler pull should be re-checked once it settles into a release candidate.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+<hr>
+<p>開發中的核心（kernel）調度器（scheduler）合併請求已經提交，帶來一系列針對 Linux 其中一項較為隱蔽的效能問題的改動：生命週期極短的 task 在獲得調度之前所經歷的等待時間。</p>
+<p>是次改動屬 Phoronix 報道 Linux 7.4<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> 時提及的 merge window 更新一部分，針對短時間片（short-slice）task 的調度延遲（scheduling latency）作出改善——這類工作執行時間只以毫秒的分數計，逗留在 CPU 的時間從不足以受惠於主導調度器設計的吞吐量（throughput）導向邏輯。</p>
+<h4>為何短時間片在實務上重要</h4>
+<p>Linux 調度器把 CPU 時間劃分為多個時間片。長時間執行、以 CPU 為主的工作——編譯器、影片編碼、批量分析——相對寬容：多幾毫秒的派發延遲（dispatch delay），相對於數秒乃至數分鐘的總執行時間根本難以察覺。短時間片 task 則正好相反：一次按鍵事件、一個應答後即返回的 HTTP handler、container pipeline 中的單一步驟、一個健康檢查探測（health-check probe）——這些工作主導其表現的是派發延遲而非執行時間。在 run queue 中每多等一毫秒，就等於為 tail latency 直接加上一毫秒。</p>
+<p>這種不對稱，正是這類改動即使 patch 規模不大，也往往會在營運團隊身上格外明顯的原因。在容器化（containerised）環境中，大量細小 task 透過 cgroups 在共享主機上競爭，派發延遲會在 process 生成、sidecar proxy 及 IPC 遞交等環節層層疊加。是次合併工作在實務上的承諾是：延遲敏感型及互動式工作負載應會獲得更短的調度等待——更重要的是，無需修改應用程式碼即可受惠，由核心在底層代勞。</p>
+<p>對在共享 Kubernetes 節點上執行混合工作負載的 DevOps 及平台工程師而言——例如 API gateway 與 build worker 並列部署——這類 tail latency 改善通常會反映在 p99 請求耗時以及內部工具的可感知響應速度上，而非體現在 headline 吞吐量數字之中。</p>
+<h4>NVIDIA Vera 與 ARM 伺服器訊號</h4>
+<p>據 Phoronix 報道，調度器 merge 中第二項值得注意的項目，是與 NVIDIA 即將推出的 Vera CPU 平台掛鈎的 SMT 偏好機制。該 patch 被描述為對該硬件上 simultaneous multithreading 處理方式表達偏好，而非無條件強制規定——這一區別對於外界可將其理解為多強的行為保證至關重要。</p>
+<p>Phoronix 報道，Vera 預期將接替 NVIDIA 的 Grace 處理器系列，成為公司 AI 基礎設施硬件的支柱。在此脈絡下閱讀，該 patch 與其說是一次孤立的調度器微調，不如說是一個訊號：來自 NVIDIA 的 ARM 架構伺服器晶片看似已接近足以進入主線（mainline）的程度，以至核心社群在 merge window 期間便已著手落實平台專屬的調度配合。對於追蹤 ARM 伺服器生態的基礎設施團隊而言，這個數據點比具體的 SMT 提示本身更具意義——一種合理的解讀是，隨著部署由測試叢集轉向生產環境，它指向上游將持續投入該平台的調度行為。</p>
+<p>總括而言，是次 merge 的兩個環節指向同一方向：其一改善核心在預設情況下處理最細小、最受延遲影響的 task 的方式；其二則顯示在 ARM 伺服器硬件大規模部署之前，調度策略已先行作出調校。兩者都不會出現在多數系統維護人員閱讀的 release note 中，但卻共同塑造了他們實際上會收到 page 通知的 tail latency 數字。</p>
+<hr />
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>「Linux 7.4」版本編號沿用 Phoronix 的措辭。主線（mainline）版本編號應對照 Linus Torvalds 官方的合併視窗（merge window）公告加以確認，調度器（scheduler）改動的最終範圍亦應於納入 release candidate 後再行覆核。&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+<p><a href="https://www.phoronix.com/news/Linux-7.4" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
