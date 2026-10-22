@@ -1,0 +1,34 @@
+Date: 2026-10-22 01:15:00
+Author: HKLUG Team
+Title: Kernel 7.4 Deletes __get_user and __put_user, Turning a Longstanding Memory-Safety Trap Into a Build Error
+Content:
+<p>Linux 7.4 will no longer compile code built around the kernel's long-standing <code>__get_user()</code> and <code>__put_user()</code> helpers, after Linus Torvalds merged a change that deletes the two functions outright rather than deprecating them. According to Phoronix, which reported the merge, the patch is part of a recent run of changes Torvalds has written or landed himself — with at least part of the work assisted by Claude Code, Anthropic's AI coding tool.</p>
+<h4>Why the double underscore mattered</h4>
+<p>The two helpers exist to read from and write to user-space memory from kernel code. Their single-underscore counterparts, <code>get_user()</code> and <code>put_user()</code>, perform an <code>access_ok()</code> validation first, checking that the address range is actually safe to touch. The <code>__</code> variants skip that step entirely — the whole point of them was to let callers who had already performed the check avoid repeating it.</p>
+<p>The problem is that nothing at the call site signals that precondition. Driver authors encountering <code>__get_user()</code> in existing code saw a marginally different name carrying an invisible contract, and the pattern was propagated across generations of drivers without the accompanying validation ever being added. A missing bounds check in this path is exactly the kind of defect that turns into an out-of-bounds kernel read or write at runtime, in code that runs with full privilege.</p>
+<p>Deleting the functions converts a latent runtime fault into a hard compile-time failure. Any tree still referencing them stops building, which forces the issue to be resolved during the port rather than shipped as a dormant memory-safety bug.</p>
+<h4>Where the breakage lands</h4>
+<p>For code maintained in the mainline kernel, the port is a mechanical one: swap to <code>get_user()</code>/<code>put_user()</code>, or to the <code>copy_from_user()</code>/<code>copy_to_user()</code> family where bulk transfer is involved, and ensure the validation is present exactly once.</p>
+<p>The harder impact falls on code that never lands upstream. Out-of-tree vendor drivers, board support packages for embedded hardware, and kernel modules distributed as binary blobs cannot simply pull a later upstream revision — they carry their own copies of these call patterns and will hit the compile error on their first build against 7.4. For maintainers of long-lived BSPs pinned to kernel releases years old, this is one more reason the upgrade cost of skipping major versions keeps compounding. Binary-only modules face the tougher question of whether the vendor will issue a rebuild at all.</p>
+<h4>Why it matters</h4>
+<p>Memory-safety work in the kernel has increasingly focused on removing entire classes of defect rather than patching instances of them. Retiring an API whose danger was structural — an unsafe operation wearing a name that looked nearly identical to the safe one — fits that strategy. It is also a reminder that kernel security decisions routinely reach well past the mainline tree, into the vendor and embedded code that most deployments actually run.</p>
+<h4>Claude Code's supporting role</h4>
+<p>The AI-assisted element of the change has drawn attention, though the framing matters. Torvalds has previously signalled tolerance for AI-generated or AI-assisted patches on the condition that a human maintainer reviews and takes responsibility for them. A sweep of this shape — find every caller of a well-specified symbol, apply a documented transformation — is close to the ideal use case: bounded, mechanical, verifiable work with a clear correctness criterion that the compiler itself enforces and a human review behind it.</p>
+<p>Whether that tolerance extends to more judgment-heavy categories of AI-assisted kernel work, or whether AI-assisted maintainership normalises or attracts pushback over the course of the 7.4 cycle, remains an open question worth revisiting as the cycle develops.</p>
+<p><em>Source: <a href="https://www.phoronix.com/news/Linus-Kills-Get-Put-User-Linux">Phoronix</a></em></p>
+<hr>
+<p>Linux 7.4 將不再編譯圍繞內核（kernel）長期存在的 <code>__get_user()</code> 與 <code>__put_user()</code> 輔助函數所建構的代碼。Linus Torvalds 已合入一項改動，直接刪除這兩個函數，而非將其棄用（deprecate）。根據報道此次合入的 Phoronix，該 patch 屬於近期 Torvalds 親自撰寫或親自提交的一系列改動——當中至少部分工作由 Anthropic 的 AI 編程工具 Claude Code 協助完成。</p>
+<h4>為何雙底線如此重要</h4>
+<p>這兩個輔助函數的用途，是讓內核代碼讀取及寫入用戶空間（user-space）記憶體。它們的單底線版本 <code>get_user()</code> 及 <code>put_user()</code> 會先執行 <code>access_ok()</code> 驗證，檢查目標地址範圍確實可供安全存取。而 <code>__</code> 變體則完全略過這一步——其存在目的，正是讓已自行完成檢查的調用者毋須重複驗證。</p>
+<p>問題在於，調用點（call site）上沒有任何標示說明這項前置條件。驅動程式開發者在既有代碼中遇到 <code>__get_user()</code> 時，只會見到一個僅有細微差別的名稱，背後卻附帶一份隱形合約；這種模式在一代又一代的驅動程式中流傳下去，而相應的驗證卻從未補上。此路徑上任何缺失的邊界檢查（bounds check），正是會在運行時（runtime）演變為內核越界讀取或寫入的典型缺陷，而且相關代碼是以完整權限運行的。</p>
+<p>刪除這兩個函數，等於將一個潛伏的運行時故障轉化為確鑿的編譯時（compile-time）錯誤。任何仍引用它們的代碼樹都無法完成編譯，迫使問題在移植（port）過程中解決，而非作為休眠的記憶體安全 bug 隨產品交付。</p>
+<h4>破壞範圍落在哪裡</h4>
+<p>對於在 mainline 內核中維護的代碼，移植工作屬機械性質：改用 <code>get_user()</code>／<code>put_user()</code>，涉及大量數據傳輸時改用 <code>copy_from_user()</code>／<code>copy_to_user()</code> 系列函數，並確保驗證剛好只出現一次。</p>
+<p>較大的影響落在從未進入上游（upstream）的代碼。脫離主線的廠商驅動程式、嵌入式硬件的 board support package（BSP），以及以 binary blob 形式分發的內核模組，都無法簡單地拉取稍後的上游版本——它們各自帶有這些調用模式的副本，在首次針對 7.4 編譯時便會觸發編譯錯誤。對於那些鎖定在多年前內核版本的長壽 BSP 維護者而言，這是跳級升級成本持續攀升的又一原因。純二進制模組（binary-only module）則面臨更棘手的問題：廠商是否會重新編譯。</p>
+<h4>為何重要</h4>
+<p>內核的記憶體安全工作，已日益聚焦於整類消除缺陷（removing entire classes of defect），而非逐個修補個案。淘汰一個危險性屬結構性的 API——一項不安全操作頂着一個與安全版本幾乎完全相同的名稱——正符合這項策略。這亦提醒我們，內核安全決策往往影響遠超 mainline 代碼樹的範圍，深入廠商及嵌入式代碼，而這正是大多數部署實際運行的部分。</p>
+<h4>Claude Code 的配角角色</h4>
+<p>此次改動中人工智能輔助的部分引起外界關注，惟 framing（表述方式）至關重要。Torvalds 此前曾表明，只要有人類維護者審核並為 AI 生成或 AI 輔助的 patch 承擔責任，他對此持容忍態度。像此次這種掃描式工作——找出某個定義明確的 symbol 的所有調用者，套用一項有文檔記錄的轉換——已接近理想用例：範圍有界、機械重複、可驗證，有明確的正確性標準，且由編譯器本身強制執行，背後另有人類審核。</p>
+<p>這種容忍態度是否會延伸至判斷成分更重的 AI 輔助內核工作類別，以及 AI 輅助維護模式會否在 7.4 開發周期中常規化、抑或招致反彈，仍是懸而未決的問題，值得隨周期進展持續觀察。</p>
+<p><em>資料來源：<a href="https://www.phoronix.com/news/Linus-Kills-Get-Put-User-Linux">Phoronix</a></em></p>
+<p><a href="https://www.phoronix.com/news/Linus-Kills-Get-Put-User-Linux" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
