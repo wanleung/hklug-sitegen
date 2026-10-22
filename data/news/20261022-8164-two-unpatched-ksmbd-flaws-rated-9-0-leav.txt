@@ -1,0 +1,31 @@
+Date: 2026-10-22 21:04:00
+Author: HKLUG Team
+Title: Two Unpatched KSMBD Flaws Rated 9.0 Leave Linux SMB Servers Exposed After Early Public Disclosure
+Content:
+<hr />
+<p>Linux systems exposing the kernel's built-in SMB server, ksmbd, are running with two remotely exploitable flaws rated 9.0 by Trend Micro's Zero Day Initiative and — according to The Hacker News, which covered the disclosures on 22 October — no fix available in the mainline kernel. With technical details already circulating on public mailing lists, administrators are advised to treat mitigation, not patching, as the only immediate line of defence.</p>
+<p><strong>What to do while you wait</strong></p>
+<p>For systems that do not strictly need an in-kernel SMB server, the cleanest option is to remove the attack surface entirely: unload the <code>ksmbd</code> module (<code>modprobe -r ksmbd</code>) and prevent it from loading at boot, then confirm nothing else on the host has pulled it back in. Note that <code>modprobe -r</code> will fail while active SMB sessions hold the module open — quiesce or disconnect sessions first, or rely on blacklisting the module at boot, which is the more reliable route. Where ksmbd must stay running, restrict TCP/445 to trusted management or storage segments using host firewall rules or network ACLs, and avoid exposing the port to user networks, VPN pools, or the public internet. Where SMB Direct is not required, disabling RDMA-capable SMB transport removes one of the two exploitation paths outright. Administrators should also verify their ksmbd version against the affected range, and check their distribution's advisory channels alongside the kernel mailing list — enterprise distributions such as RHEL, Ubuntu, and SUSE frequently ship out-of-tree backports ahead of an upstream fix.</p>
+<p><strong>The two flaws are not equally reachable</strong></p>
+<p>Both vulnerabilities carry the same headline score, but their exploitability differs sharply — a distinction that matters when prioritising remediation.</p>
+<p>ZDI-CAN-33774 is a pre-authentication remote code execution flaw: an unauthenticated attacker who can reach port 445 can trigger it, making it broadly applicable to any internet- or LAN-exposed ksmbd deployment. ZDI-CAN-33549, by contrast, requires SMB Direct running over RDMA-capable networking — a configuration concentrated in data-centre storage fabrics, HPC clusters, and specialised hyperconverged environments rather than general-purpose file servers. Organisations without SMB Direct/RDMA infrastructure are exposed to the pre-authentication flaw only, but that is the more dangerous of the pair.</p>
+<p>The severity is compounded by where ksmbd lives. Unlike Samba, which operates as a userland daemon whose compromise is generally contained to the service account and any sandbox around it, ksmbd executes in kernel context. Successful exploitation therefore translates into host-level code execution with the privileges of the kernel itself — full control of memory, processes, and credentials on the machine.</p>
+<p><strong>Details published before fixes landed</strong></p>
+<p>The second story here is how the flaws became public. As reported by The Hacker News, technical details for both issues were posted to public mailing lists before corresponding fixes were merged upstream, effectively starting an exploit countdown: anyone with the disclosure and a reachable target can now work from the same information researchers published, while maintainers race to land patches.</p>
+<p>The sequence has renewed an old debate in the security community about responsible disclosure timelines and whether advisories naming unpatched kernel subsystems should ship ahead of mainline fixes. That argument is, for operators, largely academic — the practical consequence is that remediation responsibility sits with individual administrators until an upstream commit lands. For teams running in-tree ksmbd, the window between disclosure and patch is precisely the period of greatest risk, and mitigations are the only available response.</p>
+<p>Any assessment of exposure should re-verify two points before acting: that the fixes genuinely have not reached the mainline kernel, and that each ZDI-CAN identifier maps to the flaw described above.</p>
+<p><em>Source: The Hacker News</em></p>
+<hr>
+<p>對外開放 Linux kernel 內建 SMB 伺服器 ksmbd 的系統，目前都帶有兩個遠端可利用的漏洞運行，均被 Trend Micro 旗下 Zero Day Initiative 評為 9.0 分；據 The Hacker News 於 10 月 22 日報導相關披露時指出，mainline kernel 至今仍沒有對應的修補。由於技術細節已在公開郵件列表流傳，系統管理員應把緩解措施而非等待修補視為當下唯一的防線。</p>
+<p><strong>等待修補期間可以做的事</strong></p>
+<p>若系統並非必須使用 kernel 內建的 SMB 伺服器，最徹底的做法是直接消除攻擊面：卸載 <code>ksmbd</code> 模組（<code>modprobe -r ksmbd</code>）並阻止其在開機時載入，然後確認主機上沒有其他元件把模組重新載入。要注意的是，只要仍有 SMB 連線佔用模組，<code>modprobe -r</code> 就會失敗——應先中止或切斷現有連線，或者直接在開機時把模組加入黑名單，這條路徑更為可靠。若 ksmbd 必須繼續運行，則應透過主機防火牆規則或網絡 ACL，把 TCP/445 限制在可信的管理網段與儲存網段，避免把這個端口暴露到用戶網絡、VPN 位址池或公眾互聯網。若不需要 SMB Direct，停用具 RDMA 能力的 SMB 傳輸可直接消除兩個攻擊路徑之一。系統管理員亦應比對自身 ksmbd 版本是否落在受影響範圍，並在追蹤 kernel 郵件列表之外，同步查閱所用發行版的公告渠道——RHEL、Ubuntu、SUSE 等企業發行版往往會比 upstream 更早推出樹外（out-of-tree）backport 修補。</p>
+<p><strong>兩個漏洞的可觸發條件並不相同</strong></p>
+<p>兩者總分相同，可利用條件卻相差甚遠，這一點直接影響修補的優先次序。</p>
+<p>ZDI-CAN-33774 屬預先驗證（pre-authentication）的遠端代碼執行漏洞：攻擊者毋須通過任何網絡驗證，只要能連到 445 端口即可觸發，因此任何暴露於互聯網或區域網絡的 ksmbd 部署都在影響範圍之內。ZDI-CAN-33549 則要求 SMB Direct 傳輸運行在具備 RDMA 能力的網絡上——這種配置集中在資料中心儲存網絡、HPC 集群及特定超融合環境，而非一般用途的檔案伺服器。沒有 SMB Direct／RDMA 基礎設施的機構固然只須應對預驗證漏洞，但那偏偏是兩個之中較危險的一個。</p>
+<p>嚴重性還因 ksmbd 的執行位置而加劇。Samba 是用戶層 daemon（常駐程式），被攻破通常只限於服務帳戶及周邊沙箱範圍內；ksmbd 則運行於 kernel context，成功利用即等同以 kernel 權限在主機上執行代碼——完全控制機器上的記憶體、處理程序與憑證。</p>
+<p><strong>修補尚未落地，細節已先公開</strong></p>
+<p>第二個焦點在於漏洞如何對外曝光。據 The Hacker News 報導，兩個問題的技術細節在對應修補合併到 upstream 之前已發布到公開郵件列表，實際上等同開啟了一個利用倒數計時：任何拿到披露資訊又接觸得到目標的人，都能照著研究人員公開的內容動手，而維護者則要趕在後面落實修補。</p>
+<p>此事再次引發安全社群圍繞負責任披露時間表的舊爭論，以及點名未修補 kernel 子系統的通告是否應搶在 mainline 修補之前發出。對系統管理員而言，這場爭論基本上屬學術性質——實際後果是，在 upstream commit 落地之前，修補責任一直落在個別管理員身上。對運行樹內（in-tree）ksmbd 的團隊來說，從披露到修補之間的窗口正是風險最高的時期，緩解措施是唯一可行的應對。</p>
+<p>在採取行動前，任何風險評估都應重新確認兩點：修補確實尚未進入 mainline kernel，以及每個 ZDI-CAN 編號都與上述所描述的漏洞一一對應。</p>
+<p><em>來源：The Hacker News</em></p>
+<p><a href="https://thehackernews.com/2026/10/two-cvss-90-linux-ksmbd-rce-flaws.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
