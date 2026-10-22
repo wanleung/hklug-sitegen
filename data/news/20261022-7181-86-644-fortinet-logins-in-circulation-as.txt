@@ -1,0 +1,42 @@
+Date: 2026-10-22 14:11:00
+Author: HKLUG Team
+Title: 86,644 Fortinet Logins in Circulation as FBI and Secret Service Warn FortiBleed Is Still Active
+Content:
+<p>The U.S. Federal Bureau of Investigation and the U.S. Secret Service have jointly warned that the FortiBleed credential-harvesting campaign remains an active threat, with 86,644 Fortinet device credentials now known to be in circulation — a figure that should prompt any organisation running internet-facing Fortinet gear to review its login posture today.</p>
+<p>According to The Hacker News, which first reported the advisory, the agencies said in an alert this week that FortiBleed continues to target internet-facing Fortinet FortiGate firewalls and SSL VPN gateways, the choke points many enterprises expose to the internet for remote access.</p>
+<h5>How the campaign works</h5>
+<p>The advisory describes a two-part mechanism that is easy to underestimate. First, the campaign leans on reused or previously leaked credentials — passwords that were exposed in unrelated breaches and recycled by admins or users elsewhere. Second, it exploits legacy SHA-256 password storage on affected devices: when a password is stored as a bare, unsalted digest rather than behind modern salting and key-stretching, anyone holding a stolen hash can test candidate passwords offline at very high speed.</p>
+<p>In plain terms: a leaked password from somewhere else, checked quickly against a weakly stored hash on an exposed firewall, yields a working login. The weakness identified by the agencies is a shortcoming of the storage scheme rather than of the SHA-256 digest algorithm itself.</p>
+<p>That combination matters because of where these devices sit. FortiGate firewalls and SSL VPN gateways are perimeter infrastructure — they decide who gets onto the network. A valid credential on one of them is not a footnote; it is a foothold.</p>
+<h5>Practical steps (editorial, not from the advisory)</h5>
+<p>The following priorities are our own best-practice extension, and go beyond whatever remediation steps the advisory itself carries:</p>
+<ol>
+<li><strong>Audit external exposure.</strong> Inventory every FortiGate and SSL VPN endpoint reachable from the internet, and confirm none are running end-of-support firmware.</li>
+<li><strong>Reset privileged and remote-access credentials</strong>, especially any password that has appeared in a third-party breach corpus or is reused across systems, and verify that stored password material uses current hashing with salting and key-stretching.</li>
+<li><strong>Treat logins as compromised until proven otherwise.</strong> Review authentication logs on exposed devices for unfamiliar sources, and assume any credential that matches the harvested set has been tested.</li>
+</ol>
+<p>The advisory offers no indication that the 86,644-credential set has been contained, so teams should not wait for a follow-up notice before acting.</p>
+<h5>Why it matters here</h5>
+<p>FortiGate firewalls and SSL VPN gateways are common fixtures on internet-facing perimeters, and SSL VPN access points remain a favoured entry for intrusion campaigns globally. That makes this a general observation for local IT professionals rather than a locally specific incident: anyone with an internet-facing Fortinet estate should be checking it now. Administrators can cross-check known exposure against <a href="https://psirt.fortinet.com">Fortinet's PSIRT advisories</a>, while <a href="https://www.hkcert.org">HKCERT</a> is worth monitoring for any related local guidance.</p>
+<p>Readers should note that the figure and campaign details reported here derive from The Hacker News's reporting of the joint advisory; teams needing patched-version guidance, indicator-of-compromise data or CVE identifiers should go directly to the agencies' advisory and the vendor's own bulletins.</p>
+<p><em>Source: <a href="https://thehackernews.com/2026/10/fbi-warns-fortibleed-remains-active.html">The Hacker News</a>.</em></p>
+<hr>
+<p>美國聯邦調查局（FBI）與美國特勤局（Secret Service）聯合發出警告，指 FortiBleed 憑據蒐集攻擊活動仍然構成活躍威脅，目前已有 86,644 組 Fortinet 設備憑據在外流傳——任何營運對外連線 Fortinet 設備的機構，均應即時檢視其登入防護狀況。</p>
+<p>據率先報道該警告的 The Hacker News 指出，兩機構在本週的通報中表示，FortiBleed 持續針對對外連線的 Fortinet FortiGate 防火牆及 SSL VPN 閘道——這些正是許多企業為提供遠端存取而暴露於互聯網的關鍵節點。</p>
+<h5>攻擊運作方式</h5>
+<p>該警告描述了一個容易被低估的兩部分機制。第一，攻擊活動依賴重用或先前已外洩的憑據——即在其他不相關資料外洩事件中暴露、並被管理員或用戶在其他系統重用的密碼。第二，它利用受影響設備上的舊式 SHA-256 密碼儲存機制：當密碼以未加鹽（salt）的裸雜湊值（digest）儲存，而非採用現代化的加鹽及 key-stretching 技術時，任何持有被盜雜湊值的人均可離線高速試探候選密碼。</p>
+<p>簡單而言：從別處外洩的密碼，在一部防禦薄弱、雜湊值儲存不當的對外防火牆上快速比對，便可取得可行的登入。兩機構指出的弱點，在於儲存方案本身的缺陷，而非 SHA-256 雜湊演算法本身。</p>
+<p>此一組合之所以關鍵，在於這些設備所處的位置。FortiGate 防火牆及 SSL VPN 閘道屬周邊基礎設施——它們決定誰可進入網絡。在這些設備上取得一組有效憑據並非小事；那是一個立足點。</p>
+<h5>實際行動建議（編輯部建議，並非來自該警告）</h5>
+<p>以下優先事項為本刊按最佳實踐所作的延伸，超出警告文件本身所列的補救措施：</p>
+<ol>
+<li><strong>審計對外暴露面。</strong> 清點所有可從互聯網到達的 FortiGate 及 SSL VPN 端點，並確認沒有設備仍在使用已停止支援的韌體。</li>
+<li><strong>重設高權限及遠端存取憑據</strong>，尤其任何曾出現於第三方資料外洩資料庫、或在多個系統間重用的密碼，並確認儲存的密碼素材已採用現行的加鹽及 key-stretching 雜湊方式。</li>
+<li><strong>在證明清白之前，一律視登入已被入侵。</strong> 檢視對外設備的認證記錄，留意陌生來源，並假設任何與已蒐集憑據集吻合的憑據均已被試探。</li>
+</ol>
+<p>該警告並未表示 86,644 組憑據集已獲控制，因此團隊不應等待後續通知才採取行動。</p>
+<h5>為何值得本地關注</h5>
+<p>FortiGate 防火牆及 SSL VPN 閘道是對外周邊的常見配置，而 SSL VPN 存取點至今仍是全球入侵攻擊活動的熱門入口。這意味著此事件是對本地 IT 專業人士的普遍性提醒，而非特定本地事故：任何擁有對外 Fortinet 設備資產的人，都應立即進行檢查。管理員可向 <a href="https://psirt.fortinet.com">Fortinet 的 PSIRT 警告頁面</a> 交叉核對已知暴露情況，同時值得留意 <a href="https://www.hkcert.org">HKCERT</a> 是否有相關本地指引。</p>
+<p>讀者須留意，本文所報道的數字及攻擊活動細節，源自 The Hacker News 對該聯合警告的報道；如需取得已修補版本指引、入侵指標（indicator-of-compromise）資料或 CVE 編號，應直接查閱兩機構的警告文件及廠商自身的公報。</p>
+<p><em>來源：<a href="https://thehackernews.com/2026/10/fbi-warns-fortibleed-remains-active.html">The Hacker News</a>。</em></p>
+<p><a href="https://thehackernews.com/2026/10/fbi-warns-fortibleed-remains-active.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
