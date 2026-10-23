@@ -1,0 +1,46 @@
+Date: 2026-10-23 14:27:00
+Author: HKLUG Team
+Title: Valve's Latest Upstream Pull Adds Nintendo Switch 2 Support to Linux 7.4
+Content:
+<p>The Linux 7.4 HID merge window has opened, and buried in the pull is a detail worth pausing over: Valve is behind a new driver bringing Nintendo Switch 2 controller support to the mainline kernel. The company that sells the Steam Deck is writing input support for a rival's hardware — and, according to Phoronix, it is far from the only gaming-related change riding the same pull.</p>
+<h4>The attribution is the story</h4>
+<p>On its face, a driver submission is changelog material. What makes this one notable is who filed it. Valve competes directly with the Switch 2 in the handheld space, yet here its engineers are landing code that makes Nintendo's controllers work better for everyone running Linux — including the millions of desktops and handhelds that have nothing to do with Valve's own products.</p>
+<p>That framing says something about how Valve sees the battlefield. Rather than treating a competitor's peripherals as a compatibility problem to be walled off, the company is treating them as part of the shared input stack that Linux applications and games expect to find waiting for them. A Switch 2 controller that works on a Steam Deck, or on any Linux desktop, ultimately grows the same pool of hardware that works out of the box for people who game on Linux — and a bigger pool serves Valve's platform ambitions as surely as any exclusive feature.</p>
+<h4>Not a one-off: Valve's upstreaming pattern</h4>
+<p>It is also important not to read this as a single gesture. Valve has spent years pushing its gaming work upstream rather than carrying it in private downstream trees: graphics drivers through Mesa, graphics and power-management work in the kernel, input handling, and the Proton compatibility layer's surrounding infrastructure. The Switch 2 driver is the latest entry in a long ledger, not a sudden change of heart.</p>
+<p>The logic is maintenance-driven. Out-of-tree patches break as kernels move on; someone inside the vendor has to keep rebasing them against every new cycle, and users who fall behind lose support. Code that lives in the mainline, by contrast, is reviewed and tested by the subsystem maintainers and by continuous-integration setups that flag regressions early. It survives distro upgrade cycles without anyone having to ask permission. For a company that needs thousands of machines to keep working across years of kernel releases, upstreaming is simply the cheaper path — and everyone else inherits the result.</p>
+<h4>What it means for users</h4>
+<p>Practically speaking, the appeal is the familiar "it just works" promise: plug in a Switch 2 controller on a Steam Deck, Fedora, Arch, or any distribution shipping a recent enough kernel, and it is recognised without hunting for packages or applying patches.</p>
+<p>The timeline caveat matters, though. The merge window is only the beginning. Linux 7.4 will move through its release candidate cycle before Linus Torvalds tags the final release, and each distribution then adopts the new kernel on its own schedule. Enterprise and long-term-support distros routinely lag several cycles behind, so the day the code lands upstream is not the day most users will see it. Expect the support to arrive in fast-moving distributions first, with the slower ones following once they pick up a 7.4-based kernel.</p>
+<h4>What we still don't know</h4>
+<p>The available summary from the source leaves several questions open, and it is worth flagging them rather than guessing:</p>
+<ul>
+<li><strong>Feature coverage</strong> — whether the driver handles basic input only or also motion sensors, rumble/haptics, and the Switch 2's additional input modes.</li>
+<li><strong>Driver shape</strong> — whether this is a new standalone <code>hid-</code> driver or an extension of the kernel's existing Nintendo controller support.</li>
+<li><strong>Attribution depth</strong> — which Valve engineers authored the submission; a quick check of the pull request should settle this.</li>
+</ul>
+<p>These details should firm up as the merge window closes and the full pull request is reviewed — and if they do, we will update accordingly.</p>
+<p>One way or another, the direction of travel is clear: Valve's upstream contributions keep expanding beyond its own hardware, and this time that includes a competitor's.</p>
+<p>Source: <a href="https://www.phoronix.com/news/Linux-7.4-HID">Phoronix — Linux 7.4 Introduces New Driver For The Nintendo Switch 2 — Thanks To Valve</a></p>
+<hr>
+<p>Linux 7.4 的 HID merge window 已經打開，而隱藏在這次 pull 之中有一個值得停下來留意的細節：一款為 mainline 核心加入 Nintendo Switch 2 手掣支援的新驅動程式，背後正是 Valve。這家銷售 Steam Deck 的公司，正在為競爭對手的硬件撰寫輸入支援——而且根據 Phoronix 報導，這遠非同一 pull 中唯一的遊戲相關改動。</p>
+<h4>提交者本身就是新聞</h4>
+<p>單看表面，一份驅動程式的提交不過是 changelog 的素材。令這次格外引人注目的，是提交者的身份。Valve 在手持裝置市場與 Switch 2 正面競爭，但其工程師卻在此刻提交代碼，令 Nintendo 的手掣在所有運行 Linux 的系統上運作得更好——包括數以百萬計與 Valve 自家產品毫無關係的桌面電腦和手持裝置。</p>
+<p>這個角度本身已說明 Valve 如何看待這場戰局。Valve 並沒有把競爭對手的外設視為需要隔絕的兼容性問題，而是將其視為 Linux 應用程式和遊戲預期會找到的共享輸入堆疊的一部分。一個能在 Steam Deck 或任何 Linux 桌面系統上運作的 Switch 2 手掣，最終擴大了同一批開箱即用的硬件群組，惠及所有在 Linux 上打機的用戶——而更大的硬件群組，對 Valve 的平台野心而言，其作用不亞於任何獨佔功能。</p>
+<h4>並非一次性舉動：Valve 的 upstreaming 模式</h4>
+<p>同樣重要的是，不應將此事理解為單一姿態。Valve 多年來一直將其遊戲相關工作推向 upstream，而非在私有的 downstream tree 中維護：圖形驅動程式通過 Mesa、核心中的圖形及電源管理改動、輸入處理，以及 Proton 兼容層周邊的基礎設施。Switch 2 驅動程式只是一份長久記錄中的最新一筆，而非突然轉變立場。</p>
+<p>其背後邏輯是出於維護考量。out-of-tree 補丁會隨核心版本推進而出現問題；廠商內部必須有人不斷針對每個新 cycle 重新 rebase，而落後的用戶則會失去支援。相較之下，存在於 mainline 的代碼會由 subsystem 維護者及持續集成（CI）機制審查和測試，後者能及早發現回歸問題。它可以安然度過發行版升級周期，無需任何人再行批准。對於一家需要數千部機器在多年核心版本更替中持續運作的公司而言，upstreaming 然是最划算的路徑——而其他人則從中繼承成果。</p>
+<h4>對用戶意味著什麼</h4>
+<p>從實際角度而言，賣點正是那句熟悉的「即插即用」承諾：在 Steam Deck、Fedora、Arch 或任何搭載足夠新核心的發行版上接上 Switch 2 手掣，系統便會自動識別，無需搜尋套用程式或套用補丁。</p>
+<p>不過，時間表的保留同樣重要。merge window 只是開端。Linux 7.4 還要經歷 release candidate 周期，Linus Torvalds 才會標記最終版本，其後各發行版再按各自時間表採用新核心。企業級和長期支援（LTS）發行版通常會落後數個周期，因此代碼進入 upstream 的當天，並非大多數用戶見到它的日子。預期支援會先在更新快速的發行版抵達，較慢的發行版則待其採用基於 7.4 的核心後跟上。</p>
+<h4>仍然未知的事項</h4>
+<p>來源提供的摘要尚有數個問題懸而未決，與其猜測，不如明確指出：</p>
+<ul>
+<li><strong>功能覆蓋範圍</strong>——該驅動程式是僅處理基本輸入，還是也包括動作感應器、震動／觸覺回饋，以及 Switch 2 的額外輸入模式。</li>
+<li><strong>驅動程式架構</strong>——這是一個全新的獨立 <code>hid-</code> 驅動程式，還是核心現有 Nintendo 手掣支援的擴展。</li>
+<li><strong>提交者詳情</strong>——哪些 Valve 工程師撰寫了這次提交；查閱 pull request 應可釐清這一點。</li>
+</ul>
+<p>隨著 merge window 結束及完整 pull request 獲得審閱，這些細節應會逐步明確——屆時我們會相應更新。</p>
+<p>無論如何，方向已經清晰：Valve 的 upstream 貢獻持續超越自家硬件的範圍，而這一次，當中包括了競爭對手的產品。</p>
+<p>來源：<a href="https://www.phoronix.com/news/Linux-7.4-HID">Phoronix — Linux 7.4 Introduces New Driver For The Nintendo Switch 2 — Thanks To Valve</a></p>
+<p><a href="https://www.phoronix.com/news/Linux-7.4-HID" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
