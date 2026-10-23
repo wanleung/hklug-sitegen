@@ -1,0 +1,54 @@
+Date: 2026-10-23 13:05:00
+Author: HKLUG Team
+Title: PHP2Shell 攻擊破百萬次，官方緊急修補 9.2 分漏洞
+Content:
+<h4>繁體中文 TL;DR</h4>
+<ul>
+<li>PHP2Shell 攻擊量已達數百萬次，但至今<strong>沒有任何成功入侵獲確認</strong>。</li>
+<li>PHP 已於 10 月 21 日發布緊急補丁，修復 CVE-2026-109618 與 CVE-2026-109619（CVSS 9.2）。</li>
+<li>受影響範圍涵蓋所有處理網頁請求的 PHP 版本，相關程式碼可追溯至 2012 年的 PHP 5.4。</li>
+<li>「未確認被入侵」不代表安全：請立即以 <code>php -v</code> 確認版本、先在 staging 環境驗證再全面升級，並檢查 web root 有否可疑檔案。</li>
+</ul>
+<p>據 Security Affairs 報導，針對兩個關鍵 PHP 缺陷的利用嘗試已累計數百萬次，但至今沒有任何一次被確認為成功入侵。</p>
+<p>「嘗試量驚人、確認失手零宗」正是這則新聞的核心張力，而且兩邊都說得通：要麼攻擊行動在大規模嘗試下確實失效，要麼入侵早已成功、只是無人察覺。兩種解讀最終指向同一個操作結論——沒有證據不等於沒有入侵，修補窗口應視為正在關閉，而非仍然敞開。</p>
+<h4>修補了什麼</h4>
+<p>PHP 團隊於 10 月 21 日發布非預期性（out-of-band）緊急更新，處理 CVE-2026-109618 與 CVE-2026-109619 兩個漏洞，兩者 CVSS 評分同為 9.2。按 Security Affairs 的描述，受影響的是所有處理網頁請求的 PHP 版本，而底層程式碼可追溯至 2012 年推出的 PHP 5.4。</p>
+<p>這個「年份」比版本號更值得注意：請求處理程式碼中一段存在十四年的缺陷，意味著長期穩定的部署全部在射程之內——裝置內建的 vendored PHP、標示著「能跑就別動」的凍結堆疊，以及捆綁在內容管理系統與控制面板內的 PHP。對這些環境而言，上游版本升級未必存在，發行版 backport 才是取得已修復二進位檔的實際途徑。</p>
+<h4>不應因此放心的地方</h4>
+<p>「數百萬次攻擊、零宗確認入侵」的說法有個明顯誘因：它聽起來像防線守住了。但另一種解讀更不舒服——web shell 入侵天生就是安靜的，攻擊者落地後保持低調，產生的流量可能完全不會引起營運人員查究。</p>
+<p>出路在於把「尚未確認成功利用」變成一句可以主動驗證的陳述，而非假設。修補只是關上大門；偵測才能確認裡面原本沒有人。</p>
+<h4>行動清單</h4>
+<ol>
+<li><strong>查明並修補。</strong> 在每一部提供網頁服務的節點執行 <code>php -v</code>，確認實際運行版本，再套用已修復的版本。版本核對與修復可用性以官方安全公告為準：https://www.php.net/security.php</li>
+<li><strong>驗證，不要假設。</strong> 重啟相關服務後，確認新二進位檔真的在使用中——FPM pool 重啟了、卻仍跑著舊執行檔，是最常見且完全隱形的失敗。</li>
+<li><strong>無法升級時先止血，升級時先 staging。</strong> 上游升級不可行就改用供應商 backport，並限制 PHP 入口直接對外暴露；可以升級時，先在 staging 套用、確認應用行為正常再逐台推進，不要一次同步改完全部節點。</li>
+<li><strong>巡檢痕跡。</strong> 以下是通用防護建議，並非來源列出的 IOC：查看存取日誌有否異常請求量，並留意 web shell 常見的殘留跡象——web root 內多出來的檔案、靜態內容目錄中出現的 PHP 執行，以及來自應用程式程序的對外連線。</li>
+</ol>
+<p>PHP 遍佈內容管理系統、主機控制面板與舊型裝置，因此受影響的範圍遠大於「有人刻意編譯 PHP 的伺服器」。攻擊量的暴增最好解讀為迫使行動的信號，而非令人安心的保證。</p>
+<p><em>Source: Security Affairs. CVE identifiers and the campaign name should be confirmed against the official PHP advisory before publication.</em></p>
+<hr>
+<h4>繁體中文 TL;DR</h4>
+<ul>
+<li>PHP2Shell 攻擊量已達數百萬次，但至今<strong>沒有任何成功入侵獲確認</strong>。</li>
+<li>PHP 已於 10 月 21 日發布緊急補丁，修復 CVE-2026-109618 與 CVE-2026-109619（CVSS 9.2）。</li>
+<li>受影響範圍涵蓋所有處理網頁請求的 PHP 版本，相關程式碼可追溯至 2012 年的 PHP 5.4。</li>
+<li>「未確認被入侵」不代表安全：請立即以 <code>php -v</code> 確認版本、先在 staging 環境驗證再全面升級，並檢查 web root 有否可疑檔案。</li>
+</ul>
+<p>據 Security Affairs 報導，針對兩個關鍵 PHP 缺陷的利用嘗試已累計數百萬次，但至今沒有任何一次被確認為成功入侵。</p>
+<p>「嘗試量驚人、確認失手零宗」正是這則新聞的核心張力，而且兩邊都說得通：要麼攻擊行動在大規模嘗試下確實失效，要麼入侵早已成功、只是無人察覺。兩種解讀最終指向同一個操作結論——沒有證據不等於沒有入侵，修補窗口應視為正在關閉，而非仍然敞開。</p>
+<h4>修補了什麼</h4>
+<p>PHP 團隊於 10 月 21 日發布非預期性（out-of-band）緊急更新，處理 CVE-2026-109618 與 CVE-2026-109619 兩個漏洞，兩者 CVSS 評分同為 9.2。按 Security Affairs 的描述，受影響的是所有處理網頁請求的 PHP 版本，而底層程式碼可追溯至 2012 年推出的 PHP 5.4。</p>
+<p>這個「年份」比版本號更值得注意：請求處理程式碼中一段存在十四年的缺陷，意味著長期穩定的部署全部在射程之內——裝置內建的 vendored PHP、標示著「能跑就別動」的凍結堆疊，以及捆綁在內容管理系統與控制面板內的 PHP。對這些環境而言，上游版本升級未必存在，發行版 backport 才是取得已修復二進位檔的實際途徑。</p>
+<h4>不應因此放心的地方</h4>
+<p>「數百萬次攻擊、零宗確認入侵」的說法有個明顯誘因：它聽起來像防線守住了。但另一種解讀更不舒服——web shell 入侵天生就是安靜的，攻擊者落地後保持低調，產生的流量可能完全不會引起營運人員查究。</p>
+<p>出路在於把「尚未確認成功利用」變成一句可以主動驗證的陳述，而非假設。修補只是關上大門；偵測才能確認裡面原本沒有人。</p>
+<h4>行動清單</h4>
+<ol>
+<li><strong>查明並修補。</strong> 在每一部提供網頁服務的節點執行 <code>php -v</code>，確認實際運行版本，再套用已修復的版本。版本核對與修復可用性以官方安全公告為準：https://www.php.net/security.php</li>
+<li><strong>驗證，不要假設。</strong> 重啟相關服務後，確認新二進位檔真的在使用中——FPM pool 重啟了、卻仍跑著舊執行檔，是最常見且完全隱形的失敗。</li>
+<li><strong>無法升級時先止血，升級時先 staging。</strong> 上游升級不可行就改用供應商 backport，並限制 PHP 入口直接對外暴露；可以升級時，先在 staging 套用、確認應用行為正常再逐台推進，不要一次同步改完全部節點。</li>
+<li><strong>巡檢痕跡。</strong> 以下是通用防護建議，並非來源列出的 IOC：查看存取日誌有否異常請求量，並留意 web shell 常見的殘留跡象——web root 內多出來的檔案、靜態內容目錄中出現的 PHP 執行，以及來自應用程式程序的對外連線。</li>
+</ol>
+<p>PHP 遍佈內容管理系統、主機控制面板與舊型裝置，因此受影響的範圍遠大於「有人刻意編譯 PHP 的伺服器」。攻擊量的暴增最好解讀為迫使行動的信號，而非令人安心的保證。</p>
+<p><em>Source: Security Affairs. CVE identifiers and the campaign name should be confirmed against the official PHP advisory before publication.</em></p>
+<p><a href="https://securityaffairs.com/201538/hacking/php2shell-millions-of-attacks-no-confirmed-successful-exploits-yet.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
