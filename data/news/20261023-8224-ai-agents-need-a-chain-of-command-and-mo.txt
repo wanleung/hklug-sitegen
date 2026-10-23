@@ -1,0 +1,75 @@
+Date: 2026-10-23 16:04:00
+Author: HKLUG Team
+Title: AI Agents Need a Chain of Command — and Most Teams Haven't Built One
+Content:
+<p>```</p>
+<h3>AI Agents Need a Chain of Command — and Most Teams Haven't Built One</h3>
+<p>Treating agent access as a productivity decision rather than a privileges decision is common — and that gap is where prompt injection lives. AI agents configured with legitimate permissions to read mailboxes, browse the web, or execute shell commands can be steered by malicious content into performing those same legitimate actions for the wrong reasons: exfiltrating data, deleting files, or running commands nobody authorised.</p>
+<p>That warning comes from a <a href="https://www.bleepingcomputer.com/news/security/you-gave-your-ai-agent-access-but-who-is-giving-it-orders/">BleepingComputer report published this week</a>, which outlines how agents can be manipulated through crafted emails, hostile websites, and untrusted plugins or skill packages — all inputs an agent routinely ingests as it does its job.</p>
+<h4>One injected email, start to finish</h4>
+<p>The mechanics are easier to picture concretely than abstractly. An agent with inbox access is asked to triage the morning's mail. One message carries an instruction buried in the body — or in HTML a user never sees — directing it to open an attached document for "filing." The attachment is retrieved, and its contents carry the second-stage payload: package a named directory and send it to an external endpoint as part of a "records transfer." The agent reads files it was authorised to read and posts them over a network path it was authorised to use. Every individual action passes the permission check. The only thing that changed is who issued the orders — and nothing in the permission model asks that question.</p>
+<h4>The gap between permissions and authority</h4>
+<p>The core problem is one of provenance, not access. Permissions define what an agent <em>can</em> do; they do not define whose instructions it should <em>follow</em>. An agent granted inbox access will happily summarise a message — and equally happily act on instructions embedded inside it. A browser-enabled agent that can file reports can also be steered to visit a URL planted in a retrieved document and transmit context back to it.</p>
+<p>Gen Digital, whose findings underpin much of the report, argues that model-side detection of these manipulations has proven unreliable: no content filter can guarantee it will recognise a sufficiently well-crafted injection at the moment it matters. The more defensible position, on that account, is runtime interception — checking the action itself at execution time, before it leaves the boundary, rather than trusting the model to notice it was misled.</p>
+<h4>Gen Digital's three-control model</h4>
+<p>Gen Digital's <a href="https://www.bleepingcomputer.com/news/security/you-gave-your-ai-agent-access-but-who-is-giving-it-orders/">Agent Trust Hub</a>, described by BleepingComputer, offers an illustrative model. In our reading, it also points to where the vendor market is converging as deployments outpace guardrails. It rests on three controls:</p>
+<ul>
+<li><strong>Skill verification</strong> — vetting plugins, connectors, and skills before they are attached to an agent, so third-party code does not silently become an instruction channel.</li>
+<li><strong>Secure connectivity</strong> — scoping where the agent can reach, so network access is granted per task rather than as a blanket default.</li>
+<li><strong>Runtime controls</strong> — inspecting and, where necessary, blocking dangerous actions at the moment of execution, independent of whether the model itself detected a manipulation.</li>
+</ul>
+<p>None of these controls are unique to one product; taken together they describe a control pattern that agentic deployments are likely to standardise on.</p>
+<h4>A five-step governance checklist</h4>
+<p>The report outlines the shape of the problem; the steps below are our own practical translation of it — turning the permissions-versus-authority distinction into operational steps for teams wiring agents into real workflows:</p>
+<ol>
+<li><strong>Map instruction sources, not just permissions.</strong> Document every channel through which an agent can receive instructions — emails, web pages, retrieved documents, tool outputs, skill metadata — not merely the APIs it can call.</li>
+<li><strong>Inventory skills before attaching them.</strong> Review what a plugin or connector does, where it comes from, and what data it can observe before it becomes part of the agent's context.</li>
+<li><strong>Scope connectivity per task.</strong> Grant network and system reach for the job at hand rather than maintaining standing access across sessions.</li>
+<li><strong>Enforce at runtime.</strong> Intercept high-risk actions — file deletion, outbound transfers, command execution — at execution time, with human approval where consequences are irreversible.</li>
+<li><strong>Assign a chain of command.</strong> Decide explicitly which instruction sources are authoritative, and make it a policy rather than an emergent behaviour of the deployment.</li>
+</ol>
+<h4>Permissions vs. authority</h4>
+<p>The headline question — <em>who is giving it orders?</em> — is the right one. Organisations have become reasonably competent at answering what an agent may do. Far fewer have answered whose instructions it will obey, or how that is verified when instructions arrive from outside the trust boundary. Until both questions are answered together, agent deployments will keep optimising for capability while the governance model stays a step behind — and when an attacker walks in through an injected email, the permissions already granted will be the ones they use.</p>
+<hr>
+<pre><code>
+# AI Agent 需要清晰的指揮鏈——大多數團隊尚未建立
+
+把 agent 的存取權限視為生產力問題而非權限問題，是十分普遍的做法——而這道裂縫正是 prompt injection 得以滋生之處。已獲合法權限讀取 mailbox、瀏覽網頁或執行 shell command 的 AI agent，可被惡意內容引導，以錯誤的動機執行同樣合法的行動：外洩數據、刪除檔案，或執行未經任何人授權的指令。
+
+警告來自[BleepingComputer 本周發布的報告](https://www.bleepingcomputer.com/news/security/you-gave-your-ai-agent-access-but-who-is-giving-it-orders/)，報告闡述了 agent 如何透過精心構造的電郵、敵意網站，以及不可信的 plugin 或 skill package 被操縱——這些全是 agent 日常執行工作時所接收的輸入。
+
+## 一封被注入的電郵，由頭到尾
+
+相關機制具體地想像比抽象地理解容易得多。一個擁有 inbox 存取權限的 agent 被要求整理早上的郵件。其中一封郵件在正文——或在使用者永遠看不到的 HTML 中——藏有一道指令，要求它以「歸檔」為由開啟一份附加文件。附件被取回後，其內容載有第二階段的 payload：將指定目錄打包，並以「記錄轉移」為名義傳送至外部 endpoint。agent 讀取了它獲授權讀取的檔案，並透過它獲授權使用的網絡路徑傳送出去。每項個別行動都通過了權限檢查。唯一改變的是——誰發出了指令，而權限模型中沒有任何機制會追問這個問題。
+
+## 權限與授權之間的落差
+
+核心問題在於指令來源（provenance），而非存取。權限界定 agent *能*做什麼，卻沒有界定它應*聽從*誰的指令。獲授權存取 inbox 的 agent 會樂於總結郵件內容——同樣會樂於執行嵌入郵件中的指令。一個具備瀏覽器功能、可用於歸檔報告的 agent，也可被引導訪問藏於已取回文件中的 URL，並將 context 傳回該處。
+
+Gen Digital 的研究發現是該報告的重要依據，該公司認為，在模型層面偵測此類操縱已獲證不可靠：任何 content filter 都無法保證在關鍵時刻識別出一段精心編寫的 injection。基於此，較站得住腳的做法是 runtime interception——在執行時刻、行動離開邊界之前檢查該行動本身，而非依賴模型察覺自己被誤導。
+
+## Gen Digital 的三重控制模型
+
+BleepingComputer 描述的 Gen Digital [Agent Trust Hub](https://www.bleepingcomputer.com/news/security/you-gave-your-ai-agent-access-but-who-is-giving-it-orders/) 提供了一個具參考價值的模型。在我們看來，它亦指出當部署速度超越防護機制時，vendor 市場正趨向的發展方向。該模型建基於三項控制：
+
+- **Skill verification**——在 plugin、connector 及 skill 附加至 agent 之前進行審核，確保第三方代碼不會悄然成為指令通道。
+- **Secure connectivity**——界定 agent 可到達的範圍，使網絡存取按任務逐次授權，而非一概作為預設。
+- **Runtime controls**——在執行時刻檢查並在必要時阻擋危險行動，不論模型本身是否已偵測到操縱。
+
+這些控制均非單一產品所獨有；整體而言，它們描述了一種 agentic 部署很可能會標準化的控制模式。
+
+## 五步治理清單
+
+報告勾勒出問題的輪廓；以下步驟是我們自身對此的實踐方式——把權限與授權之別轉化為實際操作步驟，供團隊把 agent 接入真實 workflow 時參考：
+
+1. **梳理指令來源，而非僅列舉權限。** 記錄 agent 可接收指令的每一個渠道——電郵、網頁、已取回文件、工具輸出、skill metadata——而不只是它可呼叫的 API。
+2. **附加 skill 前先盤點。** 在 plugin 或 connector 成為 agent context 的一部分之前，審視它的功能、來源，以及它可觀察到哪些數據。
+3. **按任務界定連接範圍。** 就當前任務授予網絡及系統存取權限，而非跨 session 維持長期不變的存取。
+4. **在 runtime 執行強制管控。** 在執行時刻攔截高風險行動——刪除檔案、對外傳輸、執行 command——當後果不可逆轉時須加入人手審批。
+5. **建立指揮鏈。** 明確界定哪些指令來源具權威性，並將其訂立為政策，而非部署過程中自然湧現的行為。
+
+## 權限與授權之別
+
+標題所提出的問題——*誰在向它下達指令？*——問得正確。機構已大致掌握回答 agent 可以做什麼的能力，但回答它會聽從誰的指令者則少得多，至於當指令來自 trust boundary 以外時如何驗證，更是鮮有答案。在兩個問題同時得到解答之前，agent 部署將持續為求功能而優化，治理模式則永遠落後一步——而當攻擊者透過一封被注入的電郵長驅直入時，他們使用的正是早已獲批的那些權限。
+</code></pre>
+<p><a href="https://www.bleepingcomputer.com/news/security/you-gave-your-ai-agent-access-but-who-is-giving-it-orders/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
