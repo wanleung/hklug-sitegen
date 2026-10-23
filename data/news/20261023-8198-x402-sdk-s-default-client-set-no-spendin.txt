@@ -1,0 +1,120 @@
+Date: 2026-10-23 10:24:00
+Author: HKLUG Team
+Title: x402 SDK's Default Client Set No Spending Cap, Letting a Hostile API Name Its Own Price
+Content:
+<h4>English</h4>
+<p>An AI agent buying API access through the x402 payment SDK could be talked into signing away its entire token balance — not because the agent was compromised, but because the API endpoint it was calling named its own price.</p>
+<p>Security firm V12 disclosed the flaw on 22 October, in a report covered by The Hacker News the same day. In short: x402 is a protocol that lets clients pay for HTTP requests with tokens at call time, and the SDKs implementing it shipped with a default client that imposed no spending limit of any kind. Until releases published on 18 August 2026, an agent running the stock configuration would sign whatever payment amount a server requested, up to the full balance it held.</p>
+<p><strong>How a drain would actually happen</strong></p>
+<p>The scenario does not require a novel attack on the agent itself. The agent's credentials, model, and orchestration layer can all be intact. What matters is the counterparty: in an agentic payment flow, the same remote server that decides what the agent receives also proposes the amount charged. There is no independent party validating that the number is reasonable.</p>
+<p>If a legitimate API is compromised, or a pilot points an agent at an untrusted endpoint, a hostile response can simply request a payment equal to the agent's remaining balance. The default client signs it.</p>
+<p><strong>The exposure is real but conditional</strong></p>
+<p>The vulnerability is narrow, and teams triaging it should treat it as such. Three conditions have to coincide before any funds move:</p>
+<ol>
+<li>The application signs payments automatically, with no human approval step.</li>
+<li>It is running the SDK's default client configuration — no spending limit set in code or config.</li>
+<li>The agent communicates with a malicious or already-compromised API endpoint.</li>
+</ol>
+<p>Remove any one of those and the flaw cannot be exercised. An agent that only calls a fixed allowlist of vetted endpoints, or one whose operators set a per-request cap, is not exposed in the way the headline suggests. But defaults are what fast-moving pilots actually run, and "sign anything you are asked" was the path of least resistance in the SDK until August.</p>
+<p><strong>A two-month patch-to-disclosure window</strong></p>
+<p>Patched releases carrying the new spending limit went out on 18 August 2026 — roughly two months before V12's public advisory. That gap cuts both ways. Organisations monitoring release notes could have remediated quietly; teams that don't watch SDK changelogs may only now learn they were affected.</p>
+<p>Two caveats follow. Applications pinning an older version will not pick up the fix automatically. And developers running local forks of the SDK should manually verify that their modifications did not bypass the newly added limit — a local patch could, in principle, have removed or overridden it. None of the published guidance so far offers a reliable detection method for a stripped-out cap; reviewers will need to read the fork's diff.</p>
+<p><strong>Why it matters: pricing is now a security control</strong></p>
+<p>Traditional API security asks whether a credential leaked. Agentic payment security adds a second question: who sets the price, and what stops a hostile endpoint from naming its own number? For teams running early-stage agent pilots that call paid APIs, the remediation checklist is short:</p>
+<ul>
+<li>Upgrade to x402 SDK releases dated 18 August 2026 or later, and confirm you are not pinned to an older version.</li>
+<li>Set an explicit per-request and per-session spending limit in configuration — do not rely on the default.</li>
+<li>Keep human approval in the loop for payments above a threshold, especially during pilots.</li>
+<li>Restrict agents to an allowlist of vetted endpoints; treat newly added or redirected endpoints as untrusted.</li>
+<li>Audit any local forks to confirm the spending cap is intact.</li>
+<li>Review payment logs for unusually large single transactions going back to at least 18 August.</li>
+</ul>
+<p>The full advisory is available via <a href="https://thehackernews.com/2026/10/critical-x402-sdk-flaw-could-let.html">The Hacker News</a>.</p>
+<hr />
+<h4>繁體中文</h4>
+<p>透過 x402 支付 SDK 購買 API 存取權限的 AI agent，有可能被說服簽下整筆 token 餘額的付款 —— 原因不是 agent 遭到入侵，而是它正在呼叫的 API endpoint 自己開價。</p>
+<p>資訊保安公司 V12 已於 10 月 22 日披露此漏洞，同日 The Hacker News 亦有相關報導。簡單來說：x402 是一套讓客戶端在發出 HTTP 請求當下以 token 付款的協議，而實作該協議的 SDK 出貨時附帶的預設客戶端，完全沒有設定任何消費上限。在 2026 年 8 月 18 日發布的版本之前，以預設設定運行的 agent，會照單全收伺服器要求的付款金額，最高可達其全部 token 餘額。</p>
+<p><strong>實際的資金轉移如何發生</strong></p>
+<p>這個情境不需要對 agent 本身發動任何新穎攻擊。agent 的憑證、模型和編排層都可以完好無損。關鍵在於交易對手：在 agentic 付款流程中，決定 agent 收到什麼的遠端伺服器，同時也提出收費金額，沒有獨立第三方核實這個數字是否合理。</p>
+<p>一旦正規 API 遭入侵，或者試點計劃把 agent 指向不受信任的 endpoint，惡意回應只需要求一筆等於 agent 剩餘餘額的付款，預設客戶端就會簽下它。</p>
+<p><strong>風險確實存在，但有條件</strong></p>
+<p>這個漏洞的影響範圍很窄，團隊在分級處理時應據此評估。資金要真正轉出，必須同時符合三個條件：</p>
+<ol>
+<li>應用程式會自動簽署付款，沒有任何人為審批步驟。</li>
+<li>使用 SDK 的預設客戶端設定 —— 程式碼或設定檔中沒有設定消費上限。</li>
+<li>agent 連線的是惡意或已被入侵的 API endpoint。</li>
+</ol>
+<p>只要其中任何一項不成立，漏洞就無法被利用。只呼叫固定、已審核 endpoint 清單的 agent，或是由營運方設定了每次請求上限的 agent，並不像標題所暗示的那樣暴露於風險之中。但快速推進的試點計劃實際上就是以預設設定運行，而在今年 8 月之前，「照要求簽署一切」正是 SDK 中阻力最小的路徑。</p>
+<p><strong>長達兩個月的修補至披露窗口</strong></p>
+<p>附帶新消費上限的修補版本於 2026 年 8 月 18 日發布 —— 距離 V12 公開通告約兩個月。這個時間差影響兩面：有追蹤版本釋出紀錄的組織可以低調完成修補；沒有留意 SDK 更新日誌的團隊，可能到現在才知道自己受影響。</p>
+<p>另有兩點需要注意。鎖定（pin）舊版本的應用程式不會自動取得修正。至於自行維護 SDK 本地 fork 的開發者，則要手動確認自己的修改沒有繞過新增的上限 —— 本地 patch 原則上有可能移除或覆蓋它。目前已公開的指引沒有提供可靠方法偵測上限被移除的情況，審查者需要直接閱讀 fork 的 diff。</p>
+<p><strong>為什麼重要：定價本身就是一項資訊保安控制</strong></p>
+<p>傳統 API 資訊保安追問的是憑證有沒有外洩；agentic 付款保安則多了一個問題：由誰定價，以及是什麼阻止惡意 endpoint 自己開價？對於正在推行早期 agent 試點、並涉及付費 API 的團隊，修補清單很短：</p>
+<ul>
+<li>升級至 2026 年 8 月 18 日或之後發布的 x402 SDK 版本，並確認沒有鎖定在舊版。</li>
+<li>在設定中明確指定每次請求及每 session 的消費上限 —— 不要依賴預設值。</li>
+<li>尤其在試點階段，對超過某個門檻的付款保留人為審批。</li>
+<li>把 agent 限制在已審核的 endpoint 發行清單內；新增或被重新導向的 endpoint 一律視為不受信任。</li>
+<li>審計任何本地 fork，確認消費上限完好。</li>
+<li>檢視付款日誌中異常的大額單筆交易，回溯至至少 8 月 18 日。</li>
+</ul>
+<p>完整通告可見 <a href="https://thehackernews.com/2026/10/critical-x402-sdk-flaw-could-let.html">The Hacker News</a>。</p>
+<hr>
+<h4>English</h4>
+<p>An AI agent buying API access through the x402 payment SDK could be talked into signing away its entire token balance — not because the agent was compromised, but because the API endpoint it was calling named its own price.</p>
+<p>Security firm V12 disclosed the flaw on 22 October, in a report covered by The Hacker News the same day. In short: x402 is a protocol that lets clients pay for HTTP requests with tokens at call time, and the SDKs implementing it shipped with a default client that imposed no spending limit of any kind. Until releases published on 18 August 2026, an agent running the stock configuration would sign whatever payment amount a server requested, up to the full balance it held.</p>
+<p><strong>How a drain would actually happen</strong></p>
+<p>The scenario does not require a novel attack on the agent itself. The agent's credentials, model, and orchestration layer can all be intact. What matters is the counterparty: in an agentic payment flow, the same remote server that decides what the agent receives also proposes the amount charged. There is no independent party validating that the number is reasonable.</p>
+<p>If a legitimate API is compromised, or a pilot points an agent at an untrusted endpoint, a hostile response can simply request a payment equal to the agent's remaining balance. The default client signs it.</p>
+<p><strong>The exposure is real but conditional</strong></p>
+<p>The vulnerability is narrow, and teams triaging it should treat it as such. Three conditions have to coincide before any funds move:</p>
+<ol>
+<li>The application signs payments automatically, with no human approval step.</li>
+<li>It is running the SDK's default client configuration — no spending limit set in code or config.</li>
+<li>The agent communicates with a malicious or already-compromised API endpoint.</li>
+</ol>
+<p>Remove any one of those and the flaw cannot be exercised. An agent that only calls a fixed allowlist of vetted endpoints, or one whose operators set a per-request cap, is not exposed in the way the headline suggests. But defaults are what fast-moving pilots actually run, and "sign anything you are asked" was the path of least resistance in the SDK until August.</p>
+<p><strong>A two-month patch-to-disclosure window</strong></p>
+<p>Patched releases carrying the new spending limit went out on 18 August 2026 — roughly two months before V12's public advisory. That gap cuts both ways. Organisations monitoring release notes could have remediated quietly; teams that don't watch SDK changelogs may only now learn they were affected.</p>
+<p>Two caveats follow. Applications pinning an older version will not pick up the fix automatically. And developers running local forks of the SDK should manually verify that their modifications did not bypass the newly added limit — a local patch could, in principle, have removed or overridden it. None of the published guidance so far offers a reliable detection method for a stripped-out cap; reviewers will need to read the fork's diff.</p>
+<p><strong>Why it matters: pricing is now a security control</strong></p>
+<p>Traditional API security asks whether a credential leaked. Agentic payment security adds a second question: who sets the price, and what stops a hostile endpoint from naming its own number? For teams running early-stage agent pilots that call paid APIs, the remediation checklist is short:</p>
+<ul>
+<li>Upgrade to x402 SDK releases dated 18 August 2026 or later, and confirm you are not pinned to an older version.</li>
+<li>Set an explicit per-request and per-session spending limit in configuration — do not rely on the default.</li>
+<li>Keep human approval in the loop for payments above a threshold, especially during pilots.</li>
+<li>Restrict agents to an allowlist of vetted endpoints; treat newly added or redirected endpoints as untrusted.</li>
+<li>Audit any local forks to confirm the spending cap is intact.</li>
+<li>Review payment logs for unusually large single transactions going back to at least 18 August.</li>
+</ul>
+<p>The full advisory is available via <a href="https://thehackernews.com/2026/10/critical-x402-sdk-flaw-could-let.html">The Hacker News</a>.</p>
+<hr />
+<h4>繁體中文</h4>
+<p>透過 x402 支付 SDK 購買 API 存取權限的 AI agent，有可能被說服簽下整筆 token 餘額的付款 —— 原因不是 agent 遭到入侵，而是它正在呼叫的 API endpoint 自己開價。</p>
+<p>資訊保安公司 V12 已於 10 月 22 日披露此漏洞，同日 The Hacker News 亦有相關報導。簡單來說：x402 是一套讓客戶端在發出 HTTP 請求當下以 token 付款的協議，而實作該協議的 SDK 出貨時附帶的預設客戶端，完全沒有設定任何消費上限。在 2026 年 8 月 18 日發布的版本之前，以預設設定運行的 agent，會照單全收伺服器要求的付款金額，最高可達帳戶內全部 token 餘額。</p>
+<p><strong>實際的資金轉移如何發生</strong></p>
+<p>這個情境不需要對 agent 本身發動任何新穎攻擊。agent 的憑證、模型和編排層都可以完好無損。關鍵在於交易對手：在 agentic 付款流程中，決定 agent 收到什麼的遠端伺服器，同時也提出收費金額，沒有獨立第三方核實這個數字是否合理。</p>
+<p>一旦正規 API 遭入侵，或者試點計劃把 agent 指向不受信任的 endpoint，惡意回應只需要求一筆等於 agent 剩餘餘額的付款，預設客戶端就會簽下它。</p>
+<p><strong>風險確實存在，但有條件</strong></p>
+<p>這個漏洞的影響範圍很窄，團隊在分級處理時應據此評估。資金要真正轉出，必須同時符合三個條件：</p>
+<ol>
+<li>應用程式會自動簽署付款，沒有任何人為審批步驟。</li>
+<li>使用 SDK 的預設客戶端設定 —— 程式碼或設定檔中沒有設定消費上限。</li>
+<li>agent 連線的是惡意或已被入侵的 API endpoint。</li>
+</ol>
+<p>只要其中任何一項不成立，漏洞就無法被利用。只呼叫固定、已審核 endpoint 清單的 agent，或是由營運方設定了每次請求上限的 agent，並不像標題所暗示的那樣暴露於風險之中。但快速推進的試點計劃實際上就是以預設設定運行，而在今年 8 月之前，「照要求簽署一切」正是 SDK 中阻力最小的路徑。</p>
+<p><strong>長達兩個月的修補至披露窗口</strong></p>
+<p>附帶新消費上限的修補版本於 2026 年 8 月 18 日發布 —— 距離 V12 公開通告約兩個月。這個時間差影響兩面：有追蹤版本釋出紀錄的組織可以低調完成修補；沒有留意 SDK 更新日誌的團隊，可能到現在才知道自己受影響。</p>
+<p>另有兩點需要注意。鎖定（pin）舊版本的應用程式不會自動取得修正。至於自行維護 SDK 本地 fork 的開發者，則要手動確認自己的修改沒有繞過新增的上限 —— 本地 patch 原則上有可能移除或覆蓋它。目前已公開的指引沒有提供可靠方法偵測上限被移除的情況，審查者需要直接閱讀 fork 的 diff。</p>
+<p><strong>為什麼重要：定價本身就是一項資訊保安控制</strong></p>
+<p>傳統 API 資訊保安追問的是憑證有沒有外洩；agentic 付款保安則多了一個問題：由誰定價，以及是什麼阻止惡意 endpoint 自己開價？對於正在推行早期 agent 試點、並涉及付費 API 的團隊，修補清單很短：</p>
+<ul>
+<li>升級至 2026 年 8 月 18 日或之後發布的 x402 SDK 版本，並確認沒有鎖定在舊版。</li>
+<li>在設定中明確指定每次請求及每個 session 的消費上限 —— 不要依賴預設值。</li>
+<li>尤其在試點階段，對超過某個門檻的付款保留人為審批。</li>
+<li>把 agent 限制在已審核的 endpoint allowlist 內；新增或被重新導向的 endpoint 一律視為不受信任。</li>
+<li>審計任何本地 fork，確認消費上限完好。</li>
+<li>檢視付款日誌中異常的大額單筆交易，回溯至至少 8 月 18 日。</li>
+</ul>
+<p>完整通告可見 <a href="https://thehackernews.com/2026/10/critical-x402-sdk-flaw-could-let.html">The Hacker News</a>。</p>
+<p><a href="https://thehackernews.com/2026/10/critical-x402-sdk-flaw-could-let.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
