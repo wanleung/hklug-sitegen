@@ -1,0 +1,34 @@
+Date: 2026-10-23 15:03:00
+Author: HKLUG Team
+Title: PHP Flags Second Unpatched Remote Code Execution Flaw Days After Emergency Release
+Content:
+<h3>PHP Flags Second Unpatched Remote Code Execution Flaw Days After Emergency Release</h3>
+<p>The PHP project has disclosed a second remote code execution vulnerability in three days, and unlike the first, no code fix is planned for it.</p>
+<p>The flaw, tracked as CVE-2026-115560, was reported on 23 October, two days after PHP shipped emergency patches for the critical PHP2Shell flaws. PHP says the issue affects only web applications configured in an unusual way and characterises the likelihood of exploitation as unlikely. The project is not issuing an emergency fix. Instead, it recommends that administrators disable a specific feature identified in the project's advisory — a configuration change rather than a code update. PHP has reported no known exploitation of the issue, and the full scope of the guidance sits in the primary PHP advisory.</p>
+<p>What administrators should do now:</p>
+<ul>
+<li><strong>Read the primary PHP advisory and locate the specific feature PHP recommends disabling.</strong> Confirm the exact setting name against the advisory itself before changing anything in production.</li>
+<li><strong>Review the PHP configuration across all hosts</strong>, including staging, secondary, and legacy boxes that rarely appear in patch inventories. The unusual-configuration condition means the flaw may exist on exactly the machines nobody is watching.</li>
+<li><strong>Verify the PHP2Shell patches have actually landed everywhere</strong> — a version check on production alone will miss standby and development environments.</li>
+<li><strong>Document an explicit accept-or-disable decision</strong> for CVE-2026-115560: either the feature is off and the reason is recorded, or the residual risk is accepted by name, with an owner.</li>
+</ul>
+<p>Within roughly 48 hours, PHP administrators have received two advisories requiring two different kinds of remediation: the PHP2Shell flaws were resolved by upgrading the runtime, while CVE-2026-115560 is resolved by auditing configuration. Patching the runtime does not disable the feature PHP is asking operators to switch off. PHP has not published a formal patch timeline or a no-fix rationale beyond the unusual-configuration condition, so disabling the recommended feature remains the operative guidance in the meantime.</p>
+<p>For Hong Kong teams, the advisory applies wherever older PHP deployments persist — long-tail web hosts, legacy internal tools, and third-party applications on managed shared hosting, where configuration settings drift outside routine patch reviews.</p>
+<p>The risk described by PHP is conditional on an atypical setup, and the project has claimed neither active exploitation nor broad exposure. The remedy, however, is a configuration change that can be applied without waiting on a release cycle.</p>
+<p>The latest PHP advisory is available at https://thehackernews.com/2026/10/urgent-php-warns-of-another-unpatched.html.</p>
+<hr>
+<h3>PHP 於緊急修補發布數日後再度揭露未修補的遠端代碼執行漏洞</h3>
+<p>PHP 專案在三天內披露了第二個遠端代碼執行漏洞，且與第一個不同，官方並無計劃推出代碼修補。</p>
+<p>該漏洞編號為 CVE-2026-115560，於 10 月 23 日通報，距離 PHP 為嚴重的 PHP2Shell 缺陷發布緊急修補僅兩天。PHP 表示，此問題僅影響以非典型方式配置的 Web 應用程式，並評估其遭利用的可能性為低。專案不會發布緊急修補，而是建議管理員停用專案公告中指明的某項功能——這是一項配置層面的變更，而非代碼更新。PHP 目前未回報此問題有已知遭利用的案例，完整的處置指引詳見 PHP 主要安全公告。</p>
+<p>管理員現階段應採取的行動：</p>
+<ul>
+<li><strong>閱讀 PHP 主要安全公告，找出官方建議停用的具體功能。</strong> 在變更任何生產環境設定前，先對照公告本身確認該設定的確切名稱。</li>
+<li><strong>檢視所有主機的 PHP 配置設定</strong>，包括預發佈、備援以及鮮少列入修補清單的舊有主機。由於漏洞以非典型配置為前提，它可能正好存在於無人持續監察的機器上。</li>
+<li><strong>確認 PHP2Shell 修補已確實部署至所有環境</strong>——只檢查生產環境的版本，會漏掉備援與開發環境。</li>
+<li><strong>就 CVE-2026-115560 記錄明確的接受或停用決策</strong>：要么停用該功能並記錄原因，要么具名接受剩餘風險並指定負責人。</li>
+</ul>
+<p>在約 48 小時內，PHP 管理員接獲兩份安全公告，需要兩種截然不同的補救方式：PHP2Shell 缺陷透過升級 runtime 解決，而 CVE-2026-115560 則須透過審核配置設定解決。修補 runtime 並不會停用 PHP 要求營運方關閉的該項功能。PHP 尚未公布正式的修補時間表，並未在非常規配置條件之外，另行交代不作修補的理由，因此在這段期間，停用建議功能仍是目前的處置方針。</p>
+<p>對香港團隊而言，此公告適用於仍運行較舊 PHP 部署的環境——長尾網頁主機、舊有內部工具，以及託管共享主機上的第三方應用程式，這些地方的配置設定往往偏離日常修補審核的範圍。</p>
+<p>PHP 描述風險的前提是採用非典型配置，專案亦未表示存在活躍利用或廣泛受影響的情況。然而，補救方法只是一項配置變更，毋須等待版本發布周期即可執行。</p>
+<p>最新的 PHP 安全公告可於 https://thehackernews.com/2026/10/urgent-php-warns-of-another-unpatched.html 瀏覽。</p>
+<p><a href="https://thehackernews.com/2026/10/urgent-php-warns-of-another-unpatched.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
