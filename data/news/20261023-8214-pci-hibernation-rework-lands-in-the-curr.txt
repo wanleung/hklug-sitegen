@@ -1,0 +1,24 @@
+Date: 2026-10-23 17:18:00
+Author: HKLUG Team
+Title: PCI hibernation rework lands in the current kernel merge window, with an eye on energy compliance
+Content:
+<p>The Linux PCI/PCIe subsystem maintainers have merged their batch of changes for the current kernel merge window, and among the headline items is an improvement to how the tree handles hibernation — work that Phoronix reports as helping systems meet energy certification requirements.</p>
+<p>That framing matters because hibernation and low-power behaviour are exactly the properties that power-draw testing for energy-efficiency labels tends to probe.</p>
+<p><strong>Why hibernation matters to power numbers</strong></p>
+<p>Hibernation, the S4 sleep state, writes system memory to disk and powers the machine down almost entirely, in contrast to ordinary suspend, which keeps memory powered. Getting there cleanly depends partly on how PCI Express devices are quiesced: endpoints negotiate Active State Power Management (ASPM) links to cut idle power, and firmware or kernel-side handling that fails to put devices into the right state during a hibernation cycle can leave hardware drawing more than it should — or block the transition outright. An improvement in this area touches both reliability and measurable idle consumption, which is why it can matter outside the desktop use case.</p>
+<p><strong>The merge-window context</strong></p>
+<p>Subsystem work lands during a merge window that runs for roughly two weeks before the release candidate cycle begins, which means the change is queued for a future stable release rather than already on production machines. Administrators planning kernel upgrades over the coming quarters will see it arrive through the usual distribution update path, not as an immediate patch.</p>
+<p>The change is broadly of interest to infrastructure teams in Hong Kong and elsewhere where energy performance feeds into procurement and reporting — though nothing in the source connects this work to any local requirement.</p>
+<p>Operators can watch the pull request as it moves through the release candidate cycle and confirm the final version string once the subsystem's changes are tagged in the merged tree, then treat the certification angle as an expectation set by the reporting rather than a documented requirement — until the maintainer's own description spells out the intent.</p>
+<p>Phoronix's coverage of the PCI/PCIe merge window is the source for the reporting above; the underlying subsystem changes are public in the kernel tree's mailing-list traffic for anyone who wants to read the description first-hand.</p>
+<hr>
+<p>Linux PCI/PCIe 子系統維護者已將本批改動合併至目前的核心合併視窗（merge window），其中重點項目之一是改良核心處理休眠（hibernation）的方式——Phoronix 報道指此項工作有助系統符合能源認證要求。</p>
+<p>這一定位十分重要，因為休眠及低耗電行為正是能源效率標籤的耗電測試所要檢視的特性。</p>
+<p><strong>為何休眠對耗電數據至關重要</strong></p>
+<p>休眠即 S4 睡眠狀態，會將系統記憶體寫入磁碟並幾乎完全關閉電源；相比之下，一般掛起（suspend）則會維持記憶體供電。要順利進入休眠狀態，部分取決於 PCI Express 設備如何靜默（quiesce）：端點會通過 Active State Power Management（ASPM）協商鏈路以降低閒置耗電，而韌體或核心端的處理若未能在休眠週期中將設備置於正確狀態，便可能令硬件耗電超出應有水平——甚至直接阻礙狀態轉換。此領域的改良同時涉及可靠性與可量度的閒置耗電，因此其影響不限於桌面使用場景。</p>
+<p><strong>合併視窗的背景</strong></p>
+<p>子系統的改動在合併視窗期間納入，該視窗約為期兩週，其後才開始發布候選版本（release candidate）週期，這意味着相關改動是排入未來的穩定版本，而非即時部署到生產機器上。計劃在未來數季升級核心的管理員，將會透過慣常的發行版更新渠道接收此改動，而非即時補丁。</p>
+<p>此項改動對香港及其他地區的基礎設施團隊普遍具參考價值，尤其在能源表現影響採購流程及匯報的場合——不過原始資料中並無將此工作與任何本地規定相關連。</p>
+<p>營運人員可追蹤 pull request 在發布候選版本週期中的進展，並在子系統改動於合併後的樹中打上標籤後確認最終版本字串，然後將認證方面的說法視為報道所提出的預期，而非有明文記錄的要求——直至維護者自身的說明明確寫出其意圖為止。</p>
+<p>Phoronix 對 PCI/PCIe 合併視窗的報道是上述內容的來源；底層的子系統改動則公開於核心代碼樹的郵件列表往來中，有興趣者可直接閱讀其描述。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.4-PCI" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
