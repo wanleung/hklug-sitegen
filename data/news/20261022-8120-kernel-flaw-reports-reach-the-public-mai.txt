@@ -1,0 +1,42 @@
+Date: 2026-10-22 22:03:00
+Author: HKLUG Team
+Title: Kernel Flaw Reports Reach the Public Mailing List by Accident, While Patches Lag Behind
+Content:
+<p>A batch of previously undisclosed Linux kernel vulnerability reports was posted overnight to the public Linux Kernel Mailing List (LKML) rather than the private security list. Per Phoronix's account of the incident, the posting appears to have been a mistake. Full technical detail is now in front of every reader while the corresponding fixes are still unmerged on mainline.</p>
+<p>According to Phoronix, the reports describe multiple kernel flaws whose scores reach as high as 9.0 on the CVSS scale. In at least some cases fixes are undergoing review or have been queued in the kernel's <code>-next</code> testing branch, but none of the vulnerabilities have yet landed in the mainline tree that distributors build from.</p>
+<p><strong>The details are out, the fixes are not</strong></p>
+<p>That mismatch is the whole story. Embargoed kernel disclosures normally keep technical write-ups private until maintainers and vendors have patches ready, so that a coordinated release closes the hole at roughly the same moment the world learns of it. Here the sequence inverted: the write-ups are now in an archive anyone can read and index, while remediation is still travelling the conventional upstream path through review, <code>-next</code> rotation, and eventual merge.</p>
+<p>For anyone running production Linux fleets, the exposure window is the interval between "public details" and "shipped backport" — and that interval can stretch across weeks depending on subsystem and distribution cadence. Attackers do not need to wait for an exploit to be published; a CVSS-9.0 report with reproduction detail is often enough to shorten the gap considerably.</p>
+<p><strong>Why you cannot simply cherry-pick the fix</strong></p>
+<p>There is no shortcut to grabbing <code>-next</code> patches and dropping them into a stable kernel. Fixes in <code>-next</code> are still provisional: they may be revised, reordered, or reverted before they reach mainline, and pulling an unmerged patch into a production kernel introduces regression risk in code paths that the surrounding merge window has not yet accounted for. Distro backports lag mainline for the same reason — maintainers re-verify the fix against their own patched trees rather than forwarding it blind.</p>
+<p><strong>What to do this week</strong></p>
+<ul>
+<li><strong>Track LKML security traffic.</strong> Monitor the kernel mailing list and the <code>-next</code> trees for merge status on the newly disclosed fixes; mainline landing is the signal that backports will start moving.</li>
+<li><strong>Check your vendor's advisories.</strong> Review your distribution's security advisories and kernel changelogs this week for updates covering these reports, and confirm your support contract actually entitles you to them.</li>
+<li><strong>Apply compensating controls now.</strong> Do not wait for a backport to reduce attack surface: disable or firewall kernel subsystems and services your workloads do not use, so the vulnerable code is unreachable in the first place.</li>
+<li><strong>Watch for exploit activity.</strong> With details public, treat scanning and proof-of-concept development as plausible early; correlate kernel crash reports and unexpected privilege escalations against the newly public reports.</li>
+</ul>
+<p>For operators running mixed Linux estates, this is a good week to verify that whichever distributor supplies your kernels has published matching advisories — backport timing varies by vendor and by LTS branch, and a fleet on an older branch may wait longer than the mainline timeline suggests.</p>
+<p>The incident also feeds a long-running debate over private versus public security channels in open source: mailing lists are archive-public by default, so a single mis-addressed email can undo months of careful embargo coordination in one send. Process, not malice, is usually what fails.</p>
+<p>Ultimately, the risk lives in the gap between disclosure and patch — details are public, fixes are not, and until that gap closes, compensating controls are the one lever operators can pull today.</p>
+<p><em>Source: Phoronix</em></p>
+<hr>
+<p>一批此前未曾公開的 Linux 內核漏洞報告，於一夜之間被發佈到公開的 Linux Kernel Mailing List（LKML），而非私密的保安郵件列表。據 Phoronix 對事件的描述，今次發佈相信屬誤發。對應修補程序仍未合併至 mainline，完整技術細節卻已公諸於所有讀者眼前。</p>
+<p>據 Phoronix 報道，該批報告描述了多項內核缺陷，其 CVSS 評分最高達 9.0 分。至少在部分個案中，修補程序正接受審核，或已排入內核的 <code>-next</code> 測試分支，但所有漏洞均尚未進入發行版據以建置的 mainline 代碼樹。</p>
+<p><strong>詳情已外泄，修補卻未跟上</strong></p>
+<p>這種錯配正是事件的核心。按慣例，受 embargo 限制的內核漏洞披露會將技術報告保密，直至維護者及供應商備妥修補程序，使協調發布能在外界知悉漏洞的幾乎同一時刻將其封堵。今次次序卻倒轉過來：技術報告現已存檔於任何人皆可閱讀及索引的存檔庫中，而修補工作仍須沿慣常上游途徑進行——先經審核、再經 <code>-next</code> 輪轉，最終才合併。</p>
+<p>對於任何運行生產環境 Linux 機群的人員而言，風險暴露期介乎「詳情公開」與「backport 正式發佈」之間——視乎子系統及發行版節奏，這段間隔可能長達數星期。攻擊者無需等待公開的 exploit 出現；一份附有重現步驟的 CVSS 9.0 報告，往往已足以大幅縮短這段差距。</p>
+<p><strong>為何不能直接 cherry-pick 修補程序</strong></p>
+<p>直接抓取 <code>-next</code> patch 並套入穩定版內核，並無捷徑可走。<code>-next</code> 中的修補仍屬暫定性質：在抵達 mainline 之前可能被修訂、重新排序或撤回，而將未合併的 patch 引入生產環境內核，會在周邊 merge window 尚未顧及的代碼路徑中引入回歸風險。發行版的 backport 滯後於 mainline 出於同一原因——維護者會在自家已修補的代碼樹上重新驗證修補程序，而非盲目轉發。</p>
+<p><strong>本星期應做的事</strong></p>
+<ul>
+<li><strong>追蹤 LKML 安全相關流量。</strong> 監察內核郵件列表及 <code>-next</code> 代碼樹，留意新披露修補程序的合併狀態；進入 mainline 即是 backport 開始流動的信號。</li>
+<li><strong>查閱供應商公告。</strong> 本星期檢視所用發行版的安全公告及內核 changelog，查找涵蓋是次報告的更新，並確認你的支持合約確實賦予你接收這些更新的權利。</li>
+<li><strong>即時實施補償性控制措施。</strong> 不要等待 backport 才縮小攻擊面：停用或以防火牆封鎖工作負載並未使用的內核子系統及服務，令存在漏洞的代碼從一開始便無法被觸及。</li>
+<li><strong>留意 exploit 活動。</strong> 由於詳情已公開，應及早預期掃描及 proof-of-concept 開發的出現；將內核崩潰報告及異常權限提升事件與新近公開的報告作對照分析。</li>
+</ul>
+<p>對於運行混合 Linux 環境的管理人員而言，本星期正是核實提供內核的發行版是否已發布對應公告的合適時機——backport 的時間因供應商及 LTS 分支而異，停留在較舊分支的機群，等待時間可能比 mainline 時間表所顯示的更長。</p>
+<p>事件亦為開源界圍繞私密與公開保安渠道的長期爭論增添新一章：郵件列表預設以公開存檔方式運作，一封寄錯收件人的電郵，一次發送便足以令數月精心協調的 embargo 安排付諸東流。出問題的通常是流程，而非惡意。</p>
+<p>歸根結底，風險存在於披露與補修之間的落差——詳情已公開，修補程序未跟上，而在這道裂縫彌合之前，補償性控制措施仍是管理人員現階段能夠採取的手段。</p>
+<p><em>資料來源：Phoronix</em></p>
+<p><a href="https://www.phoronix.com/news/LKML-New-Trend-Vulnerabilities" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
