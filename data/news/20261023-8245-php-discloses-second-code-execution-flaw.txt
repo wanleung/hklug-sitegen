@@ -1,0 +1,40 @@
+Date: 2026-10-23 19:23:00
+Author: HKLUG Team
+Title: PHP Discloses Second Code-Execution Flaw in a Matter of Days, Urges Disabling Session Upload Progress
+Content:
+<p>Days after shipping emergency patches for the critical PHP2Shell flaws, the PHP project has disclosed a second code execution vulnerability, tracked as CVE-2026-115560, and is advising administrators to turn off the <code>session.upload_progress</code> feature until a fix lands.</p>
+<p>The advisory, covered by Security Affairs, marks the second high-profile PHP security disclosure in a matter of days — a rapid cadence that has put the project's downstream maintainers and hosting providers on notice. The report describes the flaw as confined to a specific configuration, and PHP itself has characterised successful exploitation as "unlikely." Security Affairs' account does not describe any known exploitation in the wild.</p>
+<p>Even so, the affected feature is not obscure. <code>session.upload_progress</code> lets PHP track the progress of an in-progress file upload by writing session data, and it is enabled in a number of default or commonly inherited configurations — so many deployments need to check it regardless of PHP's low-likelihood rating. How an attacker would get from that session data to code execution has not been disclosed. One candidate route — racing a crafted upload against a known session identifier so attacker-influenced data lands in the session store — is plausible background, not a confirmed vector. What PHP has confirmed is a configuration-specific flaw, dependent on the exact setup the project says is affected, which it rates as "unlikely" to be exploited.</p>
+<h5>What administrators should check</h5>
+<p>The steps below are operational guidance drawn from how PHP's configuration hierarchy behaves in practice — not part of the Security Affairs report, but the practical follow-through on PHP's advice to disable the feature until a fix ships:</p>
+<ol>
+<li><strong>Locate the effective setting.</strong> Search <code>php.ini</code> (and any <code>conf.d</code> or panel-supplied overrides) for <code>session.upload_progress.enabled</code>. Many managed hosting control panels inject their own PHP settings outside the main <code>php.ini</code>, so confirm where your runtime config actually comes from.</li>
+<li><strong>Determine whether you need it.</strong> The feature only matters if your application surfaces upload progress to end users — typically through a JavaScript progress bar. If you don't use it, there is no functional reason to keep it on.</li>
+<li><strong>Disable it if unused.</strong> Set <code>session.upload_progress.enabled = Off</code> and restart the PHP-FPM worker pool or web server so the change takes effect. Confirm the effective value with <code>php -i | grep upload_progress</code> or an <code>info()</code> page before relying on the change — <code>.user.ini</code> files and FastCGI parameter maps can re-enable the setting after you've changed the global value.</li>
+<li><strong>Track the official fix.</strong> Watch for PHP's patch; until it ships, disabling the feature is the mitigation the project itself recommends.</li>
+</ol>
+<h5>Background: PHP2Shell</h5>
+<p>The new advisory follows PHP's release of emergency patches for the PHP2Shell vulnerabilities — a set of critical flaws that prompted an out-of-band fix. Those patches are a separate matter from CVE-2026-115560 and should be tracked as their own update cycle; administrators who applied the PHP2Shell fixes are not automatically protected against the newly disclosed flaw.</p>
+<h5>Why it matters</h5>
+<p>Back-to-back disclosures from a project as ubiquitous as PHP are unusual, and the timeline itself is the story: emergency patches first, a second code-execution CVE days later. For the vast open-source ecosystem that ships PHP inside containers, control panels and shared hosting stacks, the practical takeaway is that patch lag now has a compounding cost — a configuration flag disabled today can close an exposure window while distributions and vendors work the fix into their packages.</p>
+<p>The project's own "unlikely" assessment should temper alarm, but the mitigation path is cheap: audit one configuration directive, disable it where it isn't needed, and keep the PHP update queue moving.</p>
+<p><em>Source: Security Affairs, reporting on the PHP project's disclosure of CVE-2026-115560.</em></p>
+<hr>
+<p>在為嚴重的 PHP2Shell 漏洞發出緊急補丁數日後，PHP 項目隨即披露另一個代碼執行漏洞，編號為 CVE-2026-115560，並建議管理員在修復方案推出前，先停用 <code>session.upload_progress</code> 功能。</p>
+<p>據 Security Affairs 報道，這項安全公告是 PHP 在數日之內第二宗備受關注的安全披露——如此急促的節奏已引起項目下游維護者及主機服務供應商的警惕。報道將該漏洞描述為僅限於特定設定，而 PHP 官方亦形容成功利用的情況「不太可能」。Security Affairs 的記述並未提及任何已知的野外利用（in-the-wild exploitation）情況。</p>
+<p>儘管如此，受影響的功能並非冷門。<code>session.upload_progress</code> 讓 PHP 透過寫入 session 數據來追蹤進行中的檔案上載進度，而且在不少預設或常見沿用的設定中均已啟用——因此，不論 PHP 對漏洞可能性的評級有多低，許多部署環境都須檢查此項設定。攻擊者如何由該 session 數據進一步達致代碼執行，目前尚未披露。其中一條可能途徑——以精心構造的上載與已知 session identifier 進行競速，使受攻擊者影響的數據落入 session 存儲——只屬合理的背景推測，並非已確認的攻擊向量。PHP 已確認的是一個特定設定下的漏洞，取決於項目所指受影響的確切設定，官方評級為「不太可能」被利用。</p>
+<h5>管理員應檢查的事項</h5>
+<p>以下步驟屬操作性指引，源自 PHP 設定層級在實際運作中的行為——並非 Security Affairs 報道的一部分，而是針對 PHP 建議在修復方案推出前停用該功能所作的實務跟進：</p>
+<ol>
+<li><strong>找出實際生效的設定。</strong> 在 <code>php.ini</code>（以及任何 <code>conf.d</code> 或控制面板提供的覆蓋設定）中搜尋 <code>session.upload_progress.enabled</code>。許多託管服務控制面板會在主 <code>php.ini</code> 之外注入自身的 PHP 設定，因此須先確認你的運行時設定實際來自何處。</li>
+<li><strong>判斷是否需要此功能。</strong> 此功能只有在應用程式需向最終用戶顯示上載進度時才有意義——通常透過 JavaScript 進度條實現。若你並未使用此功能，便沒有任何功能上的理由保留它。</li>
+<li><strong>如未使用即予停用。</strong> 將 <code>session.upload_progress.enabled = Off</code> 設定，並重啟 PHP-FPM worker pool 或網頁服務器，令更改生效。在倚賴該修改前，先以 <code>php -i | grep upload_progress</code> 或 <code>info()</code> 頁面確認實際生效的值——<code>.user.ini</code> 檔案及 FastCGI parameter map 可能在你更改全域值後重新啟用該設定。</li>
+<li><strong>跟進官方修復方案。</strong> 留意 PHP 的補丁；在其推出之前，停用該功能是項目官方建議的緩解措施。</li>
+</ol>
+<h5>背景：PHP2Shell</h5>
+<p>是次新公告，緊隨 PHP 為 PHP2Shell 漏洞發布緊急補丁之後——該系列嚴重漏洞促使官方作出非常規修補（out-of-band fix）。上述補丁與 CVE-2026-115560 屬不同事項，應作為獨立的更新周期跟進；已套用 PHP2Shell 修復的管理員，並不會自動獲得對新披露漏洞的防護。</p>
+<h5>為何值得關注</h5>
+<p>像 PHP 如此普及的項目接連披露漏洞並不常見，而時間線本身正是焦點所在：先發出緊急補丁，數日後再出現第二個代碼執行 CVE。對於將 PHP 打包入容器、控制面板及共享主機架構的龐大開源生態系統而言，實際啟示在於補丁滯後的代價正不斷疊加——今日停用一個設定旗標，便可於發行版及供應商將修復納入其軟件包期間，先行封堵暴露窗口。</p>
+<p>項目本身「不太可能」的評估應可稍抑恐慌情緒，但緩解途徑成本極低：審視一條設定指令，在不需要之處將其停用，並持續推進 PHP 更新隊列。</p>
+<p><em>來源：Security Affairs 就 PHP 項目披露 CVE-2026-115560 的報道。</em></p>
+<p><a href="https://securityaffairs.com/201595/security/php-warns-of-new-code-execution-flaw-days-after-php2shell-patches.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
