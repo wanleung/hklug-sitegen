@@ -1,0 +1,43 @@
+Date: 2026-10-24 14:05:00
+Author: HKLUG Team
+Title: One Brotli Decoder Bug, Four Ecosystems: Node.js, Bun, Python and Envoy All Exposed
+Content:
+<p>```</p>
+<p>A single memory-corruption flaw in Google's Brotli decoder is turning out to be a shared-dependency problem rather than a single-product one, reaching at least four widely deployed downstream consumers: Node.js, the Bun runtime, the Python <code>Brotli</code> and <code>brotlicffi</code> packages, and Envoy proxies configured to decompress Brotli traffic.</p>
+<p>Tracked as CVE-2026-111497, the vulnerability lets specially crafted compressed input write past the end of a buffer, corrupting the host program's memory in the process. That is the core mechanic, as described by The Hacker News, which reported the cross-cutting impact across those runtimes and libraries.</p>
+<h4>Patch now: what to do, and where to look</h4>
+<p>Version numbers for every affected product are still being confirmed across vendor advisories, so the practical guidance is procedural — go to the authoritative source for each component rather than guessing:</p>
+<ul>
+<li><strong>Node.js:</strong> check the official Node.js security release and apply the patched version it specifies.</li>
+<li><strong>Bun:</strong> consult the newest release notes/changelog for a fixed build and upgrade to it.</li>
+<li><strong>Python <code>Brotli</code> / <code>brotlicffi</code>:</strong> look for the updated package on PyPI (and the corresponding GHSA advisory) and pin to the patched release.</li>
+<li><strong>Envoy:</strong> review the Envoy security advisories for versions where Brotli decompression is enabled and upgrade accordingly.</li>
+</ul>
+<p><em>This article will be updated with concrete fixed-version numbers as the individual vendor advisories publish.</em></p>
+<p>If you operate an Envoy proxy or a similar edge component that decompresses Brotli, and an upgrade is not immediately feasible, narrow the exposure in the meantime: disable Brotli decompression at the edge where protocol requirements allow, or restrict it to traffic from trusted upstreams. Every component you remove from the decompression path removes one place the flaw can be reached.</p>
+<p>Inventory is the other half of the response — ask explicitly which of your services, pipelines, and edge components actually decompress Brotli.</p>
+<h4>Why one decoder bug matters so broadly</h4>
+<p>Brotli is a compression format encountered everywhere HTTP traffic flows — browsers, CDNs, reverse proxies, package managers, and server runtimes all parse it. The decoder at the centre of this CVE is not proprietary to any one vendor; it is shared code, vendored or linked into anything that unpacks Brotli-compressed data. That structural reality is what turns a memory-safety bug in one library into an incident with an unusually long blast radius.</p>
+<p>Memory corruption of this kind is precisely the class of defect attackers like: a program that trusts its input decoder, given input that decoder mishandles, can end up with attacker-influenced data in memory where it does not belong. The initial Node.js reporting framed the issue as remote code execution — the practical ceiling of what such corruption can enable — but what is independently established from the advisory material is a buffer overrun with a potential path toward code execution. Treat it as a serious memory-safety defect, not as a confirmed, weaponised RCE in every affected product.</p>
+<p>For open-source consumers, the pattern is also a reminder of how disclosure cascades work now. A flaw does not stay contained to a single advisory; it fans out to every project that embeds or re-bundles the vulnerable code, each issuing its own fix on its own timeline.</p>
+<p>Hong Kong's edge-heavy, multi-runtime deployment profile is precisely where the "do we even parse Brotli?" question tends to go unanswered.</p>
+<hr>
+<p>Google Brotli 解碼器中的一個記憶體損壞缺陷，被證實並非單一產品問題，而是共享相依元件（dependency）問題，波及至少四個廣泛部署的下游使用者：Node.js、Bun runtime、Python 的 <code>Brotli</code> 及 <code>brotlicffi</code> 套件，以及設定為解壓 Brotli 流量的 Envoy proxies。</p>
+<p>該漏洞編號為 CVE-2026-111497，攻擊者可利用精心構造的壓縮輸入寫入超出 buffer 結尾的位置，從而在過程中損壞宿主程式的記憶體。The Hacker News 首先報導了此事，指出該漏洞橫跨上述各 runtime 及函式庫造成廣泛影響，以上即為其核心機制。</p>
+<h4>立即修補：應採取什麼行動，到哪裡查閱</h4>
+<p>各受影響產品的修補版本編號目前仍在各廠商的安全公告中逐一確認，因此實用指引在於流程本身——請前往各元件的權威來源查閱，而非自行猜測：</p>
+<ul>
+<li><strong>Node.js：</strong> 查閱官方 Node.js security release，並套用其中指定的修補版本。</li>
+<li><strong>Bun：</strong> 參閱最新 release notes／changelog 以取得已修正的 build，並加以升級。</li>
+<li><strong>Python <code>Brotli</code> ／ <code>brotlicffi</code>：</strong> 在 PyPI 上尋找已更新的套件（以及對應的 GHSA 公告），並 pin 至修補版本。</li>
+<li><strong>Envoy：</strong> 檢視 Envoy security advisories，找出已啟用 Brotli decompression 的版本，並據此升級。</li>
+</ul>
+<p><em>本文將隨著各廠商陸續發布公告，更新具體的修補版本編號。</em></p>
+<p>如果你營運 Envoy proxy 或其他會解壓 Brotli 的 edge 元件，而短期內無法立即升級，請在此期間收窄暴露面：在協議允許的情況下，於 edge 層停用 Brotli decompression，或將其限制為只處理來自可信 upstream 的流量。每從 decompression 路徑中移除一個元件，就消除了一處漏洞可被觸及的入口。</p>
+<p>盤點是應對工作的另一半——必須明確追問：你的哪些服務、pipelines 及 edge 元件實際上會解壓 Brotli？</p>
+<h4>為何單一解碼器漏洞影響如此廣泛</h4>
+<p>Brotli 是一種壓縮格式，凡 HTTP 流量所到之處皆會遇到——瀏覽器、CDN、reverse proxies、套件管理器及伺服器 runtimes 全部都會解析它。此 CVE 核心的解碼器並不專屬任何單一廠商；它是共享代碼，會以 vendoring 或 linked 方式嵌入任何解壓 Brotli 壓縮數據的軟件。正是這一結構性事實，令一個函式庫中的 memory safety 缺陷演變成波及範圍異常廣大的事故。</p>
+<p>這類記憶體損壞正是攻擊者最屬意的缺陷類型：一個程式信任其輸入解碼器，一旦遇到解碼器處理不當的輸入，記憶體中就可能出現受攻擊者影響、本不應存在的數據。最初的 Node.js 報道將問題框定為 remote code execution（RCE）——即此類損壞所能導致的實際影響上限——但從公告材料中可獨立確認的，是一個 buffer overrun，並存在通往代碼執行的潛在路徑。應將其視為嚴重的 memory safety 缺陷，而非每個受影響產品均已被確認、可武器化的 RCE。</p>
+<p>對開源使用者而言，此案例亦提醒我們當今漏洞披露的級聯效應。一個缺陷不會局限於單一公告；它會擴散至所有嵌入或重新打包 vulnerable 代碼的項目，各自按自身時間表發布修補。</p>
+<p>香港以 edge 部署為主、runtime 多元的環境特點，恰恰令「我們到底會不會解析 Brotli？」這個問題最容易被忽略。</p>
+<p><a href="https://thehackernews.com/2026/10/brotli-decoder-flaw-behind-nodejs-rce.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
