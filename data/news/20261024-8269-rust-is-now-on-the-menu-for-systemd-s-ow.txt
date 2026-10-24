@@ -1,0 +1,34 @@
+Date: 2026-10-24 11:23:00
+Author: HKLUG Team
+Title: Rust Is Now on the Menu for systemd's Own Code
+Content:
+<h3>Rust Is Now on the Menu for systemd's Own Code</h3>
+<p>The systemd project has merged a change, Phoronix reports, that makes it possible for its programs to be written in Rust as an alternative to C — but this is enabling, not migrating: every binary systemd ships today still compiles the way it always has, with no ported components and no flag day. What the merge removes is a structural barrier — a removed gate, not a roadmap — leaving Rust as a blessed second path for new components, should the project choose to take it.</p>
+<p>The pattern will be familiar to anyone watching the Linux kernel, which has likewise folded Rust in incrementally for new subsystems rather than displacing its C base. For operators running systemd-based fleets, the distinction matters less as a language debate and more as a direction of travel.</p>
+<h4>Why memory safety shows up on the risk register</h4>
+<p>Systemd sits unusually high in the trust stack on Linux. It runs privileged, it initialises and supervises much of the system, and it parses input from untrusted sources — sockets, device events, unit files, network configuration. That combination makes it a wide attack surface, and historically a productive one for memory-safety bugs: use-after-free, buffer overflows, and heap corruption have repeatedly turned up in systemd components as CVEs.</p>
+<p>Rust's pitch here is narrow and specific. By moving new code into a memory-safe language, entire classes of these vulnerabilities shift from being discovered at runtime — often by attackers, sometimes by researchers filing CVEs — to being caught at compile time. That is a reduction in expected vulnerability volume over time, not a guarantee. Rust does nothing for logic bugs, race conditions, misconfiguration, or flaws in unsafe blocks, and the project has not claimed otherwise. Audited, mature C code is not being thrown away; the sensible reading is that systemd has chosen a middle path — keep what works, add Rust deliberately where it earns its place.</p>
+<h4>The less-reported angle: the contributor pipeline</h4>
+<p>The other reason this matters is staffing. Rust-trained developers entering the free-software ecosystem today have essentially no on-ramp to systemd: the codebase is C, the review culture is C, and a pull request in Rust would previously have had nowhere to land. By accepting Rust in-tree, systemd widens the funnel of people who can meaningfully contribute to a project that is critical infrastructure for a large share of Linux deployments. For a project of this importance, bus-factor risk is not a hypothetical.</p>
+<h4>The trade-offs are real</h4>
+<p>None of this comes free. A second toolchain adds build complexity and CI surface. Reviewers now need comfort across two memory models, and Rust itself moves quickly — dependency churn and edition upgrades are a maintenance cost C does not impose. There is also legitimate community pushback against rewriting code that has already been scrutinised for years; systemd appears to have heard it, since the merge enables rather than mandates Rust.</p>
+<h4>The bigger picture</h4>
+<p>The language war, to the extent it ever had a clear front, is settling: C is not being displaced, but it is no longer the only option for systems software.</p>
+<p>The practical takeaway for fleet operators is unglamorous but useful. Expect Rust-written utilities to appear in future systemd releases alongside the familiar C ones. Scrutinise them exactly as you would the C code — review the changelogs, watch the advisories, and treat "written in Rust" as a reduced risk profile rather than an absence of risk.</p>
+<p>Source: <a href="https://www.phoronix.com/news/systemd-Merges-Rust-Programs">Phoronix</a>.</p>
+<hr>
+<h3>systemd 自有程序現可選用 Rust 編寫</h3>
+<p>據 Phoronix 報導，systemd 項目已合入一項改動，使其程序可以採用 Rust 而非 C 來編寫——但此舉屬「啟用」而非「遷移」：systemd 今日發佈的每一個 binary 仍以原有方式編譯，沒有任何組件被移植，也沒有設定轉換日（flag day）。這次合入解除的是一道結構性障礙——移除的是關卡，而非路線圖——從此 Rust 成為新組件獲認可的第二條路徑，項目日後若選擇採用，便可循此而行。</p>
+<p>關注 Linux kernel 的人對這種模式不會陌生：內核同樣是以漸進方式將 Rust 納入新 subsystem，而非取代其 C 基礐。對於管理 systemd 機群的營運者而言，這與其說是語言之爭，不如說更關乎日後的發展方向。</p>
+<h4>為何記憶體安全會列上風險清單</h4>
+<p>systemd 在 Linux 的信任架構中處於異常高的位置。它以特權運行，負責初始化並監督系統的大部分運作，同時解析來自不可信來源的輸入——socket、device 事件、unit file、網絡配置。此種組合令它擁有龐大的 attack surface，而從歷史上看，這正是 memory-safety bug 屢屢滋生之處：use-after-free、buffer overflow 及 heap corruption 等漏洞，曾多次以 CVE 形式在 systemd 組件中被發現。</p>
+<p>Rust 在此處的訴求窄而具體。透過將新代碼轉入 memory-safe 語言，整類漏洞可由「在運行時被發現」——往往由攻擊者發現，有時則由研究人員提交 CVE——轉為「在編譯時被攔截」。這是隨時間推移可預期的漏洞數量減少，而非保證。Rust 對邏輯錯誤、race condition、配置失誤或 unsafe 區塊內的缺陷毫無作用，項目本身亦從未作此聲稱。經過審計、成熟可靠的 C 代碼並未被棄置；合理的解讀是 systemd 選擇了中間路徑——保留行之有效的部分，在 Rust 確能勝任之處審慎引入。</p>
+<h4>較少人報導的角度：貢獻者管道</h4>
+<p>此事之所以重要的另一個原因在於人力。今日進入自由軟件生態的 Rust 訓練開發者，基本上沒有切入 systemd 的入口：代碼庫是 C，審查文化是 C，而以往一份 Rust 的 pull request 根本無處落腳。透過在 tree 內接受 Rust，systemd 擴闊了可有意義地貢獻此項目的人才漏斗——而該項目對相當大部分 Linux 部署而言屬關鍵基礎設施。對如此重要的項目來說，bus factor 風險絕非假設性問題。</p>
+<h4>取捨確實存在</h4>
+<p>以上種種並非毫無代價。第二套 toolchain 會增加 build 複雜度與 CI 層面。審查者如今須同時掌握兩種 memory model，而 Rust 本身迭代迅速——dependency 變動與 edition 升級帶來的維護成本，是 C 不會施加的。社區亦有合理聲音反對重寫那些已受多年 scrutiny 的代碼；systemd 顯然聽到了這聲音，因為這次合入是「啟用」Rust 而非「強制」採用。</p>
+<h4>更宏觀的圖景</h4>
+<p>語言之戰——只要它曾有過清晰戰線——正在塵埃落定：C 並未被取代，但它已不再是系統軟件的唯一選項。</p>
+<p>對機群營運者而言，實際啟示平淡卻有用：可預期 Rust 編寫的工具程式會在日後的 systemd 版本中，與熟悉的 C 程序一同出現。對待它們應與對待 C 代碼完全一樣——查閱 changelog、留意 security advisory，並將「以 Rust 編寫」視為風險輪廓的降低，而非風險的消失。</p>
+<p>資料來源：<a href="https://www.phoronix.com/news/systemd-Merges-Rust-Programs">Phoronix</a>。</p>
+<p><a href="https://www.phoronix.com/news/systemd-Merges-Rust-Programs" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
