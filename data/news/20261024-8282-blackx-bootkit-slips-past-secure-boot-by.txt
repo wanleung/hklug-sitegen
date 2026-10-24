@@ -1,0 +1,48 @@
+Date: 2026-10-24 19:23:00
+Author: HKLUG Team
+Title: BlackX bootkit slips past Secure Boot by reviving the long-patched Baton Drop flaw
+Content:
+<p>A UEFI bootkit named BlackX, deployed in an espionage campaign in early 2026, slips past Secure Boot by reviving the long-patched Baton Drop vulnerability, then loads a malicious early-boot driver built to interfere with security products from Kaspersky and Avast, according to BleepingComputer.</p>
+<h4>How the bypass works, in plain terms</h4>
+<p>Secure Boot is meant to be a machine's root of trust: before the operating system loads, firmware checks that every bootloader and driver it runs carries a valid signature. Baton Drop punches a hole in that verification. The flaw lets an attacker with an existing foothold enrol or abuse trusted boot components, so unsigned or malicious code is waved through as legitimate during the boot sequence.</p>
+<p>In the BlackX campaign, that broken trust is used to load an early-boot driver — code that executes before the OS, and therefore before conventional endpoint protections have initialised. Once resident at that layer, the driver is positioned to neutralise the very security software an organisation depends on to detect it. BleepingComputer reports the payload specifically targets Kaspersky and Avast products.</p>
+<p>That tailoring matters. A bootkit that blindly disrupts antivirus engines is one thing; a payload built around a specific pair of vendors suggests the operators knew their targets' defence stack in advance — the hallmark of a resourced espionage operation rather than commodity malware.</p>
+<h4>The real story: an old flaw, a live attack</h4>
+<p>The uncomfortable detail is the age of the vulnerability. Baton Drop is not a zero-day; it is a years-old Secure Boot weakness for which mitigations already exist. Yet in 2026 it still delivers a full pre-OS compromise.</p>
+<p>For defenders, that reframes the problem. The question is not whether a fix exists — it does — but whether every boot-capable device in the estate is actually running with the mitigation in force, and enabled. Organisations routinely track patch deployment for operating systems while treating firmware and boot-chain configuration as a blind spot. An attacker living below the OS exploits exactly that gap.</p>
+<h4>What security teams should do now</h4>
+<p>BleepingComputer's reporting points readers to its article for campaign-level indicators of compromise, including artefacts tied to the bootkit and the malicious driver. Security teams should pull those indicators directly from the source rather than rely on second-hand summaries, and fold them into detection stacks alongside boot-layer telemetry.</p>
+<p>Practical steps for enterprise defenders include:</p>
+<ul>
+<li><strong>Verify Secure Boot state, not just its presence.</strong> Confirm it is enabled and inspect the permitted database entries for unexpected trusted signers.</li>
+<li><strong>Check that Baton Drop mitigation rules are enabled</strong>, not merely installed — configuration drift frequently leaves advisory rules dormant.</li>
+<li><strong>Audit patch and firmware state across all boot-capable devices</strong>, including endpoints, servers, and shared or remote hardware that may sit outside normal maintenance windows.</li>
+<li><strong>Monitor for driver and boot-layer activity</strong>, since detection at this stage is far harder than at the OS layer.</li>
+<li><strong>Treat confirmed infection as a reimage case.</strong> In-place remediation of a pre-OS compromise is unreliable; rebuild and rotate credentials.</li>
+<li><strong>Share indicators</strong> with sector peers and incident-response partners.</li>
+</ul>
+<h4>Why it matters</h4>
+<p>Defence-evasion below the operating system shrinks the defender's intervention window to nearly zero: the tools you would use to respond are the tools being disabled. The gap between "patch deployed" and "exploit path closed" is where BlackX operates — and boot time remains the least observable layer of the stack. Taking that lesson into local context, IT teams in Hong Kong managing large, heterogeneous fleets should treat Secure Boot as only as strong as the maintenance discipline behind it.</p>
+<hr>
+<p>據 BleepingComputer 報道，一款名為 BlackX 的 UEFI bootkit 於 2026 年初被用於間諜行動，它透過重新啟用早已修補的 Baton Drop 漏洞繞過 Secure Boot，其後載入一個惡意早期開機驅動程式（driver），專門干擾 Kaspersky 及 Avast 的安全產品。</p>
+<h4>繞過機制的運作原理（簡易解說）</h4>
+<p>Secure Boot 原本是電腦的 root of trust：在操作系統載入之前，firmware 會檢查每一個 bootloader 及 driver 是否帶有有效簽名。Baton Drop 就是在這項驗證機制上鑿開一個漏洞。該缺陷讓已入侵系統的攻擊者得以註冊或濫用受信任的開機組件，令未經簽名或惡意的程式碼在開機程序中被當作合法程式放行。</p>
+<p>在 BlackX 行動中，這項被破壞的信任機制被用來載入一個早期開機 driver——即在 OS 之前執行、因而也在傳統端點防護系統初始化之前執行的程式碼。一旦駐留在該層，該 driver 便有條件癱瘓機構賴以偵測它的安全軟件。BleepingComputer 報道指，該 payload 特別針對 Kaspersky 及 Avast 產品。</p>
+<p>這一點至關重要。盲目干擾防病毒引擎的 bootkit 是一回事；圍繞特定兩家廠商打造的 payload，則顯示操作者事先已掌握目標的防禦技術架構——這是資源充足的間諜行動的特徵，而非一般 commodity malware。</p>
+<h4>真正的問題：一個舊漏洞，一次活生生的攻擊</h4>
+<p>令人不安的是該漏洞的「年齡」。Baton Drop 並非 zero-day，而是一個存在多年的 Secure Boot 弱點，相關緩解措施早已存在。然而在 2026 年，它依然能夠造成完整的 pre-OS compromise。</p>
+<p>對防禦者而言，這重新定義了問題的本質。關鍵並非有沒有修補方案——有——而是 estate 內每一部具備開機能力的設備，是否真的在運行並啟用了該緩解措施。機構通常會追蹤操作系統的 patch 部署情況，卻往往對 firmware 及開機鏈（boot-chain）配置視而不見。而在 OS 之下活動的攻擊者，正是利用這個缺口。</p>
+<h4>安全團隊現階段應採取的措施</h4>
+<p>BleepingComputer 的報道引導讀者前往其文章，取得行動層面的 indicators of compromise（IOC），包括與該 bootkit 及惡意 driver 相關的 artefacts。安全團隊應直接從來源提取這些指標，而非依賴二手摘要，並將其配合 boot 層 telemetry 一併納入偵測架構。</p>
+<p>企業防禦者的實務步驟包括：</p>
+<ul>
+<li><strong>核實 Secure Boot 狀態，而不只是確認其是否存在。</strong> 確認其已啟用，並檢查 permitted database 條目中有無預期以外的受信任簽署者。</li>
+<li><strong>確認 Baton Drop 緩解規則已啟用</strong>，而不只是安裝——配置漂移（configuration drift）經常令建議規則形同虛設。</li>
+<li><strong>審核所有具開機能力設備的 patch 及 firmware 狀態</strong>，包括端點、伺服器，以及可能不在正常保養週期內的共享或遙距硬件。</li>
+<li><strong>監察 driver 及 boot 層活動</strong>，因為在此階段的偵測遠比在 OS 層困難。</li>
+<li><strong>視確診感染為需要重新映像（reimage）的個案。</strong> 對 pre-OS compromise 進行原地修復並不可靠；應重新建置系統並輪換憑證。</li>
+<li><strong>分享 indicators</strong> 與同業及事件回應夥伴。</li>
+</ul>
+<h4>為何重要</h4>
+<p>操作系統之下的防禦規避（defence-evasion），將防禦者的介入窗口壓縮至近乎零：你會用來回應的工具，正是被癱瘓的工具。「已部署 patch」與「已封閉 exploit 路徑」之間的缺口，正是 BlackX 的活動空間——而開機階段始終是整個技術堆疊中最難以觀察的一層。將這項教訓帶入本地情境，管理龐大、不同類型設備組合的香港 IT 團隊，應視 Secure Boot 的強弱取決於其背後的維護紀律。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/blackx-uefi-bootkit-exploits-baton-drop-flaw-to-bypass-secure-boot/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
