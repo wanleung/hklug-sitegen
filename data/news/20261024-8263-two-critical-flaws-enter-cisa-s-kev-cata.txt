@@ -1,0 +1,44 @@
+Date: 2026-10-24 14:27:00
+Author: HKLUG Team
+Title: Two Critical Flaws Enter CISA's KEV Catalog — What Self-Hosters Need to Do Now
+Content:
+<p>The U.S. Cybersecurity and Infrastructure Security Agency (CISA) on Friday added two critical-severity vulnerabilities to its Known Exploited Vulnerabilities (KEV) catalog, citing reports of active exploitation in the wild — one hitting Collabora Online's Built-in CODE Server, the other Arista VeloCloud Orchestrator (VCO).</p>
+<p>The lead entry, <strong>CVE-2026-110447</strong>, carries a CVSS score of 9.2 and affects the Collabora Online Built-in CODE Server (CODE), the self-hosted document-collaboration stack built on LibreOffice technology. The available advisory text describes the flaw only partially — the description truncates mid-sentence at "An operating…," leaving the vulnerability class unconfirmed. Administrators should treat that characterization as incomplete and read the full KEV entry before scoping remediation.</p>
+<p>The second listed flaw affects Arista VeloCloud Orchestrator, the control plane for Arista's SD-WAN estate. Its CVE identifier and CVSS score were absent from the material available at time of writing; both should be verified against the KEV catalog and Arista's own advisories.</p>
+<h5>Why the KEV listing matters more than the CVSS score</h5>
+<p>Catalog inclusion is the operative signal. Under Binding Operational Directive 22-01, federal civilian agencies must remediate cataloged vulnerabilities by a stated due date — typically days to a few weeks after listing. For everyone else, the catalog functions as a de facto triage queue: an entry means exploitation is not theoretical, and "patch now" moves ahead of "queue for the next maintenance window."</p>
+<p>Patch availability was not confirmed in the source material, so operators should not assume fixes are already published — check Collabora and Arista advisories directly, and apply any available updates or mitigations without delay. Whether CISA or HKCERT has issued a corresponding local advisory was likewise not reflected in the source coverage; check HKCERT's vulnerability pages for a local notice rather than assuming one exists.</p>
+<h5>Two very different attack surfaces</h5>
+<p>The pairing is instructive because the products sit at opposite ends of the deployment spectrum. Collabora CODE is a self-hosted, open-source document server — the kind of stack favoured by organisations prioritising data sovereignty. That control comes with a cost: when a self-hosted service lands in the KEV, inventorying, patching, and verifying fall entirely on the operator. A SaaS equivalent arrives already patched by someone else; a self-hosted flaw does not.</p>
+<p>Arista VeloCloud Orchestrator, by contrast, is an SD-WAN orchestration layer. Compromising an orchestrator is a force-multiplier: it pushes configuration across an entire distributed network from a single point of control, making a flaw there a network-wide event rather than a host-level one.</p>
+<h5>Same-day remediation checklist</h5>
+<ol>
+<li><strong>Inventory assets</strong> — confirm whether you run a self-hosted Collabora Online / CODE Server or an Arista VeloCloud Orchestrator deployment.</li>
+<li><strong>Check official advisories</strong> — review the Collabora and Arista security bulletins for patched versions and their availability; if no fix exists yet, record the vendor's recommended mitigations.</li>
+<li><strong>Verify the full KEV entries</strong> — pull the complete descriptions, CVSS scores, and BOD 22-01 due dates for both CVEs directly from the CISA KEV catalog.</li>
+<li><strong>Apply patches promptly</strong> — schedule the update in your next maintenance window; before patching, assess whether management interfaces can be isolated or source IPs restricted in the interim.</li>
+<li><strong>Check HKCERT bulletins</strong> — review the Hong Kong Computer Emergency Response Team's vulnerability disclosures for any corresponding local advisory.</li>
+<li><strong>Keep records</strong> — log the asset inventory, patch times, and verification results for future audit and review.</li>
+</ol>
+<p>Both entries are immediate-action items, not routine patch-queue candidates: CISA's assessment is that exploitation is already underway.</p>
+<hr>
+<p>美國網絡安全及基礎設施安全局（CISA）於週五將兩個嚴重級別漏洞列入其「已知被利用漏洞」（KEV）目錄，理由是收到野外活躍利用報告 —— 其中一個影響 Collabora Online 的內置 CODE Server，另一個則影響 Arista VeloCloud Orchestrator（VCO）。</p>
+<p>首項條目 <strong>CVE-2026-110447</strong> 的 CVSS 評分為 9.2，影響 Collabora Online 內置 CODE Server（CODE），即基於 LibreOffice 技術建立的自架文件協作平台。現有安全公告文本對漏洞的描述並不完整 —— 說明在句子中途「An operating…」處截斷，漏洞類別因而未能確認。管理員應視該描述為不完整，並在界定修復範圍前閱讀完整的 KEV 條目。</p>
+<p>第二項漏洞影響 Arista VeloCloud Orchestrator，即 Arista SD-WAN 環境的控制平面。其 CVE 編號及 CVSS 評分在撰稿時可得的資料中並無列出；兩者均須對照 KEV 目錄及 Arista 自身的安全公告加以核實。</p>
+<h5>為何 KEV 收錄比 CVSS 評分更重要</h5>
+<p>被納入目錄才是實質訊號。根據《具約束力的運作指令 22-01》（Binding Operational Directive 22-01），聯邦民政府機構須在指定期限前修補已列入目錄的漏洞 —— 通常為列入後數日至數星期。對其他所有人而言，該目錄實際上充當分類處理隊列：條目出現即代表利用並非純屬理論，「即時修補」應排在「留待下個維護時段」之前。</p>
+<p>原始資料並未確認補丁是否已發布，營運方不應假設修補程式已推出 —— 應直接查閱 Collabora 及 Arista 的安全公告，並即時套用任何可用更新或緩解措施。CISA 或 HKCERT 是否已發出相應的本地公告，原始報道同樣沒有反映；應查閱 HKCERT 的漏洞頁面以確認是否有本地通告，而非假設其存在。</p>
+<h5>兩個截然不同的攻擊面</h5>
+<p>將兩者並列頗具參考價值，因為它們處於部署光譜的兩端。Collabora CODE 是自架、開源的文件伺服器 —— 此類平台向來受重視數據主權的機構青睞。這種掌控亦有代價：當自架服務登上 KEV，盤點、修補及驗證工作便完全落在營運方身上。SaaS 同類服務已由別人完成修補；自架漏洞則沒有這回事。</p>
+<p>相形之下，Arista VeloCloud Orchestrator 是 SD-WAN 編排層。攻陷編排器有如力量倍增器：它可從單一控制點將配置推送至整個分散式網絡，令該處漏洞演變為全網事件，而非單一主機層面的問題。</p>
+<h5>同日修復清單</h5>
+<ol>
+<li><strong>盤點資產</strong> —— 確認是否有自架 Collabora Online / CODE Server 或 Arista VeloCloud Orchestrator 部署。</li>
+<li><strong>查閱官方公告</strong> —— 檢視 Collabora 與 Arista 安全公告，確認修補版本及其可用性；如修補程式尚未推出，記錄廠商建議的緩解措施。</li>
+<li><strong>核對 KEV 完整條目</strong> —— 直接從 CISA KEV 目錄取得兩項 CVE 的完整描述、CVSS 評分及 BOD 22-01 修補期限。</li>
+<li><strong>即時套用補丁</strong> —— 安排於下個維護時段更新；修補前先評估能否在期間隔離管理介面或限制來源 IP。</li>
+<li><strong>檢查 HKCERT 通告</strong> —— 檢視香港電腦緊急應變小組的漏洞披露，確認是否有相關本地通告。</li>
+<li><strong>留有紀錄</strong> —— 記錄資產清單、修補時間及驗證結果，以備日後審計及覆核。</li>
+</ol>
+<p>兩項條目均屬即時行動事項，並非例行補丁排程候選：CISA 的評估是相關利用已在進行中。</p>
+<p><a href="https://thehackernews.com/2026/10/cisa-flags-two-actively-exploited.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
