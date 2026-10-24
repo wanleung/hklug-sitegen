@@ -1,0 +1,40 @@
+Date: 2026-10-24 13:41:00
+Author: HKLUG Team
+Title: 539 Patches, 76% Reviewed: What Linux 7.4's Memory Management Pull Request Means for Operators
+Content:
+<h3>539 Patches, 76% Reviewed: What Linux 7.4's Memory Management Pull Request Means for Operators</h3>
+<p>Andrew Morton has submitted the mainline memory management (MM) pull request for the Linux 7.4 merge window. Per Phoronix's report on the pull, the batch tops out at 539 patches as submitted, with a reviewed rate of 76% — a notably high proportion of the stack having passed through review before landing. (The 76% figure is as reported by Phoronix at the opening of the merge window; we were unable to independently re-verify it against a rendered load of the source page at time of publication, and it should be treated alongside the patch count as subject to shift before 7.4 is final.)</p>
+<p>The MM tree is one of the most consequential parts of any merge window. It governs how the kernel allocates, reclaims and compacts memory, and changes there ripple into every workload running on the host — from database pages pinned in RAM to the ballooning and balancing behaviour that container and virtualisation platforms depend on.</p>
+<h4>What's in the batch</h4>
+<p>This cycle's headline contents are further DAMON work. DAMON (Data Access MONitor) is the kernel's framework for observing data access patterns at scale: it tracks which memory regions are hot, cold or idle with comparatively low overhead, and exposes that signal to both operators and kernel heuristics such as reclaim and tiering. Phoronix characterises this cycle's additions as "more DAMON" alongside a set of performance optimisations — meaning the observability surface operators can hook into is growing, not shrinking.</p>
+<p>The reclaim and compaction improvements matter most for memory-dense hosts. Anywhere a machine runs many tenants — a dense container or virtualisation host, a virtual machine fleet, a build farm — the kernel spends real CPU cycles deciding what to evict and how to coalesce free pages into usable blocks. Gains in those paths show up directly as fewer stalls under memory pressure and steadier tail latencies when the box is pushed close to its limits.</p>
+<p>The 76% reviewed rate is worth particular attention. Merge-window patches frequently arrive with large fractions unreviewed, which is how regressions get discovered downstream rather than upstream. A three-quarters-reviewed batch suggests the MM tree is entering 7.4 in comparatively disciplined shape — though, as always, review coverage is not the same as production soak time.</p>
+<h4>What to watch next</h4>
+<p>Three caveats should temper any early conclusions.</p>
+<p>First, merge-window numbers shift. The 539-patch figure describes the MM pull <em>as submitted</em> at the start of the window; later trees, fixes and follow-up pulls can move the totals before 7.4 is declared final. Treat 539 as the intake number, not the shipping one — and treat the 76% review rate as Phoronix's merge-window reading, worth reconfirming against the settled tree.</p>
+<p>Second, no benchmarks yet. Merge-window reporting is about what changed, not how fast it runs. Expect performance follow-ups — particularly on reclaim and compaction workloads — only once reviewers and testers have the released kernel in hand, and defer any performance claims until those numbers exist.</p>
+<p>Third, DAMON's practical value depends on downstream tooling. The kernel supplying a monitoring subsystem does not by itself produce dashboards, alerts or safe policy defaults; distributions and observability stacks need to package and expose it before most teams can use it day to day.</p>
+<h4>When you'll actually see it</h4>
+<p>Mainline availability is the easy part: 7.4's final release follows the close of the merge window and testing cycle, and from there the tree is available to anyone building their own kernel.</p>
+<p>The conservative path is different. Ubuntu LTS and RHEL-class distributions track a given upstream feature only when it has accumulated enough upstream stability to be backported into their maintained kernel branches — a process that typically unfolds over subsequent kernel releases rather than the release the feature first appeared in. In practice, teams on enterprise distributions should plan for these MM changes to arrive through a later distro kernel update, not an immediate upgrade, and should treat any interim performance claims as provisional until their own workloads are measured.</p>
+<p>For operators, the sensible near-term action is unglamorous: note which of these changes touch the reclaim, compaction and DAMON paths you actually depend on, then revisit once the feature lands in the kernel your distribution releases.</p>
+<p><em>Source: Phoronix, "539 MM Patches Merged For Linux 7.4 From Optimizations To More DAMON" — https://www.phoronix.com/news/Linux-7.4-MM</em></p>
+<hr>
+<h3>539 個修補程式、76% 經審閱：Linux 7.4 記憶體管理 pull request 對系統管理員的意義</h3>
+<p>Andrew Morton 已提交 Linux 7.4 merge window 的主線記憶體管理（MM）pull request。根據 Phoronix 對該 pull 的報道，這批次提交的修補程式總數達 539 個，經審閱比率為 76%——這堆疊中相當高比例的改動在正式納入之前已通過審閱流程。（76% 這一數字是 Phoronix 在 merge window 開啟時的報道；截至發稿時，我們未能獨立透過渲染來源頁面重新核實該數字，因此它應與修補程式數目一樣，在 7.4 正式定案前仍有可能變動。）</p>
+<p>MM tree 是任何 merge window 中影響最深遠的部分之一。它掌管內核如何分配、回收及整理記憶體，其中的改動會波及主機上運行的每一項工作負載——無論是固定在 RAM 中的數據庫頁面，還是 container 及虛擬化平台所依賴的 ballooning 與平衡行為。</p>
+<h4>本批次內容</h4>
+<p>本輪的重點內容是 DAMON 的進一步開發。DAMON（Data Access MONitor）是內核用於大規模觀察數據存取模式的框架：它以相對低的開銷追蹤哪些記憶體區域屬於熱區、冷區或閒置，並將這些訊號提供予系統管理員及內核的 heuristic（例如回收與分層機制）使用。Phoronix 將本輪的新增內容形容為「更多 DAMON」，加上一系列性能優化——意味著系統管理員可以接入的 observability 範圍正在擴大，而非縮小。</p>
+<p>回收與整理的改進對記憶體密集型主機尤為重要。凡是在一台機器上運行大量 tenant 的環境——密集的 container 或虛擬化主機、虛擬機 fleet、build farm——內核都會花費實際的 CPU cycles 來決定應淘汰哪些頁面，以及如何把空閒頁面合併為可用的區塊。這些路徑上的改進會直接體現為記憶體壓力下更少的停頓，以及在系統接近極限時更穩定的 tail latency。</p>
+<p>76% 的經審閱比率值得特別關注。Merge window 的修補程式經常在提交時有相當比例未經審閱，這正是 regression 往往在下游而非上游才被發現的原因。一個四分之三已完成審閱的批次，顯示 MM tree 進入 7.4 時處於相對有紀律的狀態——不過一如既往，審閱覆蓋率並不等同於生產環境的實測時間。</p>
+<h4>接下來要留意什麼</h4>
+<p>有三點注意事項，足以令人對任何過早的結論保持審慎。</p>
+<p>第一，merge window 的數字會變動。539 個修補程式這個數字描述的是 MM pull 在 window 開始時<em>提交</em>的狀態；其後的 tree、修復及後續 pull 都可能在 7.4 正式定案前改變總數。應將 539 視為收錄數字，而非發布數字；至於 76% 的審閱率，則應視為 Phoronix 在 merge window 期間的讀數，值得在 tree 穩定後重新核實。</p>
+<p>第二，目前尚無 benchmark。Merge window 的報道關注的是有何改變，而非運行速度有多快。性能方面的跟進報道——尤其是關於回收及整理工作負載的測試——要待評審與測試人員取得正式發布的 kernel 後才會出現，在這些數據出爐之前，任何性能聲稱都應擱置。</p>
+<p>第三，DAMON 的實際價值取決於下游工具。內核提供一個監控 subsystem 本身並不會自動帶來 dashboard、警報或安全的 policy 預設值；發行版及 observability 工具鏈需要先將其打包並對外提供，大多數團隊日常才能使用。</p>
+<h4>何時會真正用到</h4>
+<p>主線版本的可用性最為直接：7.4 的正式發布緊隨 merge window 及測試周期結束，此後任何自行編譯 kernel 的人都可以取得該 tree。</p>
+<p>保守路徑則有所不同。Ubuntu LTS 及 RHEL 一類的發行版，只會在某項上游功能累積足夠的穩定性、可以 backport 至其維護的 kernel 分支時才會跟進——這個過程通常需要歷經其後數個 kernel 版本，而非功能首次出現的那一版。實際而言，使用企業級發行版的團隊應預期這些 MM 改動會透過其後的發行版 kernel 更新才會到來，而非即時升級；任何過渡期間的性能聲稱，在自身工作負載完成測量之前，都應視為暫定。</p>
+<p>對系統管理員而言，近期合理而務實的行動並不起眼：留意這些改動中，哪些觸及你實際依賴的回收、整理及 DAMON 路徑，然後待該功能出現在你的發行版所發布的 kernel 時再重新評估。</p>
+<p><em>來源：Phoronix，"539 MM Patches Merged For Linux 7.4 From Optimizations To More DAMON" — https://www.phoronix.com/news/Linux-7.4-MM</em></p>
+<p><a href="https://www.phoronix.com/news/Linux-7.4-MM" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
