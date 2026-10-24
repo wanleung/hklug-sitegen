@@ -1,0 +1,28 @@
+Date: 2026-10-24 19:29:00
+Author: HKLUG Team
+Title: Linux 7.4 Patch Series Cuts Early memblock Allocation From ~268 Seconds to ~50ms
+Content:
+<p>A set of patches proposed for the Linux 7.4 kernel promises to slash the time spent in one of the kernel's earliest memory-allocation paths from roughly 268 seconds to about 50 milliseconds — a speed-up of roughly 5,000×, according to Phoronix, which covered the series on 24 October 2026.</p>
+<p>The changes target <code>mm/memblock.c</code>, the code behind memblock, the kernel's early boot-time physical memory allocator. The patch series has been sent out for the Linux 7.4 merge window, per the Phoronix report.</p>
+<p><strong>What memblock actually does</strong></p>
+<p>For readers who have not dug into boot code: when a machine powers on, Linux cannot yet use its main, fully featured memory manager — the page allocator — because that allocator itself needs memory structures to be set up first. In the gap between firmware handing over control and the page allocator coming online, the kernel relies on memblock as a simple stand-in. It carves up the physical RAM it has been given into blocks, reserves what must not be touched (kernel image, firmware regions, device areas), and hands out the rest to early initialisation code. Once the real memory manager is ready, memblock's allocations are handed over and memblock steps out of the way.</p>
+<p>Because it runs so early, memblock has historically been written for simplicity rather than speed, and its internal bookkeeping was never designed for the very large memory machines that are common today. The result, as the Phoronix figures illustrate, is that a phase meant to take a moment can stretch into minutes on systems with vast amounts of RAM.</p>
+<p><strong>Why it matters in practice</strong></p>
+<p>Beyond the headline numbers, the practical gains are tangible: faster boots, and less time idling before a virtual machine or container host becomes usable. For anyone running large-memory servers — including the infrastructure behind data-centre workloads, where dozens or hundreds of gigabytes (or more) of RAM must be surveyed at every power cycle — shaving minutes off the pre-page-allocator phase translates directly into quicker restarts, shorter maintenance windows, and swifter VM spin-up on reclaimed hardware. This is the class of improvement operations teams notice most on the machines with the biggest memory footprints, which is exactly where data centres live.</p>
+<p><strong>Still a proposal, not a shipped fix</strong></p>
+<p>Two caveats deserve equal billing with the speed-up figure. First, these are patches under review, not code sitting in a released kernel; the series must still clear kernel review and be merged, and patches touching a foundational allocator typically face extra scrutiny precisely because so much of the boot path depends on it. Second, the specific "~268 seconds to ~50ms" numbers come from Phoronix's coverage of the series and reflect the reported measurements — real-world results will vary with hardware, memory configuration, and final patch revisions.</p>
+<p>With those caveats noted, the direction of travel is clear: memblock's early-allocation overhead has been treated as a known cost of doing business, and this series argues it does not have to be. If it lands as proposed in Linux 7.4, the earliest moments of every boot — and every VM start — should get measurably cheaper.</p>
+<p>Developers wanting the nitty-gritty can follow the discussion and patch revisions through the Phoronix article, which links onward to the original series as sent for the 7.4 cycle.</p>
+<hr>
+<p>一組為 Linux 7.4 kernel 提出的 patch，有望將 kernel 最早期記憶體分配路徑之一的耗時由約 268 秒大幅削減至約 50 毫秒——速度提升約 5,000 倍。據 Phoronix 於 2026 年 10 月 24 日報道該系列 patch 時所述。</p>
+<p>是次改動針對 <code>mm/memblock.c</code>，即 memblock 背後的代碼。memblock 是 kernel 在開機最早期所使用的實體記憶體分配器。據 Phoronix 報道，該 patch 系列已提交至 Linux 7.4 的 merge window。</p>
+<p><strong>memblock 究竟做什麼</strong></p>
+<p>對於未曾鑽研過開機代碼的讀者：機器啟動時，Linux 尚未能使用其主要、功能完整的記憶體管理器——page allocator——因為該分配器本身需要先建立所需的記憶體結構。在韌體交出控制權至 page allocator 正式運作之間的空檔，kernel 依賴 memblock 作為簡單的臨時替代方案。它將獲分配的實體 RAM 劃分成多個 block，保留不可觸碰的部分（kernel image、韌體區域、設備範圍），其餘則交予早期初始化代碼使用。一旦真正的記憶體管理器就緒，memblock 的分配便會移交，memblock 隨即退出。</p>
+<p>由於運行時間極早，memblock 一直以簡單為先而非追求速度來編寫，其內部記錄方式從來並非針對現今常見的超大記憶體機器而設計。結果如 Phoronix 的數據所示：本應片刻完成的階段，在擁有海量 RAM 的系統上可能拖延至數分鐘。</p>
+<p><strong>實際意義何在</strong></p>
+<p>撇開標題數字不談，實際層面的得益是具體可感的：更快的開機速度，以及虛擬機或 container 主機可用之前更少的空等時間。對於任何運行大記憶體伺服器的人——包括支撐數據中心工作負載的基礎設施，此類系統在每次開機週期都必須檢視數十至數百 GB（甚至更多）的 RAM——將 pre-page-allocator 階段縮短數分鐘，直接轉化為更快的重新啟動、更短的維護窗口，以及在回收硬件上更快的 VM 啟動。此類改進正是營運團隊在記憶體佔用最大的機器上最易察覺的，而這恰恰是數據中心所在的範疇。</p>
+<p><strong>仍是提案，並非已交付的修正</strong></p>
+<p>有兩點須與速度提升數據同等看待。其一，這些是尚在審核中的 patch，而非已發佈 kernel 中的代碼；該系列仍須通過 kernel review 並完成 merge，而涉及基礎分配器的 patch 通常會面對額外審查，正因開機路徑的絕大部分都依賴於它。其二，「約 268 秒縮短至約 50 毫秒」的具體數字來自 Phoronix 對該系列的報道，反映其所報告的量度結果——實際結果會因硬件、記憶體配置及最終 patch 修訂而異。</p>
+<p>在留意上述兩點之後，發展方向已十分明確：memblock 的早期分配開銷一直被視為運作的既定成本，而該系列主張這並非必然。若按提案如期納入 Linux 7.4，每一次開機——以及每一次 VM 啟動——的最初片刻，都應可計量地變得更為迅速。</p>
+<p>希望深入了解細節的開發者，可透過 Phoronix 的文章追蹤討論及 patch 修訂，該文並附有為 7.4 週期提交的原始系列連結。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.4-memblock" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
