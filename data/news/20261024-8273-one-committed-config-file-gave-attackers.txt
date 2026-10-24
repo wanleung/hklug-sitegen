@@ -1,0 +1,48 @@
+Date: 2026-10-24 14:23:00
+Author: HKLUG Team
+Title: One Committed Config File Gave Attackers the Keys to LiteLLM's Release Pipeline
+Content:
+<h4>One config commit in May quietly became a package-publishing identity</h4>
+<p>A master key for a LiteLLM Agent Platform deployment, accidentally committed to a public GitHub repository in late May 2026, was ultimately used by a threat actor to steal GitHub tokens and push a malicious version of the widely used Python package. LiteLLM disclosed the intrusion on Friday; <a href="https://thehackernews.com/2026/10/leaked-litellm-master-key-let-attackers.html">The Hacker News</a> reported the disclosure on 24 October 2026.</p>
+<p>The chain began on 27 May 2026, when a configuration file was committed to the public <code>LiteLLM-Labs/lite-harness</code> repository — a lab and test harness rather than the main product — and it inadvertently carried the master key for a live deployment. Because the repository was public, the credential sat in the open, commit history included. By the calendar, the key was exposed from late May until disclosure: a window measured in months, not hours, and long enough for any process that treats such a credential as permanent to make use of it.</p>
+<p>From there the escalation was textbook: the exposed master key yielded GitHub tokens, those tokens gave access to CI/CD workflows, and CI/CD access let the actor tamper with the release pipeline and publish a malicious version of the package to PyPI. At time of writing, LiteLLM has disclosed the intrusion, but neither the actor nor the initial access point has been publicly attributed.</p>
+<h5>Why gateway teams should care</h5>
+<p>The significance here is not the leak itself — secrets leak constantly — but the shape of the causal chain. A key living in a <em>lab harness</em> repository became, in effect, a package-publishing identity. Anyone running a self-hosted AI gateway should treat their master key as equivalent to their release credentials, because in practice it may unlock both.</p>
+<p>That equivalence cuts both ways. A gateway master key fronts every upstream provider key the gateway holds — Anthropic, OpenAI, Azure, and any others configured — plus the prompt and completion logs it records. Compromise it and the exposure is not one service but the whole keyring, along with whatever sensitive context those logged prompts contain. For teams in Hong Kong running LiteLLM or comparable gateways on their own infrastructure, that makes key custody a first-class security control rather than a configuration chore.</p>
+<p>There is a second trap after detection: rotating the live key does not scrub the <code>.git</code> record, where the credential remains readable in the committed configuration file, and GitHub tokens minted before the rotation may stay valid until they expire. That argues for secret scanning across full repository history, not just the working tree — and for revoking derived credentials explicitly rather than assuming they follow the master key down.</p>
+<h5>Remediation checklist (forwardable)</h5>
+<p><strong>Incident response (0–24 hours)</strong>
+- <strong>Rotate the master key immediately</strong>: treat it as a confirmed credential leak — rotate first, investigate second; do not wait to establish scope.
+- <strong>Revoke derived credentials</strong>: rotate any GitHub PATs, Actions secrets, or CI/CD tokens tied to the master key; do not assume they expire with it.
+- <strong>Audit GitHub Actions and CI/CD secrets</strong>: list every token workflows use and check scope and expiry dates.</p>
+<p><strong>Hardening (within the week)</strong>
+- <strong>Scan full git history</strong>: configuration files, <code>.env</code>, and templates are all common leak points — public repos warrant a commit-by-commit pass.
+- <strong>Move to short-lived, auto-revocable credentials</strong>: avoid long-lived master keys, and give the release pipeline its own least-privilege identity.
+- <strong>Re-verify upstream provider keys</strong>: a leaked master key puts every upstream provider key behind the gateway at risk — validate each and re-issue where warranted.
+- <strong>Review logged prompts</strong>: confirm who can access gateway logs, and restrict retention and access where needed.</p>
+<h5>For teams that only install the package</h5>
+<p>You do not need to operate a gateway to be exposed. LiteLLM had not published affected version ranges at time of writing, so teams that merely <code>pip install</code> the package should watch the project's advisories for version-specific guidance, prefer hash-pinned or lockfile-verified installs where their tooling allows, and treat releases published during the affected window with suspicion until confirmed clean. A compromised package can execute at install time, so the remediation is verification at the point of consumption, not just at deployment.</p>
+<p>The uncomfortable lesson for the AI infrastructure community: an accidental commit in a side repository can propagate through CI/CD into a distributed package registry. Repository hygiene for AI tooling now belongs to the same conversation as release signing and secret scanning — not a separate one.</p>
+<hr>
+<h4>五月的一次設定檔提交，悄然變成套件發布身份</h4>
+<p>一枚用於 LiteLLM Agent Platform 部署的 master key，於 2026 年 5 月尾誤提交至公開的 GitHub repository，最終被威脅行為者用來竊取 GitHub token，並向 PyPI 發布該流行 Python 套件的惡意版本。LiteLLM 已於週五披露該入侵事件；<a href="https://thehackernews.com/2026/10/leaked-litellm-master-key-let-attackers.html">The Hacker News</a> 於 2026 年 10 月 24 日報道了此次披露。</p>
+<p>事件始於 2026 年 5 月 27 日：一份設定檔被提交至公開的 <code>LiteLLM-Labs/lite-harness</code> repository——那是實驗與測試用途的 harness，而非主產品——卻無意間夾帶了某個實際部署的 Master Key。由於 repository 屬公開性質，該憑證就這樣暴露在外，連同 commit 歷史亦然。按日曆計算，這枚 key 從五月下旬一直外洩至披露之日：暴露窗口以月計而非以小時計，長得足以讓任何把此類憑證視為永久有效的程式加以利用。</p>
+<p>其後的權限提升堪稱教科書式：外洩的 Master Key 換來 GitHub token，token 取得 CI/CD workflow 的存取權，CI/CD 存取權再讓行為者篡改 release pipeline，把惡意版本的套件推上 PyPI。截至截稿，LiteLLM 已披露入侵，但行為者身份與初始入侵點均未獲公開歸因。</p>
+<h5>為何 gateway 團隊應關注此事</h5>
+<p>此事的關鍵並不在於洩漏本身——secrets 外洩可謂屢見不鮮——而在於因果鏈的形態。一枚棲身於 <em>lab harness</em> repository 的金鑰，實際上搖身一變成為套件發布的身份憑證。任何自行託管 AI gateway 的團隊，都應把自己的 Master Key 視同 release credentials，因為在實務上它可能兩者皆能解鎖。</p>
+<p>這種等同關係是雙向的。gateway 的 Master Key 把守著 gateway 所持有的每一個上游供應商金鑰——Anthropic、OpenAI、Azure 及任何其他已配置的供應商——連同其記錄的 prompt 及 completion logs。一旦失守，暴露的便不是單一服務，而是整個 keyring，以及那些已記錄 prompts 所含的敏感上下文。對於在香港以自有基礎架構運行 LiteLLM 或同類 gateway 的團隊而言，這使金鑰保管成為一級安全控制，而非一項設定上的雜務。</p>
+<p>偵測之後還有第二重陷阱：輪換運行中的 key 並不會清除 <code>.git</code> 紀錄——該憑證在已提交的設定檔中依然可讀——而輪換前鑄造的 GitHub token 可能在到期前持續有效。這正是主張對完整 repository 歷史（而非僅 working tree）進行 secret scanning 的理由，也說明衍生憑證必須逐一明確吊銷，不應假設它們會隨 Master Key 一同失效。</p>
+<h5>修復清單（繁體中文，可轉發）</h5>
+<p><strong>應急（0–24 小時）</strong>
+- <strong>立即輪換 Master Key</strong>：視同憑證外洩處理，先輪換、再排查，不要等確認影響範圍。
+- <strong>吊銷衍生憑證</strong>：與該 Master Key 相關的 GitHub PAT、Actions secrets、CI/CD token 逐一吊銷重發，勿假設會隨 Master Key 自動失效。
+- <strong>審核 GitHub Actions 與 CI/CD 秘密</strong>：列出所有 workflow 使用的 token，檢查權限範圍與到期日。</p>
+<p><strong>整改（本週內）</strong>
+- <strong>掃描 git 歷史</strong>：設定檔、<code>.env</code>、範本檔都可能是洩漏點，公開 repo 尤其要連完整 commit 歷史逐次檢查。
+- <strong>改用短效、可自動吊銷的憑證</strong>：避免長期有效的 Master Key；為發布流程設定獨立、最小權限的身份。
+- <strong>覆核上游供應商金鑰</strong>：Master Key 洩漏即等於 gateway 背後每一個上游供應商金鑰皆受威脅，逐一驗證並視需要重發。
+- <strong>檢查已記錄的 prompts</strong>：確認 gateway 日誌的存取範圍，必要時限制保留期與查閱權限。</p>
+<h5>只安裝套件的團隊</h5>
+<p>團隊無需自行運行 gateway 亦可能受影響。截至截稿，LiteLLM 尚未公布受影響的版本範圍，因此僅以 <code>pip install</code> 安裝套件的團隊，應持續留意專案 advisories 以獲取針對版本的指引；在工具允許的情況下優先採用 hash-pinned 或 lockfile 驗證的安裝方式，並在確認乾淨之前，對受影響時間窗內發布的 releases 保持戒心。被植入惡意程式碼的套件可在安裝階段就執行程式碼，因此補救動作是在「使用端」進行驗證，而不只是在部署環節。</p>
+<p>給 AI 基礎設施社群的沉重教訓：附屬 repository 中的一次意外提交，可以經由 CI/CD 傳播至分散式的 package registry。AI 工具的 repository 衛生，如今應與 release signing 及 secret scanning 納入同一場討論——而非另闢一場。</p>
+<p><a href="https://thehackernews.com/2026/10/leaked-litellm-master-key-let-attackers.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
