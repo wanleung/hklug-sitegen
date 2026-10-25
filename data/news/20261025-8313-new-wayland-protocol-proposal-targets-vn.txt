@@ -1,0 +1,36 @@
+Date: 2026-10-25 18:23:00
+Author: HKLUG Team
+Title: New Wayland Protocol Proposal Targets VNC and Remote-Display Workflows
+Content:
+<p>Running a VNC server or other remote-display tool on Wayland has long been one of the platform's rougher edges: compositors own the display stack in a way X11 never did, and there has been no standardised way for a remoting server to spin up an output on the fly, drive it, and tear it down again. A new proposal aims to change that.</p>
+<p>Simon Ser, a prominent Wayland developer known for his work across the wlroots ecosystem and Wayland tooling, has submitted a merge request to the <code>wayland-protocols</code> project introducing a new protocol called <code>ext-transient-output</code>, Phoronix reported on 25 October.</p>
+<h4>What's being proposed</h4>
+<p><code>ext-transient-output</code> is intended to give remoting software — VNC servers being the headline use case — a supported mechanism for creating a temporary, compositor-managed output for the duration of a remote session. Rather than needing a physical display to mirror, or relying on compositor-specific hacks, a remoting server would be able to request an output, present frames to it, and remove it cleanly when the session ends.</p>
+<p>The merge request has been filed against the <code>wayland-protocols</code> staging repository, which is hosted on the freedesktop.org GitLab instance and where cross-compositor proposals are reviewed before being blessed as stable interfaces. As with all such submissions, the text remains a proposal until it is reviewed, revised, and merged — adoption downstream is a separate step entirely.</p>
+<h4>Why it matters</h4>
+<p>The practical appeal is straightforward. Wayland's security model deliberately prevents clients from reading the screen or inventing outputs, which is good for privacy but has left a gap for legitimate remote-access workflows. Administrators running headless machines, developers screen-sharing, and support teams driving remote sessions have all had to work around that gap, typically through XWayland shims, screen-capture portals that were never designed for persistent virtual displays, or proprietary compositor extensions.</p>
+<p>A protocol that makes transient outputs a first-class concept would give VNC and remote-desktop developers one interface to target instead of a per-compositor checklist. For anyone tracking the long migration from X11 to Wayland — particularly in environments where remote access is non-negotiable — that is a meaningful reduction in friction.</p>
+<p>Closer to home, this reads less as a desktop feature than as an infrastructure detail: Wayland-based environments are increasingly common among local developers, self-hosters, and small labs running headless or remote-access setups, so a portable remote-display interface would mostly surface in how those machines are packaged and administered.</p>
+<h4>Open questions</h4>
+<p>Two points are likely to shape the review. The first is naming: placing the protocol under the <code>ext-</code> namespace signals it is an extension under active experimentation rather than a mature, frozen interface, and reviewers have previously debated how aggressively to stage such proposals. The second is how <code>ext-transient-output</code> will interact with existing output-management interfaces, such as the protocols that let clients position and configure outputs, so that a transient display does not collide with the user's real monitors or layout tooling.</p>
+<p>Compositor buy-in will ultimately determine whether the proposal delivers on its promise. Mutter, KWin, Sway, and other wlroots-based compositors would each need to implement the interface before remoting tools can rely on it in practice — and historically, protocol uptake has varied considerably between mainstream desktop compositors and the lighter-weight projects.</p>
+<h4>What to watch</h4>
+<p>For now, <code>ext-transient-output</code> is exactly what it is: an early-stage merge request and a signal that the Wayland community is working to close one of its remaining gaps for remote-display software. Three milestones are worth tracking: whether the merge request is accepted at all, how the protocol text evolves through review, and which compositors volunteer implementations first. Whether it lands upstream, and how quickly it is picked up, remains to be seen.</p>
+<p><strong>Source:</strong> <a href="https://www.phoronix.com/news/Wayland-ext-transient-output">Phoronix — New Wayland Protocol Proposed For VNC/Remote Software</a>. Merge requests for <code>wayland-protocols</code> are tracked in the <a href="https://gitlab.freedesktop.org/wayland/wayland-protocols/-/merge_requests">project's GitLab repository</a>.</p>
+<hr>
+<p>在 Wayland 上執行 VNC server 或其他遙距顯示工具，一直是該平台較為粗糙的邊緣地帶之一：compositor 對顯示堆疊的掌控方式，是 X11 從未有過的，而過去亦從未有標準化的方式，讓遙距伺服器可以即時建立 output、驅動它，然後將其拆除。一項新提案正冀望改變這一點。</p>
+<p>據 Phoronix 10 月 25 日報道，知名 Wayland 開發者 Simon Ser 已向 <code>wayland-protocols</code> 項目提交 merge request，引入一項名為 <code>ext-transient-output</code> 的新協議。Simon Ser 以在 wlroots 生態系統及 Wayland 工具鏈方面的工作而聞名。</p>
+<h4>提案內容</h4>
+<p><code>ext-transient-output</code> 旨在為遙距軟件——以 VNC server 為首要用例——提供一個受支持的機制，在整個遙距會話期間建立由 compositor 管理的臨時 output。遙距伺服器毋須再依賴實體顯示器作鏡像輸出，亦不必依靠特定 compositor 的取巧手段，而是可以請求一個 output、向其呈現畫面，並在會話結束時將其乾淨利落地移除。</p>
+<p>該 merge request 已提交至 <code>wayland-protocols</code> 的 staging repository，該庫託管於 freedesktop.org 的 GitLab 實例上，跨 compositor 的提案會先在此接受審閱，然後才會被採納為穩定接口。一如所有同類提交，在經過審閱、修訂及合併之前，文本始終只屬提案——下游採用則完全是另一回事。</p>
+<h4>重要性所在</h4>
+<p>其實際吸引力顯而易見。Wayland 的安全模型刻意阻止客戶端讀取屏幕或虛構 output，這對私隱固然是好事，卻也為正當的遙距訪問工作流程留下了一個缺口。管理無頭（headless）機器的管理員、進行屏幕共享的開發者，以及操作遙距會話的技術支援團隊，一直須要繞過這個缺口，通常藉助 XWayland shim、從非為持久虛擬顯示器而設計的屏幕截取 portal，或專有的 compositor 擴展來實現。</p>
+<p>一項將 transient output 列為一等概念的協議，可讓 VNC 及遙距桌面開發者只需針對單一接口開發，而非逐個 compositor 逐一應對。對於關注從 X11 遷移至 Wayland 這一長久進程的人士——尤其在遙距訪問不可或缺的環境中——這意味著相當程度的摩擦減少。</p>
+<p>較貼近本地情況來看，這與其說是桌面功能，不如說是一項基礎設施細節：基於 Wayland 的環境在本地開發者、自行託管（self-host）用戶，以及運行無頭或遙距訪問設置的小型實驗室中日益普遍，因此一個可移植的遙距顯示接口，主要會體現於這些機器的打包及管理方式上。</p>
+<h4>未解問題</h4>
+<p>有兩點很可能左右審閱結果。其一是命名：將協議置於 <code>ext-</code> 命名空間下，意味它屬仍在積極實驗中的擴展，而非成熟且已凍結的接口，審閱者此前亦曾就這類提案應以何種程度納入 staging 展開討論。其二是 <code>ext-transient-output</code> 將如何與現有的 output 管理接口互動，例如那些讓客戶端定位及配置 output 的協議，以確保臨時顯示器不會與用戶的實體顯示器或布局工具產生衝突。</p>
+<p>Compositor 營運者的認同，最終將決定提案能否兌現其承諾。Mutter、KWin、Sway 及其他基於 wlroots 的 compositor 均須各自實現該接口，遙距工具方能在實踐中依賴它——而歷來，協議的採納程度在主流桌面 compositor 與較輕量級項目之間差異頗大。</p>
+<h4>值得留意之處</h4>
+<p>目前而言，<code>ext-transient-output</code> 就如其名所暗示的一樣：尚處早期階段的 merge request，以及 Wayland 社區正努力彌合其遙距顯示軟件其中一個殘餘缺口的信號。有三個里程碑值得追蹤：merge request 是否會獲接納、協議文本在審閱過程中如何演變，以及哪些 compositor 最先主動提交實現。它能否進入上游，以及被採納的速度如何，仍有待觀察。</p>
+<p><strong>來源：</strong> <a href="https://www.phoronix.com/news/Wayland-ext-transient-output">Phoronix — New Wayland Protocol Proposed For VNC/Remote Software</a>。<code>wayland-protocols</code> 的 merge request 於<a href="https://gitlab.freedesktop.org/wayland/wayland-protocols/-/merge_requests">該項目的 GitLab repository</a> 追蹤。</p>
+<p><a href="https://www.phoronix.com/news/Wayland-ext-transient-output" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
