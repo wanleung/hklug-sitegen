@@ -1,0 +1,36 @@
+Date: 2026-10-25 12:05:00
+Author: HKLUG Team
+Title: Linux 7.4 Retires Google's C Binder Driver as Rust Rewrite Takes Over
+Content:
+<p>Phoronix reported on 25 October that Linus Torvalds has merged the "char/misc" subsystem changes for the Linux 7.4 kernel, and the most consequential item this cycle is a deletion: Google's long-standing, C-written Binder driver has been removed from the kernel, with a Rust-based replacement positioned to take over the role of mediating inter-process communication for future Android devices.</p>
+<p>The report covers the merge of the char/misc pull request for 7.4.</p>
+<h4>A subsystem, rewritten</h4>
+<p>Binder is not a peripheral or an experimental subsystem — it is the load-bearing IPC mechanism at the heart of Android, responsible for the cross-process calls that hold the mobile platform together. That the kernel community is now prepared to retire the C implementation in favour of a Rust rewrite marks a milestone in Rust's standing within the Linux kernel: the language has moved from new-subsystem experiments and driver prototypes to replacing a security-critical, production-grade component used across the Android fleet.</p>
+<p>The merge material describes the Rust Binder as ready to serve a "few billion devices" — a figure that reflects the maintainers' framing of the driver's intended reach rather than a verified count of deployed systems.</p>
+<p>As background to this cutover, Google's original C driver was for years maintained outside the mainline tree before its eventual upstreaming — a history that gives the handover to a Rust implementation the feel of a bookend, even though that longer story sits outside what this cycle's merge material itself reports.</p>
+<h4>Why it matters beyond the merge window</h4>
+<p>For the open-source community, the cutover is a proof point. Kernel maintainers have repeatedly signalled that Rust is welcome in the tree where it can demonstrate real value; Binder's replacement tests that principle against a component where bugs have historically carried direct security consequences. It also suggests how future C-to-Rust transitions might be staged: the sequence observed here — replacement landed first, original removed once the rewrite was deemed ready — offers a template for the ordering, if not a documented process.</p>
+<p>For downstream vendors — including Android device makers and system-on-chip partners who carry vendor trees and out-of-tree patches — the deletion lands as a practical rebasing obligation rather than a distant roadmap item. Any downstream fork still carrying modifications to the C Binder driver will need to reconcile with the Rust implementation as they move to 7.4-based baselines. The same applies to tooling and test harnesses that assumed the C implementation's internals.</p>
+<p>For developers in the wider ecosystem, the shift also nudges the skills conversation. Understanding Rust's ownership model and its kernel idioms is becoming less of a niche interest and more of a working requirement for anyone maintaining or auditing Android-adjacent kernel code.</p>
+<h4>Context</h4>
+<p>Rust support has been progressively upstreamed into Linux since its initial merge, but much of it has so far centred on driver scaffolding and self-contained modules. Replacing Binder — a component maintainers and reviewers have long treated as one whose failure modes bear directly on application sandboxing and privilege boundaries — pushes Rust into territory where correctness guarantees are most load-bearing.</p>
+<p>Linux 7.4 is expected to proceed through the usual rc cycle following Torvalds's merges. Developers and downstream maintainers can track the char/misc changes, and the rationale for the Binder removal, via the Phoronix report and the upstream merge material.</p>
+<p>The deletion is, in short, less a line of code removed than a threshold crossed: Rust has graduated from experiment to production kernel infrastructure.</p>
+<p><em>Source: <a href="https://www.phoronix.com/news/Linux-7.4-Char-Misc">Phoronix</a></em></p>
+<hr>
+<p>Phoronix 於 10 月 25 日報道，Linus Torvalds 已將 Linux 7.4 核心的「char/misc」子系統變更合併入庫，而本輪週期中最重大的項目是一項刪除：Google 長期以來以 C 語言編寫的 Binder 驅動程式已從核心中移除，由基於 Rust 的取代版本接手，負責未來 Android 設備的進程間通訊（inter-process communication）協調工作。</p>
+<p>該報道涵蓋了 7.4 版本 char/misc pull request 的合併情況。</p>
+<h4>一個子系統的重寫</h4>
+<p>Binder 並非邊緣或實驗性子系統——它是 Android 核心的關鍵 IPC 機制，負責維繫整個移動平台的跨進程調用。核心社群如今準備淘汰 C 語言實現、改用 Rust 重寫版本，標誌着 Rust 在 Linux 核心中地位的一個里程碑：該語言已從新子系統實驗和驅動程式原型，邁向取代 Android 全線設備廣泛使用的、對安全至關重要的生產級組件。</p>
+<p>合併材料指出，Rust 版 Binder 已準備好服務「數十億台設備」——該數字反映維護者對該驅動程式預期覆蓋範圍的描述，而非已部署系統的實際核實數目。</p>
+<p>作為此次切換的背景，Google 最初的 C 語言驅動程式多年來一直在 mainline tree 之外維護，其後才最終 upstream——這段歷史令此次移交予 Rust 實現帶有「首尾呼應」之感，儘管這段更長的故事本身並不在本輪合併材料的報道範圍之內。</p>
+<h4>為何超越合併窗口依然重要</h4>
+<p>對開放源碼社群而言，此次切換是一個有力的證明。核心維護者曾多次表明，只要 Rust 能在 tree 中證明其實際價值，就歡迎其應用；Binder 的取代計劃，正是對這一原則在一個歷來其缺陷會帶來直接安全後果的組件上的考驗。這亦揭示了未來 C 轉 Rust 的過渡可能如何分階段進行：此處觀察到的次序——先落地取代版本，待重寫版本被認為就緒後才移除原有版本——為步驟先後提供了一個範本，儘管並非一份成文流程。</p>
+<p>對下游廠商——包括 Android 設備製造商以及維護 vendor tree 和 out-of-tree patches 的 system-on-chip 夥伴——而言，這項刪除意味着一項切實的 rebase 義務，而非遙遠的路線圖項目。任何仍帶有 C 版 Binder 驅動程式修改的下游 fork，在轉向以 7.4 為基礎的 baseline 時，都須與 Rust 實現作出協調。同樣適用於假設 C 版實現內部結構的工具和測試框架。</p>
+<p>對整個生態系統的開發者而言，這一轉變亦推動了技術要求的討論。理解 Rust 的 ownership model 及其核心慣用法，正逐漸從小眾興趣變成任何維護或審計 Android 相關核心代碼人士的工作要求。</p>
+<h4>背景</h4>
+<p>自首次合併以來，Rust 支持已逐步 upstream 進入 Linux，但至今大部分集中於驅動程式腳手架和自包含模組。取代 Binder——一個維護者和審核者長期以來視為其失效模式直接影響應用沙箱和權限邊界的組件——將 Rust 推入正確性保證最為關鍵的領域。</p>
+<p>Linux 7.4 預計在 Torvalds 完成合併後，按慣常 rc 週期繼續推進。開發者和下游維護者可透過 Phoronix 的報道及 upstream 合併材料，追蹤 char/misc 的變更以及移除 Binder 的理據。</p>
+<p>簡而言之，這項刪除與其說是移除了一行代碼，不如說是跨越了一道門檻：Rust 已由實驗階段晉身為生產級核心基礎設施。</p>
+<p><em>Source: <a href="https://www.phoronix.com/news/Linux-7.4-Char-Misc">Phoronix</a></em></p>
+<p><a href="https://www.phoronix.com/news/Linux-7.4-Char-Misc" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
