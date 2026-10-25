@@ -1,0 +1,62 @@
+Date: 2026-10-25 18:24:00
+Author: HKLUG Team
+Title: One planted AGENTS.md file was all it took to hijack an AI coding agent
+Content:
+<p>A single markdown file sitting in a user's Downloads folder was enough to steer an AI coding agent into installing a rogue npm package, according to a report published by BleepingComputer. No memory-corruption bug, no authentication bypass, and no compromise of the agent binary itself was involved — only a change in who got to write the instructions.</p>
+<p>The researchers found a malicious <code>AGENTS.md</code> file on a customer's machine. Instruction files of this kind are designed to be committed to a repository and reviewed like any other code: they tell an agent how to build the project, which linters to run, which directories to avoid. When a copy is planted outside the repository — in a download directory, a desktop folder, or anywhere else an agent may happen to scan — the same instructions are still loaded verbatim, but they have bypassed code review, CI checks, and version-control history entirely.</p>
+<p>The result was a prompt injection that never appears in a pull request. The model behaved exactly as designed; the failure was in the trust boundary, not the technology. Escalation came at the package-installation step: <code>npm install</code> is an ordinary, high-frequency agent action that carries broad permissions, and it is the point at which remote instructions become local execution. From a stray text file to a supply-chain compromise, only one command separated the two.</p>
+<p><strong>The risk your dashboard will never show</strong></p>
+<p>The BleepingComputer report does not attribute the finding to a named researcher or a specific commercial product, and no CVE has been assigned to the incident as of publication. That absence is the core takeaway for IT managers: this class of risk will never surface on a vulnerability-management dashboard, because there is no vulnerability identifier to add to a tracker. What failed was a deployment assumption rather than a software defect — which means it must be managed through configuration, review policy, and agent-vendor documentation, the three surfaces that traditional ASM and SCA tooling do not cover.</p>
+<p><strong>Which agents read instructions outside the repository root</strong></p>
+<p>The report does not identify the specific agent implementation in use, and behaviour varies by tool. As a general rule, teams should assume an agent may load instruction files from more than the repository root: from parent directories above the project, from global or user-level configuration (typically under the home directory), and from whichever working directory the agent was launched in. Any of these locations can be written to without touching version control. IT managers should require vendors to document exactly which paths their agent searches, and to demonstrate that the search can be constrained.</p>
+<p><strong>Why this matters beyond one incident</strong></p>
+<p><code>AGENTS.md</code> is the visible tip of a broader pattern. README files, changelogs, issue comments, documentation sites, and even test output can all carry directives into an agent's context window. Any text an agent reads is potentially authoritative input.</p>
+<p><strong>Defensive checklist</strong></p>
+<ol>
+<li>Treat every instruction file (<code>AGENTS.md</code>, <code>CLAUDE.md</code> and equivalents) as untrusted input.</li>
+<li>Constrain where agents look for instructions — approved project roots only, excluding Downloads and Desktop.</li>
+<li>Gate package installs behind human approval; pin to internal registries or lockfiles.</li>
+<li>Run agents in sandboxes with restricted privileges.</li>
+<li>Log agent shell history and install events with the same seriousness as CI logs.</li>
+<li>Ask agent vendors which paths their products search for instruction files, and require the answer in writing before rollout.</li>
+</ol>
+<p><strong>Glossary for IT managers</strong></p>
+<ul>
+<li><strong>AI coding agent:</strong> software that writes and runs code on a user's behalf, acting on natural-language and file-based instructions.</li>
+<li><strong>Instruction file:</strong> a markdown document (for example <code>AGENTS.md</code>) that tells an agent how to behave in a project.</li>
+<li><strong>Prompt injection:</strong> malicious instructions embedded in data an agent reads, causing it to act against the user's intent.</li>
+<li><strong>npm package:</strong> a reusable JavaScript code component fetched from a public registry and installed onto a machine.</li>
+<li><strong>Supply-chain compromise:</strong> poisoning a component or installation step so that untrusted code runs on downstream machines.</li>
+<li><strong>Sandbox:</strong> an isolated execution environment that limits what a process can access or modify.</li>
+</ul>
+<p>Nothing in the report points to specific victims or jurisdictions; the mechanism is generic and applies wherever AI coding assistants are in use, including in Hong Kong teams adopting them. Auditing instruction files only inside version control is no longer sufficient — files in a home or download directory are trivially missed by a repository-only review, yet remain fully legible to the agent.</p>
+<hr>
+<p>據 BleepingComputer 發布的報告指出，單是一個放在使用者「下載」資料夾內的 markdown 檔案，已足以操控一個 AI 編碼 agent 去安裝一個惡意 npm package。事件完全不涉及記憶體損毀漏洞、身份驗證繞過，或 agent 二進制檔案本身被入侵 —— 改變的只是「誰人有權寫入指令」。</p>
+<p>研究人員在一客戶的機器上發現一個惡意 <code>AGENTS.md</code> 檔案。這類指令檔案的設計初衷，是提交至 repository 內，像其他代碼一樣接受審查：它們會告訴 agent 如何建置項目、要執行哪些 linter、要避開哪些目錄。但當一份副本被植入 repository 之外 —— 例如下載目錄、桌面資料夾，或任何 agent 可能順便掃描的位置 —— 同樣的指令仍會被逐字載入，卻已完全繞過代碼審查、CI 檢查和版本控制歷史。</p>
+<p>結果是一次從不出現在 pull request 裏的 prompt injection。模型的行為完全按設計運作；失敗之處在於信任邊界（trust boundary），而非技術本身。權限提升發生於安裝套件這一步：<code>npm install</code> 是 agent 一個普通而高頻的動作，卻帶有廣泛權限，正是遠端指令轉化為本機執行的臨界點。由一個散落的純文字檔案，到一次供應鏈入侵，中間只隔著一道指令。</p>
+<p><strong>你的儀表板永遠不會顯示的風險</strong></p>
+<p>BleepingComputer 的報告並未將此發現歸於某位具名研究人員或某個特定商業產品，截至發稿時亦未有為此事件分配 CVE。這項空缺正是 IT 經理最應掌握的核心結論：這類風險永遠不會在漏洞管理儀表板上浮現，因為根本沒有漏洞編號可以加入追蹤清單。出錯的是一項部署假設，而非軟件缺陷 —— 這意味著必須透過配置、審查政策，以及 agent 供應商的文件來管理，而這三個層面正是傳統 ASM（攻擊面管理）及 SCA（軟件成分分析）工具未有覆蓋的。</p>
+<p><strong>哪些 agent 會讀取 repository 根目錄以外的指令</strong></p>
+<p>報告並未指明實際使用的 agent 實作，而行為亦因工具而異。一般而言，團隊應假設 agent 可能從多於 repository 根目錄的位置載入指令檔案：包括項目上方的父目錄、全域或使用者層級配置（通常位於 home 目錄下），以及 agent 啟動時所在的任何工作目錄。上述任何位置均可在不觸及版本控制的情況下被寫入。IT 經理應要求供應商準確說明其 agent 會搜尋哪些路徑，並證明該搜尋範圍是可以約束的。</p>
+<p><strong>為何此事的意義不止於單一事件</strong></p>
+<p><code>AGENTS.md</code> 只是一個更大模式的冰山一角。README 檔案、changelog、issue 留言、文件網站，甚至測試輸出，都可以將指令帶入 agent 的 context window。agent 讀取的任何文字，都有可能是具權威性的輸入。</p>
+<p><strong>防禦清單</strong></p>
+<ol>
+<li>將每一個指令檔案（<code>AGENTS.md</code>、<code>CLAUDE.md</code> 及同等文件）視為不可信輸入（untrusted input）。</li>
+<li>限制 agent 尋找指令的範圍 —— 僅限已批准的項目根目錄，排除「下載」及「桌面」資料夾。</li>
+<li>套件安裝須經人手批准；固定使用內部 registry 或 lockfile。</li>
+<li>以限制權限的 sandbox 執行 agent。</li>
+<li>以同等於 CI 日誌的嚴謹程度，記錄 agent 的 shell 歷史及安裝事件。</li>
+<li>詢問 agent 供應商其產品會搜尋哪些路徑來尋找指令檔案，並要求在推行前以書面作答。</li>
+</ol>
+<p><strong>給 IT 經理的名詞解釋</strong></p>
+<ul>
+<li><strong>AI coding agent：</strong> 代表使用者撰寫及執行代碼的軟件，依據自然語言及基於檔案的指令行事。</li>
+<li><strong>指令檔案：</strong> 一份 markdown 文件（例如 <code>AGENTS.md</code>），用以告知 agent 在某個項目中應如何運作。</li>
+<li><strong>Prompt injection：</strong> 嵌入 agent 所讀數據中的惡意指令，令其偏離使用者意圖行事。</li>
+<li><strong>npm package：</strong> 可重用的 JavaScript 代碼元件，從公開 registry 取得並安裝到機器上。</li>
+<li><strong>供應鏈入侵（supply-chain compromise）：</strong> 汙染某個元件或安裝步驟，令不可信代碼在下游機器上執行。</li>
+<li><strong>Sandbox：</strong> 隔離的執行環境，限制進程可存取或修改的範圍。</li>
+</ul>
+<p>報告中沒有指向特定受害者或司法管轄區；該機制屬通用性質，適用於任何採用 AI 編程助手的地方，包括採用相關工具的香港團隊。僅審查版本控制內的指令檔案已不夠 —— home 或下載目錄內的檔案會被只針對 repository 的審查輕易忽略，但對 agent 而言卻完全可讀。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/ai-coding-agents-hijacked-using-agentsmd-file-in-downloads-folder/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
