@@ -1,0 +1,69 @@
+Date: 2026-10-25 11:23:00
+Author: HKLUG Team
+Title: Nearly a Decade in Staging, Then Deletion: Realtek's rtl8723bs Is Cut From the Kernel
+Content:
+<pre><code>
+The Realtek rtl8723bs wireless driver has been removed from the Linux kernel's staging area during the Linux 7.4 merge window, ending a run of nearly ten years in the kernel's much-debated holding area — and ending not with promotion to a proper subsystem, but with outright deletion. The removal was reported by Phoronix as part of its coverage of the 7.4 staging pull, which also carries the headline claim that the driver has been deleted from staging.
+
+The hardware itself is not losing support. According to Phoronix, the rtl8723bs functionality has been folded into the more mature RTW88 driver within the kernel's networking subsystem, giving users of affected Realtek Wi-Fi chipsets a maintained path forward rather than a sudden regression.
+
+**Why staging matters here**
+
+The kernel's staging area was created as a waystation: a place to hold drivers that are not yet ready for the mainline subsystems, with the expectation that they would either be cleaned up and promoted, or quietly removed. In practice, staging has spent years at the centre of an argument about whether it functions as an on-ramp for new contributors or, as some critics in the kernel community have long framed it, a dumping ground where unfinished code accumulates without a clear exit.
+
+The rtl8723bs case is unusual precisely because it achieved neither outcome: it was never promoted to a first-class driver, and it was never quietly tidied away while it still might have been. It sat in staging for roughly a decade, absorbing effort from many different developers — Phoronix notes that the driver was worked on by numerous kernel developer newcomers — and still never reached the bar for promotion. Read against staging's stated mandate, that suggests the years of effort never produced a version the community was willing to carry as a first-class driver.
+
+**Two readings, one removal**
+
+For the staging area's defenders, the episode cuts both ways. On one hand, the driver plainly failed the &quot;promote&quot; half of staging's mandate despite years of attention. On the other, the fact that so many first-time contributors cut their teeth on it suggests staging did deliver on the community-exposure side of its purpose: contributors gained real experience of the merge-window process, review cycles, and kernel coding conventions.
+
+A third position sits alongside both: deletion may have been the responsible endgame rather than a failure. Where a maintained, more mature implementation already covers the same hardware — in this case RTW88 — carrying a second, weaker driver in staging indefinitely serves no one. Keeping stale code alive purely because it has been there a long time is its own kind of debt.
+
+**What this means for contributors**
+
+Anyone who has been sending patches against rtl8723bs should reassess where their efforts go: the driver's staging copy is gone, so future work belongs against RTW88 or elsewhere in the networking subsystem. The removal also offers a lesson worth taking on board about how staging is now being treated during merge windows — cleanups that quietly resolve long-dormant drivers are increasingly being framed as housekeeping rather than controversy.
+
+Practically, end users should not expect immediate changes. Kernel removals only reach production machines once distributions rebase onto 7.4, a process that typically trails the merge window by some time and varies considerably between rolling and long-term-support releases. Downstream timing will determine when anyone actually sees this driver disappear from their installed system.
+
+For IT professionals and open-source contributors weighing where to invest patch effort, the general due-diligence point is straightforward: before committing to a driver in staging, check whether a maintained alternative already exists in a real subsystem — the rtl8723bs story suggests that is now a meaningful predictor of whether staging code survives.
+
+---
+
+## 中文（繁體）版本
+
+```yaml
+---
+title: &quot;在 staging 待了近十年，最終遭刪除：Realtek rtl8723bs 離開核心&quot;
+date: 2026-10-25T11:23:00
+author: HKLUG Team
+source_url: https://www.phoronix.com/news/Linux-7.4-Staging
+tags: [linux-kernel, staging, realtek, wifi-drivers, open-source]
+---
+</code></pre>
+<p>Realtek rtl8723bs 無線驅動已在 Linux 7.4 合併視窗期間從核心的 staging 區域移除：在 kernel 內備受爭議的「中轉站」停留近十年後，最終的結局並非晉升為正式子系統的一部分，而是遭到直接刪除。Phoronix 在報導 7.4 staging pull 時披露了這項移除，其標題亦明確指稱該驅動已從 staging 中刪除。</p>
+<p>硬件本身並未失去支援。根據 Phoronix 的報導，rtl8723bs 的功能已併入核心網絡子系統中較成熟的 RTW88 驅動，讓受影響的 Realtek Wi-Fi 晶片組用戶仍有一條有人維護的出路，而非突然失去功能。</p>
+<p><strong>為何 staging 在此值得一提</strong></p>
+<p>核心的 staging 區域原本被設計為一個中轉站：用來存放尚未準備好進入正式子系統的驅動，預期它們最終會被整理後晉升，抑或在無人注意時被低調移除。實際上，staging 多年來一直是核心社群爭論的焦點——它究竟是新貢獻者的入門通道，還是如部分批評者長期所言，一個欠缺明確出口、任由未完成代碼堆積的傾倒區。</p>
+<p>rtl8723bs 的案例之所以特別，在於它兩種結局都沒有遇上：它從未晉升為一線驅動，也未在仍有機會之時被低調清理掉。它在 staging 中停留了約十年，多位開發者曾投入其中——Phoronix 指出，該驅動曾由不少新加入的 kernel 開發者參與處理——卻始終未能達到晉升的門檻。從 staging 的既定職責來看，這意味著長年的反覆投入始終未能產出一個社群願意作為一線驅動維護的版本。</p>
+<p><strong>兩種解讀，一次移除</strong></p>
+<p>對 staging 的辯護者而言，這個案例同時具有兩面意義。一方面，儘管多年受到關注，該驅動顯然未能完成 staging 職責中「晉升」的那一半。另一方面，如此多首次參與 kernel 開發的人員曾在它身上累積經驗，顯示 staging 確實履行了社群融入的那部分功能：貢獻者從中實際體驗了合併視窗流程、審查週期與 kernel 編碼慣例。</p>
+<p>此外還有第三種看法：刪除本身可能是負責任的終局，而非失敗。當已獲持續維護、更成熟的實作涵蓋同一硬件——此處即 RTW88——繼續在 staging 中長期保留第二個較弱的驅動，對誰都沒有好處。單純因為代碼存在已久而不願清除，本身也是一種技術債務。</p>
+<p><strong>對貢獻者的意義</strong></p>
+<p>仍在為 rtl8723bs 提交補丁的人應重新評估投入方向：該驅動在 staging 中的版本已不存在，往後的工作應針對 RTW88 或網絡子系統的其他部分。這次移除也提供了一個值得借鏡的例子，說明合併視窗期間核心對 staging 的處理方式——低調解決長期擱置驅動的清理作業，如今愈來愈被視為例行整理，而非爭議事件。</p>
+<p>實務上，終端用戶不必預期立即出現變化。核心的移除要等到發行版 rebase 至 7.4 才會抵達生產環境，這個過程通常在合併視窗之後仍需一段時間，且在滾動更新版本與長期支援版本之間差異頗大。下游的時程將決定使用者何時才會真正看到這個驅動從已安裝的系統中消失。</p>
+<p>對於正在評估補丁投入方向的 IT 從業人員與開源貢獻者，一般性的盡職調查原則相當直接：在押注一個 staging 中的驅動之前，先確認正式子系統中是否已有受維護的替代方案——rtl8723bs 的故事顯示，這如今已是預測 staging 代碼能否存活的一個有意義指標。</p>
+<hr>
+<p>```</p>
+<p>Realtek rtl8723bs 無線驅動已在 Linux 7.4 merge window 期間從 Linux kernel 的 staging area 中移除：在 kernel 內備受爭議的「中轉站」停留近十年後，最終的結局並非晉升為正式 subsystem，而是遭到直接刪除。Phoronix 在報導 7.4 staging pull 時披露了這項移除，其標題亦明確指稱該驅動已從 staging 中刪除。</p>
+<p>相關硬件本身並未失去支援。根據 Phoronix 報導，rtl8723bs 的功能已整合到 kernel networking subsystem 中較成熟的 RTW88 驅動之內，令受影響的 Realtek Wi-Fi chipset 用戶獲得一條有持續維護的出路，而非突然遭遇功能回退。</p>
+<p><strong>Staging 為何在此事中至關重要</strong></p>
+<p>Kernel 的 staging area 被設立為一個中轉站：用來存放尚未準備好進入正式 subsystem 的驅動，預期它們日後或是經清理後升格，抑或會被低調移除。實際上，staging 多年來一直是爭論的焦點：它究竟是新貢獻者的入門通道，還是如 kernel 社群中一批批評者長期以來所指責的那樣，只是一個未完成代碼不斷堆積、卻沒有明確出口的垃圾場。</p>
+<p>rtl8723bs 這個個案之所以特殊，恰恰在於它兩種結局都沒有實現：它從未升格為 first-class driver，也未能在仍有希望之時被低調清理掉。它在 staging 中停留了約十年，消耗了多位不同開發者的心血 —— Phoronix 指出，曾有不少新加入的 kernel 開發者參與該驅動的改動 —— 但最終仍未達到升格的門檻。對照 staging 明文訂明的職責來看，這意味著多年來的反覆投入，始終未能產出一個社群願意作為 first-class driver 繼續維護的版本。</p>
+<p><strong>兩種解讀，一次移除</strong></p>
+<p>對於 staging area 的支持者而言，今次事件利弊互見。一方面，儘管多年來備受關注，該驅動顯然未能完成 staging 使命中「升格」的那一半。另一方面，如此多首次參與的貢獻者在它身上歷練成長，這一事實表明 staging 確實兌現了其在「讓貢獻者接觸社群」方面的功能：貢獻者獲得了 merge window 流程、review 週期以及 kernel 編碼規範的實際經驗。</p>
+<p>還有第三種立場與上述兩者並存：刪除可能是負責任的終局，而非失敗。當一個已獲持續維護、更成熟的實作已經涵蓋同一硬件 —— 在此個案中即 RTW88 —— 繼續在 staging 中長期維持第二個較弱的驅動，對任何人都沒有好處。單純因為一段陳舊代碼存在已久便將其保留，本身就是另一種技術債務。</p>
+<p><strong>這對貢獻者意味著什麼</strong></p>
+<p>任何一直在針對 rtl8723bs 提交 patch 的人都應重新評估其投入方向：該驅動在 staging 中的版本已被移除，今後的工作應轉向 RTW88 或 networking subsystem 中的其他位置。今次移除同時提供了一個值得借鏡的教訓，說明 merge window 期間如今如何處理 staging：那些低調解決長期擱置驅動的清理工作，正愈來愈被界定為例行維護，而非具爭議性的事件。</p>
+<p>實際上，最終用戶不應預期會立即出現變化。Kernel 中的移除要到發行版 rebase 至 7.4 後才會到達生產機器，而這一過程通常在 merge window 之後相當一段時間才進行，且在 rolling release 與 long-term support 發行版之間差異甚大。下游發行版的時間表將決定究竟何時有人會真正看到這個驅動從其已安裝的系統中消失。</p>
+<p>對於正在權衡應將 patch 心力投放於何處的 IT 專業人士和 open source 貢獻者，一般的盡職調查原則相當簡單：在投入一個位於 staging 的驅動之前，先檢查正式 subsystem 中是否已有持續維護的替代方案 —— rtl8723bs 的故事顯示，這如今已是預判 staging 代碼能否存活的一個重要指標。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.4-Staging" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
