@@ -1,0 +1,30 @@
+Date: 2026-10-25 11:39:00
+Author: HKLUG Team
+Title: AMD 600 Series Chipsets Gain Temperature Sensing in Linux, With Stable-Tree Backports
+Content:
+<h3>AMD 600 Series Chipsets Gain Temperature Sensing in Linux, With Stable-Tree Backports</h3>
+<p>AMD's 600 series chipsets will finally be able to report their operating temperatures under Linux, according to Phoronix, which reports that the support is landing with the Linux 7.4 kernel and has also been marked for back-porting to the 7.2 and 7.3 stable series.</p>
+<p>The capability covers the motherboard chipsets that shipped alongside AMD's Ryzen 7000 series processors — the X670E, X670, B650E, B650 and A620 parts that form the AM5 platform's foundation. Until now, users of those systems have had no in-kernel way to read chipset temperature values, leaving a gap in the otherwise well-covered Ryzen hardware sensor picture.</p>
+<h4>Why the backport matters more than the merge</h4>
+<p>The mainline merge in 7.4 is the headline, but the practical news for most readers is the stable-tree backport. Linux distributions rarely ship new mainline kernels immediately; users on distribution stable kernels are far more likely to receive the change through a point release of their current kernel series than through a jump to 7.4.</p>
+<p>That means users with no intention of moving to a future kernel release may still pick up chipset temperature monitoring as part of routine stable updates — though the actual timing depends on each distribution's stable-update cadence, and no delivery date can be guaranteed at this stage. Administrators tracking the change should confirm backport status against the relevant stable-tree changelogs or the kernel mailing list before assuming a given branch has received it.</p>
+<p>Once present in a kernel, the readings are expected to surface through the standard hwmon interfaces, which means the usual stack of monitoring tools and daemons that consume the Linux hardware monitoring subsystem should pick the sensors up without requiring bespoke integration. That matters for the hwmon ecosystem as a whole: chipset sensors have historically been a mix of vendor-specific drivers and out-of-tree workarounds, so mainline availability simplifies the picture for anyone building dashboards or alerting on top of kernel-exposed sensor data.</p>
+<h4>A thermal blind spot closes</h4>
+<p>For the average desktop, an unmonitored chipset is a minor annoyance. For compact builds, it is more meaningful. Small-form-factor PCs and mini-PCs built around AM5 place the chipset in close quarters with limited airflow, and the chipset on X670-class boards is notable for carrying a small active fan on many designs — a fan whose behaviour has typically been driven by firmware rather than anything visible to the operating system. Having a kernel-level temperature signal makes it possible to correlate chipset thermals with fan curves, case airflow changes, and sustained workloads, rather than guessing.</p>
+<p>It also rounds out a long-standing asymmetry in AMD platform telemetry on Linux: Ryzen CPUs have had thorough temperature, power and frequency reporting for years, while the chipset beside them stayed effectively dark.</p>
+<h4>The practical takeaway</h4>
+<p>For local open-source contributors and IT teams running AM5 hardware, the practical takeaway is to watch distribution stable-kernel changelogs rather than plan a kernel upgrade around this single feature. Phoronix's report does not name a specific driver or subsystem for the change, nor firm target dates for the 7.2/7.3 backports, so verification against upstream kernel sources remains advisable before relying on the support in production systems.</p>
+<hr>
+<h3>AMD 600 系列晶片組在 Linux 加入溫度監測，並回移至穩定版本分支</h3>
+<p>據 Phoronix 報導，AMD 的 600 系列晶片組終於可在 Linux 下回報其運作溫度，相關支援將隨 Linux 7.4 kernel 合併，同時已標記回移（back-port）至 7.2 及 7.3 穩定版本系列。</p>
+<p>該功能涵蓋與 AMD Ryzen 7000 系列處理器同期推出的主機板晶片組——X670E、X670、B650E、B650 及 A620，這些型號構成了 AM5 平台的基礎。在此之前，這些系統的用戶一直沒有 kernel 內建途徑讀取晶片組溫度值，令原本覆蓋相當全面的 Ryzen 硬件 sensor 監測版圖出現缺口。</p>
+<h4>為何回移比合併更為重要</h4>
+<p>7.4 的主線（mainline）合併固然是焦點，但對大多數讀者而言，實際的新聞在於穩定版本分支的回移。Linux 發行版很少會即時採用新的主線 kernel；使用發行版穩定 kernel 的用戶，更可能透過現有 kernel 系列的 point release 收到這項改動，而非直接跳升至 7.4。</p>
+<p>這意味著，即使用戶無意升級至未來的 kernel 版本，仍可能在例行的穩定版本更新中獲得晶片組溫度監測功能——不過實際時間取決於各發行版的穩定更新節奏，現階段無法保證任何交付日期。追蹤此改動的系統管理員，在假設某一分支已經採納之前，應先對照相關穩定分支的 changelog 或 kernel 郵件列表（mailing list）確認回移狀態。</p>
+<p>一旦 kernel 內具備此功能，讀數預計可透過標準 hwmon 介面呈現，即使用來支援 Linux 硬件監測子系統（hardware monitoring subsystem）的各類監測工具及 daemons 均能直接識別這些 sensors，無需額外的專屬整合。這對整個 hwmon 生態系統意義重大：晶片組 sensors 過往一直是廠商專屬驅動程式與樹外（out-of-tree）變通方案的混合，因此進入主線可為任何在 kernel 暴露的 sensor 數據之上建立儀表板（dashboard）或警報系統的人士簡化局面。</p>
+<h4>彌補溫度監測盲點</h4>
+<p>對一般桌上型電腦而言，晶片組未受監測只是小問題；對緊湊型裝置而言，意義則較為重大。以 AM5 為核心的小型機箱（small-form-factor）電腦及 mini-PC，晶片組所處空間狹窄、氣流有限，而 X670 級別主機板上的晶片組在許多設計中均配備小型主動散熱風扇——該風扇的運作過往通常由 firmware 控制，作業系統無從觀察。擁有 kernel 層面的溫度信號，讓用戶得以將晶片組溫度與風扇曲線（fan curves）、機箱氣流變化及持續負載相互關聯，而非靠猜測。</p>
+<p>這同時填補了 Linux 上 AMD 平台遙測（telemetry）長期存在的不對稱：Ryzen CPU 多年來一直具備詳盡的溫度、功耗及頻率回報，而旁邊的晶片組卻一直 effectively 黑箱運作。</p>
+<h4>實際要點</h4>
+<p>對於本地開源貢獻者及營運 AM5 硬件的 IT 團隊，實際要點是留意各發行版穩定 kernel 的 changelog，而非為單一功能而規劃 kernel 升級。Phoronix 的報導並未指明該改動涉及的具體驅動程式或子系統，亦未提供 7.2/7.3 回移的確定目標日期，因此在生產系統依賴此項支援之前，仍建議先向上游 kernel 源碼核實。</p>
+<p><a href="https://www.phoronix.com/news/AMD-600-Series-Linux-Temp" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
