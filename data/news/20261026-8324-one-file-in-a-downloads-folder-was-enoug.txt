@@ -1,0 +1,41 @@
+Date: 2026-10-26 12:19:00
+Author: HKLUG Team
+Title: One File in a Downloads Folder Was Enough to Aim an AI Coding Agent at Malware
+Content:
+<p>```</p>
+<p>A lone instruction file parked in a developer's Downloads folder attempted to talk their AI coding agent into pulling down a malicious software package — and came disturbingly close, security firm Forever Security disclosed in a report covered by The Hacker News on 26 October.</p>
+<p>The firm said it caught the attempt on a real customer's machine and halted the agent before any code executed. It has not been able to determine how the file landed in the folder in the first place.</p>
+<h4>A downloads folder becomes an attack surface</h4>
+<p>The episode is a clean case study in a prompt-injection variant that receives far less attention than its web-based cousins: malicious instructions embedded in ordinary local files. Unlike injections delivered through poisoned web pages or manipulated issue-tracker tickets, this vector requires no compromise of source control, no tampering with CI pipelines, and no subversion of a package registry. Any filesystem location an agent can read is, functionally, part of its input surface — and a Downloads folder, the default dumping ground for anything a user fetches from the browser, is about as unauthenticated as it gets.</p>
+<p>The payload chosen by the attacker was not a novel strain either. According to The Hacker News's account of the report, the file attempted to direct the agent into installing an npm package that was already known to be malicious. That detail underscores how little infrastructure the operation demanded: no new malware build-out, no fresh lures — only a well-placed instruction file and a cooperative tool.</p>
+<h4>The approval boundary that saved the day</h4>
+<p>Critically, the attack did not end in execution. The agent was stopped before the command ran, most plausibly by an approval gate, though Forever Security's published account does not spell out the precise mechanism. Either way, the margin was narrow, and it depends entirely on how aggressively a team has configured its permissions. Developers who enable broad auto-approve settings to shave seconds off their workflow would have handed the attacker exactly the silent execution window the approval prompt denied.</p>
+<p>The vendor could not establish the initial access vector. Forever Security said it could not determine how the file reached the Downloads folder, leaving open both the possibility of a wider seeding campaign and the simpler explanation of a targeted plant. Until more is published, that remains an open question worth watching — with the usual caveat that the findings come from a security vendor with a commercial interest in alarming narrative.</p>
+<h4>What AI agent users should do now</h4>
+<p>For teams running agentic coding tools, the incident points to a short but practical checklist:</p>
+<ul>
+<li><strong>Sandbox aggressively.</strong> Run agents in containers or restricted environments where filesystem reach is deliberate, not default. Treat every readable directory as a potential instruction channel.</li>
+<li><strong>Review tool calls, not just outputs.</strong> The approval step was the only thing standing between the agent and a malware install. Default to asking, and audit what gets auto-approved.</li>
+<li><strong>Scope file access.</strong> Exclude Downloads, temporary directories, and other untrusted locations from agent context wherever the tool allows.</li>
+<li><strong>Gate dependencies.</strong> Enforce allowlists and reputation checks on package installs so that a successful injection cannot reach the registry unchallenged.</li>
+</ul>
+<p>Local-file prompt injection is a quieter cousin to the injection attacks dominating AI security discussion, but as this incident shows, it needs only one file in the right folder to matter. The mitigations are unglamorous — permissions, sandboxes, and a healthy reluctance to auto-approve — and, in this case, they were the entire difference between a near miss and an incident report.</p>
+<hr>
+<p>安全公司 Forever Security 於 10 月 26 日發表報告（由 The Hacker News 報道）披露，一個置於開發者下載資料夾中的指令檔案，試圖說服其 AI 編碼 agent 下載一個惡意軟件套件——而且幾乎得手。</p>
+<p>該公司表示，他們在一真實客戶的機器上截獲這次嘗試，並在任何代碼執行之前阻止了 agent。目前仍未能確定該檔案最初是如何出現在該資料夾中。</p>
+<h4>下載資料夾成為 attack surface</h4>
+<p>今次事件是 prompt injection 一個變種的典型案例，而此類攻擊所受關注遠遜於其網頁版本：嵌入普通本機檔案中的惡意指令。有別於透過受污染網頁或被篡改的 issue-tracker 工單投放的 injection，此攻擊向量無需入侵 source control、無需干擾 CI pipeline，亦無需操控 package registry。任何 agent 能夠讀取的檔案系統位置，實際上都屬於其輸入面（input surface）——而下載資料夾作為用戶從瀏覽器取得任何東西的預設存放地，其「未經認證」的程度幾乎無出其右。</p>
+<p>攻擊者選用的 payload 亦非全新品種。根據 The Hacker News 對該報告的描述，該檔案試圖指示 agent 安裝一個已知惡意的 npm 套件。這個細節凸顯該行動所需的基礎設施極其有限：毋須新建惡意軟件、毋須新誘餌——只需一個擺放得當的指令檔案，以及一個配合的工具。</p>
+<h4>拯救局面的審批防線</h4>
+<p>關鍵在於，這次攻擊最終未演變成執行。Agent 在命令運行前被攔停，最可能的機制是 approval gate，惟 Forever Security 已公布的報告並未說明具體機制。無論如何，餘裕極為有限，而且完全取決於團隊的權限配置有多謹慎。開發者若為節省數秒工作流程時間而啟用寬鬆的 auto-approve 設定，便等同將審批提示所封鎖的靜默執行窗口拱手讓予攻擊者。</p>
+<p>供應商未能確認初始入侵向量。Forever Security 表示無法確定該檔案如何進入下載資料夾，因此既不排除更大規模的散播行動，亦不能排除更簡單的針對性投放解釋。在更多資料公布之前，這仍是一個值得持續關注的懸而未決問題——照例要附註：這些發現來自一家對聳動敘事有商業利益的安全供應商。</p>
+<h4>AI agent 用戶現階段應採取的措施</h4>
+<p>對於使用 agentic 編碼工具的團隊，是次事件指向一份簡短但實用的清單：</p>
+<ul>
+<li><strong>積極使用 sandbox。</strong> 將 agent 運行於 containers 或受限環境中，確保檔案系統的存取範圍是刻意設定而非預設開放。把每一個可讀取的目錄都視為潛在的指令傳輸渠道。</li>
+<li><strong>審查 tool calls，而非只看輸出。</strong> 審批步驟是 agent 與惡意軟件安裝之間唯一的屏障。預設應先詢問，並定期稽核哪些項目獲得了自動批准。</li>
+<li><strong>限制檔案存取範圍。</strong> 只要工具允許，應將下載資料夾、臨時目錄及其他不受信位置排除在 agent 的 context 之外。</li>
+<li><strong>設閘依賴項。</strong> 對套件安裝強制執行 allowlist 及信譽檢查，確保成功的 injection 無法長驅直入 registry。</li>
+</ul>
+<p>本機檔案 prompt injection 是主導 AI 安全討論的 injection 攻擊中較為低調的一種，但正如是次事件所示，它只需在正確的資料夾中放上一個檔案便足以造成影響。相關緩解措施並不花巧——權限、sandbox，以及對 auto-approve 保持健康審慎的態度——而在今次事件中，正是這些措施決定了「有驚無險」與「事故報告」之間的全部分野。</p>
+<p><a href="https://thehackernews.com/2026/10/malicious-file-in-downloads-folder.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
