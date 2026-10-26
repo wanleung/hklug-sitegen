@@ -1,0 +1,35 @@
+Date: 2026-10-26 15:24:00
+Author: HKLUG Team
+Title: Kraid Shader Compiler Set To Become Default In Mesa 27.0 For Arm Mali Hardware
+Content:
+<p>```</p>
+<h3>Kraid Shader Compiler Set To Become Default In Mesa 27.0 For Arm Mali Hardware</h3>
+<p>Mesa 27.0 will adopt Kraid as the default shader compiler for Arm Mali GPUs when it ships in the first quarter, Phoronix reports. The change caps a staged rollout that began in June, when the compiler landed in Mesa 26.2 behind an opt-in flag rather than as the standard path.</p>
+<p>Kraid is a modern shader compiler targeting recent Arm Mali parts, developed over the course of months before its upstream merge. Until now, only users who deliberately enabled it have been running it. With 27.0, it becomes the standard route through Mesa's open-source Mali stack.</p>
+<h4>What Kraid Replaces</h4>
+<p>The compiler in question serves Panfrost, Mesa's Gallium-based open-source driver family for Arm Mali and adjacent Mali-class hardware. Shader compilers take the high-level shader code emitted by applications, games and desktop compositors and turn it into the machine instructions a GPU can execute. The quality of that translation shapes rendering correctness, performance, and how much driver-level patching is needed to compensate for weak code generation.</p>
+<p>Long-lived compilers accumulate workarounds as new hardware generations expose gaps in their scheduling and optimisation logic. Rebuilding from the ground up lets the project fix those issues structurally instead of bolting on another conditional path for a specific GPU revision — and it gives developers a single component to bisect when rendering faults appear, rather than a tangle of version-specific hacks.</p>
+<h4>Who Feels The Change</h4>
+<p>Mali-class GPUs are widespread in Arm single-board computers, Arm Chromebooks, embedded boards and other systems that depend on Mesa instead of a closed vendor blob. On many of these platforms Panfrost is effectively the only practical graphics stack, so the default flip in 27.0 will reach a substantial base of open-source graphics users — most of whom will pick up the change through a routine distribution package update rather than any action of their own.</p>
+<p>Anyone on a distribution currently shipping Mesa 26.2 keeps the legacy compiler unless they opt in. That gives packagers a full development cycle to validate Kraid against their supported hardware and workloads before 27.0 makes it the default, which is precisely why the project staged the merge and the default flip across two releases rather than doing both at once.</p>
+<p>To establish a current baseline, <code>glxinfo -B</code> (from <code>mesa-utils</code>) reports the Mesa version and renderer string — which on Mali hardware will typically identify Panfrost — while <code>vulkaninfo</code> does the same for the Vulkan side. Distribution release notes for the 27.0 update are the place to watch for any documented switch or environment variable controlling compiler selection.</p>
+<h4>What Remains Unproven</h4>
+<p>Three factors will decide whether the transition lands cleanly. Rendering correctness has to hold across the range of Mali generations Panfrost supports, now that every stock-Mesa user inherits the new compiler rather than a self-selected testing group. Shader compilation latency matters in practice — long stalls at game launch or during scene changes are a familiar complaint when compiler rewrites land. And regression response will be tested by the expanded blast radius: bugs that once affected volunteers now affect everyone by default.</p>
+<p>Mesa's two-release staging — merging in 26.2, defaulting in 27.0 — is a familiar pattern for compiler transitions and gives downstreams a reasonable window to test. Whether Kraid's modern code generation delivers for Mali users becomes visible when 27.0 arrives.</p>
+<p><em>Source: Phoronix.</em></p>
+<hr>
+<h3>Kraid Shader Compiler 將於 Mesa 27.0 成為 Arm Mali 硬件默認編譯器</h3>
+<p>據 Phoronix 報道，Mesa 27.0 將於明年第一季推出時，採用 Kraid 作為 Arm Mali GPU 的默認 shader compiler。此項變更標誌着自六月開始的分階段部署計劃完成——當時該編譯器以 opt-in flag 形式加入 Mesa 26.2，並非作為標準路徑。</p>
+<p>Kraid 是一個針對較新 Arm Mali 型號的現代化 shader compiler，歷經數月開發後才向上游合併。在此之前，只有刻意啟用它的用戶才會使用。隨着 27.0 推出，它將成為 Mesa 開源 Mali 技術堆疊的標準路徑。</p>
+<h4>Kraid 取代了甚麼</h4>
+<p>有關編譯器服務於 Panfrost——Mesa 基於 Gallium 的開源驅動程序系列，適用於 Arm Mali 及同類 Mali 硬件。Shader compiler 負責將應用程式、遊戲及桌面 compositor 產生的高層 shader 代碼，轉換為 GPU 可以執行的機器指令。此翻譯過程的質量直接影響渲染正確性、性能，以及需要多少驅動層面的修補來彌補代碼生成的不足。</p>
+<p>長期使用的編譯器會隨着新一代硬件暴露出調度及優化邏輯的缺陷而不斷累積 workaround。從頭重建讓項目能夠從結構上解決這些問題，而非針對特定 GPU 版本再添加另一條條件路徑——同時亦讓開發者在出現渲染故障時，只需對單一組件進行 bisect，而非面對一堆因版本而異的 hacks。</p>
+<h4>誰會感受到變更</h4>
+<p>Mali 類 GPU 廣泛應用於 Arm 單板電腦、Arm Chromebook、嵌入式板卡及其他依賴 Mesa 而非廠商閉源 blob 的系統。在許多此類平台上，Panfrost 實際上是唯一可行的圖形技術堆疊，因此 27.0 的默認切換將觸及相當龐大的開源圖形用戶群——當中大多數人只需透過例行的發行版軟件包更新即可獲得此變更，無需自行採取任何行動。</p>
+<p>目前出貨 Mesa 26.2 的發行版用戶，除非主動 opt in，否則將繼續使用原有編譯器。這給予打包者一個完整的開發周期，在 27.0 將其設為默認之前，針對他們支援的硬件及工作負載驗證 Kraid——這正是項目分兩個發行版逐步完成合併及默認切換，而非一次過進行的原因。</p>
+<p>要建立目前的基準，可使用 <code>glxinfo -B</code>（來自 <code>mesa-utils</code>）查閱 Mesa 版本及 renderer 字串——在 Mali 硬件上通常會顯示 Panfrost——而 <code>vulkaninfo</code> 則用於查閱 Vulkan 方面的相同資料。各發行版 27.0 更新的 release notes 將是查閱任何關於切換編譯器或控制編譯器選擇的環境變量文件的地方。</p>
+<h4>尚未確定之事</h4>
+<p>三個因素將決定此次過渡能否順利完成。渲染正確性必須在 Panfrost 所支援的各代 Mali 硬件上維持穩定——如今所有原裝 Mesa 用戶都繼承了新編譯器，而非僅限自選的測試群體。Shader 編譯延遲在實務上同樣重要——當 compiler 重寫版本推出時，遊戲啟動或場景切換時出現長時間停頓是常見的投訴。此外，回歸問題的應對能力將受到擴大影響範圍的考驗：以往只影響志願測試者的 bug，如今將默認影響所有用戶。</p>
+<p>Mesa 採用兩個發行版的分階段部署——在 26.2 合併、在 27.0 設為默認——是 compiler 過渡的常見模式，為下游提供了合理的測試窗口。Kraid 的現代化代碼生成能否為 Mali 用戶帶來成效，將隨 27.0 的到來而見分曉。</p>
+<p><em>資料來源：Phoronix。</em></p>
+<p><a href="https://www.phoronix.com/news/Mesa-27.0-Goes-Kraid" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
