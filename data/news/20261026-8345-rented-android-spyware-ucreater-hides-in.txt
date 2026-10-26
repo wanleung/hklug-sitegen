@@ -1,0 +1,48 @@
+Date: 2026-10-26 14:23:00
+Author: HKLUG Team
+Title: Rented Android Spyware uCreater Hides Inside Repackaged Apps to Pillage WeChat and Telegram Accounts
+Content:
+<p>Researchers have uncovered a rentable Android spyware platform, dubbed uCreater, that hides inside repackaged versions of familiar apps and goes after WeChat and Telegram accounts — and through them, credentials, chat history and wallet balances.</p>
+<p>According to Security Affairs, which reported on the findings, the malware is distributed inside modified copies of legitimate applications, and buyers rent access to a ready-made surveillance service rather than building their own tooling. The platform runs on what the reporting describes as the YingGai framework, whose capabilities include intercepting one-time passwords, harvesting account and chat data, collecting contacts and manipulating active sessions.</p>
+<p>What makes uCreater a meaningful threat is less any single technical trick than the service model behind it. OTP interception and overlay-style deception are well-worn Android malware features; a maintained platform that rents those features to anyone willing to pay is what turns a familiar toolkit into a scalable one.</p>
+<p><strong>How it works</strong></p>
+<p>The attack begins at install time. A victim downloads what appears to be a trusted app, but the binary has been repackaged to carry the YingGai payload alongside the original functionality. Once running, the malware draws on the permissions the app requests at installation — SMS access for one-time password theft, Accessibility services for reading screen content and driving the interface, and display-over-other-apps for deception.</p>
+<p>The report also references a "spoofing" capability, though it does not specify whether that means interface overlay, certificate manipulation or message-level deception. Information on the research team or vendor behind the discovery, victim and sample scale, named trojanised apps, distribution channels and any indicators of compromise remains unconfirmed pending the primary research write-up.</p>
+<p><strong>Why the rental model matters</strong></p>
+<p>The delivery economics are the real story. A rentable platform lets multiple operators run campaigns from a single maintained codebase, which multiplies output and complicates attribution: defenders chasing one cluster of activity may be looking at a customer of a shared service rather than a single actor.</p>
+<p>The model also commoditises what would otherwise require development skill, lowering the barrier for opportunistic operators seeking to monetise mobile accounts.</p>
+<p><strong>The 2FA blind spot</strong></p>
+<p>One consequence deserves particular attention. Because YingGai intercepts one-time passwords on the infected device itself, a second factor delivered to that same phone offers little protection. A code read from the device's own SMS inbox or authenticator context defeats the assumption behind same-device two-factor authentication. Users and organisations relying on SMS-based OTP as their primary defence should treat off-device second factors — a hardware key, a separate device, or app-based approval on an unmanaged handset — as the more resilient option.</p>
+<p><strong>What users and IT teams can do</strong></p>
+<p>Practical mitigation follows the attack chain:</p>
+<ul>
+<li><strong>Control install sources.</strong> Victims install what appears to be a legitimate app, so app provenance — not user carelessness — is the attack surface. Restrict installations to official stores or, in enterprise settings, to vetted internal catalogues.</li>
+<li><strong>Audit dangerous permissions.</strong> SMS read access, Accessibility service use and display-over-other-apps permissions are the enabling hooks for OTP theft, session manipulation and interface deception. Treat requests for these as red flags.</li>
+<li><strong>Enforce MDM policy.</strong> For organisations running BYOD or corporate-managed handsets, mobile device management should block sideloading and flag apps requesting sensitive permission sets.</li>
+<li><strong>Move the second factor off-device</strong> where account value justifies it.</li>
+<li><strong>Check for anomalies</strong> such as unexpected battery drain, unfamiliar accessibility services, or login notifications from unexpected locations.</li>
+</ul>
+<p>WeChat and Telegram function as targets here, not compromised platforms — the malware impersonates other apps to reach the data flowing through them. For a market where messaging apps double as wallets and daily payment rails, that distinction matters: the financial exposure runs through the account, not the app's servers.</p>
+<hr>
+<p>研究人員揭露了一個可租賃的 Android 間諜軟件平台，名為 uCreater。該平台藏身於常見應用程式的重新打包版本之內，專門針對微信及 Telegram 帳戶下手——並透過這些帳戶取得登入憑證、聊天紀錄及錢包餘額。</p>
+<p>據 Security Affairs 報導，有關發現指該惡意軟件透過合法應用程式的修改版本散佈，買家租用的是現成的監察服務，而非自行開發工具。該平台運行於報導所稱的 YingGai 框架之上，其功能包括截取一次性密碼（OTP）、蒐集帳戶及聊天資料、收集通訊錄，以及操控現有登入工作階段（session）。</p>
+<p>uCreater 構成實質威脅的原因，與其任何單一技術手法關係不大，關鍵在於背後的服務模式。OTP 截取及疊加介面式欺騙均是 Android 惡意軟件的舊有功能；但由一個持續維護的平台把這些功能租賃予任何願意付費的人，正是令一套熟悉的工具組合演變為可規模化攻擊武器的原因。</p>
+<p><strong>運作方式</strong></p>
+<p>攻擊在安裝階段已經開始。受害者下載一個看似可信的應用程式，但其二進位檔已被重新打包，在原有功能之外載入 YingGai 負載。惡意軟件一旦運行，便會運用應用程式安裝時所請求的權限——以 SMS 存取權竊取一次性密碼、以無障礙服務（Accessibility）讀取螢幕內容及驅動介面，以及以「顯示在其他應用程式上」權限進行欺騙。</p>
+<p>該報導亦提及一項「欺騙（spoofing）」功能，惟並未說明這是指介面疊加、憑證操控還是訊息層面的欺騙。有關發現背後的研究團隊或廠商、受害者及樣本規模、被植入木馬的具體應用程式名稱、散佈渠道及任何入侵指標（IOC）的資訊，在主要研究報告發表前仍未獲得證實。</p>
+<p><strong>為何租賃模式值得關注</strong></p>
+<p>散佈的經濟模式才是真正的重點。可租賃平台讓多名攻擊者從同一份持續維護的程式碼庫發動攻擊行動，既令產出倍增，亦令歸因變得困難：防禦方追蹤某一組攻擊活動時，面對的可能只是共享服務的一名客戶，而非單一攻擊者。</p>
+<p>此模式亦將原本需要開發技能的攻擊手段商品化，大幅降低投機型攻擊者把流動帳戶變現的門檻。</p>
+<p><strong>雙重驗證（2FA）的盲點</strong></p>
+<p>其中一項後果尤須留意。由於 YingGai 直接在受感染裝置上截取一次性密碼，發送至同一部手機的第二重驗證因素幾乎起不了保護作用。從裝置本身的 SMS 收件箱或驗證器程式讀取驗證碼，足以破解同裝置雙重驗證的基本假設。依賴 SMS OTP 作為主要防禦的用戶及機構，應視「裝置以外」的第二重驗證因素——實體安全密鑰、獨立裝置，或在非受管手機上以應用程式批准——為較具韌性的選擇。</p>
+<p><strong>用戶及 IT 團隊可採取的措施</strong></p>
+<p>實際緩解措施須沿攻擊鏈逐一部署：</p>
+<ul>
+<li><strong>管控安裝來源。</strong> 受害者安裝的是看似合法的應用程式，因此攻擊面在於應用程式的來源，而非用戶疏忽。應將安裝限制於官方商店；在企業環境中，則限制於經審核的內部應用目錄。</li>
+<li><strong>審核高危權限。</strong> SMS 讀取權、無障礙服務使用權及「顯示在其他應用程式上」權限，正是 OTP 竊取、登入工作階段操控及介面欺騙的關鍵觸發點。凡有應用程式索取此類權限，均應視為警示訊號。</li>
+<li><strong>強制執行 MDM 政策。</strong> 對於實施 BYOD 或公司管理流動裝置的機構，流動裝置管理（MDM）應禁止側載（sideloading），並對索取敏感權限組合的應用程式作出標記。</li>
+<li><strong>將第二重驗證因素移至裝置以外</strong>，凡帳戶價值足以支持者，均應如此。</li>
+<li><strong>檢查異常情況</strong>，例如電池意外快速耗電、不熟悉的無障礙服務，或來自異常地點的登入通知。</li>
+</ul>
+<p>微信及 Telegram 在此是攻擊目標，而非被入侵的平台——惡意軟件是冒充其他應用程式，以截取流經這兩個平台的數據。對於通訊應用同時充當錢包及日常支付渠道的市場而言，這區別十分重要：資金風險透過帳戶本身蔓延，而非經由應用程式的伺服器。</p>
+<p><a href="https://securityaffairs.com/201764/malware/researchers-uncover-rentable-android-spyware-ucreater-targeting-wechat-and-telegram.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
