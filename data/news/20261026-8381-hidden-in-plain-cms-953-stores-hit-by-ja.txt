@@ -1,0 +1,36 @@
+Date: 2026-10-26 22:03:00
+Author: HKLUG Team
+Title: Hidden in Plain CMS: 953 Stores Hit by JavaScript Loader That Outwits Security Scanners
+Content:
+<p>```</p>
+<p>An unknown threat actor has compromised 953 online stores — the majority running Magento — in a campaign active since July 2025, according to Dutch e-commerce security company Sansec, as reported by The Hacker News on 26 October.</p>
+<p>The headline number is striking, but the more significant detail is the technique. Rather than planting a conventional backdoor file, the attackers tuck a small fragment of code into Magento's own CMS blocks — legitimate content objects that store operators routinely edit and publish. When a shopper loads a page, that fragment dispatches a JavaScript loader, which then fetches the malicious payload on demand and serves it only to real browsers arriving from the store's own origin.</p>
+<p>That design is the point of the campaign. A point-in-time scanner crawling the site retrieves a clean page, because the payload is fetched dynamically at browsing time rather than sitting in a static file. Defenders who assume malicious scripts must originate from an external domain are similarly misled: the request appears to come from the store itself. And because persistence lives in database-backed CMS content rather than on disk, traditional file-integrity checks have little or nothing to flag — a footprint that appears to reduce the artifacts available to a routine forensic sweep.</p>
+<p>Sansec did not attribute the activity to any named group. The report offers no actor-identity indicators and names no organisation behind the campaign.</p>
+<p>The scale and duration of the operation — 953 stores over roughly fifteen months — appear more consistent with an automated compromise process than with hand-picked targets. The report does not explicitly claim the technique was refined over that period; whatever refinement happened, if any, remains unconfirmed.</p>
+<p>For operators of self-hosted Magento and comparable PHP storefronts in Hong Kong and the region — many of which manage content through the same CMS block mechanism — this is a general observation about shared technology, not a claim of any local incident.</p>
+<h5>How to self-check: a practical checklist</h5>
+<ul>
+<li><strong>Patch the core and extensions first.</strong> Known Magento and third-party flaws remain the most common way in.</li>
+<li><strong>Restrict admin credentials.</strong> Enforce MFA, rotate passwords, and review which accounts can edit CMS blocks and templates.</li>
+<li><strong>Integrity-monitor the CMS layer.</strong> Extend file-integrity monitoring beyond the filesystem to CMS blocks, template variables, and stored page content — the layer this campaign abuses.</li>
+<li><strong>Watch outbound browser requests.</strong> Continuously observe which scripts load and where browsers send data during a real session; periodic HTML or vulnerability scans will miss payloads served on demand.</li>
+</ul>
+<p>The defensive lesson is that persistence has moved into the data layer, where a legitimate content object becomes an executable surface served from the store's own trusted origin. The line where "trusted" ends and "injected" begins is now drawn inside the CMS itself — and only continuous, browser-level observation of what actually loads and where it goes will reliably spot it.</p>
+<hr>
+<p>```</p>
+<p>據荷蘭電商安全公司 Sansec 指出，一名身份不明的威脅行為者自 2025 年 7 月起發動攻擊行動，至今已攻陷 953 間網店，其中大多數採用 Magento；相關消息由 The Hacker News 於 10 月 26 日報道。</p>
+<p>953 這個數字固然觸目，但更具意義的細節在於其手法。攻擊者並非植入傳統的後門檔案，而是將一小段程式碼藏入 Magento 內建的 CMS blocks——這些是商店營運者日常會編輯及發佈的正當內容物件。當顧客瀏覽頁面時，該段程式碼便會觸發一個 JavaScript loader，後者再按需下載惡意 payload，並只向從商店自身 origin 到達的真實瀏覽器提供服務。</p>
+<p>這種設計正是此次攻擊行動的關鍵。定時掃描器爬取網站時只會取得乾淨的頁面，因為 payload 是在瀏覽期間動態下載，而非存放於靜態檔案之中。防禦方若假設惡意腳本必定來自外部網域，同樣會被誤導：該請求表面上是由商店本身發出。再加上持久化機制存在於以資料庫支撐的 CMS 內容之中，而非硬碟之上，傳統的檔案完整性檢查幾乎或完全無從標記——這似乎令例行 forensic 掃描可取得的線索大幅減少。</p>
+<p>Sansec 並未將該活動歸因於任何具名組織。報告沒有提供任何行為者身分指標，亦沒有提及策動此次攻擊行動的機構。</p>
+<p>此次行動的規模及持續時間——953 間網店、歷時約十五個月——似乎更符合自動化入侵流程，而非逐一手工挑選目標。報告並未明確聲稱該手法在此期間經過持續改進；即使曾有改進，目前亦未獲證實。</p>
+<p>對於香港及區內自行託管 Magento 及同類 PHP 商店平台的營運者而言——當中不少同樣透過同一套 CMS block 機制管理內容——以上乃關於共用技術的一般觀察，並非指稱任何本地事故。</p>
+<h5>如何自查：實用檢查清單</h5>
+<ul>
+<li><strong>優先修補 core 及 extensions。</strong> 已知的 Magento 及第三方漏洞仍是最常見的入侵途徑。</li>
+<li><strong>限制管理員憑證。</strong> 強制啟用 MFA、定期更換密碼，並檢視哪些帳戶可以編輯 CMS blocks 及 templates。</li>
+<li><strong>監控 CMS 層的完整性。</strong> 將 file integrity monitoring 從 filesystem 延伸至 CMS blocks、template variables 及已儲存的頁面內容——即此次攻擊行動所濫用的層面。</li>
+<li><strong>留意瀏覽器的 outbound 請求。</strong> 持續觀察實際 session 中哪些腳本被載入、瀏覽器將資料送往何方；定期的 HTML 或漏洞掃描會遺漏按需提供的 payload。</li>
+</ul>
+<p>此次防禦上的教訓是：持久化機制已遷移至 data layer，一個正當的內容物件可變成由商店自身可信 origin 提供的 executable surface。「可信」與「注入」之間的界線，如今已劃在 CMS 之內——只有持續地、在瀏覽器層面觀察實際載入了甚麼以及資料流向何處，才能可靠地察覺它。</p>
+<p><a href="https://thehackernews.com/2026/10/hackers-infect-953-online-stores-with.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
