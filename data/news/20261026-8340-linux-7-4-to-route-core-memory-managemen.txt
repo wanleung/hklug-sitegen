@@ -1,0 +1,36 @@
+Date: 2026-10-26 13:29:00
+Author: HKLUG Team
+Title: Linux 7.4 to Route Core Memory Management Patches Through a New Dedicated Merge Tree
+Content:
+<p>Linux 7.4 will be the first cycle to draw core memory management changes from a newly agreed "Core MM" merge tree, splitting them away from the long-standing mixed-traffic MM branch maintained by Andrew Morton, according to Phoronix.</p>
+<p>The reorganisation is purely a change to how patches travel through the kernel's integration hierarchy — it affects routing, not how memory management behaves once the code is in-tree.</p>
+<h4>What is changing</h4>
+<p>For years, core MM work has reached mainline through Andrew Morton's "MM" branch, a route that also carried a much wider mix of memory-management-adjacent material — most notably the steady stream of DAMON and DAMOS (data access monitoring and optimization) patches, along with assorted subsystem submissions that happened to queue on the same branch.</p>
+<p>Under the new arrangement, agreed among kernel maintainers, all core memory management changes get their own dedicated "Core MM" tree as their home going forward. DAMON/DAMOS and the rest of the broader traffic stay on the existing route, so the two streams now merge into mainline separately rather than as one bundle.</p>
+<p>The practical result is cleaner patch provenance. Reviewers looking specifically at core MM no longer have to pick those changes out of a mixed queue, and the boundary between "core MM" and "everything else memory-related" becomes explicit in the merge graph.</p>
+<h4>Why it matters downstream</h4>
+<p>The likely practical effects for downstream maintainers — distribution integrators and stable-tree maintainers in particular — are easier identification of Core MM fixes for targeted backports, since they no longer arrive entangled with unrelated work on a shared branch; a narrower stream to bisect when a memory-management regression is suspected mid-cycle; and clearer visibility during the merge window over which portion of MM traffic has landed.</p>
+<p>None of this affects machines already in production; the benefit shows up when maintainers assemble and debug future kernels. The story is essentially one of scale: the MM subsystem has grown large enough that a single integration branch carrying mixed traffic started to impede review, and the split offers a template that could be applied to other overburdened branches if it proves out.</p>
+<h4>Cycle context</h4>
+<p>The MM reshuffle is a plumbing change rather than a feature, but it is the kind most likely to be noticed by anyone tracking merge paths as 7.4 moves toward release.</p>
+<h4>What to watch</h4>
+<p>The open question is whether the boundary between Core MM and the existing MM branch stays stable, or creeps as edge-case patches get routed inconsistently.</p>
+<p>For now, the change is a workflow story, not a technical one — but it is the kind of workflow change that quietly shapes how quickly memory-management fixes reach the kernels that administrators actually run.</p>
+<p><em>Source: Phoronix, "Linux 7.4 Begins Employing New 'Core MM' Tree".</em></p>
+<hr>
+<p>據 Phoronix 報道，Linux 7.4 將成為首個從新商定的「Core MM」merge tree 取得核心記憶體管理改動的版本，並將這部分 patch 與一直以來由 Andrew Morton 維護、混雜多類內容的 MM 分支分開處理。</p>
+<p>這次重整純粹是 patch 穿越 kernel 整合層級方式的變動——影響的是分流方式，而非程式碼進入 tree 後記憶體管理的運作行為。</p>
+<h4>有何改變</h4>
+<p>多年以來，核心 MM 工作一直是透過 Andrew Morton 的「MM」分支進入 mainline。該分支同時承載種類龐雜、與記憶體管理相鄰的材料——其中最顯著的是源源不絕的 DAMON 及 DAMOS（data access monitoring and optimization）patch，以及剛好排在同一分支的各類子系統提交。</p>
+<p>根據 kernel 維護者達成的新安排，所有核心記憶體管理改動今後將以專用的「Core MM」tree 作為歸屬。DAMON／DAMOS 及其餘較廣泛的內容則維持原有路線，兩條流如今各自獨立 merge 進入 mainline，而不再捆綁成一體。</p>
+<p>實際結果是 patch 的出處更為清晰。專門審閱核心 MM 的維護者毋須再從混雜的 queue 中逐一挑出相關改動，而「核心 MM」與「其他一切記憶體相關事項」的界線在 merge graph 中亦變得明確。</p>
+<h4>對下游的影響</h4>
+<p>對下游維護者——尤其是各發行版整合者及 stable tree 維護者——可能產生的實際影響包括：由於 Core MM 修正不再與共享分支上毫不相干的工作糾纏在一起，更易識別並進行針對性的 backport；當懷疑周期中途出現記憶體管理回歸時，可供二分偵錯（bisect）的範圍更窄；以及在 merge window 期間能更清楚掌握哪部分 MM 內容已經落地。</p>
+<p>以上一切均不影響已在生產環境運作的機器；相關好處將於維護者日後組裝及偵錯 kernel 時浮現。這個故事的本質在於規模：MM 子系統已增長至單一整合分支承載混合流量開始妨礙審閱的程度，而這次拆分提供了一個範本，一旦證明可行，日後或可套用於其他負荷過重的分支。</p>
+<h4>版本周期背景</h4>
+<p>MM 這次重組屬於 plumbing 層面的改動，並非功能更新，但隨著 7.4 逐步走向發布，它正是追蹤 merge 路徑人士最可能注意到的那類變動。</p>
+<h4>值得留意之處</h4>
+<p>目前未有定論的是，Core MM 與現有 MM 分支之間的界線能否維持穩定，抑或會因邊界情況的 patch 分流不一而逐漸模糊。</p>
+<p>暫時而言，這是一則工作流程的新聞，而非技術新聞——但它正是那類會悄然左右記憶體管理修正到達管理員實際運行 kernel 之速度的工作流程變動。</p>
+<p><em>來源：Phoronix，〈Linux 7.4 Begins Employing New 'Core MM' Tree〉。</em></p>
+<p><a href="https://www.phoronix.com/news/Linux-Core-MM-Tree" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
