@@ -1,0 +1,34 @@
+Date: 2026-10-26 12:03:00
+Author: HKLUG Team
+Title: Linux fix for AMD Ryzen AI 9 HX 370 Cache Aware Scheduling regression lands in 7.4, marked for stable back-port
+Content:
+<p>A regression affecting at least the AMD Ryzen AI 9 HX 370 "Strix Point" laptop SoC when Cache Aware Scheduling is in use has been merged into Linux 7.4 Git, with the commit marked for back-porting to the Linux 7.2 and 7.3 stable series.</p>
+<p><strong>Which kernels carry the fix</strong></p>
+<ul>
+<li><strong>Linux 7.4 (mainline Git):</strong> the fix is merged.</li>
+<li><strong>Linux 7.2 and 7.3 stable:</strong> the commit has been marked for back-port, and users on those branches are expected to receive it through their normal distribution update channels without manual patching.</li>
+<li><strong>Older or unupdated kernels:</strong> not covered.</li>
+</ul>
+<p>The change is described as a correctness fix rather than a security update: it addresses how tasks are placed, and the commit is not reported to describe a vulnerability or exploit path.</p>
+<p><strong>The nature of the regression</strong></p>
+<p>Cache Aware Scheduling (CAS) steers task placement using the CPU's cache topology, and the regression is tied to that mechanism on the affected hardware. Specific symptoms are not itemised; on similar scheduling defects, the observable impact generally appears as performance degradation — inconsistent frame pacing, latency-sensitive workloads behaving erratically, or tasks scheduled onto unexpected cores — rather than as crashes, kernel oopses, or data loss. Machines that have slowed or started stuttering in ways that correlate with CPU scheduling rather than thermals or driver state are the ones worth checking against this fix.</p>
+<p><strong>Who is affected</strong></p>
+<p>The HX 370 is the part identified as affected so far, and the wider Strix Point and Zen 5 mobile lineup is not addressed — leaving owners of other Zen 5-era AMD laptop chips able to confirm neither exposure nor immunity at this stage. Users on 7.4 Git already have the fix; users on 7.2 and 7.3 stable should see it arrive via routine updates. Administrators dealing with visible symptoms before the back-port lands can disable Cache Aware Scheduling as an interim measure, accepting that this gives up the placement benefits CAS is designed to deliver. Machines showing no symptoms require no action.</p>
+<p><strong>Why it matters</strong></p>
+<p>Cache Aware Scheduling is a relatively new feature, and regressions of this kind are routine bring-up work as the kernel learns the cache topology of new silicon. Scheduling logic tuned against one CPU family does not always transfer cleanly to another, which is why per-generation validation remains part of rolling out topology-aware placement changes to new platforms.</p>
+<hr>
+<p>至少影響 AMD Ryzen AI 9 HX 370「Strix Point」手提電腦 SoC 在啟用 Cache Aware Scheduling 時出現的回歸（regression）問題，已合入 Linux 7.4 Git，該 commit 並已標記回移（back-port）至 Linux 7.2 及 7.3 stable 系列。</p>
+<p><strong>哪些 kernel 包含修正</strong></p>
+<ul>
+<li><strong>Linux 7.4（mainline Git）：</strong>修正已合入。</li>
+<li><strong>Linux 7.2 及 7.3 stable：</strong>該 commit 已標記回移，使用這些分支的用戶預期可透過正常的發行版更新渠道取得修正，毋須手動套用 patch。</li>
+<li><strong>較舊或未更新的 kernel：</strong>尚未涵蓋。</li>
+</ul>
+<p>此項改動被描述為正確性修正，而非保安更新：它處理的是 task 的放置方式，據現有資料，該 commit 並未描述任何漏洞或攻擊路徑。</p>
+<p><strong>回歸問題的性質</strong></p>
+<p>Cache Aware Scheduling（CAS）利用 CPU 的 cache 拓撲（topology）來引導 task 放置，而回歸問題與受影響硬件上此機制有關。具體症狀並未逐項列明；在同類排程缺陷中，可觀察到的影響一般表現為效能下降——幀率不穩、對延遲敏感的工作負載表現反覆無常，或者 task 被排到預期以外的核心——而非系統崩潰、kernel oops 或資料遺失。若機器運行變慢或開始卡頓，而其情況與 CPU 排程相關（而非散熱或驅動狀態所致），便值得對照此項修正進行排查。</p>
+<p><strong>受影響範圍</strong></p>
+<p>目前確認受影響的型號為 HX 370，而更廣泛的 Strix Point 及 Zen 5 流動平台產品系列則未涉及——因此其他 Zen 5 時代 AMD 手提電腦晶片的用戶，此時既無法確認是否受影響，亦無法確認是否免疫。使用 7.4 Git 的用戶已經取得修正；使用 7.2 及 7.3 stable 的用戶應會透過例行更新收到此修正。系統管理員若在回移完成前已遇到明顯症狀，可暫時停用 Cache Aware Scheduling 作為過渡措施，但須接受這會放棄 CAS 原本設計所提供的放置優勢。沒有出現症狀的機器則毋須採取任何行動。</p>
+<p><strong>為何重要</strong></p>
+<p>Cache Aware Scheduling 是一項相對較新的功能，而這類回歸正是 kernel 學習新一代晶片 cache 拓撲過程中常見的啟用（bring-up）工作。針對某一個 CPU 系列調校的排程邏輯，未必能完全轉移到另一系列。這正是為何在將 topology-aware 的放置改動推展至新平台時，逐代驗證仍然是必不可少的一環。</p>
+<p><a href="https://www.phoronix.com/news/Linux-CAS-Regression-AMD-HX-370" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
