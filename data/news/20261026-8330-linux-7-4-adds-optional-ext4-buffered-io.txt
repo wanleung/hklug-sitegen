@@ -1,0 +1,40 @@
+Date: 2026-10-26 13:06:00
+Author: HKLUG Team
+Title: Linux 7.4 Adds Optional EXT4 Buffered IOmap Path for Faster Large Writes
+Content:
+<p>```</p>
+<p>The EXT4 pull request for Linux 7.4 has been merged during the ongoing merge window, with an optional buffered IOmap code path headlining the update, according to Phoronix.</p>
+<p>The new path is opt-in and off by default. In its report on the merge-window changes, Phoronix describes the improvement it delivers as "significant" for large writes — the site's summary accompanying the merge provides no specific benchmark figures, so the scale of the gain has yet to be independently quantified in the material published so far.</p>
+<p>That opt-in framing matters more than it might first appear. This is not a blanket speed upgrade that arrives automatically with the next kernel release: administrators will have to decide whether to enable the option, and distributions will have to decide whether to switch it on in their default configurations. Until those decisions are made, the practical impact for most deployed systems will be zero.</p>
+<p><strong>Why large writes are the interesting case</strong></p>
+<p>The workloads where buffered large writes matter are the routine, unglamorous backbone of infrastructure operations: scheduled backup jobs, sustained log ingestion, and the copying of virtual machine disk images. Any system that pushes multi-gigabyte files through the page cache rather than direct I/O stands to benefit if the buffered write path genuinely reduces overhead at scale.</p>
+<p>As background worth flagging — and this is context, not a claim drawn from the Phoronix report — EXT4's conventional buffered write path has long routed data through buffer heads, a mechanism inherited from an era of smaller block devices. Modern NVMe hardware, with deep queues and high bandwidth, exposes inefficiencies in that arrangement, and the kernel community has spent years finding ways to reduce buffer-head dependency across the stack. The buffered IOmap work sits within that longer-running effort.</p>
+<p><strong>What to watch</strong></p>
+<p>Several questions will determine whether the headline promise holds up in real deployments:</p>
+<ul>
+<li><strong>Will distributions enable it at boot, or leave it default-off?</strong> A gain that requires a manual toggle is a gain most systems will never see. No downstream distribution enablement has been announced in the source material.</li>
+<li><strong>How does the path behave under mixed read/write load, and on congested or shared storage?</strong> Benchmark results for large sequential writes in isolation rarely tell the whole story for multi-tenant or network-attached environments.</li>
+<li><strong>Does the improvement survive different EXT4 feature combinations</strong> — bigalloc, inline data, encryption, and varied journal modes — or is it specific to a default-configuration setup?</li>
+</ul>
+<p>For now, the takeaways are simple: EXT4 gains an optional faster route for big buffered writes, the kernel community considers the improvement significant, and the option ships disabled. The numbers, the flag's exact name as documented in the merged code, and any distribution adoption plan are all details that deserve confirmation as 7.4 moves toward release.</p>
+<p>Linux 7.4 is currently in its merge window, meaning the changes will be available in the final release only after the usual cycle of testing and stabilisation.</p>
+<p>Source: Phoronix</p>
+<hr>
+<p>```</p>
+<p>Linux 7.4 的 EXT4 pull request 已在現行合併視窗（merge window）中合併，主打更新是一條可選的緩衝 IOmap 程式碼路徑，據 Phoronix 報導。</p>
+<p>新的路徑屬 opt-in，預設關閉。Phoronix 在報導合併視窗變更時形容它對大型寫入的改進「顯著」（significant）——網站配合合併所附的摘要並未提供具體基準測試數字，因此其增幅在目前已公布的材料中尚未獲獨立量化。</p>
+<p>這種 opt-in 的定位比表面看來更重要。這並非隨下一個核心版本自動到來的全面提速：管理員需要自行決定是否啟用該選項，而發行版則要決定是否在預設設定中開啟。在這些決定落實之前，對大部分已部署系統而言，實際影響為零。</p>
+<p><strong>大型寫入為何值得注意</strong></p>
+<p>緩衝式大型寫入重要的工作負載，是基礎設施運作中平凡卻不可或缺的骨幹：定時備份任務、持續的日誌寫入，以及複製虛擬磁碟映像。任何透過頁快取（page cache）而非 direct I/O 推送數 GB 檔案的系統，只要緩衝寫入路徑確實能在規模上減少開銷，都有機會受惠。</p>
+<p>另一點值得標示的背景——這是背景脈絡，並非出自 Phoronix 報導的說法——EXT4 傳統的緩衝寫入路徑長期透過 buffer head 傳送資料，這套機制源自區塊裝置規模較小的年代。現代 NVMe 硬體具備深隊列與高頻寬，令這種安排的低效之處更為顯露，核心社群多年來一直致力減少整個軟件棧對 buffer head 的依賴。緩衝 IOmap 的工作正屬於這場長期工程的一部分。</p>
+<p><strong>值得觀察的事項</strong></p>
+<p>以下幾個問題將決定今次標示的核心改進能否在實際部署中成立：</p>
+<ul>
+<li><strong>發行版會在開機時啟用，還是維持預設關閉？</strong> 需要手動切換才能取得的增益，大多數系統將永遠無緣享受。來源材料中未見任何下游發行版的啟用決定。</li>
+<li><strong>在混合讀寫負載、以及壅塞或共享儲存環境下，該路徑的表現如何？</strong> 僅測大型循序寫入的基準測試，很少能完全反映多租戶或網絡連接儲存環境的情況。</li>
+<li><strong>改進是否適用於不同的 EXT4 功能組合</strong>——bigalloc、inline data、加密，以及不同 journal 模式——還是只在預設設定下成立？</li>
+</ul>
+<p>目前的重點很簡單：EXT4 多了一條可選的快速路徑處理大型緩衝寫入，核心社群認為改進「顯著」，而選項出貨時是關閉的。具體數字、合併代碼中記錄的旗標確切名稱，以及任何發行版採用計劃，都有待在 7.4 推進至正式發布前確認。</p>
+<p>Linux 7.4 目前處於合併視窗，相關變更要到一般測試與穩定化週期完成後，才會出現在最終發布版本。</p>
+<p>來源：Phoronix</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.4-EXT4" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
