@@ -1,0 +1,32 @@
+Date: 2026-10-26 19:14:00
+Author: HKLUG Team
+Title: Two Critical Wasmtime Bugs Allow Malicious WebAssembly Modules to Escape Their Sandbox
+Content:
+<p>Two critical vulnerabilities in Wasmtime — the standalone WebAssembly runtime that many products embed to execute untrusted code — could let a malicious WebAssembly module break out of the sandbox meant to contain it, according to the project's maintainers, as reported by The Hacker News on 26 October. Fixed releases are available.</p>
+<p>The disclosure matters most to teams that compile modules they do not author. The attack is not drive-by: an adversary must both control the module being compiled and land it on a vulnerable Wasmtime build. Where that condition holds — serverless functions, edge compute runtimes and plugin hosts that accept third-party or tenant-supplied modules — the sandbox is the only thing standing between that module and the host process.</p>
+<p><strong>Four actions for teams running Wasmtime</strong></p>
+<ol>
+<li><strong>Inventory and patch.</strong> Locate every deployment where Wasmtime is compiled in — it frequently ships inside other software and is easily missed in asset inventories — then compare each instance against the affected and patched version ranges in the maintainers' advisory. Embedded runtimes are routinely overlooked precisely because they are not installed as a standalone package.</li>
+<li><strong>Audit module provenance.</strong> Ask of every accepted module: who authored it, how was it built, and which runtime version compiled it. Modules carrying third-party code deserve the same scrutiny already applied to container image signing — verify the build chain before the module is ever handed to the runtime.</li>
+<li><strong>Treat hosts as untrusted.</strong> Run the runtime under least privilege, and assume that "sandboxed" describes an implementation claim rather than a guarantee — two critical escapes arriving in a single release cycle underline the point.</li>
+<li><strong>Rebuild images.</strong> Container and appliance images that bundle the runtime need to be rebuilt against a patched release, not merely restarted.</li>
+</ol>
+<p><strong>ARM64 estates should move first</strong></p>
+<p>One of the two flaws affects only ARM64 systems, which sharpens the triage order on mixed-architecture fleets. ARM-based cloud instances and Apple Silicon development hosts face both issues; x86-64 deployments are exposed to one flaw, not zero. That distinction is worth flagging internally so x86 estates are not deprioritised altogether while ARM hosts are remediated.</p>
+<p>The conditional framing matters too: this is a vulnerability in a widely embedded library, not a breach of any specific organisation. For Hong Kong teams running WebAssembly as a genuine security boundary, the practical takeaway from the report is that tracking upstream advisories is an operational obligation, not a background task. Patching closes the immediate holes; provenance auditing is what determines whether the next one matters.</p>
+<p>According to The Hacker News, the maintainers have released corrected versions of the runtime, and operators should confirm their builds against the advisory before resuming acceptance of externally supplied modules.</p>
+<hr>
+<p>Wasmtime 專案維護者近日披露兩個嚴重漏洞——Wasmtime 是一款被眾多產品內嵌用以執行不可信代碼的獨立 WebAssembly runtime——攻擊者可藉此讓惡意 WebAssembly 模組突破本應將其限制其中的沙盒。據 The Hacker News 於 10 月 26 日報道，修復版本已經發佈。</p>
+<p>此披露最關乎那些會編譯並非由己方編寫的模組的團隊。該攻擊並非「路過式」攻擊：攻擊者必須同時控制正在編譯的模組，並將其送入存在漏洞的 Wasmtime 版本。凡符合此條件的環境——serverless functions、edge compute runtime，以及接受第三方或租戶提供模組的 plugin host——沙盒便是該模組與宿主進程之間唯一的防線。</p>
+<p><strong>Wasmtime 維運團隊應採取的四項行動</strong></p>
+<ol>
+<li><strong>盤點並修補。</strong>找出所有內嵌編譯了 Wasmtime 的部署位置——它經常隨其他軟件一同出貨，極易在資產清單中被遺漏——然後逐一對照維護者安全公告中列明的受影響版本及已修補版本範圍。內嵌 runtime 之所以經常被忽略，正是因為它並非以獨立軟件包形式安裝。</li>
+<li><strong>審計模組來源。</strong>對每一個接受的模組追問：由誰編寫、如何構建、以及由哪個 runtime 版本編譯。載有第三方代碼的模組應接受與 container 映像簽名同等嚴格的審查——在模組交付 runtime 之前，先驗證整條構建鏈。</li>
+<li><strong>視宿主環境為不可信。</strong>以最小權限（least privilege）運行 runtime，並假定「已設沙盒」只是一項實現聲明而非保證——單一發布週期內接連出現兩個嚴重逃逸漏洞，正好印證此點。</li>
+<li><strong>重建映像。</strong>捆綁了該 runtime 的 container 及 appliance 映像必須基於已修補版本重建，僅僅重啟並不足夠。</li>
+</ol>
+<p><strong>ARM64 環境應優先處理</strong></p>
+<p>兩個漏洞中有一個僅影響 ARM64 系統，這使混合架構機隊的分優先級次序更為關鍵。基於 ARM 的雲端實例及 Apple Silicon 開發主機同時面對兩個問題；x86-64 部署則暴露於其中一個漏洞，而非零風險。此區別值得在內部明確指出，以免在修復 ARM 主機期間，x86 環境被完全降級處理。</p>
+<p>條件式的措辭亦很重要：這是一個被廣泛內嵌的 library 中的漏洞，並非任何特定機構遭到入侵。對於將 WebAssembly 用作真正安全邊界的香港團隊而言，報告的實際啟示是：追蹤上游安全公告是一項運作維護責任，而非背景工作。修補堵住了眼前的缺口；來源審計才決定下一個漏洞是否重要。</p>
+<p>據 The Hacker News 報道，維護者已發佈 runtime 的修正版本，維運人員應先根據安全公告核對自身構建版本，然後才可恢復接收外部提供的模組。</p>
+<p><a href="https://thehackernews.com/2026/10/two-critical-wasmtime-flaws-could-let.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
