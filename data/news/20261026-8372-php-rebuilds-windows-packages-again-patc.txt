@@ -1,0 +1,30 @@
+Date: 2026-10-26 18:31:00
+Author: HKLUG Team
+Title: PHP Rebuilds Windows Packages Again, Patching Brotli Flaw CVE-2026-111497
+Content:
+<hr />
+<p>PHP has released rebuilt official Windows packages covering PHP 8.2 through 8.5 to address CVE-2026-111497, a memory-corruption flaw in the Brotli compression library bundled into those binaries. The update, reported by The Hacker News on 26 October, marks the second Windows-focused security release from the PHP project in five days.</p>
+<p>The vulnerability sits not in PHP's interpreter code itself, but in Brotli, the compression library compiled into PHP's official Windows distributions. According to PHP's advisory as relayed by The Hacker News, the flaw could allow an attacker to corrupt memory and, in a successful exploitation, execute code. Because the defect lives in a bundled dependency, the fix took the form of a full package rebuild rather than an interpreter-level patch — the rebuild applies to the official Windows packages, and PHP's interpreter source itself was not the component that was patched.</p>
+<p>The key operational question — whether a given deployment is exposed — has a mitigating answer. PHP says the flaw is reachable through the cURL extension, specifically when cURL is configured to decompress HTTP responses automatically. In principle, a crafted Brotli-compressed response body from a malicious or compromised endpoint could trigger the issue under that configuration. Critically, cURL's automatic decompression is disabled by default, so a stock deployment that has not explicitly enabled it is not exposed through this path. That default scopes the risk; it does not clear it, since frameworks and libraries commonly switch the setting on without making it obvious.</p>
+<p>What administrators should do now:</p>
+<ul>
+<li><strong>Verify the build artefact, not just the version number.</strong> Because the fix ships as a rebuilt package rather than a patch file, a package can carry an unchanged version string while still predating the fix. Operators should confirm that the installed Windows package is a post-advisory build — checking build dates and artefact metadata rather than assuming an in-place patch was applied.</li>
+<li><strong>Confirm your package is in scope.</strong> This rebuild targets the official Windows binaries. Installations compiled from PHP's source, or installed through a Linux distribution's package manager, are handled by different channels — though the underlying library flaw may still warrant a check with your distribution vendor.</li>
+<li><strong>Audit cURL decompression settings.</strong> As operator guidance rather than a line quoted from the advisory: grep deployed applications and configuration files for anything enabling automatic response decompression in the cURL extension — <code>CURLOPT_ACCEPT_ENCODING</code> handling is one common trigger point. Any environment that has turned this on should be treated as potentially exposed until patched.</li>
+</ul>
+<p>On why this matters beyond a single patch: two Windows security releases in five days points to an ongoing queue in the Windows build pipeline rather than one isolated defect, so teams running PHP on Windows in shared or managed hosting — including WAMP-style stacks and Windows-hosted deployments — should treat Windows PHP packages as a moving target this week and plan rollout accordingly.</p>
+<p>Source: <a href="https://thehackernews.com/2026/10/php-issues-second-windows-security.html">The Hacker News</a></p>
+<hr>
+<hr />
+<p>PHP 已發布重新建置的官方 Windows 套件，涵蓋 PHP 8.2 至 8.5，以修補 CVE-2026-111497 —— 該漏洞是內置於這些二進制檔案中的 Brotli 壓縮庫的記憶體損壞缺陷。是項更新由 The Hacker News 於 10 月 26 日報導，是 PHP 專案五日內第二次針對 Windows 的安全性發布。</p>
+<p>該漏洞並非存在於 PHP 的解譯器（interpreter）代碼本身，而是位於編譯進 PHP 官方 Windows 發行版的 Brotli 壓縮庫中。根據 The Hacker News 轉述的 PHP 公告，該缺陷可讓攻擊者破壞記憶體，若成功利用更可執行代碼。由於缺陷位於捆綁的 dependency 之內，修復方式為完整重建套件，而非解譯器層面的 patch —— 重建適用於官方 Windows 套件，而 PHP 解譯器原始碼本身並非受修補的組件。</p>
+<p>至於某一部署是否受影響這個關鍵營運問題，答案有緩解空間。PHP 表示該漏洞可透過 cURL extension 觸發，具體而言，當 cURL 被設定為自動解壓 HTTP 回應時。原則上，在此設定下，來自惡意或已被入侵端點的精心構造 Brotli 壓縮回應主體即可觸發問題。關鍵在於，cURL 的自動解壓功能預設為停用，因此未有明確啟用該功能的標準部署不會透過此途徑受影響。此預設值劃定了風險範圍，但並未完全排除風險，因為框架及函式庫往往會在不顯眼的情況下啟用該設定。</p>
+<p>系統管理員現應採取的措施：</p>
+<ul>
+<li>核實 build artefact，而不只是版本號碼。由於修復以重建套件形式發布，而非 patch 檔案，套件可能帶有未變動的版本字串，卻仍是修復前的版本。營運人員應確認已安裝的 Windows 套件屬公告發布後的 build —— 檢查 build 日期及 artefact 中繼資料，而非假設已就地套用 patch。</li>
+<li>確認你的套件是否在涵蓋範圍之內。本次重建針對官方 Windows 二進制檔案。從 PHP 原始碼編譯的安裝，或透過 Linux 發行版套件管理器安裝的版本，由其他渠道處理 —— 不過底層庫的缺陷仍可能需要向你的發行版供應商查詢。</li>
+<li>審核 cURL 解壓設定。以下為營運建議，並非公告原文引述：grep 部署的應用程式及配置檔案，找出任何在 cURL extension 中啟用自動回應解壓的設定 —— <code>CURLOPT_ACCEPT_ENCODING</code> 處理是其中一個常見觸發點。任何已啟用此設定的環境，在修補前應視為可能受影響。</li>
+</ul>
+<p>至於為何此事超越單一 patch 的範疇：五日內兩次 Windows 安全性發布，反映 Windows build pipeline 中存在持續的處理佇列，而非單一孤立缺陷。因此，在共用或主機代管環境上以 Windows 運行 PHP 的團隊 —— 包括 WAMP 類型堆疊及 Windows 代管部署 —— 本周應將 Windows PHP 套件視為不斷變動的目標，並相應規劃推行安排。</p>
+<p>來源：<a href="https://thehackernews.com/2026/10/php-issues-second-windows-security.html">The Hacker News</a></p>
+<p><a href="https://thehackernews.com/2026/10/php-issues-second-windows-security.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
