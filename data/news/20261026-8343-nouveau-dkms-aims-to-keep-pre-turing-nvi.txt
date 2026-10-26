@@ -1,0 +1,28 @@
+Date: 2026-10-26 14:03:00
+Author: HKLUG Team
+Title: Nouveau-DKMS Aims to Keep Pre-Turing NVIDIA GPUs Running on Modern Linux
+Content:
+<p>A new out-of-tree effort called Nouveau-DKMS is under way to improve open-source support for older NVIDIA graphics hardware, Phoronix reports. The project is a spin-off of the long-standing Nouveau driver, with an initial focus on the GeForce 400/500 "Fermi" generation and potentially other pre-Turing architectures — the segment that NVIDIA's modern open-source Nova driver is not designed to reach.</p>
+<h4>Three drivers, three eras of hardware</h4>
+<p>The story is best understood as a split in NVIDIA's Linux graphics stack. Nouveau is the community-maintained, reverse-engineered open-source driver that has served NVIDIA GPUs on Linux for well over a decade. Nova, developed by NVIDIA itself, is the newer open-source driver aimed at Turing-and-later cards, where the hardware and firmware interfaces are better documented. Nouveau-DKMS sits outside both: it is an out-of-tree derivative of Nouveau, maintained separately and installed through the Dynamic Kernel Module Support framework.</p>
+<p>That out-of-tree status is the practical value proposition. Without waiting on an upstream merge cycle, the project can iterate quickly on fixes for hardware that is largely out of NVIDIA's support spotlight. Meanwhile, DKMS automatically rebuilds the kernel module whenever the user upgrades to a new kernel — a meaningful convenience on rolling-release distributions and lab machines that are updated frequently. Because DKMS pairs cleanly with distro module-signing workflows, the module can still be enrolled and loaded on systems running Secure Boot, rather than forcing a choice between security features and current drivers.</p>
+<h4>The long tail of legacy GPUs</h4>
+<p>Vendor-backed projects naturally prioritise current hardware, and community projects inherit what is left. Fermi-era cards — a generation now more than a decade old — fall squarely into that gap: too old for Nova, and increasingly underserved as proprietary legacy branches are dropped from NVIDIA's driver releases.</p>
+<p>Expectations for that class of hardware should stay tempered. Fermi support in Nouveau has long been constrained by firmware and reclocking limitations, so 3D and compute performance will remain well short of what the cards delivered under the proprietary driver of their day. What this kind of project offers is not a return to peak performance, but continued viability: display output, basic acceleration, and a maintained module for machines that would otherwise become difficult to run on modern kernels.</p>
+<h4>Why it matters for legacy fleets</h4>
+<p>For organisations running NVIDIA hardware in labs, vGPU passthrough setups, or long-lived engineering workstations, driver availability is a lifecycle question as much as a technical one. When the vendor driver drops a generation and the kernel moves on, functional GPUs can effectively become e-waste ahead of their hardware lifespan. A maintained DKMS-based module directly attacks that failure mode, extending the useful life of installed equipment and delaying premature refresh cycles — a consideration that resonates with any team managing older GPU inventory on a budget.</p>
+<p>Whether Nouveau-DKMS will ever be folded back into mainline Nouveau, and how far beyond Fermi its hardware coverage will ultimately extend, remain open questions as the project matures. The repository linked in Phoronix's coverage is the place to watch for concrete scope and release cadence.</p>
+<p>For now, the project's significance is straightforward: it addresses the part of NVIDIA's install base that neither Nova nor the slow pace of upstream Nouveau work is likely to serve.</p>
+<hr>
+<p>據 Phoronix 報道，一項名為 Nouveau-DKMS 的嶄新 out-of-tree 計劃正進行中，旨在改善舊款 NVIDIA 圖形硬件的開源支援。該項目源自歷史悠久的 Nouveau 驅動，初期聚焦於 GeForce 400/500「Fermi」一代，以及潛在的其他 Turing 之前的架構——正是 NVIDIA 現代開源 Nova 驅動並未打算覆蓋的範疇。</p>
+<h4>三個驅動，三個硬件年代</h4>
+<p>要理解此事，最好從 NVIDIA Linux 圖形驅動架構的分化入手。Nouveau 是由社區維護、透過逆向工程開發的開源驅動，十多年來一直為 Linux 上的 NVIDIA GPU 服務。Nova 由 NVIDIA 自行開發，是較新的開源驅動，針對 Turing 及之後的顯示卡，其硬件與 firmware 接口的文件較為完備。Nouveau-DKMS 不屬於以上任何一個：它是 Nouveau 的 out-of-tree 衍生版本，獨立維護，並透過 Dynamic Kernel Module Support（DKMS）框架安裝。</p>
+<p>這種 out-of-tree 身份正是其實際價值所在。項目無需等待上游合併周期，便可快速迭代修正，服務那些已基本脫離 NVIDIA 支援焦點的硬件。與此同時，DKMS 會在用戶升級至新 kernel 時自動重新編譯 kernel module——對於 rolling-release 發行版及經常更新的實驗室機器而言，這是一項頗為實用的便利。由於 DKMS 能與各發行版的 module-signing 流程無縫配合，該 module 仍可在啟用 Secure Boot 的系統上註冊及載入，用戶不必在安全功能與最新驅動之間作出取捨。</p>
+<h4>舊式 GPU 的長尾效應</h4>
+<p>廠商支援的項目自然會優先照顧現行硬件，社區項目則承接其餘。Fermi 時代的顯示卡——一代距今已超過十年的產品——正好落在這一缺口之中：對 Nova 而言太舊，而且隨著 NVIDIA 在驅動版本中逐步刪去專有舊分支，其支援日益匱乏。</p>
+<p>對這類硬件的期望應保持克制。Nouveau 中的 Fermi 支援長期受制於 firmware 及 reclock 限制，因此 3D 及運算效能將遠遜於當年配合專有驅動時的水平。此類項目所提供的，並非重返巔峰效能，而是持續可用性：顯示輸出、基本硬件加速，以及一個持續維護的 module，讓否則難以在現代 kernel 上運作的機器得以延續。</p>
+<h4>對舊機隊為何重要</h4>
+<p>對於在實驗室、vGPU passthrough 設置或長壽命工程工作站中運行 NVIDIA 硬件的機構而言，驅動的可用與否既是技術問題，同樣也是生命週期問題。當廠商驅動放棄某一代產品、而 kernel 繼續演進時，功能正常的 GPU 很可能在硬件壽命到期之前便淪為電子廢物。一個持續維護的 DKMS module 正面應對這一失效模式，延長已安裝設備的可用壽命，推遲過早的更新換代周期——這對於任何在預算限制下管理舊 GPU 存貨的團隊而言，都是切身考量。</p>
+<p>Nouveau-DKMS 最終會否回歸 mainline Nouveau，以及其硬件覆蓋範圍最終會超出 Fermi 多遠，隨著項目成熟仍是未有定論的問題。Phoronix 報道中連結的 repository，是留意其實際範圍及發布節奏的地方。</p>
+<p>就目前而言，該項目的意義十分明確：它針對的是 NVIDIA 裝機量中，無論 Nova 還是上游 Nouveau 緩慢的工作進度都未能服務的那部分。</p>
+<p><a href="https://www.phoronix.com/news/Nouveau-DKMS" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
