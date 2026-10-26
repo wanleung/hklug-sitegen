@@ -1,0 +1,48 @@
+Date: 2026-10-26 11:04:00
+Author: HKLUG Team
+Title: Attackers Turn GitHub Actions Logs Into a Secrets Exfiltration Channel
+Content:
+<p>An automated campaign is stealing private repository secrets through an unlikely side channel: the build logs of GitHub Actions itself. In an analysis by cloud security company Wiz, surfaced via The Hacker News, the researchers detail an automated campaign the company has dubbed Gheist, in which attackers use stolen GitHub tokens to plant workflows that print a repository's secrets into their own Actions logs, download those logs, and then delete the runs to cover their tracks.</p>
+<p>One detail the available reporting does not settle is how the tokens are obtained in the first place. Neither Wiz's analysis nor the source coverage specifies an initial access vector — infostealer malware, session compromise, or otherwise — so the entry point into the victims' accounts remains an open question pending independent confirmation.</p>
+<p>The manoeuvre is notable less for how the attackers get in than for how they get the data out. Rather than pulling secrets through a suspicious outbound connection or a repository export — the patterns conventional monitoring often focuses on — the campaign abuses a channel that few organisations watch at all: CI logs, which are treated as routine engineering artefacts and rarely classified as an exfiltration path.</p>
+<h4>The attack chain</h4>
+<p>The sequence Wiz describes is compact. A stolen GitHub token grants access to a target repository. Using that token, the attacker plants a workflow in GitHub Actions. When the workflow runs, it prints the repository's configured secrets directly into the job's log output. The attacker then downloads the logs containing those secrets and deletes the run so the artefact disappears from the repository's workflow history.</p>
+<p>Wiz reports that the campaign has succeeded against private repositories and within GitHub Enterprise environments, underscoring that repository-level privacy settings alone do not stop an actor holding a valid token.</p>
+<p>GitHub has introduced a safeguard related to this activity according to the source coverage; we will update this article once its exact behaviour is verified.</p>
+<h4>Why existing controls miss it</h4>
+<p>The strength of this technique is that every individual step can look legitimate. Workflow runs are created, executed, and removed constantly in an active repository. Log download is a normal developer action. The token used is a real credential, not an obvious forgery. Detection is likely to fail when an organisation's monitoring focuses on authentication anomalies or unusual data egress while leaving the CI/CD subsystem — where secrets are deliberately made available to code — effectively unobserved.</p>
+<p>For teams, the lesson is that GitHub Actions logs should be treated with the same sensitivity as the secrets themselves, because in this attack they become exactly that.</p>
+<h4>What to check now</h4>
+<p>A practical audit for engineering and security teams covers four areas:</p>
+<ol>
+<li><strong>Prefer OIDC over long-lived personal access tokens.</strong> Federated, short-lived credentials issued per workflow run dramatically shrink the window and value of a stolen token, and remove static secrets that can be replayed elsewhere.</li>
+<li><strong>Scope and rotate tokens aggressively.</strong> Where personal access tokens remain necessary, use fine-grained tokens with minimal repository permissions, short expiry, and an enforced rotation schedule.</li>
+<li><strong>Audit <code>pull_request_target</code> usage.</strong> Workflows triggered by this event run with write access to the base repository in many configurations and are a well-known path for untrusted code to reach privileged secrets; review every instance and apply environment protection rules so sensitive secrets require approval before release to a job.</li>
+<li><strong>Monitor run creation and deletion patterns.</strong> Alerting on workflows that appear and are removed shortly afterwards, unusual log-download activity, and unexpected printing of secret values gives defenders a chance to catch this chain mid-flight rather than after the logs are gone.</li>
+</ol>
+<h4>Why it matters beyond the immediate campaign</h4>
+<p>The relevance here is not confined to this campaign. Any organisation running GitHub Actions effectively holds infrastructure in which a build log can become an uncontrolled copy of credentials protecting customer-facing systems. The underlying weakness does not depend on sector or regulator: secrets pipeline through subsystems that security teams rarely inventory, and Gheist simply demonstrates what happens when an attacker treats those subsystems as an egress route.</p>
+<p>The full analysis is attributed to Wiz and surfaced via The Hacker News. Details of GitHub's safeguard, the campaign's scale and timeline, and the initial token-acquisition vector remain to be independently confirmed and will be added as this story develops.</p>
+<hr>
+<p>一項自動化攻擊行動正透過一個出人意料的側通道竊取私有 repository 的機密：GitHub Actions 自身的 build logs。雲端安全公司 Wiz 的分析（由 The Hacker News 披露）詳述了一項該公司命名為 Gheist 的自動化攻擊行動：攻擊者利用 stolen GitHub tokens 植入 workflows，將 repository 的 secrets 直接列印到其自身的 Actions logs 之中，下載這些日誌，隨後刪除相關 runs 以掩飾行蹤。</p>
+<p>現有報導尚未釐清的一個細節是，這些 tokens 究竟從何而來。無論是 Wiz 的分析還是原始報導，都沒有指明初始入侵途徑——infostealer 惡意軟件、session 被入侵，抑或其他途徑——因此受害者帳號的入侵入口點仍有待獨立確認，暫屬懸而未決的問題。</p>
+<p>這手法值得注意之處，與其說是在攻擊者如何入侵，不如說是在他們如何將資料帶出去。這項攻擊行動並非透過可疑的 outbound connection 或 repository 匯出來轉移 secrets——即傳統監控通常聚焦的模式——而是濫用極少機構會監察的渠道：CI logs。這些日誌一般被視為例行的工程 artefacts，極少被列為資料外洩途徑。</p>
+<h4>攻擊鏈</h4>
+<p>Wiz 描述的過程相當簡潔。一個 stolen GitHub token 授予對目標 repository 的存取權限。攻擊者利用該 token 在 GitHub Actions 植入 workflow。workflow 執行時，會將 repository 已配置的 secrets 直接列印到該 job 的 log output。攻擊者隨後下載載有這些 secrets 的日誌，並刪除該 run，令相關 artefact 從 repository 的 workflow 歷史中消失。</p>
+<p>Wiz 報告指出，該攻擊行動已成功入侵私有 repository 及 GitHub Enterprise 環境，凸顯僅憑 repository 層級的私隱設定，並不能阻止持有有效 token 的攻擊者。</p>
+<p>根據原始報導，GitHub 已就相關活動引入一項 safeguard；待其確切運作方式獲證實後，我們將更新本文。</p>
+<h4>現有防禦機制為何失效</h4>
+<p>此技術的強大之處在於每一個個別步驟都看似合理。在活躍的 repository 中，workflow runs 不斷被建立、執行和刪除。下載 log 是開發人員的正常操作。所用的 token 是真實憑證，並非明顯的偽造品。當機構的監控聚焦於認證異常或不尋常的資料外傳，卻令 CI/CD 子系統——即 secrets 被刻意提供予代碼使用的地方——實質上處於無人監察的狀態時，偵測很可能失效。</p>
+<p>對團隊而言，教訓是 GitHub Actions logs 應當與 secrets 本身以同等的敏感度處理，因為在這次攻擊中，前者確實變成了後者。</p>
+<h4>現在應檢查什麼</h4>
+<p>工程及安全團隊的實務審核涵蓋四個範疇：</p>
+<ol>
+<li><strong>優先採用 OIDC 而非長期有效的 personal access tokens。</strong> 按每次 workflow run 發出的聯邦式短期憑證，能大幅縮小 stolen token 的時效和價值，並消除可在其他地方重放的靜態 secrets。</li>
+<li><strong>嚴格限定 token 範圍並積極輪換。</strong> 如仍需使用 personal access tokens，應選用具有最小 repository 權限、短期有效期並強制執行輪換排程的 fine-grained tokens。</li>
+<li><strong>審核 <code>pull_request_target</code> 的使用情況。</strong> 在許多配置下，由此事件觸發的 workflows 具有對 base repository 的寫入權限，是不可信代碼接觸高權限 secrets 的眾所周知途徑；應逐一檢視每個實例，並套用 environment protection rules，令敏感 secrets 在釋放到 job 前須先獲批。</li>
+<li><strong>監察 run 的建立及刪除模式。</strong> 對於短時間內出現隨即被移除的 workflows、不尋常的 log-download 活動，以及 secrets 數值的意外列印發出警示，可讓防禦方有機會在攻擊鏈進行途中而非日誌消失之後將其截獲。</li>
+</ol>
+<h4>為何此事的影響不限於本次攻擊</h4>
+<p>這裡的關聯並不侷限於這項攻擊行動。任何運行 GitHub Actions 的機構，實際上都持有一項基礎設施，其中 build log 可能成為保護面向客戶系統之憑證的失控副本。根本弱點並不取決於行業或監管機構：secrets 經由安全團隊極少盤點的子系統流動，而 Gheist 只是展示了當攻擊者將這些子系統視為外傳路徑時會發生什麼。</p>
+<p>完整分析由 Wiz 提供，並經 The Hacker News 披露。GitHub safeguard 的細節、攻擊行動的規模和時間表，以及初始 token 取得途徑，仍有待獨立確認，並將隨著事態發展補充。</p>
+<p><a href="https://thehackernews.com/2026/10/gheist-uses-stolen-github-tokens-to.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
