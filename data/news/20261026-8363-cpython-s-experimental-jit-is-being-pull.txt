@@ -1,0 +1,30 @@
+Date: 2026-10-26 17:05:00
+Author: HKLUG Team
+Title: CPython's experimental JIT is being pulled — what Hong Kong Python teams should know
+Content:
+<h3>CPython's experimental JIT is being pulled — what Hong Kong Python teams should know</h3>
+<p>CPython's experimental just-in-time compiler, shipped behind a build flag in Python 3.13, is heading for removal from the interpreter, according to coverage of the move by LWN.net. The feature is not being retired for technical failure so much as wound down for lack of maintenance bandwidth — a distinction that matters for anyone who has factored future JIT speed-ups into a performance roadmap.</p>
+<p>The JIT landed in CPython 3.13 in 2024 as an opt-in, experimental addition. In June 2025, the Python steering council announced on discuss.python.org that it was pausing work on the project. The council's stated rationale was one of resourcing: attention is being redirected toward the tier-2 (uop) optimizer and interpreter-level improvements, which the council judged to be a better return on limited core-developer time than continuing to maintain a copy-and-patch style JIT — the approach described for the project in the steering council thread.</p>
+<p>That framing is worth dwelling on. Nothing in the announcement amounts to a verdict that JIT compilation is the wrong technique for CPython, nor that the code failed to deliver. It is a lifecycle decision: an experiment that could not secure the ongoing reviewer and maintainer effort it needed is being wound down, the same way other experimental branches of CPython have been closed out over the years.</p>
+<p><strong>What this means in practice</strong></p>
+<p>The blast radius is narrow, and mostly confined to two groups.</p>
+<p>First, teams that build CPython from source with <code>--enable-experimental-jit</code> — the configure option documented in CPython's build instructions — will need to drop that flag as the code is excised. The JIT was opt-in rather than part of the standard build: stock interpreter binaries, distro packages, container images, and wheels published to PyPI were unaffected while the flag was off, and they will not regress when the code disappears. If your CI compiles CPython with non-default configure options, check your build scripts.</p>
+<p>Second, teams whose performance plans assumed that a future CPython release would accelerate CPU-bound code through the JIT need to revise those assumptions. The gains they were banking on will not arrive from that quarter. The tier-2 optimizer work the steering council redirected effort toward remains the more likely near-term source of improvement for pure-Python loops.</p>
+<p>No target release for the removal has been fixed in public discussion so far; the staging of the change across future CPython versions is expected to be confirmed in release notes and on the project's GitHub tracker as it lands. Teams tracking this should watch CPython's What's New documents and the steering council thread rather than assume a single drop-dead version.</p>
+<p>For workloads that genuinely need a JIT or a more aggressive compiler at runtime, alternatives outside CPython remain available: PyPy continues to ship a mature tracing JIT for Python workloads, and GraalPy offers a Python implementation on the GraalVM runtime with its own JIT and polyglot integration. Both have compatibility caveats — extension-module support in particular — so any migration is a compatibility project, not a drop-in swap.</p>
+<p>The practical takeaway is that CPython's story is still told mainly through interpreter and bytecode work, not a native JIT. Optimisation-hungry Python teams in Hong Kong and elsewhere are best served by profiling against the current stable release, keeping build configurations simple, and treating third-party runtimes as a deliberate evaluation rather than an assumed upgrade path.</p>
+<p>LWN.net's report on the removal, which links to the steering council's June 2025 announcement, is available at https://lwn.net/Articles/1102102/.</p>
+<hr>
+<h3>CPython 實驗性 JIT 將被移除 — 香港 Python 團隊須知事項</h3>
+<p>據 LWN.net 報道，CPython 的實驗性 just-in-time（JIT）編譯器於 Python 3.13 以編譯旗標（build flag）形式推出，現正計劃從解譯器中移除。此功能並非因技術失敗而退役，而是因維護人手不足而逐步收束 — 這一區別對任何已將未來 JIT 速度提升納入效能路線圖的人士而言，並非無關痛癢。</p>
+<p>JIT 於 2024 年隨 CPython 3.13 推出，屬選擇啟用（opt-in）的實驗性功能。2025 年 6 月，Python steering council 在 discuss.python.org 宣布暫停該項目的工作。該會給出的理由涉及資源調配：精力將轉移至 tier-2（uop）optimizer 及解譯器層面的改進，該會認為此舉對有限的核心開發者時間而言，回報較繼續維護一套 copy-and-patch 風格的 JIT 更高 — 這正是 steering council 討論串中描述的項目方向。</p>
+<p>這一定位值得深究。公告中並無任何內容構成以下判斷：JIT 編譯對 CPython 而言是錯誤的技術方向，或該代碼未能達成預期成效。這是一個生命週期決定：一項無法獲得所需持續審閱及維護投入的實驗正被收束，方式與過去多年間 CPython 其他實驗性分支的關閉如出一轍。</p>
+<p><strong>實際影響何在</strong></p>
+<p>影響範圍相當有限，主要集中於兩類人士。</p>
+<p>第一，以 <code>--enable-experimental-jit</code>（CPython build 說明文件中記載的 configure 選項）從源碼編譯 CPython 的團隊，須在相關代碼被移除時棄用該旗標。JIT 屬選擇啟用，並非標準 build 的一部分：在旗標關閉期間，預設解譯器二進制檔、發行版套件、container image 及發布至 PyPI 的 wheels 均不受影響，代碼消失後亦不會出現效能倒退。若閣下的 CI 以非預設 configure 選項編譯 CPython，請檢查 build scripts。</p>
+<p>第二，效能規劃假設未來 CPython 版本可透過 JIT 加速 CPU-bound 代碼的團隊，須修訂相關假設。彼等寄望的收益不會來自這個方向。steering council 將精力轉投的 tier-2 optimizer 工作，仍然是純 Python 近期迴圈（loop）優化的較可能來源。</p>
+<p>截至目前的公開討論，移除工作尚未訂明目標版本；該變更如何分階段納入未來 CPython 版本，預期將隨後在 release notes 及項目 GitHub tracker 中確認。跟進此事的團隊宜留意 CPython 的 What's New 文件及 steering council 討論串，而非假設存在單一的最終版本（drop-dead version）。</p>
+<p>對於確實需要 JIT 或更進取的 runtime 編譯器的工作負載，CPython 以外仍有替代方案：PyPy 持續為 Python 工作負載提供成熟的 tracing JIT，GraalPy 則在 GraalVM runtime 上提供 Python 實現，配備自身的 JIT 及 polyglot 整合。兩者在相容性方面均有需注意之處 — 尤其是 extension module 支援 — 故任何遷移均屬相容性工程，而非即插即用的替換。</p>
+<p>實際結論是：CPython 的優化故事仍主要依靠解譯器及 bytecode 層面的工作，而非原生 JIT。香港及其他地區追求效能的 Python 團隊，最佳做法是針對現行穩定版本進行 profiling、保持 build 配置簡潔，並把第三方 runtime 視為須審慎評估的選項，而非理所當然的升級路徑。</p>
+<p>LWN.net 關於是次移除的報道（附有指向 steering council 2025 年 6 月公告的連結）可於 https://lwn.net/Articles/1102102/ 瀏覽。</p>
+<p><a href="https://lwn.net/Articles/1102102/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
