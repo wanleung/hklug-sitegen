@@ -1,0 +1,40 @@
+Date: 2026-10-26 14:12:00
+Author: HKLUG Team
+Title: Five days after PHP's emergency patch, 216 hosts already probed in a suspected DPRK-linked campaign
+Content:
+<p>PHP site operators face a compressed patching window: emergency vendor fixes landed on 21 October 2026, and within days a scanning campaign attributed to a suspected North Korean actor had reached 216 vulnerable hosts, according to research reported by Security Affairs.</p>
+<p>Threat-intelligence firm Cyfirma has linked activity it calls PHP2Shell to that suspected North Korean actor, the publication reported. The group is said to have scanned 216 hosts running vulnerable PHP deployments — scanned, not confirmed compromised — and to rank publicly available exploits by likely effectiveness using AI tooling, an assessment from the firm rather than an independently corroborated finding.</p>
+<p>The emergency release patched two critical flaws, both rated 9.2 on the CVSS scale. Security Affairs describes them as affecting PHP versions that handle web requests, with the underlying defective code having a long history in the codebase. Readers should take the specific CVE identifiers from PHP's own release announcement rather than secondary coverage, where such identifiers are frequently mangled in transit; the same applies to the exact scope of affected branches, which should be read against upstream's own wording rather than inferred from reporting.</p>
+<p>One gap in the source coverage is worth naming plainly: Security Affairs does not identify which SAPIs or handlers are affected, nor whether PHP maintainers have commented on in-the-wild exploitation. Operators deciding how fast to move should take both answers from the vendor announcement, where they belong, rather than reading severity into a CVSS score the reporting does not fully contextualise.</p>
+<p>The strategic angle is time-compression: an out-of-band vendor release racing an AI-assisted exploit-triage workflow. As of publication, it has been five days since the patch landed. When scanning is automated and exploit prioritisation is machine-assisted, the interval between a public patch and weaponised probing shrinks — which makes this week exactly the wrong place for inertia.</p>
+<h5>A practical self-check for PHP site owners</h5>
+<p>For Hong Kong SMEs and site owners running self-managed PHP stacks — a general checklist, not a response to any specific local regulatory direction:</p>
+<ul>
+<li><strong>Confirm your version.</strong> Run <code>php -v</code> on every web-facing host and container image. Compare against the patched releases listed in PHP's official announcement for 21 October 2026.</li>
+<li><strong>Patch, don't just plan.</strong> Shared-hosting customers should ask their provider, in writing, when the runtime will be upgraded. If the answer is indefinite, treat the site as exposed.</li>
+<li><strong>Check for backports.</strong> Some distributions ship vendor-patched PHP without bumping the visible version number; verify against your distributor's security advisories.</li>
+<li><strong>Review public exposure.</strong> Confirm that only intended entry points reach PHP, disable unused extensions, and ensure error output does not leak paths or configuration.</li>
+<li><strong>Hunt for persistence.</strong> Scan web roots for unfamiliar files, unexpected <code>eval</code> or base64 payloads, and new cron jobs or scheduled tasks — the indicators implied by the PHP2Shell name.</li>
+<li><strong>Keep the audit trail.</strong> Preserve access and deployment logs; suspected-state-actor attribution means evidence may be useful beyond a simple cleanup.</li>
+</ul>
+<p>The Cyfirma attribution remains preliminary and should be read as such: a suspected link, not a confirmed one. What is not preliminary is the patch itself — and for operators of small PHP estates, that is the actionable half of the story.</p>
+<p><em>Source: Security Affairs, via Cyfirma research. CVE identifiers and patch scope to be confirmed against php.net and NVD.</em></p>
+<hr>
+<p>PHP 網站營運正面對極緊逼的修補窗口：官方供應商的緊急修復已於 2026 年 10 月 21 日推出，數日內一項懷疑與朝鮮有關的攻擊者所發動的掃描行動，已觸及 216 部存有漏洞的主機——根據 Security Affairs 報導的研究結果。</p>
+<p>該刊物報道，威脅情報公司 Cyfirma 已將其稱為「PHP2Shell」的活動，與該名懷疑朝鮮攻擊者聯繫起來。據悉該組織掃描了 216 部運行有漏洞 PHP 部署的主機——是掃描，並未確認已遭入侵——並利用 AI 工具按可能的 effectiveness 排列公開漏洞利用程式（exploit）的優先次序；這是該公司的評估，而非經獨立核實的結論。</p>
+<p>該緊急版本修補了兩個嚴重漏洞，兩者在 CVSS 評分中均獲 9.2 分。Security Affairs 形容漏洞影響處理網頁請求的 PHP 版本，而底層的缺陷代碼在 codebase 中由來已久。讀者應從 PHP 自身的版本公告取得特定 CVE 編號，而非依賴二手報道——此類編號在轉載過程中經常出錯；受影響分支的確切範圍亦然，應以上游官方措辭為準，而非從報道中推斷。</p>
+<p>原始報道有一項缺失值得直截了當指出：Security Affairs 未有說明哪些 SAPI 或 handler 受影響，亦未有交代 PHP 維護者是否就野外利用（in-the-wild exploitation）作出回應。營運者決定行動速度時，應從供應商公告取得這兩個答案——答案本就應出自該處——而非從未有充分交代背景的 CVSS 分數中自行解讀嚴重程度。</p>
+<p>戰略角度的關鍵在於時間壓縮：一次帶外（out-of-band）供應商版本發布，正與 AI 輔助的漏洞利用分類流程爭分奪秒。截至發稿，補丁已推出五日。當掃描已自動化、漏洞利用排序由機器輔助，從公開補丁到武器化探測之間的間隔正不斷縮短——這正意味着本周絕不是因循苟且的時候。</p>
+<h5>PHP 網站擁有人實用自查清單</h5>
+<p>針對香港中小企及自行管理 PHP 技術堆疊的網站擁有人——以下是通用清單，並非回應任何特定的本地監管方向：</p>
+<ul>
+<li><strong>確認你的版本。</strong> 在每一部面向公眾的主機及 container image 執行 <code>php -v</code>，與 PHP 官方 2026 年 10 月 21 日公告所列的已修補版本逐一核對。</li>
+<li><strong>修補，而非只作計劃。</strong> 共用主機客戶應以書面向服務供應商查詢運行環境何時升級。若答案是無期，應視網站為已暴露於風險之中。</li>
+<li><strong>檢查 backport。</strong> 部分發行版會推出供應商已修補的 PHP，卻不更新可見版本號；請對照所用發行版的 security advisories 核實。</li>
+<li><strong>檢視對外暴露面。</strong> 確認只有預定的入口點會接達 PHP，停用沒有使用的 extension，並確保錯誤輸出不會洩露路徑或配置資訊。</li>
+<li><strong>搜尋持久化痕跡。</strong> 掃描 web root 中有沒有陌生檔案、異常的 <code>eval</code> 或 base64 負載，以及新增的 cron job 或排程任務——這些正是 PHP2Shell 名稱所暗示的指標。</li>
+<li><strong>保留審計線索。</strong> 妥為保存存取及部署日誌；既然涉及懷疑國家級攻擊者的歸因，證據日後的用途可能不止於一次簡單的清理。</li>
+</ul>
+<p>Cyfirma 的歸因仍屬初步，應據此理解：那是懷疑的關聯，而非已確認的關聯。並非初步的，是補丁本身——而對於規模不大的 PHP 環境營運者而言，那正是整件事中可以直接採取行動的一半。</p>
+<p><em>資料來源：Security Affairs，引自 Cyfirma 研究。CVE 編號及修補範圍請向 php.net 及 NVD 核實。</em></p>
+<p><a href="https://securityaffairs.com/201748/hacking/php2shell-suspected-north-korean-campaign-targets-216-vulnerable-php-hosts.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
