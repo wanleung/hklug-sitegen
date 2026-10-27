@@ -1,0 +1,102 @@
+Date: 2026-10-27 19:23:00
+Author: HKLUG Team
+Title: Microsoft Opens Rare Out-of-Band Channel to Drop eMudhra Certificate Trust: What Windows Admins Must Do This Week
+Content:
+<h3>Microsoft Opens Rare Out-of-Band Channel to Drop eMudhra Certificate Trust: What Windows Admins Must Do This Week</h3>
+<p><strong>The top priority this week: download and deploy the relevant out-of-band (OOB) updates for every machine that relies on Windows' automatic certificate trust updates, with systems that have missed automatic trust list (CTL) updates treated as most urgent.</strong> According to BleepingComputer, Microsoft has released these OOB updates to revoke trust in certificates tied to compromised eMudhra certificate authority (CA) keys.</p>
+<h4>What Happened</h4>
+<p>Microsoft has rarely opened a second update delivery channel. The purpose of these OOB updates is clear: to protect Windows systems that <strong>typically do not receive automatic certificate trust updates</strong> — air-gapped networks, machines syncing only through WSUS, systems held back by change freezes, and those lingering on older builds. It is worth noting that Microsoft has not published an explicit list of affected machines; the categories above are informed inference based on why an out-of-band channel exists in the first place, and administrators should verify against their own environments' actual update records.</p>
+<p>For IT teams, the more revealing story is the gap behind the patch: the very fact that a second, out-of-band channel was needed implies the standard automatic certificate trust list (CTL) update mechanism does not reach every machine in some environments. If you have never audited trust-update coverage across your estate, this is itself a warning sign — the hardest-to-update systems are often the least protected and the least visible on patch dashboards.</p>
+<h4>Scope and Where to Get the Updates</h4>
+<p>The updates cover multiple Windows versions. <strong>The Microsoft Update Catalog is the official entry point for administrators to search and download</strong> — check it against your own operating system build by build. Specific KB numbers and affected build versions should be confirmed against Microsoft's official release notes; until that verification is done, this article does not list them in order to avoid misleading deployments. You can also cross-check against the list in the original BleepingComputer article:</p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Update type</td>
+<td>Out-of-band (OOB) security update, not a routine "Patch Tuesday" build</td>
+</tr>
+<tr>
+<td>Main purpose</td>
+<td>Remove eMudhra-related CA certificates from the Windows trust store</td>
+</tr>
+<tr>
+<td>Where to check</td>
+<td>Microsoft Update Catalog (verify per operating system version)</td>
+</tr>
+<tr>
+<td>Who it matters to most</td>
+<td>Isolated / WSUS-only environments that have not received automatic CTL updates</td>
+</tr>
+</tbody>
+</table>
+<h4>Verification and Rollback Checklist</h4>
+<p><strong>Before deployment</strong>
+- Inventory managed machines by Windows version and build number, recording which ones have gone a long time without receiving automatic CTL updates.
+- Pilot the update on test machines first, confirming that business applications (signature validation, mTLS, internal PKI clients) are unaffected.</p>
+<p><strong>Post-deployment verification</strong>
+- As administrator, run <code>certutil -store Root</code> and inspect the output entry by entry for the eMudhra-related root certificates, confirming they are no longer present in the machine's trusted root store. <strong>Note: confirm the exact display-name string against actual <code>certutil</code> output or the certificate's Subject / Issuer fields before using it as a search keyword.</strong> A single-keyword grep can miss certificates whose names are spelled differently, producing a false "removed" result.
+- Check <code>certlm.msc</code> (local machine certificates) alongside the user-level <code>certmgr.msc</code>.
+- Spot-check a few representative hosts and preserve the output in your change records.</p>
+<p><strong>If rollback is required</strong>
+- Re-trusting a CA whose keys have been compromised is not advisable — it puts the risk straight back. Rollback should not be treated as a routine operation. If an application breaks as a result, isolate that system first, confirm with the application vendor whether an alternative trust anchor exists, then contact Microsoft support to assess an exception case by case.
+- If the update genuinely must be uninstalled, do so machine by machine through the standard change process (for example via Settings or <code>wusa /uninstall</code>), and document explicitly: after uninstallation, the system is again exposed to the risk of an untrusted CA.</p>
+<h4>One More Reminder: There Is More Than One Trust Store</h4>
+<p>Distrust applied at the Windows level will <strong>not</strong> automatically propagate to trust stores bundled with other software — Java's <code>cacerts</code>, OpenSSL's CA bundles, browsers' own root stores, and certificate profiles pushed through MDM/GPO each need to be checked separately. To truly revoke a trust anchor in an enterprise environment, a named owner must review these stores one by one; certificate trust is not a one-time setting.</p>
+<p>Certificate trust is now a real part of the patch surface. For Windows administrators reading this, this week's concrete work is straightforward: compile the list, match the builds, deploy the OOB updates, verify, and record the results — then revisit the hardest-to-update machines to see what else may have fallen behind.</p>
+<p><em>Based on reporting by BleepingComputer.</em></p>
+<hr>
+<h3>微軟罕見加開帶外通道撤銷 eMudhra 憑證信任：Windows 管理員本週必做事項</h3>
+<p><strong>本週首要行動：為所有依賴 Windows 自動憑證信任更新的機器下載並部署對應的帶外（out-of-band, OOB）更新，未能收到自動信任清單（CTL）更新的系統尤為優先。</strong> 根據 BleepingComputer 報導，微軟已發布這批 OOB 更新，用來撤銷與被入侵的 eMudhra 憑證授權機構（CA）金鑰相關的憑證信任。</p>
+<h4>發生了什麼</h4>
+<p>微軟罕見地啟動了第二條更新發布通道。這批 OOB 更新的目標很明確：為那些<strong>通常收不到自動憑證信任更新</strong>的 Windows 系統補上保護——隔離網絡、僅透過 WSUS 同步、因變更凍結而長期不接收例行更新、以及停留在較舊 build 版本的機器，都屬於這一類環境。此處需要說明的是：微軟並未逐一列出受影響清單，以上是根據「帶外通道存在意義」所作的合理推斷，管理員應以自家環境的實際更新紀錄為準。</p>
+<p>對 IT 團隊而言，真正值得留意的其實是這個「補丁背後的缺口」：既然需要另開一條帶外通道，就表示原本的憑證信任清單（CTL）自動更新機制在部分環境中並未觸及所有機器。如果你從未審計過自己環境內的信任更新覆蓋率，這件事本身就是一個警號——最難更新的系統，往往也是最缺乏這層保護、同時在補丁儀表板上最不明顯的系統。</p>
+<h4>影響範圍與取得方式</h4>
+<p>這批更新涵蓋多個 Windows 版本。<strong>Microsoft Update Catalog 是管理員查詢與下載的官方入口</strong>——請以自家作業系統 build 逐一核對。具體 KB 編號與受影響的 build 版本，應以微軟官方發布說明為準；在核對之前，本文不先行列出，以免誤導部署。你亦可對照 BleepingComputer 原文的列表交叉檢查：</p>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>更新類型</td>
+<td>帶外（OOB）保安更新，非例行「Patch Tuesday」組建</td>
+</tr>
+<tr>
+<td>主要目的</td>
+<td>從 Windows 信任儲存移除 eMudhra 相關 CA 憑證</td>
+</tr>
+<tr>
+<td>查詢入口</td>
+<td>Microsoft Update Catalog（依作業系統 build 逐一核對）</td>
+</tr>
+<tr>
+<td>適用對象</td>
+<td>尤其是未收到自動 CTL 更新的隔離／WSUS 環境</td>
+</tr>
+</tbody>
+</table>
+<h4>驗證與回滾清單</h4>
+<p><strong>部署前</strong>
+- 盤點受管機器的 Windows 版本與 build 號，記錄哪些機器長期未接收 CTL 自動更新。
+- 在測試機先行部署，確認業務應用程式（簽章驗證、mTLS、內部 PKI 用戶端）不受影響。</p>
+<p><strong>部署後驗證</strong>
+- 以系統管理員執行 <code>certutil -store Root</code>，逐一檢查輸出中的 eMudhra 相關根憑證名稱，確認其已不在機器信任根儲存內。<strong>注意：憑證的顯示名稱字串應先對照 <code>certutil</code> 實際輸出或憑證的 Subject / Issuer 欄位確認後，再用作搜尋關鍵字。</strong> 單一關鍵字 grep 可能因名稱寫法不同而漏檢，造成「已移除」的假陰性。
+- 檢查 <code>certlm.msc</code>（本機機器憑證）與使用者層級的 <code>certmgr.msc</code>。
+- 對幾台代表性主機抽查，並在變更紀錄中保存輸出結果。</p>
+<p><strong>如需回滾</strong>
+- 不建議把已被入侵金鑰的 CA 重新全域信任——這等於把風險原樣放回去。回滾不應視為例行操作。若某應用程式因此中斷，先隔離該系統、與應用程式供應商確認是否有替代信任錨，再聯絡微軟支援評估個別處理方式。
+- 若確需卸載更新，應透過標準變更流程（如 Settings 或 <code>wusa /uninstall</code>）逐台執行，並明確記錄：卸載後系統將重新暴露於不受信任 CA 的風險。</p>
+<h4>額外提醒：信任儲存不止一個</h4>
+<p>Windows 層面的不信賴，<strong>不會</strong>自動影響其他程式自帶的信任儲存——Java 的 <code>cacerts</code>、OpenSSL 的 CA bundle、瀏覽器自有根目錄，以及透過 MDM／GPO 下發的憑證設定檔都需要各自核對。企業環境若要真正撤銷一個信任錨，必須指定負責人逐一盤點這些儲存，而不是視憑證信任為一次性設定。</p>
+<p>憑證信任已是實質的 patch surface（補丁層面）的一部分。閱讀本文的 Windows 管理員，本週的實際工作很直接：整理清單、核對 build、部署 OOB 更新、驗證、記錄——然後回頭審視那些最難更新的機器，看看還有沒有其他項目落後。</p>
+<p><em>參考 BleepingComputer 相關報導。</em></p>
+<p><a href="https://www.bleepingcomputer.com/news/microsoft/microsoft-releases-windows-oob-updates-to-distrust-emudhra-certificates/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
