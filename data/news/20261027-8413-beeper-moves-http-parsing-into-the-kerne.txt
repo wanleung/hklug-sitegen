@@ -1,0 +1,46 @@
+Date: 2026-10-27 12:03:00
+Author: HKLUG Team
+Title: Beeper Moves HTTP Parsing Into the Kernel, Claiming Up to 4.5x Web Server Throughput
+Content:
+<p>```</p>
+<h3>Beeper Moves HTTP Parsing Into the Kernel, Claiming Up to 4.5x Web Server Throughput</h3>
+<p>A university research project called Beeper is claiming web server throughput improvements of up to 4.5x by doing something counter-intuitive: moving application-layer HTTP parsing <em>into</em> the kernel rather than out of it. The open-source project, covered by Phoronix, implements an HTTP parser and an in-kernel HTTP cache in eBPF, offloading hot-path work that web servers traditionally handle in userspace.</p>
+<p>According to the project's research benchmarks as relayed by Phoronix, the approach can improve web server throughput by around 3x at high request rates, with headline gains reaching up to 4.5x.</p>
+<h4>The trend Beeper runs against</h4>
+<p>The most interesting aspect for anyone who follows Linux performance work is that Beeper points in the opposite direction to the prevailing wind. For much of the past decade, the performance community has chased kernel <em>bypass</em>: io_uring, DPDK, and similar mechanisms all aim to keep work as far away from the kernel as possible, on the theory that context switches and syscall overhead dominate. Beeper inverts that assumption. Because eBPF programs are checked by the kernel's verifier before they are allowed to run, the code executing in the hot path carries provable safety guarantees — which means keeping parsing in-kernel need not carry the crash or corruption risk that historically pushed developers toward userspace.</p>
+<p>The result is an HTTP parser running under eBPF, backed by an in-kernel cache, that serves requests without bouncing between kernel and userspace on every byte exchanged.</p>
+<h4>Why it matters to DevOps and SRE teams</h4>
+<p>For teams running high-connection web and API infrastructure, the headline numbers are eye-catching, but the framing matters more than the multiplier. Beeper is university research, not production-ready software. It is best read as a practical demonstration of how far eBPF's programmability now reaches — past networking and observability and into application-layer protocol handling — rather than as a drop-in module for your load balancer.</p>
+<h4>Production-readiness caveats</h4>
+<p>Before anyone plans around the benchmark, several open questions deserve attention:</p>
+<ul>
+<li><strong>Benchmark conditions are self-reported.</strong> The 3x-to-4.5x figures come from the project's own research results as relayed by Phoronix. Hardware, request mix, cache hit rates, and connection patterns all influence results of this kind, and independent replication has not been established here.</li>
+<li><strong>TLS scope is unknown.</strong> We do not know from available source material whether TLS termination was within the scope of the original benchmarks. If HTTPS handshakes and decryption were excluded, real-world deployment gains would likely be narrower — this remains an open question rather than a conclusion.</li>
+<li><strong>eBPF verifier constraints bind the design.</strong> The verifier's guarantees are what make in-kernel parsing defensible, but they also limit what the parser can do: program complexity, loop bounds, and helper-function availability all constrain how a full HTTP implementation can be expressed in eBPF.</li>
+<li><strong>Research projects don't ship with SLAs.</strong> Maintenance cadence, security response, and compatibility tracking across kernel versions are realities that university-born projects rarely sustain without a production-minded maintainer behind them.</li>
+</ul>
+<p>There is also a practical shift worth noting for operations teams: with parsing logic running in-kernel, debugging moves with it. Traditional userspace tracing and strace-style inspection no longer cover the hot path — troubleshooting shifts to kernel-side tooling, including BPF-aware observability stacks.</p>
+<p>Beeper's repository and research paper are the places to watch as the project develops. For now, it is best understood as a data point in a longer argument about where the kernel boundary ought to sit — and a reminder that eBPF's ambitions keep growing beyond packet filtering.</p>
+<p><em>Source: <a href="https://www.phoronix.com/news/Beeper-In-Kernel-Parsing-eBPF">Phoronix</a></em></p>
+<hr>
+<p>```</p>
+<h3>Beeper 將 HTTP 解析移入 kernel，宣稱 web server 吞吐量最高提升 4.5 倍</h3>
+<p>一個名為 Beeper 的大學研究項目聲稱，透過一項反直覺的做法，可將 web server 吞吐量提升最多達 4.5 倍：把應用層的 HTTP 解析工作由用戶空間移<em>入</em> kernel，而非移出。這個獲 Phoronix 報導的開源項目，以 eBPF 實作 HTTP parser 及 kernel 內的 HTTP cache，將傳統上由 web server 在用戶空間處理的 hot path 工作卸載至 kernel。</p>
+<p>根據 Phoronix 轉述的項目研究基準測試，此方法在高請求率下可將 web server 吞吐量提升約 3 倍，最高標題數字更可達 4.5 倍。</p>
+<h4>Beeper 逆流而行的背景</h4>
+<p>對於長期關注 Linux 效能工作的人來說，最耐人尋味的一點是：Beeper 的方向與當前主流背道而馳。過去近十年間，效能社群一直追逐 kernel <em>bypass</em>：io_uring、DPDK 及類似機制的目標都是盡量讓工作遠離 kernel，理由是 context switch 及 syscall 開銷佔主導地位。Beeper 則顛倒了這項假設。由於 eBPF 程式必須先通過 kernel verifier 的檢查才獲准執行，在 hot path 中執行的程式碼帶有可證明的安全保證——這意味著將解析工作留在 kernel 內，未必會帶來歷來令開發者轉向用戶空間的崩潰或損毀風險。</p>
+<p>其結果是一個以 eBPF 運行、由 kernel 內 cache 支撐的 HTTP parser，在處理往來的每個位元組時，無須在 kernel 與用戶空間之間來回切換。</p>
+<h4>對 DevOps 及 SRE 團隊為何重要</h4>
+<p>對於運行高連接數 web 及 API 基礎設施的團隊，這些數字固然搶眼，但其定位比倍數更值得關注。Beeper 是大學研究，並非可投入生產環境的軟件。與其把它視為負載平衡器的即插即用模組，不如將它理解為一項實際示範，說明 eBPF 的可編程能力如今已延伸多遠——超越網絡及 observability，進入應用層協議處理的範疇。</p>
+<h4>投入生產環境的注意事項</h4>
+<p>在依據該基準測試作規劃之前，有數項未有定論的問題值得注意：</p>
+<ul>
+<li><strong>基準測試條件由項目自行提供。</strong> 3 至 4.5 倍的數據來自項目自身的研究結果，由 Phoronix 轉述。硬件、請求組合、cache 命中率及連接模式均會影響此類結果，而此處尚未有獨立複現。</li>
+<li><strong>TLS 範圍未明。</strong> 現有來源材料並未說明原始基準測試是否涵蓋 TLS termination。若 HTTPS handshake 及解密工作被排除在外，實際部署的得益很可能更為有限——這一點仍是懸而未決的問題，而非定論。</li>
+<li><strong>eBPF verifier 限制了設計空間。</strong> verifier 的保證正是令 kernel 內解析變得可行的依據，但同時也限制了 parser 能做的事：程式複雜度、loop 上限及 helper function 的可用性，均製約著如何以 eBPF 表達完整的 HTTP 實作。</li>
+<li><strong>研究項目不會附帶 SLA。</strong> 維護更新節奏、安全回應及跨 kernel 版本的相容性追蹤，都是大學出身的項目若沒有具生產思維的維護者背後支持，往往難以長期維持的現實問題。</li>
+</ul>
+<p>對系統維運團隊而言，另有一項值得留意的實際轉變：隨著解析邏輯在 kernel 內運行，除錯工作亦隨之轉移。傳統的用戶空間 tracing 及 strace 式檢查已無法覆蓋 hot path——疑難排解工作轉向 kernel 端工具，包括支援 BPF 的 observability 工具鏈。</p>
+<p>隨著項目發展，Beeper 的 repository 及研究論文是值得持續留意的地方。目前而言，最好將它視為圍繞 kernel 邊界應如何劃定這場較長辯論中的一個數據點——同時提醒我們，eBPF 的雄心早已超越 packet filtering，持續擴展。</p>
+<p><em>來源：<a href="https://www.phoronix.com/news/Beeper-In-Kernel-Parsing-eBPF">Phoronix</a></em></p>
+<p><a href="https://www.phoronix.com/news/Beeper-In-Kernel-Parsing-eBPF" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
