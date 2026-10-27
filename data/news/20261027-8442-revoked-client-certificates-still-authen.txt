@@ -1,0 +1,38 @@
+Date: 2026-10-27
+Author: HKLUG Team
+Title: Revoked Client Certificates Still Authenticate on GoAhead mTLS Setups Where Revocation Lists Are Never Checked
+Content:
+<p>An operator who revokes a device certificate expects the door to close. On affected builds of the GoAhead embedded web server, it stays open: the server loads a configured certificate revocation list (CRL) into its TLS stack but never enables revocation checking during the handshake, so a credential that was deliberately withdrawn can still complete a mutual-TLS login as though nothing happened. The Hacker News reported the issue on 27 October 2026, alongside a second weakness in GoAhead's TLS handling that the publication says could be used to decrypt session traffic.</p>
+<h4>Configured, loaded, ignored</h4>
+<p>The defect affects builds compiled against the OpenSSL TLS backend. When an administrator supplies a revocation list — the standard mechanism for stripping trust from a compromised, resold, or decommissioned device — GoAhead reads it into memory and then leaves the flag that would enforce it during the handshake permanently off. The list is present, valid, and inert.</p>
+<p>Because the handshake never consults the list, nothing in the authentication flow signals that revocation was bypassed. On deployments running mutual TLS, where both sides validate each other's certificate, a certificate sitting on the operator's revocation list completes authentication normally. Revoking it does not terminate access for whoever still holds it.</p>
+<p>Exposure requires three conditions at once: the OpenSSL backend, mutual-TLS authentication, and a configured revocation list. That combination is exactly what an organisation provisions when it wants per-device identity across embedded equipment — which makes the qualifier as important as the bug itself. Any GoAhead deployment not using mTLS or not configuring a CRL sits outside the blast radius.</p>
+<h4>Why embedded fleets feel this first</h4>
+<p>GoAhead is widely embedded in routers, industrial controllers, IP cameras, and a long tail of constrained appliances from many vendors. Each integrator must independently determine whether its build is affected, whether mTLS was enabled, and whether an upstream fix can actually reach devices already in the field. Embedded products typically receive security updates only through manufacturer firmware releases, so the patch has to survive a supply chain before it protects anything. The issue is broadly relevant to IT teams in Hong Kong operating embedded or IoT device fleets, where revocation is often relied on as the primary offboarding control.</p>
+<h4>What operators should check</h4>
+<ol>
+<li>Identify your TLS backend (OpenSSL vs. alternatives) in the build or bill of materials, and confirm whether mutual TLS and a CRL are both configured.</li>
+<li>Authenticate against the deployment using a deliberately revoked certificate. If it succeeds, revocation is inert on that build.</li>
+<li>Until a vendor-patched firmware is installed, treat CRL enforcement as non-existent: rotate key material, reissue certificates, tighten network-level access as compensating controls, and track the upstream fix into each product's firmware channel.</li>
+</ol>
+<h4>A second reported flaw, still short on detail</h4>
+<p>The source reporting also describes a separate TLS issue in GoAhead that could expose encrypted session traffic to decryption. The available summary does not specify the conditions under which decryption applies, nor whether it shares a root cause with the revocation gap; operators should review the original advisory directly for that detail.</p>
+<p>This account does not include CVE identifiers or version ranges; consult vendor advisories and the upstream project for version-level determinations.</p>
+<hr>
+<p>營運商吊銷一張設備證書，理應即時「關門」。但在受影響的 GoAhead 嵌入式 web server 版本中，這道門依然敞開：伺服器雖會將已設定的 certificate revocation list（CRL）載入其 TLS stack，卻從未在 handshake 期間啟用吊銷檢查，以致一份已被刻意撤回的憑證，仍然可以如常完成 mutual TLS（mTLS）登入，彷彿甚麼事都未發生。The Hacker News 於 2026 年 10 月 27 日報道了此問題，並同時提及 GoAhead TLS 處理上的另一項弱點，據該報道指可用於解密 session 流量。</p>
+<h4>有設定、有載入、被忽略</h4>
+<p>此缺陷影響以 OpenSSL TLS backend 編譯的版本。當管理員提供 revocation list——這是撤除已被入侵、轉售或退役設備信任的標準機制——GoAhead 會將其讀入記憶體，但負責在 handshake 期間強制執行的 flag 卻永久處於關閉狀態。名單存在、有效，卻形同虛設。</p>
+<p>由於 handshake 從不查閱該名單，整個驗證流程中不會有任何訊號顯示吊銷被繞過。在雙方互相驗證對方證書的 mutual TLS 部署中，一張列入營運商 revocation list 的證書，依然可以正常完成驗證。吊銷它並不能終止仍持有該證書者的存取權限。</p>
+<p>漏洞被觸發需要同時具備三個條件：OpenSSL backend、mutual TLS 驗證，以及已設定 revocation list。這正是企業在嵌入式設備上實施 per-device identity 時的標準組合——因此這項前提條件與漏洞本身同等重要。任何未使用 mTLS 或未設定 CRL 的 GoAhead 部署，均不在影響範圍之內。</p>
+<h4>為何嵌入式 fleet 首當其衝</h4>
+<p>GoAhead 廣泛內置於路由器、工業控制器、IP 攝影機，以及眾多廠商旗下大量受限型裝置之中。每家整合商必須自行判斷其版本是否受影響、是否啟用了 mTLS，以及上游修補能否真正送達已在現場運作的設備。嵌入式產品通常只能透過製造商 firmware 發布接收安全更新，因此修補程式必須先走完整條供應鏈，才能真正發揮保護作用。此問題對香港營運嵌入式或 IoT device fleet 的 IT 團隊尤為相關——在這些環境中，吊銷往往被視為主要的退役（offboarding）管控手段。</p>
+<h4>營運商應檢查的事項</h4>
+<ol>
+<li>在 build 或 bill of materials 中確認所用的 TLS backend（OpenSSL 或其他替代方案），並核實 mutual TLS 與 CRL 是否同時已設定。</li>
+<li>使用一張已刻意吊銷的證書向該部署進行驗證。若驗證成功，即表示該版本的吊銷機制形同虛設。</li>
+<li>在安裝廠商修補的 firmware 之前，應視 CRL 強制執行機制為不存在：輪換 key material、重新簽發證書、收緊網絡層存取作為 compensating controls，並持續追蹤上游修補進入各產品的 firmware channel。</li>
+</ol>
+<h4>另一項已報道的漏洞，細節仍然不足</h4>
+<p>報道來源同時描述了 GoAhead 的另一項 TLS 問題，可能令加密 session 流量被解密。現有摘要並未說明解密在何種條件下適用，亦未交代其是否與吊銷漏洞共用同一根本原因；營運商應直接查閱原始 advisory 以獲取有關細節。</p>
+<p>本文未包含 CVE 編號或版本範圍；版本層面的判定請參閱廠商 advisory 及上游項目。</p>
+<p><a href="https://thehackernews.com/2026/10/goahead-tls-flaws-allow-revoked-client.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
