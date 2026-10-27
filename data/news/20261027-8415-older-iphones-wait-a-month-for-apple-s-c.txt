@@ -1,0 +1,41 @@
+Date: 2026-10-27 11:41:00
+Author: HKLUG Team
+Title: Older iPhones wait a month for Apple's CoreGraphics zero-day fix
+Content:
+<p>```</p>
+<p>Apple has backported the CoreGraphics zero-day patches it released last month to older iPhone and iPad models, closing a gap that left those devices without a fix for a flaw already used in the wild, according to BleepingComputer.</p>
+<p>The original patch addressed a zero-day vulnerability that Apple said had been exploited in "extremely sophisticated" targeted attacks against iOS devices. The wording is notable: Apple did not name a threat actor or describe the campaign's scope, and BleepingComputer likewise attributes no specific group to the activity. What is clear is that the exploit was real, and that devices on the older branch of iOS and iPadOS waited roughly a month for their version of the fix.</p>
+<p>For organisations still running older hardware, the story is less about the vulnerability itself — which was covered when the original update shipped — and more about how backports behave in fleet management tooling.</p>
+<h5>What this means for IT teams</h5>
+<p>Backport releases are security-only builds. They carry the fixes from a newer release but not the feature changes, which means they frequently do not show up in the same update feeds that MDM consoles and Apple Business Manager use to surface "available updates." An admin scanning for the latest iOS or iPadOS feature release can easily miss them.</p>
+<p>A practical verification pass for fleets with older devices:</p>
+<ol>
+<li><strong>Inventory by build, not by marketing version.</strong> Pull the installed build number for every enrolled iPhone and iPad and compare it against the builds Apple lists in its security release notes for this backport. Version strings alone can mask a missing patch.</li>
+<li><strong>Identify which models are still eligible.</strong> The backport applies to older devices that remain on Apple's security-support track. Models that have fallen off that track will not receive the fix at all — those belong on a retirement list, not a patch list.</li>
+<li><strong>Check your update channel configuration.</strong> Confirm that the MDM policy governing supervised devices permits security updates independently of major OS upgrades, so the backport can install without waiting for a scheduled feature rollout.</li>
+<li><strong>Plan unsupported-device retirement.</strong> Any handset or tablet that cannot receive this fix should be flagged for replacement or restricted access, since it will not be remediated by a future backport either.</li>
+<li><strong>Re-verify after deployment.</strong> Confirm build numbers again post-install; staged rollouts and deferred-update policies can leave a tail of unpatched endpoints.</li>
+</ol>
+<h5>Why backports are easy to miss</h5>
+<p>This episode is a useful reminder of a recurring platform-maintenance pattern familiar to anyone who follows long-lived maintained branches in open-source projects: security fixes get cherry-picked onto older release lines, but those branches never generate the release announcements or changelog fanfare that drive monitoring alerts. The same is true in mobile fleets. A device can be "up to date" according to a feature-update dashboard and still be missing a zero-day patch.</p>
+<p>For Hong Kong IT teams managing mixed-generation iPhone and iPad estates, the actionable point is straightforward: treat backport releases as a distinct patch category in your verification process, and audit older devices against Apple's security release notes directly rather than relying on update feeds to flag them.</p>
+<p>BleepingComputer reported the backport on 27 October; the original zero-day patch had shipped the previous month.</p>
+<hr>
+<p>據 BleepingComputer 報道，Apple 已將上月發布的 CoreGraphics 零時差漏洞修補回移（backport）至較舊的 iPhone 及 iPad 型號，填補了這段空窗期——期間有關裝置一直未能修補一項已在野外被利用的漏洞。</p>
+<p>原版修補針對一項零時差漏洞，Apple 當時表示該漏洞已在針對 iOS 裝置的「極其精密」定向攻擊中被利用。措辭值得注意：Apple 並未點名任何威脅行為者，亦未描述攻擊行動的範圍，BleepingComputer 同樣沒有將該活動歸因於任何特定組織。可以確定的是，相關 exploit 確實存在，而運行較舊分支 iOS 及 iPadOS 的裝置，則足足等候了約一個月才獲得對應版本的修補。</p>
+<p>對於仍然使用舊硬件的機構而言，這個事件的重點較少在於漏洞本身——原始更新推出時已有報道——而在於 backport 如何影響 fleet 管理工具的運作。</p>
+<h5>對 IT 團隊的意義</h5>
+<p>Backport 版本屬保安專用構建版本。它們包含較新版本的修補，但不包括功能改動，這意味著它們往往不會出現在 MDM console 及 Apple Business Manager 用來顯示「可用更新」的同一更新 feed 中。管理員若只掃描最新的 iOS 或 iPadOS 功能版本，很容易漏掉這些修補。</p>
+<p>針對擁有舊裝置的 fleet，一套實用的核實流程如下：</p>
+<ol>
+<li><strong>按 build number 盤點，而非按營銷版本。</strong> 取出每部已註冊 iPhone 及 iPad 的已安裝 build number，並與 Apple 在是次 backport 的保安 release notes 中列出的 build 作比對。僅憑版本字串可能會掩蓋遺漏的修補。</li>
+<li><strong>確認哪些型號仍然符合資格。</strong> Backport 適用於仍在 Apple 保安支援路線上的舊裝置。已脫離該路線的型號完全不會收到修補——它們應列入淘汰清單，而非修補清單。</li>
+<li><strong>檢查更新渠道配置。</strong> 確認管理受監督裝置的 MDM 政策允許保安更新獨立於主要 OS 升級運行，使 backport 無需等待既定的功能版本推出即可安裝。</li>
+<li><strong>規劃不受支援裝置的淘汰安排。</strong> 任何無法接收是次修補的手機或平板都應標記為更換或限制存取對象，因為日後的 backport 同樣不會為其提供補救。</li>
+<li><strong>部署後重新核實。</strong> 安裝後再次確認 build number；分階段推出及延遲更新政策可能會留下一批未修補的端點。</li>
+</ol>
+<h5>為何 backport 容易被忽略</h5>
+<p>是次事件提醒了一種反覆出現的平台維護模式，任何關注開源項目長壽命維護分支的人都不會陌生：保安修補會被 cherry-pick 到較舊的 release 分支上，但這些分支從來不會產生 release 公告或 changelog 宣傳，而正是這些公告帶動監控警報。流動裝置 fleet 也是如此。一部裝置可能在功能更新 dashboard 上顯示「已是最新版本」，實際上卻仍缺少零時差修補。</p>
+<p>對於管理跨代 iPhone 及 iPad 設備組合的香港 IT 團隊，可採取的行動十分直接：將 backport 版本視為核實流程中一個獨立的修補類別，並直接根據 Apple 的保安 release notes 審核舊裝置，而非依賴更新 feed 來標示它們。</p>
+<p>BleepingComputer 於 10 月 27 日報道是次 backport；原始零時差修補則於前一個月發布。</p>
+<p><a href="https://www.bleepingcomputer.com/news/apple/apple-backports-coregraphics-zero-day-patches-to-older-iphones/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
