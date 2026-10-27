@@ -1,0 +1,48 @@
+Date: 2026-10-27 11:23:00
+Author: HKLUG Team
+Title: CISA Flags Two Critical PHP PHP2Shell Bugs Under Active Attack
+Content:
+<h3>CISA Flags Two Critical PHP PHP2Shell Bugs Under Active Attack</h3>
+<p>The U.S. Cybersecurity and Infrastructure Security Agency (CISA) has added two critical PHP vulnerabilities, dubbed PHP2Shell, to its Known Exploited Vulnerabilities (KEV) catalog, confirming that attackers are actively exploiting them in the wild. As reported by Security Affairs, the listing follows PHP's release of emergency out-of-band patches on 21 October covering CVE-2026-109618 and CVE-2026-109619, both rated 9.2 on the CVSS scale.</p>
+<p>The KEV listing is what elevates this story beyond a routine vendor advisory. A patch release alone tells administrators a bug is serious; inclusion in the KEV catalog tells them attackers are already using it. For operators running PHP-backed infrastructure — which underpins a large share of web deployments worldwide, including here in Hong Kong — that distinction removes most of the justification for a wait-and-see posture.</p>
+<h4>Why the out-of-band release matters</h4>
+<p>PHP maintainers bypassed the normal release schedule to ship these fixes — itself a severity signal. Administrators who track only routine update channels, distribution-package mirrors, or managed-hosting auto-updates may not have received the fix automatically. Manual verification is required.</p>
+<p>The practical first step is straightforward: run <code>php -v</code> on every host and compare the reported version against the patched ranges published in PHP's 21 October release notes. Exact affected and fixed version numbers should be pulled directly from that advisory rather than from secondary reporting, since out-of-band fixes do not always propagate through standard package repositories on the usual cadence.</p>
+<p>CISA's remediation deadlines for KEV-listed vulnerabilities are likewise best read from the catalog entry itself. Under CISA's binding operational directives, federal agencies typically face a roughly two-week window for flaws of this class — but the specific due dates attached to each CVE should be confirmed at the source. Even for operators outside U.S. federal scope, that date has historically served as a benchmark cited in later incident reviews and insurance assessments.</p>
+<h4>What administrators should do now</h4>
+<p>For teams responsible for PHP infrastructure, the working checklist is:</p>
+<ol>
+<li><strong>Inventory everything.</strong> Production servers, staging environments, containers and VM images, and — often overlooked — bundled or packaged PHP shipped inside appliances, control panels, and third-party dependencies.</li>
+<li><strong>Verify running versions</strong> with <code>php -v</code> against PHP's 21 October advisory, including hosts where updates are expected to arrive automatically.</li>
+<li><strong>Patch internet-facing systems first</strong>, since KEV status implies the flaws are reachable and being exercised by real adversaries.</li>
+<li><strong>Where patching cannot happen immediately</strong>, restrict exposure — limit inbound access to affected services and raise monitoring on the affected components. This is a stopgap, not a substitute for the vendor fix, and should have a scheduled remediation date attached.</li>
+<li><strong>Review access logs retrospectively</strong> for indicators of exploitation in environments where compromise is suspected.</li>
+</ol>
+<h4>Interpreter bugs are infrastructure bugs</h4>
+<p>The reason PHP criticals warrant this level of attention is blast radius. A defect in an application affects that application; a defect in the interpreter affects every application running on it — content management systems, bespoke internal tools, control panels, and frameworks simultaneously. Treating PHP updates as application-level maintenance underestimates the exposure.</p>
+<p>There is also a recurring pattern in which critical PHP vulnerabilities surface in exploitation before fixes land. Administrators who assume a published patch exists the moment a CVE is announced may find themselves exposed during the gap.</p>
+<p>The broader lesson for patch-prioritisation workflows is a durable one: the CISA KEV catalog is best treated as a routine input, not an occasional reference. When a vendor advisory and a confirmed-exploitation listing arrive in the same week, the catalog entry should be the factor that decides what gets patched tonight rather than next sprint.</p>
+<p>Readers should consult CISA's KEV catalog and PHP's official release notes for authoritative version ranges and due dates before acting.</p>
+<hr>
+<h3>CISA 標記兩個 PHP PHP2Shell 嚴重漏洞正遭積極利用</h3>
+<p>美國網絡安全及基礎設施安全局（CISA）已將兩個代號為 PHP2Shell 的嚴重 PHP 漏洞列入其「已知被利用漏洞」（Known Exploited Vulnerabilities，KEV）目錄，確認攻擊者正於實際攻擊環境中積極利用這些漏洞。據 Security Affairs 報道，此舉緊接 PHP 於 10 月 21 日發布涵蓋 CVE-2026-109618 及 CVE-2026-109619 的緊急非常規（out-of-band）修補，兩者在 CVSS 評分均為 9.2 分。</p>
+<p>KEV 目錄的收錄正是令此事超出一般廠商通告層次的關鍵。單純發布修補只告訴管理員漏洞嚴重；列入 KEV 目錄則告訴他們攻擊者已經在使用它。對於營運 PHP 支援基礎設施的人員——PHP 支撐著全球大量網站部署，香港亦不例外——這項區別已足以否定絕大部分「觀望」立場的理由。</p>
+<h4>為何非常規發布如此重要</h4>
+<p>PHP 維護人員繞過正常發布時間表來推出這些修補——這本身已是嚴重程度的訊號。只追蹤例行更新渠道、Linux 發行版本套件鏡像或託管主機自動更新的管理員，未必會自動收到修補。必須進行手動驗證。</p>
+<p>實際上第一步相當直接：在每部主機執行 <code>php -v</code>，並比對所回報版本與 PHP 10 月 21 日發布說明中列出的已修補版本範圍。確切受影響及已修補版本號應直接取自該通告本身，而非二手報道，因為非常規修補未必會按常規節奏透過標準 package repository（套件庫）傳播。</p>
+<p>CISA 對 KEV 收錄漏洞的修復期限同樣最好直接查閱目錄條目本身。根據 CISA 具約束力的運作指示，聯邦機構通常須在約兩星期內處理此類漏洞——但各個 CVE 所附的具體截止日期應向來源核實。即使對美國聯邦範圍以外的營運者而言，該日期歷來亦一直作為日後事故檢討及保險評估所引用的基準。</p>
+<h4>管理員現階段應採取的措施</h4>
+<p>負責 PHP 基礎設施的團隊，現行清單如下：</p>
+<ol>
+<li><strong>全面盤點。</strong> 生產伺服器、預備（staging）環境、container 及 VM 映像，以及——往往被忽略的——裝置、控制面板及第三方依賴內置或打包的 PHP。</li>
+<li><strong>以 <code>php -v</code> 核實執行版本</strong>，對照 PHP 10 月 21 日通告，包括那些預期會自動收到更新的主機。</li>
+<li><strong>優先修補面向互聯網的系統</strong>，因為 KEV 狀態意味漏洞可被外部觸達，且已遭真實攻擊者實際利用。</li>
+<li><strong>如無法立即修補</strong>，則限制暴露範圍——收窄受影響服務的入站存取，並加強對受影響元件的監控。這是權宜之計，不能取代廠商修補，且須訂明預定修復日期。</li>
+<li><strong>追溯審查存取記錄</strong>，在懷疑已被入侵的環境中尋找利用跡象。</li>
+</ol>
+<h4>直譯器漏洞即基礎設施漏洞</h4>
+<p>PHP 嚴重漏洞值得如此重視的原因在於影響範圍（blast radius）。應用程式的缺陷只影響該應用程式；直譯器（interpreter）的缺陷則影響所有在其上運行的應用程式——內容管理系統、專屬內部工具、控制面板及框架同時受影響。把 PHP 更新視為應用程式層面的維護，會低估實際暴露程度。</p>
+<p>另有一個反覆出現的模式：嚴重 PHP 漏洞往往在修補推出前已遭利用。管理員若假設 CVE 一經公佈即已有已發布的修補，可能在這段空窗期內暴露於風險之中。</p>
+<p>對修補優先排序工作流程而言，更廣泛的教訓是長遠有效的：CISA KEV 目錄應視為例行輸入，而非偶爾參考。當廠商通告與確認已遭利用的列表在同一星期出現時，目錄條目應成為決定今晚還是下個 sprint 才修補的因素。</p>
+<p>讀者在採取行動前，應查閱 CISA 的 KEV 目錄及 PHP 官方發布說明，以獲取權威的版本範圍及期限。</p>
+<p><a href="https://securityaffairs.com/201840/security/u-s-cisa-adds-php-flaws-php2shell-to-its-known-exploited-vulnerabilities-catalog.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
