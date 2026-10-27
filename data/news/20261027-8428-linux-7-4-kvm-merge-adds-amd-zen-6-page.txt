@@ -1,0 +1,38 @@
+Date: 2026-10-27 13:23:00
+Author: HKLUG Team
+Title: Linux 7.4 KVM Merge Adds AMD Zen 6 Page Modification Logging Support
+Content:
+<p>```</p>
+<p>The Kernel-based Virtual Machine (KVM) subsystem's pull request has landed in the Linux 7.4 merge window, bringing virtualisation work that spans several server processor architectures rather than a single vendor. The headline item is support for Page Modification Logging (PML) on AMD's forthcoming Zen 6 EPYC platform — a mechanism that has, since it was introduced on Intel parts, been effectively an Intel-only capability in the kernel's virtualisation stack.</p>
+<p>The pull request also carries arm64 and s390 changes, extending the incremental mainframe and ARM server virtualisation effort that has recurred across recent kernel cycles. Phoronix's coverage summarises this as "ARM64 On s390," a phrasing whose precise scope is best confirmed from the underlying pull request rather than the summary.</p>
+<h4>Why PML matters to hypervisor operators</h4>
+<p>Page Modification Logging is a hardware-assisted mechanism for recording which guest memory pages have been written to during a given window. Hypervisors without it must fall back on software techniques: write-protecting guest pages and taking a fault on every write, or periodically scanning guest memory to work out which pages are dirty.</p>
+<p>Both carry costs. Fault-driven tracking adds host CPU overhead that scales with guest write intensity, while scanning introduces latency spikes of its own. For live migration, the more consequential problem is that imperfect or stale dirty-page tracking forces more memory to be re-sent in the final pre-cutover pass — which stretches the switchover window and lengthens the pause the guest experiences at cutover.</p>
+<p>With PML, the processor writes modified page addresses into a log the host can read directly. The practical effects are a shorter final switchover, less re-transmitted memory, smaller guest pauses, and less interference with guest workloads while tracking is running. On dense virtualisation hosts where migration is a routine maintenance tool rather than an occasional event, those margins compound.</p>
+<h4>The sequencing is the story</h4>
+<p>Two timing points stand out for infrastructure teams.</p>
+<p>First, PML's appearance in AMD's enablement suggests kernel support is arriving ahead of production silicon. That lead time is useful: QEMU, libvirt, orchestration layers and migration tooling all need to mature against the feature before the first Zen 6 systems enter service, and a merge window gives that work a defined starting point rather than a scramble at hardware launch.</p>
+<p>Second, the merge window is not a deployment date. Changes accepted during it still have to be released, then rebased by distribution vendors into their downstream kernels, and paired with shipping hardware and updated userspace. Teams planning capacity refreshes or validating live-migration workflows should track distribution rebase schedules rather than upstream merge dates.</p>
+<p>That sequencing cuts both ways. Operators running AMD EPYC fleets today have a window to build PML-aware migration workflows into their tooling before Zen 6 hardware lands, rather than racing to catch up after deployment — including teams maintaining CI matrices and capacity models across CPU generations.</p>
+<h4>Breadth across architectures</h4>
+<p>The arm64 and s390 portions of the request are secondary to the Zen 6 headline but relevant to mixed-architecture estates. Mainframe and ARM server virtualisation in KVM has advanced cycle by cycle rather than in leaps, and each window adds incremental capability for guests running on those platforms.</p>
+<p>For operators running heterogeneous fleets and planning refresh cycles years in advance, the signal is straightforward: the virtualisation stack is being prepared for a new AMD generation, and the live-migration toolchain will need validation against it. The window for preparation opens now; the deadline to work against is the distribution rebase that follows, not the merge itself.</p>
+<p>Phoronix's report on the Linux 7.4 KVM pull request, published during the merge window, is available at <a href="https://www.phoronix.com/news/Linux-7.4-KVM">https://www.phoronix.com/news/Linux-7.4-KVM</a>.</p>
+<hr>
+<p>```</p>
+<p>基於核心的虛擬機器（Kernel-based Virtual Machine，KVM）子系統的 pull request 已進入 Linux 7.4 合併視窗（merge window），帶來涵蓋多個伺服器處理器架構、而非局限於單一供應商的 virtualisation 工作。焦點項目是 AMD 即將推出的 Zen 6 EPYC 平台對 Page Modification Logging（PML）的支援——自該機制在 Intel 部件上推出以來，在核心的 virtualisation 技術堆疊中一直 effectively 是 Intel 獨有的功能。</p>
+<p>該 pull request 亦包含 arm64 及 s390 的變更，延續近數個核心開發週期以來持續進行的大機型主機及 ARM 伺服器 virtualisation 遞增工作。Phoronix 的報道將此概括為「ARM64 On s390」，惟其確切涵蓋範圍，與其依據摘要理解，不如直接查閱相關 pull request 更為穩妥。</p>
+<h4>為何 PML 對 hypervisor 營運者重要</h4>
+<p>Page Modification Logging 是一種硬件輔助機制，用於記錄在特定時間窗內哪些 guest 記憶體頁曾被寫入。沒有此功能的 hypervisor 只能採用軟件方法：將 guest 頁面設為 write-protect，令每次寫入都觸發 fault；或者定期掃描 guest 記憶體以判定哪些頁面屬 dirty。</p>
+<p>兩者均有代價。以 fault 驅動的追蹤會增加主機 CPU 開銷，而且隨 guest 寫入強度而上升；掃描則會引入自身的延遲尖峰。對 live migration 而言，影響更大的問題是：不完整或過時的 dirty page 追蹤，會迫使在最後一次切換前的傳輸中重新發送更多記憶體——這會拉長切換時間窗，亦延長 guest 在切換時所經歷的暫停。</p>
+<p>有了 PML，處理器會將已修改頁面的地址寫入一份主機可直接讀取的 log。實際效果包括：最終切換更短、重新傳輸的記憶體更少、guest 暫停更短，以及在追蹤運行期間對 guest 工作負載的干擾更小。在 virtualisation 主機密度高、migration 屬日常維護工具而非偶發事件的環境下，這些效益會層層累積。</p>
+<h4>時序安排才是關鍵</h4>
+<p>對基建團隊而言，有兩個時間節點值得留意。</p>
+<p>首先，PML 在 AMD enablement 工作中的出現，顯示核心支援將先於量產硅（silicon）到位。這段前置時間相當有用：QEMU、libvirt、orchestration 層及 migration 工具鏈都需要在首批 Zen 6 系統投入服務前，針對該功能發展成熟，而合併視窗為這項工作提供了一個明確的起點，而非在硬件發布時才臨時趕工。</p>
+<p>其次，合併視窗並非部署日期。在視窗內獲接納的變更仍需正式發布，其後再由發行版供應商 rebase 至其下游核心，並與出貨硬件及更新後的 userspace 配合。計劃 capacity refresh 或驗證 live-migration 工作流程的團隊，應跟蹤各發行版的 rebase 時間表，而非上游的合併日期。</p>
+<p>這種時序安排有兩面。今日運行 AMD EPYC 機群的營運者，可在 Zen 6 硬件到位前，將 PML-aware 的 migration 工作流程納入工具鏈，而不必在部署後才急起直追——當中包括維護橫跨不同 CPU 代次的 CI matrix 及 capacity model 的團隊。</p>
+<h4>跨架構的覆蓋廣度</h4>
+<p>request 中的 arm64 及 s390 部分固然不及 Zen 6 的頭條重要，但對混合架構 estate 仍有關聯。KVM 的大機型主機及 ARM 伺服器 virtualisation 一直是以逐個週期遞增的方式推進，而非一躍而就；每個合併視窗都為在這些平台上運行的 guest 帶來新的 incrementally 能力。</p>
+<p>對於運行 heterogeneous 機群、並以年為單位規劃 refresh 周期的營運者而言，訊號十分清晰：virtualisation 技術堆疊正為新一代 AMD 平台作準備，而 live-migration 工具鏈亦需針對其進行驗證。準備的窗口現在已經開啟；需要應對的 deadline 是隨後的發行版 rebase，而非合併本身。</p>
+<p>Phoronix 在合併視窗期間 published 的 Linux 7.4 KVM pull request 報道，可於 <a href="https://www.phoronix.com/news/Linux-7.4-KVM">https://www.phoronix.com/news/Linux-7.4-KVM</a> 瀏覽。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.4-KVM" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
