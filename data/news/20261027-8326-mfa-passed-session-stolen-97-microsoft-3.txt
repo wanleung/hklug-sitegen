@@ -1,0 +1,42 @@
+Date: 2026-10-27 14:20:00
+Author: HKLUG Team
+Title: MFA Passed, Session Stolen: 97 Microsoft 365 Accounts Lost to Token Replay at 79 Firms
+Content:
+<p>A Microsoft 365 campaign that used an adversary-in-the-middle (AitM) relay to capture live sign-in sessions has compromised 97 accounts across 79 organisations, according to Huntress research reported on 27 October by The Hacker News.</p>
+<p>Huntress tracked the activity between 14 July and 22 September 2026 and logged 497 successful Microsoft 365 sign-in events tied to the campaign. The volume points to a broad, opportunistic sweep rather than a surgical strike: repeated returns to the same harvested sessions, used for mailbox reconnaissance and credential harvesting, across dozens of tenants over roughly ten weeks.</p>
+<h4>How the relay beats MFA</h4>
+<p>The mechanics are why this matters to anyone running M365. In an AitM attack, the phishing proxy sits between the victim and the real identity provider. The user completes a genuine login — password plus MFA challenge — and the identity provider, satisfied that every factor checked out, issues a session token. The relay forwards the authentication and keeps the token.</p>
+<p>That token is a bearer credential: whoever holds it holds the session. In general, such tokens can grant access to mailboxes and, depending on scope, other services. The token carries the trust earned by the legitimate MFA-satisfied login, but it is not bound to the device, browser, or person who originally satisfied the challenge. An attacker replaying it elsewhere inherits access without touching a password or second factor again.</p>
+<p>The practical consequence: MFA protects the act of authentication, not the session that authentication produces. Signing in once, safely, does not make the resulting token safe to hold — and a control that only runs at sign-in will not fire again when that token is replayed from a different machine days later.</p>
+<h4>What IT admins can do</h4>
+<p>For administrators running Microsoft 365 in Hong Kong, the incident points to a specific set of hardening steps rather than a generic "enable MFA" message:</p>
+<ul>
+<li><strong>Revoke sessions, not just passwords.</strong> Suspected token theft requires a full sign-out of refresh tokens across the tenant; password resets alone leave the stolen session valid.</li>
+<li><strong>Enable Continuous Access Evaluation (CAE).</strong> CAE lets Entra ID re-check conditions during a session and cut access within minutes when risk signals change, instead of waiting for token expiry.</li>
+<li><strong>Require compliant devices in Conditional Access.</strong> Binding sign-in to managed, health-checked devices narrows where a replayed token can be used.</li>
+<li><strong>Move toward FIDO2 / passwordless.</strong> Device-bound passkeys are not replayable in the same way as session cookies.</li>
+<li><strong>Audit sign-in logs</strong> for unfamiliar IP addresses, legacy authentication patterns, and tokens redeemed outside expected device contexts.</li>
+</ul>
+<h4>An intrusion that leaves little trace</h4>
+<p>The campaign generated very little detectable signal: valid tokens, valid sessions, legitimate-looking sign-ins. Detection has to come from context — device posture, geography, IP reputation, session lifetime, refresh-token redemption point — rather than from the authentication event itself.</p>
+<p>The finding should also deflate one common comfort: organisations that treat MFA as a completed phishing defence are relying on a control that, by design, finishes before the attacker ever uses the token. The 79 affected tenants illustrate that those relying on MFA alone, without phishing-resistant or session-bound controls, are exactly the targets this technique seeks.</p>
+<hr>
+<p>據Huntress研究顯示，一場利用adversary-in-the-middle（AitM）中繼擷取即時登入階段的Microsoft 365攻擊行動，已入侵79間機構共97個帳號，相關報告於10月27日由The Hacker News報道。</p>
+<p>Huntress於2026年7月14日至9月22日期間追蹤此活動，記錄到與該行動相關的497次成功Microsoft 365登入事件。此規模顯示行動屬廣泛的機會式掃描，而非精準打擊：在約十週內，攻擊者反覆返回已擷取的階段，用於mailbox偵察及credentials蒐集，橫跨數十個tenant。</p>
+<h4>中繼如何繞過MFA</h4>
+<p>這一運作機制對所有M365用戶皆具參考價值。在AitM攻擊中，phishing proxy位於受害者與真正identity provider之間。用戶完成真實登入——password加上MFA challenge——identity provider確認所有驗證因素均通過後，發出session token。中繼將authentication轉發並保留該token。</p>
+<p>該token屬於bearer credential：誰持有它，誰就擁有該階段。一般而言，此類token可授予mailbox存取權，視乎scope亦可存取其他服務。token承載了通過合法MFA登入所取得的信任，但並未與最初通過challenge的裝置、瀏覽器或個人綁定。攻擊者在別處重放該token，無需再次輸入密碼或第二重驗證因素即可繼承存取權。</p>
+<p>實際後果是：MFA保護的是authentication這個動作，而非authentication所產生的階段。安全地登入一次，並不代表隨後產生的token便適合持有——一個只在sign-in時執行的防護措施，數日後當該token從另一部電腦被重放時，不會再次觸發。</p>
+<h4>IT管理員可採取的措施</h4>
+<p>對於在香港營運Microsoft 365的管理員而言，此事件指向一組具體的加固措施，而非泛泛的「啟用MFA」口號：</p>
+<ul>
+<li><strong>撤銷階段，而不僅是密碼。</strong> 疑似token被竊，需要在整個tenant範圍全面登出refresh tokens；單純重設密碼並不能使被竊的session失效。</li>
+<li><strong>啟用Continuous Access Evaluation（CAE）。</strong> CAE容許Entra ID在階段期間重新檢查條件，當風險信號改變時於數分鐘內中斷存取，而非等待token過期。</li>
+<li><strong>在Conditional Access中要求合規裝置。</strong> 將sign-in綁定至受管理、經健康檢查的裝置，可收窄重放token可用的範圍。</li>
+<li><strong>轉向FIDO2／無密碼驗證。</strong> 與裝置綁定的passkeys無法以session cookies的方式被重放。</li>
+<li><strong>審核sign-in logs</strong>，留意不熟悉的IP地址、legacy authentication模式，以及在預期裝置環境以外被使用的tokens。</li>
+</ul>
+<h4>難以察覺的入侵</h4>
+<p>該行動產生的可偵測信號極少：有效的tokens、有效的階段、看似合法的登入。偵測必須依靠context——裝置狀態、地理位置、IP聲譽、階段存續時間、refresh token的兌換地點——而非authentication事件本身。</p>
+<p>此發現亦應打破一種常見的自我安慰：將MFA視為已完成phishing防禦的機構，所依賴的防護措施在設計上會在攻擊者使用token之前便已結束。79間受影響的tenant正好說明，僅依賴MFA而欠缺phishing-resistant或session-bound控制措施的機構，正是此技術的目標。</p>
+<p><a href="https://thehackernews.com/2026/10/microsoft-365-token-replay-attacks.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
