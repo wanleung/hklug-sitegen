@@ -1,0 +1,33 @@
+Date: 2026-10-28 15:03:00
+Author: HKLUG Team
+Title: Birth Time Tells You When a File Appeared — A Linux Proposal Wants to Track Where It Came From
+Content:
+<hr />
+<h3>Birth Time Tells You When a File Appeared — A Linux Proposal Wants to Track Where It Came From</h3>
+<p>A new Linux kernel proposal would add a second per-file timestamp called "provenance time," or <code>ptime</code>, tracking where a file's data came from rather than when the file landed on a given system, Phoronix reports.</p>
+<p>The motivation is a gap that file birth time (<code>btime</code>) cannot close: birth time records when a file appeared on the machine you are looking at, not when the underlying data was created — a distinction that quietly undermines assumptions in forensic chain-of-custody, retention-based compliance, and backup or restore workflows, where the chronology of the original content is what actually matters.</p>
+<h4>What is being proposed</h4>
+<p>According to Phoronix, the Linux kernel and various filesystem drivers already support the notion of birth time — it tracks when a file or directory was created. The proposal argues this answers a subtly different question from the one many tools actually need, and puts forward <code>ptime</code> as a separate timestamp to sit alongside <code>btime</code> on inodes.</p>
+<p>The core intuition is straightforward. A file's birth time resets whenever the file itself is recreated — on copy, restore, deduplication, or migration to another filesystem — even though the underlying content may be unchanged and far older. <code>ptime</code>, in principle, would carry a timestamp that better reflects the origin of the data rather than the moment it landed in its current location.</p>
+<p>Important details remain open, however. The proposal leaves unresolved how <code>ptime</code> would be populated — whether it is inherited on copy, set by userspace, or attested in any way — and how it should behave when a file's provenance is genuinely unknown. Those semantics should be treated as open questions rather than assumed, and the operational benefits described below are contingent on them landing roughly as the proposal's framing suggests.</p>
+<h4>Why it matters operationally</h4>
+<p>For digital forensics, a timestamp that survives copying would let investigators distinguish an original file from a derivative one without reconstructing history manually — currently a matter of correlating logs, hashes, and acquisition records. For compliance teams, retention rules keyed to when data was created rather than when it arrived on a given system would be far easier to enforce across migrations and platform changes. And in backup and sync environments, where restore operations routinely destroy the original chronology of a file set, a preserved provenance timestamp would let administrators see what the timeline looked like before the data moved.</p>
+<p>On the report's account, no equivalent concept exists in mainline Linux today; <code>btime</code>, where available, is the closest approximation, and it answers the "when did this inode appear here" question, not the "when did this content originate" one.</p>
+<h4>Status: early discussion, not a merged feature</h4>
+<p>The proposal is at the discussion stage. Phoronix's report indicates no acceptance, no target kernel version, and no scheduled merge, and reviewers are already raising questions about design details — among them the storage overhead of an additional persistent per-inode timestamp, and how the timestamp should behave on filesystems or network protocols with no provenance concept of their own. Those questions remain to be worked out through the normal kernel review process, and readers should not expect <code>ptime</code> in a shipped kernel any time soon.</p>
+<p>The broader point stands regardless of outcome: as file data increasingly moves between clouds, endpoints, and archives, "when was this inode created" is becoming an increasingly weak substitute for "when was this data created," and tooling built on the former will keep hitting the same wall. For anyone whose retention policies or audit trails depend on a file's true age across migrations and platform changes, this is a proposal worth following on the mailing lists before it becomes a feature to plan around.</p>
+<hr>
+<h3>檔案出生時間告訴你檔案何時出現——Linux 新提案想追蹤它從何而來</h3>
+<p>據 Phoronix 報導，一項新的 Linux kernel 提案建議加入第二個逐檔案時間戳記，稱為「provenance time」（來源時間），簡稱 <code>ptime</code>，用於追蹤檔案資料的來源，而非檔案何時出現在特定系統上。</p>
+<p>其動機在於檔案出生時間（<code>btime</code>）無法填補的一個缺口：出生時間記錄的是檔案何時出現在你正在查看的機器上，而非底層資料何時建立——這一區別悄悄動搖了數碼取證的保管鏈（chain-of-custody）、基於保留期的合規要求，以及備份與還原工作流程中的各項假設，在這些情境下真正關鍵的是原始內容的時間次序。</p>
+<h4>提案內容</h4>
+<p>據 Phoronix 指出，Linux kernel 及多種 filesystem 驅動程式早已支援出生時間的概念——它追蹤檔案或目錄何時建立。提案認為，這回答的問題與許多工具實際需要的問題有微妙差異，因此提出以 <code>ptime</code> 作為獨立的時間戳記，與 inode 上的 <code>btime</code> 並列。</p>
+<p>其核心直覺相當簡單。檔案本身一旦重新建立——例如複製、還原、去重（deduplication），或遷移至另一個 filesystem——其出生時間便會重置，即使底層內容可能毫無變化且遠為久遠。原則上，<code>ptime</code> 將承載一個更能反映資料來源、而非資料落戶現址那一刻的時間戳記。</p>
+<p>然而，重要細節仍有待釐清。提案尚未解決 <code>ptime</code> 應如何填入——是在複製時繼承、由 userspace 設定，還是以某種方式作出認證（attested）——以及當檔案的來源確實不明時應如何處理。這些語義（semantics）應視為未決問題而非既定假設，下述的營運效益亦取決於最終方案大致符合提案所述的方向。</p>
+<h4>為何在營運上重要</h4>
+<p>對數碼取證而言，一個能經受複製的時間戳記可讓調查人員區分原始檔案與衍生檔案，毋須手動重建歷史——目前這需要比對 logs、hashes 及取證取得記錄。對合規團隊而言，以資料建立時間而非資料到達特定系統的時間為基準的保留規則，在跨遷移及平台變更時將遠為容易執行。而在備份與同步環境中，還原操作往往會破壞檔案組的原始時間次序，一個得以保留的來源時間戳記可讓管理員看到資料搬移前的時間線原貌。</p>
+<p>據該報導所述，主線 Linux（mainline Linux）目前並無等同概念；<code>btime</code>（在支援的地方）是最接近的近似，但它回答的是「這個 inode 何時在此出現」，而非「這項內容何時產生」。</p>
+<h4>狀態：處於初步討論階段，並非已合併的功能</h4>
+<p>提案目前處於討論階段。Phoronix 的報導顯示，提案並未獲接納，未獲指定目標 kernel 版本，亦未排期合併；審核者已就設計細節提出質疑，其中包括額外的逐 inode 持久化時間戳記所帶來的儲存開銷，以及在本身沒有來源概念的 filesystem 或網絡協議上，該時間戳記應如何運作。這些問題仍有待通過正常的 kernel review 流程處理，讀者短期內不應期望 <code>ptime</code> 出現在已發布的 kernel 中。</p>
+<p>不論結果如何，更重要的一點依然成立：隨著檔案資料日益在雲端、終端裝置及存檔之間流轉，「這個 inode 何時建立」正越來越無法替代「這項資料何時產生」，而建立在前者之上的工具將不斷撞上同一面牆。對於任何保留政策或審計追蹤（audit trail）依賴檔案在遷移及平台變更後的真實「年齡」的人來說，這是一項值得在 mailing list 上持續關注的提案——趁它尚未成為需要據此規劃的功能之前。</p>
+<p><a href="https://www.phoronix.com/news/Linux-Provenance-Time-PTIME" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
