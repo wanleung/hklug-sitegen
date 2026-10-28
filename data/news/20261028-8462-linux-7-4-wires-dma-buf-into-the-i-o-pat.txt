@@ -1,0 +1,42 @@
+Date: 2026-10-28 00:03:00
+Author: HKLUG Team
+Title: Linux 7.4 Wires DMA-BUF Into the I/O Path, Teeing Up Faster GPU and Accelerator Transfers
+Content:
+<h3>Linux 7.4 Wires DMA-BUF Into the I/O Path, Teeing Up Faster GPU and Accelerator Transfers</h3>
+<p>Infrastructure for supporting DMA-BUF buffers in the kernel's asynchronous I/O path has been merged into the ongoing Linux 7.4 merge window, according to Phoronix's coverage of the pull — a change that lays the groundwork for moving data between storage, network sockets and accelerator memory without the extra copies that typically pad those transfers.</p>
+<p>The work lands on top of io_uring, the kernel's ring-based interface that has steadily become the default path for high-throughput I/O on Linux. What matters here is not a headline feature users will switch on, but the plumbing: DMA-BUF is the kernel's standard mechanism for sharing buffer objects across device drivers, and until now the I/O path has not been able to hand those buffers to io_uring directly.</p>
+<h4>What actually landed</h4>
+<p>Phoronix describes the merge as infrastructure — the enabling layer rather than a finished, end-to-end feature. That distinction is worth holding onto. Drivers, filesystems and userspace libraries each need to be taught to recognise and use the new capability before it translates into measurable throughput or latency improvements, and those changes typically arrive across several release cycles after the plumbing ships.</p>
+<p>In practical terms, the goal is a zero-copy fast path. When an application reads a file or network buffer into memory that a GPU, video decoder or AI accelerator already owns, the kernel has typically had to stage the data through an intermediate buffer, copy it, or repeatedly pin and unp pin pages so the device can safely address them. Each of those steps costs CPU cycles and adds latency. By allowing DMA-BUF objects to travel through io_uring unchanged, the kernel removes a layer of that friction — but only where a driver on both ends opts in.</p>
+<h4>Where the gains show up</h4>
+<p>The beneficiaries, once adoption catches up, are workloads that move large buffers between storage or network and a device:</p>
+<ul>
+<li><strong>Media pipelines</strong> — decoding, transcoding and compositing frames that already live in GPU or accelerator memory, without bounce copies on the way in or out.</li>
+<li><strong>AI and training workloads</strong> — loading model weights or checkpoint files straight into device memory, and streaming tensors without a host-side staging buffer.</li>
+<li><strong>Cloud and data-centre services</strong> — reducing the per-I/O CPU cost of services that push data to and from accelerators, which in turn frees cores for tenant workloads.</li>
+</ul>
+<p>More broadly, the change is relevant to operators running Linux-based fleets in Hong Kong's data-centre corridor, though the practical takeaway is modest but real: this is groundwork that should lower accelerator I/O overhead in future kernel releases, not a change that alters capacity planning today.</p>
+<h4>What to watch</h4>
+<p>Two things will decide whether the promise is realised. The first is driver coverage — GPU vendors, storage controllers and niche accelerator makers must each wire up their hardware before the path is usable in production. The second is adoption pace: io_uring itself has been rolling out cautiously across distributions following earlier security concerns, and that caution will shape how quickly the new capability reaches real deployments.</p>
+<p>Measurable gains, in other words, depend on future work by drivers, filesystems and userspace. Linux 7.4 removes a constraint; it does not by itself deliver the speed-up.</p>
+<p><em>Source: Phoronix, <a href="https://www.phoronix.com/news/DMA-BUF-IO-uring-Linux-7.4">DMA-BUF IO_uring support merged for Linux 7.4</a>.</em></p>
+<hr>
+<h3>Linux 7.4 將 DMA-BUF 接入 I/O 路徑，為 GPU 及加速器傳輸提速鋪路</h3>
+<p>根據 Phoronix 就此次 pull 的報導，支援 DMA-BUF 緩衝區於核心非同步 I/O 路徑的基礎架構，已合併至進行中的 Linux 7.4 merge window。此項變更為日後在儲存裝置、網絡 socket 與加速器記憶體之間傳送數據時，省卻通常會加諸於傳輸之上的額外複製動作奠定基礎。</p>
+<p>該項工作建基於 io_uring 之上——這正是核心以 ring 為基礎的介面，亦已逐漸成為 Linux 高吞吐量 I/O 的預設路徑。此處的重點並非一項用戶會主動啟用的旗艦功能，而在於底層的「喉管」工程：DMA-BUF 是核心用來跨 device driver 共享 buffer 物件的標準機制，而在此之前，I/O 路徑一直未能將這些 buffer 直接交予 io_uring。</p>
+<h4>實際合併了什麼</h4>
+<p>Phoronix 形容此次合併屬於基礎設施——是使能的一層，而非一項完整、端到端的功能。這一點區別值得記住。Driver、文件系統與用戶空間函式庫各自都需要先學會辨識及使用這項新能力，其後才會轉化為可量度的吞吐量或延遲改善，而這些改動通常要在基礎設施出貨後，跨越數個 release cycle 才會陸續出現。</p>
+<p>實際而言，目標是建立一條 zero-copy 快速路徑。當應用程式把檔案或網絡 buffer 讀入一塊已由 GPU、影片解碼器或 AI 加速器擁有的記憶體時，核心以往通常須先把數據寄存於中間緩衝區、進行複製，或反覆 pin 與 unpin 頁面，好讓裝置能安全地尋址。上述每個步驟都會消耗 CPU 週期並增加延遲。透過容許 DMA-BUF 物件原封不動地經 io_uring 傳遞，核心削去了一層此類摩擦——但前提是兩端的 driver 都須選擇加入（opt in）。</p>
+<h4>收益在哪些地方浮現</h4>
+<p>一旦採用程度跟上，受益者將會是需要在儲存裝置或網絡與裝置之間搬運大型 buffer 的工作負載：</p>
+<ul>
+<li><strong>媒體 pipeline</strong> —— 對本已存在於 GPU 或加速器記憶體中的畫面進行解碼、轉碼與合成，進出之間無須再作 bounce copy。</li>
+<li><strong>AI 與訓練工作負載</strong> —— 把模型權重或 checkpoint 檔案直接載入裝置記憶體，以及在毋須主機端寄存緩衝區的情況下串流 tensor。</li>
+<li><strong>雲端與數據中心服務</strong> —— 減低將數據推送進出加速器的服務在每次 I/O 上所耗用的 CPU 成本，從而騰出 core 供租戶工作負載使用。</li>
+</ul>
+<p>就更廣泛層面而言，此項變更對在香港數據中心走廊營運 Linux fleet 的運維人員同樣 relevant，不過實際所得雖屬溫和卻是實在的：這是日後在未來核心 release 中降低加速器 I/O 開銷的基礎工程，而非一項會即時改變今日容量規劃（capacity planning）的變更。</p>
+<h4>值得留意之處</h4>
+<p>有兩件事將決定這項承諾能否兌現。其一是 driver 覆蓋率——GPU 供應商、儲存控制器及各路加速器製造商，必須各自完成硬件接線，該路徑方能在生產環境使用。其二是採用速度：io_uring 本身在早前的安全問題過後，各發行版一直謹慎推廣，而這份審慎將會左右新能力抵達實際部署的速度。</p>
+<p>換言之，可量度的收益取決於 driver、文件系統與用戶空間的後續工作。Linux 7.4 解除了一項限制；它本身並不會帶來提速。</p>
+<p><em>資料來源：Phoronix，<a href="https://www.phoronix.com/news/DMA-BUF-IO-uring-Linux-7.4">DMA-BUF IO_uring support merged for Linux 7.4</a>。</em></p>
+<p><a href="https://www.phoronix.com/news/DMA-BUF-IO-uring-Linux-7.4" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
