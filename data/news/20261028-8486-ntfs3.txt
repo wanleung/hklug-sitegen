@@ -1,0 +1,41 @@
+Date: 2026-10-28 11:32:00
+Author: HKLUG Team
+Title: 核心 NTFS3 驅動轉向主動加固：為損壞與惡意建構的磁碟區設防
+Content:
+<p>```</p>
+<h3>核心 NTFS3 驅動轉向主動加固：為損壞與惡意建構的磁碟區設防</h3>
+<p>Linux 核心的 NTFS3 驅動即將迎來一批以「抵禦損壞與惡意建構磁碟區」為明確目標的強化更新。據 Phoronix 報道，Paragon Software 的 Konstantin Komarov 已送出最新一輪 NTFS3 驅動補丁系列，排入 Linux 7.4 合併視窗（merge window）；在正式進入 Linus Torvalds 的核心源碼樹之前，範圍仍可能調整。</p>
+<h4>威脅模型：掛載不可信磁碟區等於在核心內解析不可信輸入</h4>
+<p>對系統管理員而言，這則消息的重點不在補丁清單，而在威脅模型本身。一個檔案系統映像檔本質上是「在核心態被解析的不可信輸入」——解析一旦出錯，代價不是使用者空間應用崩潰，而是可被當作權限提升（privilege escalation）的攻擊原語。</p>
+<p>NTFS3 的暴露面正來自此一結構性位置：自 Linux 5.15 起，它是核心內建的預設 NTFS 讀寫驅動，因此會自動承接一系列常見情境——自動掛載的 USB 隨身碟、用戶上傳的磁碟映像、虛擬機磁碟，以及經網路提供的儲存空間。換言之，來源不可信的 NTFS 磁碟區進入核心路徑，往往不需要管理員刻意操作。</p>
+<p>本輪更新值得留意之處在於意圖：維護者把「對惡意磁碟區的抵抗力」列為明確的發布目標，而不只是模糊測試（fuzzing）回報引發的零星修補。作為分析對照，ext4、XFS、Btrfs 與 HFS+ 等驅動先前的加固工作多屬被動回應性質。</p>
+<h4>為何值得追蹤</h4>
+<p>維護來源同樣是背景因素：NTFS3 由 Paragon Software 這名持續的上游貢獻者維護。在核心內建檔案系統驅動中，由商業廠商長期駐守的情況並不常見，這也讓後續更新的延續性較有保障。</p>
+<p>對系統管理與 DevOps 從業者而言，這是一則「留意版本號」而非「立刻行動」的消息：確認所用發行版何時把 Linux 7.4（或其後的穩定分支）納入更新管線，並在此之前對來源不明的 NTFS 媒體保留審慎態度。通用做法上，FUSE 架構的 ntfs-3g 也可將解析留在使用者空間，以降低風險層級。</p>
+<p>需注意的是，源報導使用「Linux 7.4」的版本編號，讀者引用前宜對照當前核心開發周期核實；補丁目前僅在合併佇列中，最終內容可能在進入主線前變動。</p>
+<p><strong>來源：</strong> Phoronix, "NTFS3 Hardened In Linux 7.4 Against Corrupted Or Maliciously-Crafted NTFS Volumes" — https://www.phoronix.com/news/Linux-7.4-NTFS3</p>
+<hr>
+<pre><code>
+# 核心 NTFS3 驅動轉向主動加固：為損壞與惡意建構的磁碟區設防
+
+Linux 核心的 NTFS3 驅動即將迎來一批以「抵禦損壞與惡意建構磁碟區」為明確目標的強化更新。據 Phoronix 報道，Paragon Software 的 Konstantin Komarov 已送出最新一輪 NTFS3 驅動補丁系列，排入 Linux 7.4 合併視窗（merge window）；在正式進入 Linus Torvalds 的核心源碼樹之前，範圍仍可能調整。
+
+## 威脅模型：掛載不可信磁碟區等於在核心內解析不可信輸入
+
+對系統管理員而言，這則消息的重點不在補丁清單，而在威脅模型本身。一個檔案系統映像檔本質上是「在核心態被解析的不可信輸入」——解析一旦出錯，代價不是使用者空間應用崩潰，而是可被當作權限提升（privilege escalation）的攻擊原語。
+
+NTFS3 的暴露面正來自此一結構性位置：自 Linux 5.15 起，它是核心內建的預設 NTFS 讀寫驅動，因此會自動承接一系列常見情境——自動掛載的 USB 隨身碟、用戶上傳的磁碟映像、虛擬機磁碟，以及經網路提供的儲存空間。換言之，來源不可信的 NTFS 磁碟區進入核心路徑，往往不需要管理員刻意操作。
+
+本輪更新值得留意之處在於意圖：維護者把「對惡意磁碟區的抵抗力」列為明確的發布目標，而不只是模糊測試（fuzzing）回報引發的零星修補。作為分析對照，ext4、XFS、Btrfs 與 HFS+ 等驅動先前的加固工作多屬被動回應性質。
+
+## 為何值得追蹤
+
+維護來源同樣是背景因素：NTFS3 由 Paragon Software 這名持續的上游貢獻者維護。在核心內建檔案系統驅動中，由商業廠商長期駐守的情況並不常見，這也讓後續更新的延續性較有保障。
+
+對系統管理與 DevOps 從業者而言，這是一則「留意版本號」而非「立刻行動」的消息：確認所用發行版何時把 Linux 7.4（或其後的穩定分支）納入更新管線，並在此之前對來源不明的 NTFS 媒體保留審慎態度。通用做法上，FUSE 架構的 ntfs-3g 也可將解析留在使用者空間，以降低風險層級。
+
+需注意的是，源報導使用「Linux 7.4」的版本編號，讀者引用前宜對照當前核心開發周期核實；補丁目前僅在合併佇列中，最終內容可能在進入主線前變動。
+
+**來源：** Phoronix, &quot;NTFS3 Hardened In Linux 7.4 Against Corrupted Or Maliciously-Crafted NTFS Volumes&quot; — https://www.phoronix.com/news/Linux-7.4-NTFS3
+</code></pre>
+<p><a href="https://www.phoronix.com/news/Linux-7.4-NTFS3" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
