@@ -1,0 +1,46 @@
+Date: 2026-10-28 18:29:00
+Author: HKLUG Team
+Title: After PHP2Shell, Patch Priority Should Follow Blast Radius — Not the CVSS Score
+Content:
+<p><strong>The PHP2Shell episode has reopened the debate over the gap between vulnerability scores and real-world risk. A commentary piece argues that what ultimately determines the scale of the damage is the reach of a single credential.</strong></p>
+<p>BleepingComputer has published a commentary built around PHP2Shell, whose central claim is that as attackers move faster, ranking remediation work by CVSS score alone no longer reflects how far a single intrusion can actually spread.</p>
+<h4>CVSS Measures the Vulnerability, Not Your Environment</h4>
+<p>The CVSS Base Score assesses the exploitability and impact of the weakness itself — whether it can be triggered remotely, whether user interaction is required, and the degree of confidentiality impact. By design, it does not know whether your server sits in a DMZ or on the internal network, or whether a given service account holds read-only access or domain-wide administrator rights.</p>
+<p>It is worth noting that the two CVSS versions do not structure their metrics identically: v3.1 ships with Temporal (time-based) and Environmental metric groups, while v4.0 reorganises the framework, folding temporal concerns into the Exploit Maturity (E) metric and retaining Environmental alongside a new Supplemental group. The intent was always to let practitioners adjust scores for exploit maturity, remediation status, and the criticality of the target environment. The problem, as we observe it, is that these non-Base metrics almost invariably remain at their default values — most teams still rank their remediation queues by Base Score. That is a usage habit rather than a specification flaw, and it is precisely the point an independent analysis can add beyond a vendor's commentary.</p>
+<h4>A High-Scoring Vulnerability Paired With an Over-Privileged Credential</h4>
+<p>The commentary focuses on non-human identity: the credentials of service accounts, API keys, automated pipelines, and AI agents. Vendor Token Security frames its observation this way: "Restricting access for service accounts, API keys, and AI agents is just as important as patching vulnerabilities, because it limits how far one intrusion can spread in practice."</p>
+<p>To be clear, this is a vendor position; we are treating it as an argument to be examined, not as independently verified fact. Readers should weigh it against public post-incident reviews and blue-team data. The underlying logic is straightforward: a CVSS 9.8 vulnerability whose only foothold is read access to public files may have a smaller blast radius than a CVSS 7.5 vulnerability paired with a service account that holds production deployment rights. AI agents are singled out because they are typically issued long-lived, wide-scoped tokens, and their activity volume is large enough to disappear into a sea of logs.</p>
+<p>The same issue applies to the open-source community: CI/CD tokens and service accounts running on self-hosted runners are part of the same non-human identity sprawl, and once any link in the chain fails, supply-chain risk propagates outward along the build and deployment pipeline.</p>
+<h4>A Least-Privilege Checklist</h4>
+<p>However high the vulnerability score, the following steps compress blast radius immediately:</p>
+<ol>
+<li><strong>Inventory non-human identity</strong>: list every service account, API key, CI/CD token, and AI agent, recording its owner and purpose.</li>
+<li><strong>Map only the permissions required</strong>: ask, for each one, "What is the minimum privilege this task needs?" — narrowing from wide rather than adding from zero.</li>
+<li><strong>Retire long-lived credentials</strong>: move to short-lived, rotatable tokens, and set expiry dates on static keys.</li>
+<li><strong>Separate environments</strong>: production and staging credentials must never be interchangeable.</li>
+<li><strong>Make activity visible</strong>: calls made by non-human identity should carry their own logs and alerts, so that unusual privilege escalation is detectable.</li>
+</ol>
+<p>For IT teams at Hong Kong enterprises, this kind of inventory typically overlaps with routine deployment work — cloud service accounts, outbound API integrations, and automated maintenance scripts are often the widest-scoped yet least-reviewed layer. Should an internal audit one day ask, "What permissions does this token hold, and who approved it?", the answer looks very different with a clear inventory than without one.</p>
+<p>Vulnerabilities will keep appearing, and patching cannot stop. But if only one investment direction can be chosen, knowing how far your credentials can travel is usually more practical than remembering how many 9.8s you have.</p>
+<hr>
+<p><strong>PHP2Shell 事件重新引發業界就漏洞評分與實際風險之間落差的討論。一篇評論文章指出，真正決定破壞規模的，是一份憑證能夠觸及的範圍。</strong></p>
+<p>BleepingComputer 刊出一篇以 PHP2Shell 為核心的評論，其核心論點是：隨著攻擊者行動日益迅速，僅以 CVSS 分數為修補工作排序，已不足以反映一次入侵實際可以蔓延多遠。</p>
+<h4>CVSS 衡量的是漏洞，不是你的環境</h4>
+<p>CVSS Base Score 評估的是弱點本身的可利用性與影響——包括是否可遠端觸發、是否需要用戶互動，以及機密性受損的程度。從設計上而言，它並不知道你的伺服器位於 DMZ 還是內部網絡，也不知道指定的服務帳戶僅具唯讀權限，還是擁有全域管理員權限。</p>
+<p>值得注意的是，兩個 CVSS 版本的指標結構並不相同：v3.1 內建 Temporal（時間性）與 Environmental（環境性）指標組，而 v4.0 重新組織框架，將時間性考量納入 Exploit Maturity（E）指標，並保留 Environmental 以及新增的 Supplemental 一組。其初衷一直是讓業者按 exploit 成熟度、修補狀態及目標環境的關鍵程度調整評分。問題在於，業界的情況是，這些非 Base 指標幾乎無一例外停留於預設值——多數團隊排序修補清單時，仍然以 Base Score 為依據。這屬於使用習慣問題，而非規格缺陷；也正是獨立分析可以比廠商評論多交代一層的地方。</p>
+<h4>一份高分漏洞，配備一隻過度授權的憑證</h4>
+<p>評論聚焦於非人身分（non-human identity）：服務帳戶、API 金鑰、自動化 pipeline 及 AI 代理的憑證。廠商 Token Security 就此作如下表述：「限制服務帳戶、API 金鑰與 AI 代理的存取權限，與修補漏洞同樣重要，因為它可以限制一次入侵在實際情況下蔓延的範圍。」</p>
+<p>須指出，這是廠商立場；本文將其視為有待檢視的論點，而非經獨立核實的事實。讀者宜對照公開的事後事故檢討及藍隊數據加以衡量。其背後邏輯並不複雜：一個 CVSS 9.8 的漏洞，若唯一立足點只是公開檔案的讀取權限，其攻擊半徑可能小於一個 CVSS 7.5 的漏洞，配上一具擁有 production 部署權限的 service account。AI 代理之所以被單獨點名，是因為它們通常獲發有效期長、範圍廣的 token，而且活動量大到足以淹沒於 log 的汪洋之中。</p>
+<p>同一議題同樣適用於開源社群：CI/CD token 及在 self-hosted runner 上運行的 service account，同屬非人身分蔓延的一部分；一旦鏈條中任何一環失效，供應鏈風險便會沿著 build 及部署 pipeline 向外擴散。</p>
+<h4>最小權限檢查清單</h4>
+<p>無論漏洞分數多高，以下步驟都可以立即壓縮攻擊半徑：</p>
+<ol>
+<li><strong>盤點非人身分</strong>：列出所有服務帳戶、API 金鑰、CI/CD token 及 AI 代理，記錄各自的 owner 與用途。</li>
+<li><strong>對應最低所需權限</strong>：逐一追問「此任務最少需要甚麼權限？」——由寬收窄，而非由零增加。</li>
+<li><strong>淘汰長效憑證</strong>：改用短效、可輪替的 token，並為靜態金鑰設定到期日。</li>
+<li><strong>分隔環境</strong>：production 與 staging 的憑證不得互通。</li>
+<li><strong>令活動可見</strong>：非人身分的 call 應附有獨立 log 及 alert，以便察覺異常擴權。</li>
+</ol>
+<p>對香港企業的 IT 團隊而言，此類盤點通常與日常部署工作重疊——雲端 service account、對外 API integration 及自動化維護 script，往往正是範圍最廣而最少被覆核的一層。若日後內部審計問及「這枚 token 持有甚麼權限、由誰批准」，有清晰清單與沒有清晰清單，答案會截然不同。</p>
+<p>漏洞會陸續出現，修補亦不能停止。但如果只能選擇一個投資方向，先掌握自己的憑證能夠走得多遠，往往比記住有多少個 9.8 分更為實際。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/even-after-php2shell-blast-radius-matters-more-than-a-cvss-score" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
