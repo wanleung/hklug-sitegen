@@ -1,0 +1,116 @@
+Date: 2026-10-29 09:00:00
+Author: HKLUG Team
+Title: Adobe Patches Eight Critical Campaign Classic Flaws; CVSS 9.9 Code Injection Leads the List
+Content:
+<h3>Adobe Patches Eight Critical Campaign Classic Flaws; CVSS 9.9 Code Injection Leads the List</h3>
+<p>Adobe has shipped fixes for eight critical vulnerabilities in Campaign Classic, its enterprise marketing automation platform, warning that successful exploitation could lead to arbitrary code execution, security feature bypass, and privilege escalation.</p>
+<p>The highest-scoring issue in the batch, CVE-2026-104351, carries a CVSS base score of 9.9 and is classified as a code-injection flaw that could let an attacker run arbitrary code on a vulnerable system. Adobe's advisory publishes the full CVSS vector alongside the affected version ranges for every CVE in the batch, and the base score should be read against those details rather than in isolation when assessing exposure.</p>
+<h4>Why this matters for Campaign Classic operators</h4>
+<p>Campaign Classic environments usually sit close to customer data and marketing content pipelines, and are frequently reachable from corporate networks rather than fully isolated. Code injection against a platform in that position is not an abstract risk: it is a direct path from a network foothold to server-side control, and from there to the subscriber data and campaign assets the platform holds.</p>
+<p>The remaining seven flaws in Adobe's advisory cover security feature bypass and privilege escalation in addition to code execution. Security feature bypass issues matter because they can neutralise compensating controls that teams may be relying on while a patch cycle runs; privilege escalation matters because it converts limited access into administrative capability on an affected instance.</p>
+<p>Bundled patch cycles like this one also compress the window between disclosure and the appearance of public proof-of-concept code, since a single release gives researchers one consolidated target to work against.</p>
+<h4>The lead flaw at a glance</h4>
+<p>Adobe's bulletin is the authoritative source for all eight CVEs, including CVSS vectors, weakness classes, and affected version ranges. The lead entry is summarised below; teams should confirm their specific versions directly against the bulletin rather than relying on any summary table alone.</p>
+<table>
+<thead>
+<tr>
+<th>CVE</th>
+<th>CVSS</th>
+<th>Weakness</th>
+<th>Impact</th>
+<th>Affected versions</th>
+<th>Recommended action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CVE-2026-104351</td>
+<td>9.9</td>
+<td>Code injection</td>
+<td>Arbitrary code execution</td>
+<td>See Adobe's bulletin</td>
+<td>Apply the vendor patch as priority; restrict access to the instance in the interim</td>
+</tr>
+</tbody>
+</table>
+<p>The full list of the remaining seven CVEs, with their individual scores and affected builds, is published in Adobe's advisory and should be pulled directly from there when scoping remediation.</p>
+<h4>Interim mitigations while you scope the patch</h4>
+<ul>
+<li><strong>Verify deployment ownership first.</strong> Adobe Campaign Classic can be self-hosted or Adobe-managed; the party responsible for applying the fix differs accordingly, and confirming this avoids waiting on the wrong team.</li>
+<li><strong>Inventory affected instances.</strong> Identify every Campaign Classic server and its build version, then compare against the fixed versions named in Adobe's bulletin.</li>
+<li><strong>Restrict network exposure.</strong> Limit administrative and API endpoints to trusted networks or VPN paths until patched, particularly where instances are reachable beyond a tight internal segment.</li>
+<li><strong>Treat the code-injection CVE as the sequencing anchor.</strong> Prioritise instances where CVE-2026-104351 applies over lower-severity items in the same batch.</li>
+<li><strong>Watch for follow-on advisories.</strong> Multiple critical flaws fixed in a single release often attract rapid public proof-of-concept work once the bulletin is public.</li>
+</ul>
+<h4>Key Takeaways</h4>
+<ul>
+<li>Adobe has patched eight critical flaws in Campaign Classic, led by the CVSS 9.9 code-injection issue CVE-2026-104351, which can lead to arbitrary code execution.</li>
+<li>The other seven cover security feature bypass and privilege escalation; Adobe's bulletin is the authoritative full list.</li>
+<li>First moves: confirm whether your instance is self-hosted or Adobe-managed, inventory builds and apply the patch, and restrict network access to admin interfaces in the interim.</li>
+</ul>
+<h4>Self-hosted vs. Adobe-managed verification checklist</h4>
+<ul>
+<li>[ ] Confirm how your instance is deployed — self-hosted or Adobe-managed</li>
+<li>[ ] Record the exact Campaign Classic build number for each environment</li>
+<li>[ ] Cross-check those builds against the fixed versions in Adobe's bulletin</li>
+<li>[ ] Identify who applies the patch in your deployment model and confirm ownership</li>
+<li>[ ] Verify network restrictions on administrative endpoints are in place until the fix lands</li>
+</ul>
+<p>Before closing out remediation, check Adobe's bulletin and CISA KEV for the current exploitation status of these flaws. Organisations running Campaign Classic should treat patch application as a scheduled task measured in days rather than weeks, and should work from the complete CVE enumeration in Adobe's advisory rather than a partial list.</p>
+<hr>
+<h3>Adobe 修補 Campaign Classic 八項嚴重漏洞；CVSS 9.9 代碼注入漏洞居首</h3>
+<p>Adobe 已為其企業營銷自動化平台 Campaign Classic 推出八項嚴重漏洞的修復，並警告一旦被成功利用，可能導致任意代碼執行、安全功能繞過及權限提升。</p>
+<p>該批漏洞中評分最高的是 CVE-2026-104351，CVSS 基礎評分為 9.9，分類為代碼注入（code injection）漏洞，可令攻擊者在有漏洞的系統上執行任意代碼。Adobe 的通告為每項 CVE 列出完整的 CVSS vector 及受影響版本範圍，評估風險時應結合這些細節閱讀基礎評分，而不應孤立看待。</p>
+<h4>為何 Campaign Classic 營運者須關注此事</h4>
+<p>Campaign Classic 環境通常緊貼客戶數據及營銷內容 pipeline，而且往往可從企業網絡直接存取，並非完全隔離。針對此類位置的平台發動代碼注入並非抽象風險：它是由網絡立足點直達服務器端控制的直接路徑，並可由此進一步接觸平台所保存的訂戶數據及 campaign 資產。</p>
+<p>Adobe 通告中其餘七項漏洞，除代碼執行外，還涵蓋安全功能繞過及權限提升。安全功能繞過問題重要，在於它可抵銷團隊在等待修補週期期間所依賴的補償性控制措施；權限提升問題則在於它能把有限存取權轉化為受影響實例上的管理員能力。</p>
+<p>此類打包修補週期亦會壓縮漏洞披露與公開 proof-of-concept 代碼出現之間的時間窗口，因為單一版本發布讓研究人員只有一個整合目標可供研究。</p>
+<h4>首要漏洞一覽</h4>
+<p>Adobe 官方通告是全部八項 CVE 的權威來源，包括 CVSS vector、弱點分類及受影響版本範圍。首項條目摘要如下；各團隊應直接對照通告確認自身特定版本，不應僅依賴任何摘要表。</p>
+<table>
+<thead>
+<tr>
+<th>CVE</th>
+<th>CVSS</th>
+<th>弱點類型</th>
+<th>影響</th>
+<th>受影響版本</th>
+<th>建議行動</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CVE-2026-104351</td>
+<td>9.9</td>
+<td>代碼注入</td>
+<td>任意代碼執行</td>
+<td>見 Adobe 官方通告</td>
+<td>優先套用廠商修補程式；其間限制實例存取</td>
+</tr>
+</tbody>
+</table>
+<p>其餘七項 CVE 的完整清單，連同各自的評分及受影響 build，已於 Adobe 通告公布，規劃修復時應直接從該處取得。</p>
+<h4>規劃修補期間的臨時緩解措施</h4>
+<ul>
+<li><strong>先確認部署負責方。</strong> Adobe Campaign Classic 可為自架（self-hosted）或 Adobe 托管（Adobe-managed）；負責套用修補的一方因而不同，先行確認可避免等待錯誤的團隊。</li>
+<li><strong>盤點受影響實例。</strong> 列出每一部 Campaign Classic 服務器及其 build 版本，再與 Adobe 通告所列的已修復版本對照。</li>
+<li><strong>限制網絡暴露。</strong> 在完成修補前，將管理及 API endpoint 限制於可信網絡或 VPN 路徑，尤其當實例可由緊密的內部網段以外存取時。</li>
+<li><strong>以代碼注入 CVE 作為排序基準。</strong> 將套用 CVE-2026-104351 的實例，優先於同批中嚴重程度較低的項目處理。</li>
+<li><strong>留意後續通告。</strong> 單一版本內修補多項嚴重漏洞，通告公開後往往迅速吸引公眾投入 proof-of-concept 研究。</li>
+</ul>
+<h4>重點摘要</h4>
+<ul>
+<li>Adobe 已修補 Campaign Classic 八項嚴重漏洞，當中以 CVSS 9.9 代碼注入問題 CVE-2026-104351 為首，可導致任意代碼執行。</li>
+<li>其餘七項涉及安全功能繞過及權限提升；完整清單以 Adobe 官方通告為準。</li>
+<li>首要行動：確認實例屬自架還是 Adobe 托管、盤點 build 版本並套用修補程式，其間限制管理介面的網絡存取。</li>
+</ul>
+<h4>自架 vs. Adobe 托管核實清單</h4>
+<ul>
+<li>[ ] 確認實例的部署方式——自架或 Adobe 托管</li>
+<li>[ ] 記錄每個環境的確切 Campaign Classic build 號碼</li>
+<li>[ ] 將各 build 對照 Adobe 通告中的已修復版本</li>
+<li>[ ] 確定在閣下部署模式下由誰套用修補程式，並確認負責方</li>
+<li>[ ] 核實管理 endpoint 的網絡限制已生效，直至修復到位</li>
+</ul>
+<p>在完成修復前，請查閱 Adobe 通告及 CISA KEV，了解這些漏洞的最新利用狀況。運行 Campaign Classic 的機構應將修補套用視為以天（而非週）計的既定任務，並依據 Adobe 通告中的完整 CVE 清單執行，而非只看部分列表。</p>
+<p><a href="https://thehackernews.com/2026/10/adobe-fixes-8-critical-campaign-classic.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
