@@ -1,0 +1,40 @@
+Date: 2026-10-28 13:32:00
+Author: HKLUG Team
+Title: Sixteen-Year-Old Pre-OS Flaw in Shared UEFI Code Draws 9.5 CVSS Rating
+Content:
+<p>A flaw that has lain dormant in the firmware booting much of the world's server fleet for roughly sixteen years has been made public, sending infrastructure teams back into firmware-patch planning. Tracked as CVE-2026-97631 and rated 9.5 out of 10 on the CVSS scale, the vulnerability allows code execution before the operating system ever loads, according to Security Affairs.</p>
+<p>The defect sits in the TianoCore codebase — the shared, open-source UEFI foundation beneath firmware shipped by a broad spread of server vendors — and details of the fix surfaced months ahead of the normal disclosure timetable, Security Affairs reported.</p>
+<h4>Why a sixteen-year-old bug rates 9.5</h4>
+<p>Two compounding factors produce the score. The first is reach: because TianoCore-derived code is shared across vendors, exposure is not confined to one OEM's hardware. Organisations should treat any server running firmware built on that codebase as in scope until they have verified otherwise.</p>
+<p>The second is timing. With fix details available early, attackers can study the patch and construct exploits while many enterprises are still working through remediation. That combination — universal reach paired with an accelerated attacker-side read on the fix — is what lifts the rating to 9.5 rather than leaving it at a merely "high" severity.</p>
+<p>For defenders, the more consequential dimension is <em>when</em> the code runs. Exploitation occurs in the pre-OS phase: before endpoint detection and response agents load, before kernel integrity checks engage, and before log collection begins. Every assumption an organisation makes about visibility, attestation, and incident evidence presumes a trusted boot chain — and a pre-OS compromise breaks that assumption at the root. Malicious firmware also survives an operating-system reinstallation, so a reimaged host can carry the same compromised boot environment forward, placing this in a different remediation class from ordinary patching.</p>
+<h4>Checklist for server administrators</h4>
+<p>Security Affairs' advice amounts to applying firmware patches and running verification checks on exposed servers. The following steps are our editorial translation of that guidance into an operational sequence, not step-by-step instructions from the source or from any vendor:</p>
+<ol>
+<li><strong>Establish exposure.</strong> Inventory server models and read the actual firmware version from the BMC or the UEFI setup screen — not from an asset database that may be stale. Cross-reference against vendor security advisories to determine whether your build derives from the affected TianoCore component.</li>
+<li><strong>Patch the management plane first, or in the same window.</strong> Update out-of-band management controllers (iLO, iDRAC, IPMI implementations) before or alongside host firmware. These controllers can themselves push firmware images to the host, so a stale management plane undermines the host-side fix — an out-of-band controller can push old firmware straight back onto a patched machine.</li>
+<li><strong>Verify, don't assume.</strong> Confirm the post-update version by re-reading it from the hardware, not from the flashing tool's success message. Include a rollback guard where vendors provide one, and check that reimaging and provisioning tooling does not restore an older firmware image to freshly rebuilt hosts.</li>
+</ol>
+<h4>The structural lesson</h4>
+<p>Firmware disclosures are arriving faster than enterprise patching capacity can absorb them. Firmware updates are slow, demand reboots, and carry bricking risk, so they rarely fit inside a routine patch cycle. Urgent, out-of-band firmware work has become a recurring pattern rather than an exception, which argues for keeping an accurate, hardware-verified firmware inventory as standing practice.</p>
+<p>For IT professionals generally, the story is a reminder that the security perimeter extends below the operating system. Confirm the CVE identifier and CVSS rating cited above against NVD records and current vendor advisories before committing to a patching plan.</p>
+<p><em>Source: Security Affairs, published 28 October 2026.</em></p>
+<hr>
+<p>一個在啟動全球大部分伺服器的韌體中沉睡約十六年的漏洞現已公開，令基建團隊再次投入韌體修補規劃。據 Security Affairs 報導，該漏洞編號 CVE-2026-97631，在 CVSS 評分中獲評 9.5 分（滿分 10 分），可讓程式碼在作業系統載入之前便執行。</p>
+<p>缺陷位於 TianoCore 程式碼庫——這是眾多伺服器廠商所出貨韌體共用的開源 UEFI 基礎——Security Affairs 表示，修補方案的細節比慣常的披露時間表早了數個月浮現。</p>
+<h4>為何一個十六年前的缺陷會獲評 9.5 分</h4>
+<p>兩個互相疊加的因素造就這個評分。其一是影響範圍：由於衍生自 TianoCore 的程式碼由多家廠商共用，受影響範圍並不限於某一家 OEM 的硬件。機構應把任何採用該程式碼庫所建韌體的伺服器納入處理範圍，直至核實為止。</p>
+<p>其二是時間差。修補細節提早外流，意味攻擊者可以先一步研究修補程式、開發漏洞利用程式（exploit），而不少企業仍忙於修補工作。這種「影響範圍無遠弗屆、攻擊方又先一步讀懂修補方案」的組合，正是把評分由「高危」進一步推上 9.5 的原因。</p>
+<p>對防禦方而言，影響更為關鍵的維度是程式碼<em>何時</em>執行。漏洞利用發生在開機前（pre-OS）階段：在端點偵測與回應（endpoint detection and response）代理載入之前、在 kernel 完整性檢查啟動之前、亦在日誌收集開始之前。機構就可視性、attestation 及事故證據所作的一切假設，都以可信開機鏈（trusted boot chain）為前提——而一次開機前入侵會從根源推翻該前提。惡意韌體亦能在作業系統重新安裝後存活，因此一經重灌映像的主機仍會把同樣受污染的開機環境延續下去，使此類善後工作有別於一般套用修補程式。</p>
+<h4>伺服器管理員清單</h4>
+<p>Security Affairs 對受影響伺服器的建議，總括而言就是套用韌體修補程式並進行核實檢查。以下三步是本編輯部把該指引整理成的操作流程，並非原報導或任何廠商提供的逐步指示：</p>
+<ol>
+<li><strong>確定受影響範圍。</strong> 盤點伺服器型號，並從 BMC 或 UEFI 設定畫面讀取實際韌體版本——而非依賴可能已過時的資產數據庫。與廠商安全公告交叉核對，以判斷你的建置版本是否衍生自受影響的 TianoCore 元件。</li>
+<li><strong>先修補管理面，或安排在同一時段內處理。</strong> 在更新主機韌體之前或同期，更新帶外（out-of-band）管理控制器（iLO、iDRAC、IPMI 實作）。這些控制器本身可向主機推送韌體映像，因此一個過時的管理面會削弱主機端的修復——帶外控制器可以把舊韌體直接推回一台已打上修補程式的機器上。</li>
+<li><strong>加以核實，切勿假設。</strong> 透過從硬件重新讀取來確認更新後的版本，而非只看燒錄工具顯示的成功訊息。如廠商提供回滾保護，應一併啟用，並檢查重灌映像及 provisioning 工具不會把舊韌體映像還原到剛重建的主機上。</li>
+</ol>
+<h4>結構性教訓</h4>
+<p>韌體漏洞披露的速度，已超出企業修補處理能力所能消化的範圍。韌體更新耗時、需要重新啟動，並有變磚（bricking）風險，故很少能納入例行的修補程式週期。緊急、帶外的韌體工作已成為反覆出現的常態而非例外，這正說明應把維持一份準確、經硬件核實的韌體資產清單列為恆常措施。</p>
+<p>對一般 IT 專業人士而言，這則報導提醒我們：安全邊界延伸至作業系統之下。在制定修補方案之前，應先對照 NVD 紀錄及現行廠商安全公告，核實本文引用的 CVE 識別碼與 CVSS 評級。</p>
+<p><em>資料來源：Security Affairs，2026 年 10 月 28 日刊出。</em></p>
+<p><a href="https://securityaffairs.com/201928/security/cve-2026-97631-16-year-old-uefi-flaw-threatens-servers.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
