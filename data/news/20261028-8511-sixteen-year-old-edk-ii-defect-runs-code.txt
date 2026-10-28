@@ -1,0 +1,62 @@
+Date: 2026-10-28 16:17:00
+Author: HKLUG Team
+Title: Sixteen-Year-Old EDK II Defect Runs Code Ahead of Secure Boot on Network-Booting Servers
+Content:
+<p>A critical flaw, present for roughly sixteen years in EDK II — the open-source foundation on which most hardware vendors build their UEFI firmware — lets an attacker execute code on a machine before the operating system loads and, more importantly, before Secure Boot verification has finished, The Hacker News reported on 16 October.</p>
+<p>The exposure comes with a hard boundary: it applies only while a machine is booting over the network — PXE-based provisioning, diskless deployments, imaging or recovery operations, and out-of-band management flows that trigger a network boot. Machines booting from local storage are out of scope.</p>
+<h4>Why the sequencing matters</h4>
+<p>UEFI firmware is the first code to run when a server is powered on, long before any operating system takes control. Secure Boot exists to ensure that only signed, trusted code is executed during that window, and it is the control most administrators rely on as their boot-time gatekeeper.</p>
+<p>This flaw undermines that assumption at a structural level. Rather than bypassing signature checks after the fact, the vulnerability allows code execution to happen <em>before</em> the verification sequence completes. In practical terms, an attacker who can reach a machine during a network boot can get code running at a point in the startup chain where the defender believes nothing unverified can run.</p>
+<p>That sequencing distinction is what makes the bug more than an academic firmware curiosity. It does not simply weaken Secure Boot — it renders the control irrelevant for the affected boot path. The control is bypassed by ordering, not defeated by cracking signatures, which is a categorically different failure mode from a signature-check bypass.</p>
+<h4>A supply-chain problem, not a patch Tuesday fix</h4>
+<p>Because the defect sits in shared upstream EDK II code rather than in any single vendor's implementation, remediation is a supply-chain exercise. Fixes have to propagate through the EDK II project and then be integrated, validated and shipped by each OEM and ODM as part of their firmware release cycles. Administrators cannot simply pull a package and be done.</p>
+<p>For Hong Kong enterprise and data-centre operators, that means the remediation timeline is governed by vendor firmware rollouts and maintenance-window coordination, not by an in-house patch schedule. Dell, HPE, Lenovo and Supermicro all build on EDK II–derived code, so administrators should be tracking each vendor's firmware advisory pages for updated images covering their specific models rather than waiting for a single universal fix.</p>
+<h4>What administrators should do now</h4>
+<ol>
+<li>
+<p><strong>Track the upstream advisory.</strong> Follow the EDK II project's advisory and commit history directly, since vendor fixes will be derivative of it. The upstream notice is the authoritative source for affected code paths and versions, and it should be the reference point against which every vendor advisory is checked.</p>
+</li>
+<li>
+<p><strong>Inventory network-boot capability.</strong> Identify every asset that can boot over the network — PXE provisioning hosts, diskless compute nodes, recovery and imaging environments, and any out-of-band management workflows that trigger a network boot. The vulnerability only matters where this path exists, so the inventory defines your real blast radius.</p>
+</li>
+<li>
+<p><strong>Confirm OEM firmware status per model.</strong> Check whether your server vendors have released firmware updates addressing the flaw, and queue the rollouts into your next maintenance window. Treat missing vendor updates as an open risk to escalate with your account team.</p>
+</li>
+<li>
+<p><strong>Tighten network-level controls.</strong> Scope PXE services to the smallest possible subnet and time window, enforce 802.1X or equivalent admission control on provisioning segments, and keep management-plane traffic isolated from general user networks. If a machine cannot reach a network boot service, the vulnerability cannot be exercised against it.</p>
+</li>
+</ol>
+<h4>The calibrated read</h4>
+<p>It is worth being precise about what this is and is not. This is not a silent, universal firmware backdoor reachable on every powered-on server. It is a conditional flaw with a clear precondition: any machine with network boot enabled and reachable by an attacker is in scope, and machines outside that path are unaffected.</p>
+<p>Exploitation requires both the network-boot path and network reachability during the boot window, which is what converts a scary-sounding sixteen-year-old firmware bug into a measurable, restrictable risk. The work is largely inventory and segmentation — the kind of foundational hygiene that also improves resilience against a broader class of boot-time attacks.</p>
+<p><em>Source: The Hacker News</em></p>
+<hr>
+<p>據 The Hacker News 於 10 月 16 日報道，EDK II 中存在一項嚴重缺陷，存在時間長達約十六年。EDK II 是大多數硬件供應商建立其 UEFI 韌體所依賴的開源基礎，該缺陷令攻擊者可以在操作系統載入之前，亦即更關鍵地在 Secure Boot 驗證完成之前，於機器上執行代碼。</p>
+<p>該漏洞有明確的適用邊界：僅適用於機器通過網絡開機的場景——包括基於 PXE 的配給、無盤部署、映像製作或還原操作，以及觸發網絡開機的 out-of-band 管理流程。從本地儲存開機的機器則不在影響範圍之內。</p>
+<h4>順序為何如此重要</h4>
+<p>UEFI 韌體是伺服器開機後第一段執行的代碼，遠早於任何操作系統取得控制權。Secure Boot 的作用是確保在該窗口期內只執行已簽署且可信的代碼，也是大多數管理員所依賴的開機時把關機制。</p>
+<p>此缺陷在結構層面動搖了這項假設。該漏洞並非事後繞過簽章檢查，而是令代碼執行在驗證序列完成<em>之前</em>便已發生。實際而言，攻擊者若能在網絡開機期間接觸機器，便可於啟動鏈的某個節點讓代碼運行——而防禦者一直認為在該節點不可能有任何未經驗證的代碼執行。</p>
+<p>正是這種順序上的差異，使此 bug 不只是一個學術性的韌體冷知識。它並非只是削弱 Secure Boot——而是令該機制對受影響的開機路徑完全失效。這項機制是被順序安排所繞過，而非被破解簽章所擊敗，兩者在本質上屬於截然不同的失效模式。</p>
+<h4>屬於供應鏈問題，並非 Patch Tuesday 可解</h4>
+<p>由於該缺陷位於 EDK II 的共享上游代碼中，而非任何單一供應商的實現之內，修復工作本質上是一項供應鏈工程。修訂必須先通過 EDK II 項目傳播，再由各 OEM 及 ODM 作為其韌體發布周期的一部分，逐一整合、驗證並出貨。管理員無法單靠拉取一個軟件包便了事。</p>
+<p>對香港的企業及數據中心營運商而言，這意味著修復時間表取決於供應商的韌體推出計劃及維護窗口協調，而非內部的補丁日程。Dell、HPE、Lenovo 及 Supermicro 均基於 EDK II 衍生代碼構建，因此管理員應持續追蹤各供應商的韌體通告頁面，查找涵蓋其特定型號的更新映像，而非等待單一的通用修復方案。</p>
+<h4>管理員現階段應採取的措施</h4>
+<ol>
+<li>
+<p><strong>追蹤上游通告。</strong> 直接關注 EDK II 項目的通告及 commit 歷史，因為供應商的修復方案將以其為基礎衍生。上游公告是受影響代碼路徑及版本的權威來源，應作為核對每一份供應商通告的基準參考。</p>
+</li>
+<li>
+<p><strong>盤點網絡開機能力。</strong> 識別所有可通過網絡開機的資產——PXE 配給主機、無盤運算節點、還原及映像製作環境，以及任何會觸發網絡開機的 out-of-band 管理工作流程。該漏洞僅在此路徑存在時才有影響，因此盤點結果將界定實際的影響範圍。</p>
+</li>
+<li>
+<p><strong>逐型號確認 OEM 韌體狀態。</strong> 查核各伺服器供應商是否已發布針對此缺陷的韌體更新，並將推出計劃排入下一個維護窗口。若供應商未提供更新，應視為未解決風險，向客戶團隊提出升級跟進。</p>
+</li>
+<li>
+<p><strong>收緊網絡層面的控制。</strong> 將 PXE 服務的範圍限制在盡可能小的子網及時間窗口，在配給網段強制執行 802.1X 或同類准入控制，並將管理平面流量與一般用戶網絡保持隔離。若機器無法連線至網絡開機服務，漏洞便無法對其加以利用。</p>
+</li>
+</ol>
+<h4>客觀評估</h4>
+<p>有必要準確說明此問題的性質與範圍。這並非一個沉默、通用、可在每台開機伺服器上觸發的韌體後門。它是一個有明確前提條件的條件性缺陷：任何已啟用網絡開機且攻擊者可觸及的機器均在影響範圍內，而不在該路徑上的機器則不受影響。</p>
+<p>利用該漏洞需要同時具備網絡開機路徑，以及在開機窗口期間的網絡連通性——正是這兩點，把一個聽上去駭人的十六年韌體 bug 轉化為可量化、可限制的風險。應對工作主要在於資產盤點及網段分隔——這類基礎衛生措施同時也能提升對更廣泛一類開機時攻擊的抵禦能力。</p>
+<p><em>來源：The Hacker News</em></p>
+<p><a href="https://thehackernews.com/2026/10/critical-16-year-old-uefi-flaw-can-run.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
