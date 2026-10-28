@@ -1,0 +1,36 @@
+Date: 2026-10-28 13:40:00
+Author: HKLUG Team
+Title: Hyprland 0.57 Revives Compiz-Era Wobbly Windows on Wayland
+Content:
+<p>Hyprland, one of the most actively developed tiling compositors in the Wayland ecosystem, has shipped version 0.57 with a feature that will be instantly recognisable to anyone who used the Linux desktop in the mid-2000s: Compiz-inspired wobbly windows. The release, reported by Phoronix, revives the classic effect that made Compiz and Beryl famous — application windows that flex and jiggle as they are dragged across the screen.</p>
+<p>The effect is more than a nostalgia play, and its arrival on Wayland carries a message about where the ecosystem now stands.</p>
+<h4>From eye candy to feature parity</h4>
+<p>Wobbly windows were originally a showpiece of Compiz, the OpenGL compositing window manager that turned heads in the mid-2000s by rendering desktop effects Windows and macOS had no answer to at the time. In the years since Compiz's heyday, Wayland compositors have concentrated on the fundamentals: reliable input handling, multi-monitor support, scaling, security sandboxing through protocols such as XDG portals, and simply getting applications to run correctly.</p>
+<p>Decorative effects were a lower priority — a symptom of an ecosystem still establishing its footing. That a compositor now ships a Compiz-era flourish as a routine release item suggests the fundamentals are largely settled and that development bandwidth can move toward polish and personality.</p>
+<p>That framing matters for users evaluating whether Wayland is "ready." Feature parity with a 20-year-old X11 compositor is a reasonable yardstick, and clearing it removes one of the more visible gaps.</p>
+<h4>Why the effect is non-trivial on Wayland</h4>
+<p>Implementing wobbly windows is not a matter of copying an old Compiz plugin. On a Wayland compositor, the compositor owns essentially the entire rendering path: it tracks which regions of the screen have been damaged, schedules frame timing, and composites the output itself. A window's position must be sampled continuously during a drag, and the spring-like distortion applied per frame without introducing input lag or tearing — all while staying within the frame budget that VSync and variable-refresh displays impose.</p>
+<p>That integration between the effect's animation logic and the compositor's damage-tracking and frame-scheduling machinery is what separates a working implementation from a ported one. It is the kind of work that only becomes feasible once a compositor's rendering pipeline is mature enough to absorb extra per-frame computation without regressions.</p>
+<h4>Availability and upgrade paths</h4>
+<p>Hyprland releases are distributed through the usual Linux channels: distribution repositories, the upstream project's own package feeds, and source builds for users who compile it themselves. As with any compositor release, users on rolling-release distributions such as Arch Linux — where Hyprland is commonly packaged — can generally expect the new version to arrive through regular system updates shortly after release, while stable-branch distributions may take longer or hold the update for their own testing cycles.</p>
+<p>Users on other distributions should check their distribution's package status or build from source using the project's documented instructions. Specific mirror availability varies by region and distribution, so local readers should confirm current package status with their own repository rather than assuming a particular channel carries 0.57 immediately.</p>
+<h4>The bigger picture</h4>
+<p>Wobbly windows will not change how anyone works. But as a signal, the release is meaningful: a Wayland compositor shipping Compiz-grade visual effects in a routine update says the platform's core engineering phase has cooled enough for the community to spend time on delight as well as correctness. For users still hesitating over the X11-to-Wayland transition, the list of things Wayland "can't do" continues to shrink — one wobbly window at a time.</p>
+<p>The release was reported by Phoronix, which covered the announcement in its report on Hyprland 0.57.</p>
+<hr>
+<p>Hyprland 是 Wayland 生態系統中開發最活躍的平鋪式 compositor 之一，現已推出 0.57 版本，當中一項功能對於任何在 2000 年代中期使用過 Linux 桌面的用戶來說都倍感親切：靈感源自 Compiz 的搖晃視窗（wobbly windows）效果。據 Phoronix 報道，是次版本重現了令 Compiz 和 Beryl 聞名的經典效果——應用程式視窗在螢幕上拖曳時會隨之扭曲、抖動。</p>
+<p>這個效果絕非單純的懷舊賣點，它登陸 Wayland 本身亦傳遞出有關該生態系統現況的訊息。</p>
+<h4>從花巧效果到功能追平</h4>
+<p>搖晃視窗原是 Compiz 的招牌賣點。Compiz 是一款 OpenGL compositing 視窗管理器，在 2000 年代中期以渲染出 Windows 及 macOS 當時無法比擬的桌面效果而矚目。自 Compiz 的全盛時期以來，Wayland compositor 一直專注於基本功：可靠的輸入處理、多顯示器支援、縮放、透過 XDG portals 等協議實現的安全沙箱，以及最基本地令應用程式正確運行。</p>
+<p>裝飾性效果則屬較低優先事項——這正反映出一個仍在鞏固根基的生態系統。如今 compositor 把 Compiz 時代的修飾效果列為例行版本項目推出，意味著基本功已大致奠定，開發資源可以轉向打磨與個性化。</p>
+<p>這一定位對於正在評估 Wayland 是否「準備就緒」的用戶相當重要。與一款有 20 年歷史的 X11 compositor 達到功能對等，是合理的衡量標準，而跨越這道門檻，亦移除了其中一個最顯眼的差距。</p>
+<h4>為何此效果在 Wayland 上並非易事</h4>
+<p>實現搖晃視窗並非簡單地把舊 Compiz 插件複製過來。在 Wayland compositor 上，compositor 幾乎掌控整個渲染流程：它追蹤螢幕哪些區域已受損（damage）、安排幀時序，並自行合成輸出畫面。視窗位置必須在拖曳過程中持續取樣，而彈簧般的變形效果亦須逐幀套用，同時不得引入輸入延遲或畫面撕裂——而且一切都要在 VSync 及可變更新率顯示器所設定的幀預算之內完成。</p>
+<p>這種效果的動畫邏輯與 compositor 的 damage 追蹤及幀調度機制之間的整合，正是一般實現與真正可用實現之間的分野。只有當 compositor 的渲染 pipeline 成熟到足以承載額外的逐幀運算而不出現效能回歸時，這類工作才會變得可行。</p>
+<h4>取得途徑與升級方法</h4>
+<p>Hyprland 版本透過一般 Linux 渠道發佈：各發行版的軟件倉庫、上游項目本身的軟件源，以及供用戶自行編譯的原始碼。與其他 compositor 發佈一樣，Arch Linux 等 rolling-release 發行版（Hyprland 常見的打包平台）的用戶通常可在版本推出後不久透過例行系統更新取得新版本；而 stable branch 發行版則可能需時較長，或會先行保留更新以配合本身的測試週期。</p>
+<p>其他發行版的用戶應查閱所屬發行版的軟件包狀態，或按照項目文件的指示由原始碼編譯。特定鏡像站的可用性因地區及發行版而異，故本港讀者應向所用倉庫確認軟件包現況，不應假設某一渠道會即時提供 0.57 版本。</p>
+<h4>更宏觀的圖景</h4>
+<p>搖晃視窗不會改變任何人的工作方式。但作為一個訊號，這次發佈意義重大：一款 Wayland compositor 在例行更新中推出 Compiz 級別的視覺效果，說明平台的核心工程階段已降温至足夠程度，令社群得以在確保正確性之外，亦花時間講求令人愉悦的體驗。對於仍在猶豫是否由 X11 轉往 Wayland 的用戶而言，Wayland「做不到」的事項清單正不斷縮減——一次一扇搖晃的視窗。</p>
+<p>是次發佈由 Phoronix 報道，該媒體在其關於 Hyprland 0.57 的報導中詳述了相關公告。</p>
+<p><a href="https://www.phoronix.com/news/Hyprland-0.57" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
