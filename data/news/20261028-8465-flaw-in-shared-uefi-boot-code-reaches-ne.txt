@@ -1,0 +1,40 @@
+Date: 2026-10-28 06:35:00
+Author: HKLUG Team
+Title: Flaw in Shared UEFI Boot Code Reaches Nearly Every Server — and Runs Before the OS Can Watch
+Content:
+<p>Ars Technica reported on 28 October a code-execution flaw in EDK2 — the open-source reference implementation much of the world's UEFI firmware is built on — that lets attackers run code early in the boot process, before an operating system, endpoint agent, or hypervisor has loaded. The publication's headline frames the issue as one that threatens most servers on planet Earth, reflecting how broadly the affected codebase is shared rather than a confirmed count of impacted machines.</p>
+<p>That breadth comes from shared ancestry. EDK2 is forked, repackaged, and rebranded across the industry, spanning x86 and Arm server platforms. A defect at that layer can therefore propagate into boot firmware shipped by many different manufacturers — including systems that would never otherwise share a component.</p>
+<h4>Why the timing of execution is the real story</h4>
+<p>The reported concern is <em>where and when</em> the code runs. Traditional vulnerability management assumes a straightforward hierarchy: the operating system boots, enforces its own access controls, and observes everything that happens above it. Firmware-phase execution inverts that assumption. By the time kernel security tooling, EDR agents, or mandatory access-control policies are active, code that ran during the boot phase has already executed with the highest privileges on the machine and is not visible to those controls.</p>
+<p>Security researchers commonly characterise firmware-layer code execution as a privilege-escalation and persistence mechanism: an attacker who already holds user-level or administrative access on a host can use it to sit beneath the layers that would normally detect or contain them, surviving reboots and OS reimages.</p>
+<p>Secure Boot and measured boot do not close this gap. Both are detective mechanisms — they verify and record what loaded, but a flaw inside the trusted firmware itself is not something they are designed to reject. An exploit that lives inside the measured code is trusted by definition.</p>
+<h4>What server operations teams should do</h4>
+<p>For IT and server-operations teams, a disciplined sequence is more useful than a scramble:</p>
+<ol>
+<li><strong>Inventory firmware, not just software.</strong> Most vulnerability-management programmes track OS packages and applications but have no reliable record of which firmware version each server runs, or which EDK2-derived tree that firmware was built from. Closing that gap comes first.</li>
+<li><strong>Track the advisory chain.</strong> Because the flaw originates upstream in EDK2, remediation is expected to arrive through the TianoCore/EDK2 project first, then flow through chip vendors, then through OEM and ODM repackaging before it reaches a downloadable system BIOS or BMC update. Monitoring upstream EDK2 advisories and your hardware vendor's product security bulletins in parallel reduces the risk of lag behind any single layer.</li>
+<li><strong>Prioritise by exposure.</strong> Internet-facing and multi-tenant systems, machines where attackers already hold user-level or administrative access, and fleets with slow firmware-update cycles warrant attention first. Firmware-level code execution is most useful to an attacker as a means of privilege escalation and persistence, so the relevant question is which systems an attacker could realistically reach.</li>
+<li><strong>Compress the firmware patching cadence.</strong> Firmware updates are typically quarterly at best, gated behind maintenance windows and compatibility testing. Treating firmware as a first-class item on the vulnerability-management checklist — with named owners and a defined turnaround target — addresses that structural delay.</li>
+<li><strong>Plan compensating controls.</strong> Where patches cannot ship immediately, consider boot attestation, disabling unnecessary boot-time code paths, and tightening physical and out-of-band management access. BMC/IPMI interfaces are a common adjacent risk.</li>
+</ol>
+<p>Ars Technica's report does not name a CVE identifier, affected-version range, CVSS score, the specific vulnerable component or function, the disclosing researcher, or a patch date, and it does not address in-the-wild exploit status. The scope of that omission should be understood before this story is used to justify or deprioritise remediation work: teams seeking those specifics should check TianoCore/EDK2 advisories and their hardware vendor's PSIRT bulletins directly, and re-check as identifiers are assigned.</p>
+<p>The propagation pattern — one upstream library, silently embedded across otherwise unrelated systems — is the durable supply-chain lesson here, and it applies to the code that runs before everything else.</p>
+<hr>
+<p>Ars Technica 於 10 月 28 日報道，EDK2 — 全球大部分 UEFI firmware 所依據的開源參考實現 — 存在一項代碼執行漏洞，攻擊者可在開機流程較早階段執行代碼，先於作業系統、endpoint agent 或 hypervisor 載入。該刊標題將此事框定為威脅全球大部分伺服器，反映受影響代碼庫共享範圍之廣，而非已確認的受影響機器數目。</p>
+<p>這種廣泛影響源自共同血統。EDK2 在業界被 fork、重新打包及改頭換面，涵蓋 x86 及 Arm 伺服器平台。因此，該層面的缺陷可蔓延至多家不同製造商出貨的開機 firmware — 包括原本根本不會共用同一組件的系統。</p>
+<h4>為何執行的時間點才是報導重點</h4>
+<p>報道所關注的是代碼<em>在何處及何時</em>執行。傳統漏洞管理假設一個直接的層級關係：作業系統啟動、執行自身的存取控制，並監察其上發生的一切。Firmware 階段的執行顛覆了這項假設。待核心保安工具、EDR agent 或強制存取控制政策啟動時，在開機階段運行的代碼早已以機器最高權限執行完畢，且對這些控制措施並不可見。</p>
+<p>保安研究人員常把 firmware 層面的代碼執行描述為權限提升及持久化的手段：已在主機上取得使用者或管理員權限的攻擊者，可利用它潛伏於通常會偵測或阻截他們的各層之下，無論重新開機或重裝作業系統都能存活。</p>
+<p>Secure Boot 及 measured boot 均無法彌補此漏洞。兩者同屬偵測機制 — 它們驗證並記錄載入了什麼，但 trusted firmware 內部的缺陷並非它們設計上會拒絕的對象。存在於被量度（measured）代碼之內的 exploit，按定義即會被信任。</p>
+<h4>伺服器運維團隊應採取的措施</h4>
+<p>對 IT 及伺服器運維團隊而言，一套有紀律的步驟比臨時抱佛腳更有用：</p>
+<ol>
+<li><strong>盤點 firmware，而非僅限軟件。</strong> 大部分漏洞管理計劃只追蹤作業系統軟件包及應用程式，卻沒有可靠記錄每台伺服器運行哪個 firmware 版本，或該 firmware 由哪個 EDK2 衍生代碼樹建置而成。彌補此缺口應列首位。</li>
+<li><strong>追蹤安全通告鏈路。</strong> 由於漏洞源自 EDK2 上游，預期修復會先經 TianoCore/EDK2 項目發出，再流經晶片廠商，之後經 OEM 及 ODM 重新打包，最後才成為可下載的系統 BIOS 或 BMC 更新。同步監察上游 EDK2 安全通告及硬件供應商的產品保安公報，可降低落後於任何單一層面的風險。</li>
+<li><strong>按暴露程度排定優先次序。</strong> 對外連網及多租戶系統、攻擊者已取得使用者或管理員權限的機器、以及 firmware 更新周期緩慢的機隊應優先處理。Firmware 層面的代碼執行對攻擊者最有用之處，在於作為權限提升及持久化的手段，因此關鍵問題是攻擊者實際上有機會觸及哪些系統。</li>
+<li><strong>縮短 firmware 修補節奏。</strong> Firmware 更新一般最好也只是每季一次，且受制於維護窗口及兼容性測試。把 firmware 列入漏洞管理清單的一等項目 — 指派明確負責人及訂立處理時限目標 — 可處理此結構性延誤。</li>
+<li><strong>規劃補償性控制措施。</strong> 若無法即時推出補丁，可考慮 boot attestation、停用不必要的開機代碼路徑，以及收緊實體及 out-of-band 管理存取。BMC/IPMI 介面是常見的相鄰風險。</li>
+</ol>
+<p>Ars Technica 的報道未有列出 CVE 編號、受影響版本範圍、CVSS 評分、具體受影響的組件或函式、披露漏洞的研究人員或補丁日期，亦未交代漏洞在野外（in-the-wild）的 exploit 狀況。在引用此報導以支持或推遲修補工作之前，應先理解此等資料的缺失範圍：須要這些具體資料的團隊應直接查閱 TianoCore/EDK2 安全通告及硬件供應商的 PSIRT 公報，並在相關編號指派後再次查核。</p>
+<p>這種傳播模式 — 一個上游函式庫，悄然嵌入多個原本互不相關的系統 — 是此處關於供應鏈的持久教訓，而它同樣適用於在一切之前運行的那些代碼。</p>
+<p><a href="https://arstechnica.com/security/2026/10/code-execution-flaw-in-uefi-firmware-threatens-most-servers-on-planet-earth/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
