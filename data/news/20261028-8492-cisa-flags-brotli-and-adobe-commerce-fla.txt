@@ -1,0 +1,36 @@
+Date: 2026-10-28 11:26:00
+Author: HKLUG Team
+Title: CISA Flags Brotli and Adobe Commerce Flaws as Actively Exploited
+Content:
+<h3>CISA Flags Brotli and Adobe Commerce Flaws as Actively Exploited</h3>
+<p>The U.S. Cybersecurity and Infrastructure Security Agency (CISA) has added vulnerabilities in Google's Brotli compression library and in Adobe Commerce and Magento to its Known Exploited Vulnerabilities (KEV) catalog, according to Security Affairs. The additions are not a severity judgment — they are a statement that attackers are actively using these flaws in the wild, and for U.S. federal agencies they carry a binding remediation clock.</p>
+<h4>What KEV actually means</h4>
+<p>KEV is an operational shortlist, not a ratings table. Inclusion is driven by evidence of observed exploitation rather than a CVSS score, which lets defenders skip the familiar argument about whether a theoretical severity justifies interrupting a release cycle. Under Binding Operational Directive 22-01 (BOD 22-01), federal civilian agencies must remediate listed vulnerabilities within 21 days of CISA publishing the entry — currently the standard window.</p>
+<p>Outside the U.S. federal perimeter, that deadline binds no one else: teams elsewhere, including those running infrastructure in Hong Kong, are not bound by it. For them, the catalog's value lies elsewhere — it is one of the most reliable public indicators that a flaw has moved from proof-of-concept to real-world use. It is threat intelligence with a timestamp, not a compliance obligation.</p>
+<h4>The Brotli angle: an inventory problem</h4>
+<p>Brotli is a data-compression algorithm standardized as RFC 7932 and developed at Google. It now sits in place of or alongside gzip across browsers, web servers, content delivery networks, and container tooling — which is precisely what makes the KEV entry awkward to act on.</p>
+<p>Brotli is rarely deployed as a deliberately chosen, centrally tracked component. It most often arrives as a transitive or vendored dependency inside a framework, a build image, or an edge appliance. Standard asset inventories and version-checking scripts will not surface it. Remediation is therefore a dependency-hunting exercise: trace which applications and infrastructure bundles carry the library, apply vendor fixes through the channels that ship them, and record the result. For DevOps teams, this is a reminder that "we patched everything on the list" and "we know what's running" are two different claims.</p>
+<h4>The Adobe Commerce angle: visible and web-facing</h4>
+<p>The Adobe Commerce and Magento entries point at the opposite kind of risk: conspicuous, internet-reachable, and sitting directly on the payment path. Storefronts process cardholder data, expose admin panels to the public internet, and have been a durable target of card-skimming campaigns for years.</p>
+<p>Prioritization here should start with internet-facing stores, followed by applying vendor fixes as they become published. Patching alone is not the whole job: once a storefront has been compromised, injected skimmer code in checkout templates can outlive the original intrusion. Template and theme auditing belongs alongside the patch, not after it.</p>
+<h4>Why it matters beyond the catalog</h4>
+<p>The two additions pair a hard-to-see risk with an easy-to-see one. An embedded compression library teams did not know they shipped, and a payment-facing system they know is exposed, both landed on the same list because both are being exploited.</p>
+<p>Treat a KEV entry as a deadline, even where no regulator imposes one: verify fixes against each entry's published remediation date, confirm the fix is actually deployed rather than merely available, and — where the catalog does not specify scanning coverage — check your own tooling independently rather than assuming presence. KEV is a lagging indicator by design; by the time an entry appears, the exploitation window has already opened.</p>
+<p><em>Source: Security Affairs.</em></p>
+<hr>
+<h3>CISA 將 Brotli 及 Adobe Commerce 漏洞列為正遭積極利用</h3>
+<p>據 Security Affairs 報道，美國網絡安全和基礎設施安全局（CISA）已將 Google Brotli 壓縮庫以及 Adobe Commerce 和 Magento 的漏洞，納入其「已知被利用漏洞」（Known Exploited Vulnerabilities，KEV）目錄。此舉並非嚴重程度評級——而是表明攻擊者正於實戰中積極利用這些漏洞；對美國聯邦機構而言，這更附帶具有約束力的修補期限。</p>
+<h4>KEV 實際代表什麼</h4>
+<p>KEV 是一份行動清單，而非評分表。列入與否取決於已觀察到的利用證據，而非 CVSS 評分，這使防禦方毋須再糾纏於「理論上的嚴重程度是否足以打斷發布週期」的爭論。根據《具有約束力的行動指令 22-01》（Binding Operational Directive 22-01，BOD 22-01），聯邦民用機構須在 CISA 發布條目後 21 日內完成修補——這亦是目前的標準期限。</p>
+<p>在美國聯邦管轄範圍之外，該期限對任何人都不具約束力：其他地方的團隊，包括在香港營運基礎設施的團隊，均不受其規限。對他們而言，該目錄的價值在於另一方面——它是判斷漏洞已由概念驗證（proof-of-concept）階段進入現實應用的最可靠公開指標之一。這是有時間戳記的威脅情報，而非合規義務。</p>
+<h4>Brotli 角度：資產盤點問題</h4>
+<p>Brotli 是一種數據壓縮演算法，以 RFC 7932 標準化，由 Google 開發。它目前在各大瀏覽器、網絡伺服器、內容傳遞網絡（CDN）及 container 工具中，已取代或與 gzip 並存——這正是令該 KEV 條目難以落實修補的原因。</p>
+<p>Brotli 很少被作為刻意選定、由中央統一追蹤的組件部署。它最常以傳遞依賴（transitive dependency）或內嵌（vendored）依賴的形式，藏身於某個框架、build image 或 edge appliance 之中。標準資產盤點和版本檢查腳本無法將其識別出來。因此，修補工作實質上是一場依賴追蹤：追查哪些應用及基礎設施套件攜帶該庫、透過各供應商的發布渠道套用修復，並記錄結果。對 DevOps 團隊而言，這是一個提醒：「我們已修補清單上的一切」與「我們清楚正在運行什麼」是兩回事。</p>
+<h4>Adobe Commerce 角度：顯眼且面向互聯網</h4>
+<p>Adobe Commerce 及 Magento 的條目指向相反類型的風險：顯眼、可從互聯網到達，而且直接位於付款流程上。商店前台會處理持卡人數據，並向公眾互聯網開放管理後台，多年來一直是 card-skimming 攻擊行動的持久目標。</p>
+<p>此處的優先次序應從面向互聯網的商店開始，繼而按供應商發布修復的進度逐一套用。單靠套用修補程式並非全部工作：一旦商店前台遭入侵，注入結帳模板中的 skimmer 代碼可能比原本的入侵活得更久。模板與主題審計應與修補程式同步進行，而非在其之後。</p>
+<h4>為何此事超越目錄本身</h4>
+<p>這兩項新增條目，將一個難以察覺的風險與一個顯而易見的風險並列：一個團隊從不知道自己已隨產品交付的嵌入式壓縮庫，以及一個他們明知正暴露在外的付款系統，同時登上同一份清單，原因是兩者正遭利用。</p>
+<p>即使並無監管機構訂明期限，也應把每個 KEV 條目視為限期：按各條目的已發布修補日期核實修復狀況、確認修復確已部署而非僅僅「已提供」，並在目錄未有指明掃描覆蓋範圍時——自行獨立查核自身的工具，而非假設漏洞已被偵測。KEV 設計上就是滯後指標；當條目出現時，利用的窗口早已開啟。</p>
+<p><em>來源：Security Affairs。</em></p>
+<p><a href="https://securityaffairs.com/201922/security/u-s-cisa-adds-google-brotli-and-adobe-commerce-and-magento-flaws-to-its-known-exploited-vulnerabilities-catalog.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
