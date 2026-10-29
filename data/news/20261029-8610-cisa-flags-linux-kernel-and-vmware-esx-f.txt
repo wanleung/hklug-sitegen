@@ -1,0 +1,44 @@
+Date: 2026-10-29 17:26:00
+Author: HKLUG Team
+Title: CISA Flags Linux Kernel and VMware ESX Flaws as Under Active Attack
+Content:
+<h3>CISA Flags Linux Kernel and VMware ESX Flaws as Under Active Attack</h3>
+<p>CISA has added one Linux kernel flaw and one Broadcom VMware ESX flaw to its Known Exploited Vulnerabilities (KEV) catalog after concluding that both are already being used against real targets. Broadcom shipped fixes for the ESX issue back in July, which makes the uncomfortable part of this story straightforward: the patches exist, and the variable is how quickly they reach production.</p>
+<p>For anyone running virtualised infrastructure — data-centre operators, managed service providers, and enterprise platform teams — the right response is an estate sweep rather than a wait-and-see posture. A working checklist:</p>
+<ol>
+<li><strong>Inventory every ESXi/ESX host</strong> and verify it is running the fixed builds referenced in Broadcom's July advisory. Include secondary sites, DR clusters, and hosts tucked behind vendor-managed consoles.</li>
+<li><strong>Check kernel patch status across every Linux estate</strong>, covering long-lived distributions, container base images, and hardened appliance images that update on a vendor's schedule rather than yours.</li>
+<li><strong>Audit how hypervisor management interfaces are reachable.</strong> Exposed vCentre or ESXi management planes remain a recurring breach vector; anything addressable from the public internet belongs behind a VPN or equivalent access gateway.</li>
+<li><strong>Time-box any compensating controls</strong> relied upon while slower-moving systems are remediated, and log the exceptions so they can be re-tested rather than quietly inherited.</li>
+<li><strong>Pull the exact identifiers and remediation deadlines from CISA's KEV entry</strong> for each flaw and track them against your remediation queue. Security Affairs, which reported the additions, points readers to the individual catalog entries rather than a summarised list — and the KEV record itself is the authoritative source for the due date attached to each item.</li>
+</ol>
+<h4>Why the KEV listing changes the maths</h4>
+<p>A KEV entry is CISA's statement that the evidence supports active exploitation, not merely theoretical risk. Under Binding Operational Directive 22-01, U.S. federal agencies must remediate listed vulnerabilities by their published due dates. Private-sector organisations are not bound by the directive, but the catalog has effectively become a de facto triage benchmark — a defensible, evidence-based answer to the perennial question of which patch moves first. For teams working under contractual SLAs or customer security reviews, "it is on CISA's exploited list" typically carries more weight than a vendor severity score on its own.</p>
+<h4>Why hypervisor and kernel bugs are high-leverage targets</h4>
+<p>Hypervisors sit at the top of the blast-radius hierarchy: one compromised ESXi host can expose or encrypt an entire cluster's worth of workloads, and ransomware operators have repeatedly gone after ESXi deployments directly for exactly that leverage. Kernel flaws carry similar weight on the host side, where a fix may exist but have not yet propagated into frozen images or vendor appliances. Broadcom's July patches now carry an exploitation designation behind them, which strengthens the case for pulling that remediation forward instead of letting it ride a normal release cycle.</p>
+<p>The window that matters is the one between patch availability and verified deployment. For virtualisation-heavy operations — including the data-centre and enterprise estates underpinning much of Hong Kong's IT infrastructure — that window is measured in days and weeks, not quarters, and it is worth confirming it is closed on your own infrastructure rather than assuming it is.</p>
+<h4>Perspective: this is a governance story as much as a technical one</h4>
+<p>When a fix ships and the exploit still lands months later, the failure is rarely a missing tool. More often it is diffused ownership: no single party holds the patch-to-deployment interval, so the interval stretches silently. Frozen appliance images, unrebuilt container base layers, and hosts managed by a third-party provider all create the same pattern — systems that are technically patched in a vendor's release notes but unchanged in production.</p>
+<p>Two habits close that gap. First, treat the interval between patch release and verified deployment as a measured metric with a named owner, the same way availability or incident response time is measured. Second, maintain a current inventory of virtualisation and kernel dependencies before an incident forces the question, not after. Both are accountability measures, and neither requires new software.</p>
+<p>CISA's full Known Exploited Vulnerabilities catalog, with per-CVE remediation deadlines, is published at cisa.gov/known-exploited-vulnerabilities-catalog.</p>
+<hr>
+<h3>CISA 將 Linux 核心及 VMware ESX 漏洞列為正遭活躍攻擊目標</h3>
+<p>美國網絡安全及基礎設施安全局（CISA）已將一個 Linux 核心漏洞及一個 Broadcom VMware ESX 漏洞加入其「已知被利用漏洞」（Known Exploited Vulnerabilities，KEV）目錄，理由是兩者均已被用於攻擊真實目標。Broadcom 早在七月已為 ESX 問題發佈修補程式，這使得事件中令人不安的部分一目了然：補丁已經存在，變數只在於它們多快能部署到生產環境。</p>
+<p>對任何運行虛擬化基建的人來說——無論是數據中心運營商、託管服務供應商（MSP）還是企業平台團隊——正確的應對方式是全面檢視整個系統範圍，而非靜觀其變。以下是一份實用清單：</p>
+<ol>
+<li><strong>盤點每一台 ESXi/ESX 主機</strong>，並確認其正運行 Broadcom 七月通告所指明的已修訂版本。範圍應包括次要站點、災難復原（DR）叢集，以及由供應商管理控制台背後的主機。</li>
+<li><strong>檢查所有 Linux 系統的核心補丁狀態</strong>，涵蓋長年支援的發行版、container base image，以及按供應商而非按你的時間表更新的加固 appliance 鏡像。</li>
+<li><strong>審核 hypervisor 管理介面的可達性。</strong> 暴露在外的 vCentre 或 ESXi 管理平面一直是常見的入侵途徑；任何可從公眾互聯網直接連上的介面，都應置於 VPN 或同等的存取閘道之後。</li>
+<li><strong>為較慢系統修補期間所依賴的任何補償性控制設定時限</strong>，並記錄相關例外情況，使其日後可重新測試，而非悄然沿用。</li>
+<li><strong>從 CISA 的 KEV 條目中取得每項漏洞的準確識別碼及修補期限</strong>，並納入你的修補工作佇列追蹤。報道此次新增條目的 Security Affairs 提醒讀者查閱各個目錄條目而非綜合清單——而 KEV 記錄本身才是每項條目所附期限的權威來源。</li>
+</ol>
+<h4>為何列入 KEV 會改變形勢</h4>
+<p>KEV 條目代表 CISA 的判斷：證據顯示漏洞已被活躍利用，而非僅屬理論風險。根據《具約束力的行動指令 22-01》（Binding Operational Directive 22-01），美國聯邦機構必須在公布的期限內修補已列明的漏洞。私營機構雖不受該指令約束，但該目錄實際上已成為業界默認的處理優先次序基準——為「哪個補丁應優先處理」這個恆久問題，提供一個有理有據、基於證據的答案。對於在合約 SLA 或客戶安全審查壓力下運作的團隊而言，「該漏洞已列入 CISA 已利用清單」通常比單純的供應商嚴重性評分更具份量。</p>
+<h4>為何 hypervisor 及核心漏洞是高槓桿目標</h4>
+<p>Hypervisor 位居衝擊範圍層級的頂端：一台被入侵的 ESXi 主機足以暴露或加密整個叢集的工作負載，勒索軟件運營者正是看中這一點，多次直接針對 ESXi 部署下手。核心漏洞在主機端同樣舉足輕重——修補程式可能已經存在，卻尚未滲透到凍結的鏡像或供應商 appliance 之中。Broadcom 七月的補丁如今有漏洞已被利用的認定加持，這加強了提前部署該修補程式的理據，而非讓它隨一般發布周期緩慢推進。</p>
+<p>關鍵的窗口在於補丁可供下載與完成驗證部署之間。對虛擬化程度高的運營環境而言——包括支撐香港大量 IT 基建的數據中心及企業系統——這個窗口以天和星期計算，而非以季度計算；值得你親自確認這個窗口在自己的基建上已經關閉，而非想當然地假設如此。</p>
+<h4>觀點：這既是技術問題，更是治理問題</h4>
+<p>當修補程式早已發布、漏洞利用卻在數月後仍然得手，失敗的原因很少是工具缺失。更多時候是責任分散：沒有任何單一方承擔「補丁發布至部署」之間的時距責任，時距便在無人察覺下不斷擴大。凍結的 appliance 鏡像、從未重新建置的 container base layer，以及由第三方供應商管理的主機，全都造成同一模式——系統在供應商 release notes 中「技術上已修補」，在生產環境中卻絲毫未變。</p>
+<p>兩個習慣可以彌合這個差距。第一，把「補丁發布至驗證部署」的時距視為一項有指定負責人的量化指標，正如可用性或事件響應時間一樣加以衡量。第二，在事件逼使你面對問題之前，而非事後，維護一份最新的虛擬化及核心依賴清單。兩者都是問責措施，而且都不需要添置新軟件。</p>
+<p>CISA 完整的已知被利用漏洞目錄，附各 CVE 修補期限，已刊載於 cisa.gov/known-exploited-vulnerabilities-catalog。</p>
+<p><a href="https://securityaffairs.com/202050/hacking/u-s-cisa-adds-linux-kernel-and-broadcom-vmware-esx-flaws-to-its-known-exploited-vulnerabilities-catalog.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
