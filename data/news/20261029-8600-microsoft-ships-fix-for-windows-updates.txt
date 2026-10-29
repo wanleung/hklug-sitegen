@@ -1,0 +1,28 @@
+Date: 2026-10-29 16:05:00
+Author: HKLUG Team
+Title: Microsoft Ships Fix for Windows Updates That Shut Non-Admins Out of Remote Desktop
+Content:
+<p>Microsoft has cleared a known issue that left non-administrator users unable to reach their machines over Remote Desktop after recent Windows updates, where the <strong>Administrator protection</strong> security feature was switched on. BleepingComputer, which reported the resolution, notes that the fault applied only to builds carrying the feature.</p>
+<h4>Why it slipped past normal checks</h4>
+<p>The failure hid in plain sight. Administrative RDP sessions carried on working while standard-user sessions failed — so the first test most administrators run, a login with their own privileged account, reports a perfectly healthy estate during an active outage. The problem surfaces only when an ordinary user tries to connect, and when it does, it reads like a permissions problem, a misconfigured Remote Desktop Gateway or a firewall rule gone wrong rather than a regression introduced by a cumulative update. Each of those dead ends sends triage in the wrong direction and stretches time-to-resolution.</p>
+<p>The precondition is Administrator protection itself. The feature, introduced to separate privileged sign-in from everyday browsing and application use, changed how elevated sessions are assembled — and that reworking collided with a Remote Desktop session path that has been stable for years. Machines with the feature disabled were never affected.</p>
+<p>For estates that have adopted it, the sequence is straightforward: take the corrective update through the normal cumulative release cycle, then confirm the repair with a genuine non-administrator RDP login rather than a privileged one.</p>
+<h4>The workaround, and what it costs</h4>
+<p>BleepingComputer's report describes Microsoft's interim guidance as disabling Administrator protection on affected systems. That restores connectivity by surrendering the very control the feature exists to provide, so it belongs on specific machines as a stopgap — not as an estate-wide configuration rollback — and it should be reversed once the patched cumulative update is in place.</p>
+<p>For per-build detail, the report points administrators to the affected and remedial KB identifiers listed in Microsoft's Windows release health dashboard under the Administrator protection known-issue entry, and reproduces them for each supported release. Per BleepingComputer, that Release Health entry is where Microsoft records whether the issue has been resolved on a given channel, making it the status check to consult before rolling anything forward.</p>
+<h4>What to add to patch validation</h4>
+<p>One line is worth adding to this month's patch cycle: script a non-administrator RDP login against a representative sample of hosts. Validation that stops at "the machine boots and services start" cannot catch a regression in the session path, and hardening features such as Administrator protection are an increasingly common source of friction between new security defaults and access flows that have worked for years. Early adopters of those features tend to absorb the compatibility bugs first.</p>
+<p>For Hong Kong's managed-service and remote-administration providers, the pattern is worth passing to clients in general: a helpdesk that verifies access with technician credentials will report no issue while users remain locked out. It earns a line in the runbook before the next cumulative update lands.</p>
+<hr>
+<p>微軟已解決一項已知問題：在最近的 Windows 更新之後，若系統啟用了 <strong>Administrator protection</strong> 安全功能，非管理員用戶將無法透過遙距桌面連接自己的電腦。率先報道有關解決方案的 BleepingComputer 指出，該故障僅適用於載有此功能的版本。</p>
+<h4>為何逃過正常檢查</h4>
+<p>這次故障其實顯而易見，卻未被察覺。管理員的 RDP 連線持續正常運作，而標準用戶的連線則告失敗——因此大多數管理員首先進行的測試，即以自己的特權帳戶登入，即使在故障發生期間，也會顯示整個系統一切正常。問題只有在普通用戶嘗試連接時才會浮現，而且出現時，其症狀看似權限問題、Remote Desktop Gateway 設定錯誤或防火牆規則出錯，而非累積更新所引入的回歸缺陷。上述每一條死胡同都會令排查方向錯誤，拖長解決問題所需的時間。</p>
+<p>其先決條件正是 Administrator protection 本身。該功能旨在將特權登入與日常瀏覽及應用程式的使用分隔開來，並改變了提升權限會話的組裝方式——而這次改動與一條多年來一直穩定運作的遙距桌面會話路徑發生衝突。停用此功能的電腦從未受到影響。</p>
+<p>對於已採用此功能的系統，處理步驟相當直接：透過正常的累積更新發布週期取得修正更新，然後以真正的非管理員 RDP 登入（而非特權登入）來確認修復是否生效。</p>
+<h4>權宜之計及其代價</h4>
+<p>BleepingComputer 的報道指出，微軟的臨時指引是在受影響的系統上停用 Administrator protection。此舉透過放棄該功能本應提供的控制權來恢復連接能力，因此只適合作為特定電腦的權宜之計——不應作為整個系統的設定回退方案——並應在已安裝修補的累積更新後予以恢復。</p>
+<p>如需逐個版本的詳細資料，報道引導管理員查閱微軟 Windows Release Health 儀表板中「Administrator protection known issue」條目下列出的受影響及修復 KB 編號，並列出了各受支援版本的相關編號。據 BleepingComputer 表示，該 Release Health 條目正是微軟記錄問題在各發布渠道是否已獲解決的地方，因此在推進任何更新之前，應先查閱此處的狀態。</p>
+<h4>修補驗證應加入什麼</h4>
+<p>本月的修補週期值得加入一項測試：以非管理員 RDP 登入對具代表性的主機樣本進行測試。僅止於「機器能啟動、服務能運行」的驗證，無法偵測會話路徑的回歸缺陷；而 Administrator protection 等強化功能，正日益成為新安全預設值與多年來運作正常的存取流程之間的摩擦來源。率先採用這些功能者，往往最先承受兼容性錯誤的後果。</p>
+<p>對於香港的託管服務及遙距管理服務供應商而言，此模式值得廣泛向客戶傳達：服務台若只以技術人員憑證驗證存取，在用戶仍被拒諸門外之時會回報一切正常。此項測試理應在下一次累積更新推出前，寫入運作手冊之中。</p>
+<p><a href="https://www.bleepingcomputer.com/news/microsoft/microsoft-fixes-remote-desktop-failures-caused-by-recent-windows-updates/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
