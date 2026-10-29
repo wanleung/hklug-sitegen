@@ -1,0 +1,46 @@
+Date: 2026-10-28 00:00:00
+Author: HKLUG Team
+Title: Alpine Linux's Own GitLab Hit by Post-Patch Attack on a CVSS 10.0 CI Regex Bug
+Content:
+<p>An attacker attempted to compromise the Alpine Linux project's own GitLab server roughly a week after GitLab shipped a fix for the flaw they were targeting, Alpine disclosed on 28 October, according to The Hacker News.</p>
+<p>The vulnerability in question is CVE-2026-97229, a GitLab bug carrying a maximum CVSS score of 10.0. It allows remote code execution on a GitLab server through a specially crafted regular expression embedded in a CI configuration file — the kind of payload that blends into normal pipeline activity. Alpine said it found no evidence that the attempt succeeded.</p>
+<p>The more revealing part of the story is why the project's server was still reachable at all. The GitLab instance had been installed through Ruby packaging inside a container, and that deployment path never received the upstream patch. The fix existed; it simply never travelled down the packaging chain to the running instance.</p>
+<p><strong>A second patching lifecycle</strong></p>
+<p>That gap is the real lesson. Containerised deployments carry two patching lifecycles: the one for the OS image and base packages, and the one for applications layered on top through language package managers, vendored installers, and bundle-style tooling. Vulnerability scanners typically watch the first. CVE-2026-97229 lived in the second, where a CVSS 10.0 flaw can sit open while every layer of the stack below it looks current.</p>
+<p><strong>Exploited after the fix</strong></p>
+<p>The incident is also a useful correction to the way critical CVEs get discussed. This was not a zero-day: the fix had already been public for days before anyone tried to use the bug. Operators scanning for novel exploit chains should note that the more common pattern is a known flaw being probed on infrastructure that never got the update.</p>
+<p>Alpine's ability to state that no compromise occurred is itself worth noting. Distinguishing a failed probe from a quiet breach requires logging and review; projects running self-managed infrastructure without that visibility cannot make the same claim, and would have no way to know which of the two they experienced.</p>
+<p><strong>Why cloud-native teams should care</strong></p>
+<p>For teams in Hong Kong and elsewhere running self-hosted GitLab, GitLab runners, or Alpine-based CI images, the incident maps onto a familiar set of exposures: internal GitLab servers treated as trusted network residents, runner executors that parse untrusted <code>.gitlab-ci.yml</code> content, and package installations that fall outside the regular image rebuild cycle.</p>
+<p>A practical remediation checklist:</p>
+<ol>
+<li><strong>Inventory non-distro installs.</strong> Find GitLab and other applications installed via Ruby, script installers, or language package managers inside your images — these sit outside OS-level CVE feeds.</li>
+<li><strong>Pin and rebuild.</strong> Rebuild container images on a fixed cadence and verify that application versions in running instances match what the build manifest expects.</li>
+<li><strong>Patch against upstream release notes, not scan results alone.</strong> Track vendor advisories for self-hosted components; a clean scan of the base image proves nothing about the app layer.</li>
+<li><strong>Restrict CI configuration trust.</strong> Limit who can modify pipeline definitions, and treat regex-heavy CI input as untrusted data on exposed instances.</li>
+<li><strong>Log, review, and minimise exposure.</strong> Capture CI job execution, GitLab authentication events, and outbound traffic from runners — and actually review them, which is what allowed Alpine to say the attack failed. Where possible, front internet-facing instances with access controls and monitor for exactly this kind of post-advisory probing.</li>
+</ol>
+<p>The fix for CVE-2026-97229 is already public. The question the Alpine disclosure leaves is how many other self-managed instances are still waiting for a packaging chain to deliver it.</p>
+<p>Source: The Hacker News, 28 October 2026.</p>
+<hr>
+<p>據 The Hacker News 報道，Alpine 於 10 月 28 日披露，有攻擊者曾試圖入侵 Alpine Linux 專案自身的 GitLab 伺服器，事發時間約在 GitLab 發布針對其目標漏洞的修復補丁一週之後。</p>
+<p>相關漏洞為 CVE-2026-97229，是 GitLab 的一個錯誤，CVSS 評分達最高的 10.0。攻擊者可透過嵌入 CI 設定檔中的特製正規表示式（regular expression），在 GitLab 伺服器上實現 remote code execution——此類載荷可混跡於正常 pipeline 活動之中而不易察覺。Alpine 表示，並無證據顯示該次入侵嘗試得逞。</p>
+<p>事件中更值得注意的部分，是為何該專案的伺服器仍然可以被訪問。該 GitLab 實例是以 Ruby packaging 方式在 container 內安裝的，而這條部署路徑從未接收到上游補丁。修復方案早已存在，只是從未沿著 packaging 鏈條傳遞至實際運行的實例。</p>
+<p><strong>第二條修補生命週期</strong></p>
+<p>這一落差正是事件的真正教訓。容器化部署涉及兩條修補生命週期：一條針對 OS image 及 base packages，另一條針對透過語言 package manager、vendored installer 及 bundle 式工具疊加其上的應用程式。漏洞掃描器通常只監控第一條。CVE-2026-97229 存在於第二條之中——在 CVSS 10.0 漏洞長期敞開的同時，其下方技術堆疊的每一層看起來都仍是最新版本。</p>
+<p><strong>修復後仍遭利用</strong></p>
+<p>此事亦對討論關鍵 CVE 的方式提供了一個有益的糾正。這並非 zero-day：在任何人嘗試利用該漏洞之前，修復方案已公開數天。負責掃描新式 exploit chain 的維運人員應留意，更常見的情況是：已知漏洞在從未取得更新的基礎設施上遭到探測。</p>
+<p>Alpine 能夠聲明未遭入侵，本身亦值得注意。要區分一次失敗的探測與一場悄然的入侵，必須具備日誌記錄與審查能力；自行管理基礎設施、缺乏此等可見性的專案無法作出同樣聲明，甚至無從得知自己經歷的究竟是哪一種情況。</p>
+<p><strong>為何雲原生團隊應關注</strong></p>
+<p>對於香港及其他地區運行 self-hosted GitLab、GitLab runner 或基於 Alpine 的 CI image 的團隊而言，此事件對應一組熟悉的風險面：被視為受信任網絡成員的內部 GitLab 伺服器、解析不受信任 <code>.gitlab-ci.yml</code> 內容的 runner executor，以及脫離常規 image 重建週期的套件安裝。</p>
+<p>實用的補救清單：</p>
+<ol>
+<li><strong>盤點非發行版安裝。</strong>找出映像中透過 Ruby、script installer 或語言 package manager 安裝的 GitLab 及其他應用程式——這些安裝方式處於 OS 層級 CVE feed 的監控範圍之外。</li>
+<li><strong>鎖定版本並重建。</strong>按固定節奏重建 container image，並核對運行實例中的應用程式版本是否與 build manifest 所預期的一致。</li>
+<li><strong>依據上游 release notes 修補，而非僅依賴掃描結果。</strong>追蹤 self-hosted 組件的廠商通告；對 base image 的乾淨掃描結果，無法證明應用層面安全。</li>
+<li><strong>限制 CI 設定的信任。</strong>限制可修改 pipeline 定義的人員，並在可對外訪問的實例上，將正規表示式密集的 CI 輸入視為不受信任數據。</li>
+<li><strong>記錄、審查並最小化暴露面。</strong>擷取 CI job 執行紀錄、GitLab 認證事件及 runner 的 outbound traffic——並且真正進行審查，正是這一點令 Alpine 得以宣稱攻擊失敗。在可行情況下，為對外開放的實例設置存取控制，並針對此類補丁通告後的探測行為進行監控。</li>
+</ol>
+<p>CVE-2026-97229 的修復方案已公開。Alpine 披露留下的問題是：還有多少其他 self-managed 實例仍在等待 packaging 鏈條將其送達。</p>
+<p>資料來源：The Hacker News，2026 年 10 月 28 日。</p>
+<p><a href="https://thehackernews.com/2026/10/attacker-tried-to-exploit-alpine-linuxs.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
