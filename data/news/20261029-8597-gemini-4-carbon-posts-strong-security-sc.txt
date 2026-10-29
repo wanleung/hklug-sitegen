@@ -1,0 +1,38 @@
+Date: 2026-10-29 18:15:00
+Author: HKLUG Team
+Title: Gemini 4 Carbon Posts Strong Security Scores — but Google Ran the Tests
+Content:
+<p>Google on Wednesday unveiled Gemini 4 Carbon, its newest frontier model, and made cybersecurity a headline capability rather than a side experiment. As The Hacker News reported in its coverage of the launch, the company claims state-of-the-art results on two security evaluations: 88.2% on SEC-bench Pro for finding vulnerabilities, and 54.8% on ExploitGym for exploiting them.</p>
+<p>Both figures are Google-reported scores. The source report relays the company's own claimed results and cites no independent replication of either evaluation — an important distinction for anyone weighing the numbers as evidence rather than as marketing.</p>
+<p><strong>Discovery is not exploitation</strong></p>
+<p>The most interesting signal is not the top-line 88.2%, but the gap between the two scores. Flagging a suspicious code pattern and following a flaw through to actual impact are different competencies: the first is closer to what noisy static analysers have done for years, while the second requires long-horizon reasoning — holding a chain of steps in view, testing assumptions, and re-planning when an intermediate path fails. ExploitGym is intended to measure exactly that persistence, which is why a 54.8% exploitation rate is the more noteworthy number, provided it holds up outside curated benchmark code.</p>
+<p>That caveat matters because security capability has become a marquee differentiator among frontier labs. When find/exploit/patch performance moves from niche demonstration to launch-day marketing, the pressure on independent validation rises with it.</p>
+<p><strong>A practical evaluation checklist</strong></p>
+<p>For security teams comparing AI-driven discovery and patching tools, benchmark scores are due-diligence entry points, not procurement criteria. A workable test:</p>
+<ul>
+<li><strong>Run the model and your current stack against the same known-vulnerable internal application.</strong> Incremental yield on your own code — genuinely new, reproducible findings your existing scanners missed — is the only metric that reflects your environment.</li>
+<li><strong>Measure the review burden.</strong> Track false positives and the analyst time per confirmed finding; a tool that generates plausible-but-wrong reports can cost more than it saves.</li>
+<li><strong>Verify sandboxing before enabling exploit execution.</strong> Anything that attempts to weaponise a finding should run isolated, with explicit scope limits.</li>
+<li><strong>Treat model-authored patches as ordinary pull requests.</strong> They require human review, tests, and the same approval path as contributor code — no shortcut because a model wrote them.</li>
+</ul>
+<p><strong>Deployment questions</strong></p>
+<p>Teams weighing these tools will want to settle practical deployment questions alongside model quality. Data residency and vendor subprocessors are procurement-level items, not afterthoughts — for Hong Kong organisations handling personal data, the Personal Data (Privacy) Ordinance is a natural starting point for asking where source code, logs, and generated patches actually travel, and what contractual and technical controls apply along the way. The benchmarks say nothing about a model's behaviour under your data-handling constraints; that has to be established contractually and verified technically.</p>
+<p>The bottom line: Google's numbers describe what Gemini 4 Carbon can do under Google's evaluation conditions. Whether it improves your security posture is a question only your codebase can answer — and the source report offers no third-party run to answer it in the meantime.</p>
+<hr>
+<p>Google 於星期三正式發布 Gemini 4 Carbon，這款最新的前沿模型把網絡安全列為核心賣點，而非附帶實驗。根據 The Hacker News 對是次發布的報道，公司聲稱在兩項安全評測中取得頂尖成績：SEC-bench Pro（漏洞搜尋）88.2%，ExploitGym（漏洞利用）54.8%。</p>
+<p>這兩個數字均由 Google 自行申報。原報道轉述的是公司自己聲稱的結果，沒有引用任何獨立第三方的複現測試 — 對於打算把這些分數當作證據、而非宣傳材料來衡量的人來說，這個區別相當重要。</p>
+<p><strong>發現漏洞不等於利用漏洞</strong></p>
+<p>最值得留意的訊號不是 88.2% 的高分，而是兩個分數之間的落差。標記一段可疑程式碼，跟著一條漏洞追到實際可造成的影響，是兩種不同的能力：前者比較接近多年來誤報偏多的 static analysers 一直在做的事情，後者則需要長程推理能力 — 全程掌握整條步驟鏈、檢驗每個假設，並在中途路線走不通時重新規劃。ExploitGym 正是用來衡量這種持久性，所以 54.8% 的利用率才是更值得注意的數字，前提是它離開精選的 benchmark 代碼後仍然成立。</p>
+<p>這個前提之所以重要，是因為安全能力已成為前沿實驗室之間的招牌差異化賣點。當 find／exploit／patch 的表現由小眾展示變成發布日的營銷口號，對獨立驗證的壓力也會同步上升。</p>
+<p><strong>一份實用的評估清單</strong></p>
+<p>對比較 AI 驗洞與修補工具的安全團隊而言，benchmark 分數只是盡職審查的敲門磚，不是採購標準。可操作的測試方式如下：</p>
+<ul>
+<li><strong>用同一個已知有漏洞的內部應用程式，同時跑模型和現有方案。</strong> 對自家代碼的增量產出 — 真正新鮮、可重現、既有掃描器漏掉的發現 — 才是反映你自身環境的唯一指標。</li>
+<li><strong>衡量審查負擔。</strong> 追蹤 false positive 數量，以及每個確認發現所耗用的分析員時間；一個只會生成「看似合理其實不對」報告的工具，成本可能高於它節省的開銷。</li>
+<li><strong>啟用漏洞利用功能前，先確認沙箱隔離。</strong> 任何嘗試把發現武器化的動作，都必須在隔離環境中執行，並有明確的範圍限制。</li>
+<li><strong>模型寫出來的補丁，一律當普通 pull request 處理。</strong> 同樣需要人工審查、測試和既有的核准流程 — 不因為是模型寫的就走捷徑。</li>
+</ul>
+<p><strong>部署層面的問題</strong></p>
+<p>選購這類工具時，團隊還需要在模型能力之外，處理好實際部署問題。資料存放地點與供應商的次承包商（subprocessor）屬採購層面的事項，不能事後才補 — 對處理個人資料的香港機構來說，《個人資料（私隱）條例》是提出這些問題的自然起點：源代碼、日誌和生成的補丁究竟流向哪裡，沿途適用哪些合約與技術保障。Benchmark 完全沒有涉及模型在你的資料處理約束下的行為；這一點必須在合約上釐清、在技術上驗證。</p>
+<p>總結：Google 的數字描述的是 Gemini 4 Carbon 在 Google 自訂評測條件下的表現。它能否改善你的安全態勢，只有你的代碼庫能回答 — 而在第三方複現測試出現之前，原報道也沒有提供這方面的答案。</p>
+<p><a href="https://thehackernews.com/2026/10/googles-gemini-4-carbon-leads.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
