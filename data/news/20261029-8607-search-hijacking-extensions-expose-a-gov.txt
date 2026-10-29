@@ -1,0 +1,42 @@
+Date: 2026-10-29 17:32:00
+Author: HKLUG Team
+Title: Search-Hijacking Extensions Expose a Governance Gap Endpoint Tools Cannot See
+Content:
+<p>Enterprises auditing their managed browser estates should treat add-on allowlisting as a first-class security control after a campaign that saw 319 Chrome extensions, carrying a combined 13.4 million reported installations, hijacking users' searches.</p>
+<p>According to BleepingComputer, which disclosed the campaign, the extensions redirected search traffic through tracking servers before landing users on results, with the apparent purpose of monetising the flow: the operators earned advertising revenue from Bing and Yahoo each time a hijacked query resolved. The mechanism is quiet by design. There is no drive-by download and no credential theft — only a search assistant that quietly routes queries through an intermediary before returning what looks like a normal results page.</p>
+<p>The install figure deserves a caveat that is easy to overlook. The 13.4 million number is a self-reported installation count displayed by the Chrome Web Store, not a measurement of active users or of code currently running in anyone's browser. Store counts accumulate over the lifetime of a listing and can be inflated by bundling or by sheer listing age, so they indicate scale of exposure rather than verified reach.</p>
+<p><strong>Why this matters beyond consumer browsers</strong></p>
+<p>For IT administrators, the uncomfortable part of this story is that the behaviour sits in a blind spot. Endpoint detection tools look for malware signatures, command-and-control beacons and payload execution; a browser extension that rewrites a search query exhibits none of those traits. In a managed environment where staff routinely install add-ons for translation, note-taking or productivity, this class of compromise can run indefinitely without generating a single alert.</p>
+<p>It also lands against the backdrop of Google's ongoing Manifest V3 transition, which reshaped what extensions can do — and what reviewers can see — under a tighter API model. Manifest V3 constrains some forms of background interference, but it does not substitute for an organisational decision about which extensions are permitted in the first place. Google regularly purges extensions that violate its policies, but store-level enforcement is retrospective and cannot be relied upon as an enterprise control.</p>
+<p><strong>Practical steps for managed environments:</strong></p>
+<ul>
+<li>Maintain an allowlist of approved extensions and block installation of anything outside it via enterprise policy.</li>
+<li>Review the permission scope of every approved add-on — particularly <code>webRequest</code>, <code>declarativeNetRequest</code> and search or new-tab access rights — and remove those with no business justification.</li>
+<li>Run a periodic inventory of installed extensions across managed profiles, including those installed on unmanaged or bring-your-own devices.</li>
+<li>Treat reported install counts and store ratings as marketing metrics, not trust signals; verify publisher identity, update cadence and code provenance instead.</li>
+<li>Flag extensions that alter the default search provider or new-tab behaviour as a review trigger.</li>
+</ul>
+<p><strong>The Hong Kong angle</strong></p>
+<p>These controls are largely technology-neutral, which is why they translate directly to Hong Kong's IT operations. Organisations running Chrome Enterprise or Chromium-based managed browsers can enforce extension allowlists centrally, regardless of whether staff work from a Central office, a remote site or their own devices. The practical barrier is usually not tooling but ownership: somebody has to be accountable for maintaining the allowlist, reviewing permissions on a schedule, and reconciling installed add-ons against it. Wherever installations happen beyond the managed fleet — on unmanaged or personal devices — the policy is only as strong as the inventory that catches them, which makes periodic reconciliation the step most often skipped and most worth prioritising.</p>
+<p><strong>Why this risk is hard to budget for</strong></p>
+<p>There is no incident to respond to here. No malware signature was dropped, no C2 beacon fired, no payload delivered — the behaviour is functionally indistinguishable from a legitimate search-assistant feature, so detection tooling stays silent throughout. That means there is no post-hoc remediation play to rehearse: the only meaningful controls are preventive and governance-based — allowlisting, permission review, periodic inventory. This is a control an organisation either already has or does not, and the gap exists silently until a campaign of this scale makes the headlines.</p>
+<hr>
+<p>企業在審計其受管理的瀏覽器環境時，應將附加元件 allowlist 列為一級安全控制措施——一場攻擊行動中有 319 個 Chrome 擴充功能被發現劫持用戶搜尋，合共報告安裝量達 1,340 萬次。</p>
+<p>據披露此攻擊行動的 BleepingComputer 報道，這些擴充功能會先將搜尋流量經追蹤伺服器轉介，再讓用戶到達結果頁面，其明顯目的在於將流量變現：每次被劫持的查詢返回結果時，營運者即可從 Bing 和 Yahoo 獲取廣告收益。其機制刻意保持低調——沒有 drive-by download，也沒有 credential theft，只是一個搜尋助理，靜靜地將查詢經中介轉發後，回傳一個看來正常的結果頁面。</p>
+<p>安裝數字有一點容易被忽略的附帶條件。1,340 萬是 Chrome Web Store 顯示的自我申報安裝次數，並非活躍用戶數量，亦並非衡量目前在任何人的瀏覽器中運行的代碼。商店計數會在上架期間累積，並可能因捆綁安裝或上架時間長遠而被推高，因此它反映的是暴露規模，而非已核實的觸及範圍。</p>
+<p><strong>為何此事不限於消費者瀏覽器</strong></p>
+<p>對 IT 管理員而言，這則新聞最令人不安之處在於該行為處於盲點之中。端點偵測工具尋找的是惡意軟件 signatures、command-and-control beacons 和 payload execution；而一個改寫搜尋查詢的瀏覽器擴充功能，這些特徵一概沒有。在員工經常為翻譯、筆記或生產力工具安裝附加元件的受管理環境中，這類入侵可以長時間持續運作，而不會觸發任何一次警報。</p>
+<p>此事同時發生在 Google 持續推進的 Manifest V3 過渡背景下。Manifest V3 在更嚴謹的 API 模型下，重塑了擴充功能可以做什麼——以及審核員可以看見什麼。Manifest V3 限制了某些形式的背景干擾，但並不能取代機構自身就「哪些擴充功能獲准使用」作出決定。Google 定期清除違反其政策的擴充功能，但商店層面的執行屬事後性質，不能被倚賴作為企業控制措施。</p>
+<p><strong>受管理環境的實務步驟：</strong></p>
+<ul>
+<li>維護一份已批准擴充功能的 allowlist，並透過 enterprise policy 阻止清單以外的任何安裝。</li>
+<li>審視每一個已批准附加元件的權限範圍——尤其是 <code>webRequest</code>、<code>declarativeNetRequest</code> 以及搜尋或 new-tab 存取權限——移除沒有業務理據的權限。</li>
+<li>定期盤點受管理 profiles 中已安裝的擴充功能，包括在非受管或 bring-your-own devices 上安裝的項目。</li>
+<li>將報告的安裝數和商店評分視為市場推廣指標，而非信任指標；應改為核實 publisher identity、更新節奏及代碼來源。</li>
+<li>將更改預設搜尋供應商或 new-tab 行為的擴充功能標記為需要審查的觸發條件。</li>
+</ul>
+<p><strong>香港視角</strong></p>
+<p>這些控制措施大體上與技術無關，因此可直接應用於香港的 IT 營運。使用 Chrome Enterprise 或基於 Chromium 的受管理瀏覽器的機構，可集中強制執行擴充功能 allowlist，不論員工是在中環辦公室、遠端據點或使用自身設備工作。實際障礙通常不在工具，而在責任歸屬：必須有人負責維護 allowlist、按時限審查權限，以及將已安裝的附加元件與 allowlist 作對帳。凡在受管理設備群以外發生的安裝——在非受管或個人設備上——政策的效力取決於能否以盤點將其偵測出來，這使定期對帳成為最常被省略、也最值得優先處理的一步。</p>
+<p><strong>為何此風險難以編列預算</strong></p>
+<p>這裡沒有事故需要應對。沒有投放惡意軟件 signatures，沒有 C2 beacon 發出，沒有 payload 交付——該行為在功能上與合法的搜尋助理功能無從區別，因此偵測工具全程保持沉默。這意味著沒有事後補救流程可以預演：唯一有意義的控制措施是預防性和治理性的——allowlisting、權限審查、定期盤點。這是一項機構「已有或沒有」的控制措施，而這個缺口一直無聲存在，直至此規模的攻擊行動登上頭條。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/chrome-extensions-with-134-million-installs-caught-hijacking-searches/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
