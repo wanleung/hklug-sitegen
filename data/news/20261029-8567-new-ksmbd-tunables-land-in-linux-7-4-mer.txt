@@ -1,0 +1,32 @@
+Date: 2026-10-29 10:23:00
+Author: HKLUG Team
+Title: New KSMBD Tunables Land in Linux 7.4 Merge Window
+Content:
+<p>The Linux 7.4 merge window has brought in a batch of KSMBD changes, headlined by a set of new configuration options that move daemon behaviour out of build-time decisions and into <code>ksmbd.conf</code>. Phoronix covered the batch at summary level; the individual option keywords have not been itemised in the available reporting.</p>
+<p>KSMBD is the kernel-resident SMB3 server that gives Linux hosts a native way to serve files to Windows and other SMB clients without pulling in a user-space stack. Its in-kernel placement is exactly why administrators watch both its configuration surface and its security posture closely.</p>
+<p><strong>Why the new options matter for on-prem deployments</strong></p>
+<p>For teams running self-hosted SMB shares — file servers, backup targets, NAS-style boxes serving Windows workstations — KSMBD's practical draw has always been its small footprint compared with a full user-space server. The flip side has been a comparatively rigid configuration surface, with many behavioural choices effectively frozen at build or module-load time.</p>
+<p>Moving more of those decisions into plain configuration files lets administrators tune behaviour across hosts through version-controlled config management instead of bespoke scripts or kernel patches. For anyone maintaining fleets of on-prem shares, that is a real quality-of-life gain — repeatable, diffable, reviewable configs — even though the specific options remain unspecified in the coverage available at the time of writing.</p>
+<p>Two layers of uncertainty apply here, and readers should hold both. First, the option list itself has not been enumerated publicly. Second, Linux 7.4 is still in the merge window, so the kernel is not yet released. Anyone planning around particular settings should verify them against the merged kernel sources or the KSMBD documentation once 7.4 ships, rather than inferring them from this or any summary-level report.</p>
+<p><strong>Availability timeline</strong></p>
+<p>Because 7.4 is a mainline (non-LTS) release, none of this propagates to long-term support kernels automatically. Carrying the changes onto LTS branches would mean cherry-picking them and maintaining them downstream — an unsignalled, per-vendor decision that varies by distributor and is not confirmed for this batch. Organisations on LTS-only upgrade policies should treat the new configuration surface as a 7.4-and-later feature until their distributor says otherwise.</p>
+<p><strong>A security note</strong></p>
+<p>KSMBD has a recurring history of remotely reachable vulnerabilities, so any expansion of its configuration surface warrants routine patch tracking regardless of which options ultimately land. It is also worth remembering that configuration changes can shift authentication, signing and share-exposure defaults; new tunables deserve review on the same terms as any change to a network-facing service's behaviour.</p>
+<p><strong>How it compares to Samba</strong></p>
+<p>Samba remains the default choice for most mixed-environment SMB deployments: it is mature, widely packaged, supports the full feature set including directory services integration, and is patched through normal distribution channels. KSMBD suits a narrower case — pure file-sharing roles where a small kernel-resident footprint matters more than protocol breadth or Active Directory integration. The new tunables narrow the configurability gap, but Samba's ecosystem maturity still makes it the safer general-purpose pick for on-prem SMB estates that need predictable long-term support.</p>
+<p>The changes were reported by Phoronix as part of its Linux 7.4 merge-window coverage.</p>
+<hr>
+<p>Linux 7.4 合併窗口已引入一批 KSMBD 變更，核心是一組新的配置選項，將守護進程的行為設定由編譯時決定轉移到 <code>ksmbd.conf</code> 之中。Phoronix 以概要形式報道了這批變更；各項選項的關鍵字並未在現有報道中逐一列出。</p>
+<p>KSMBD 是駐留於 kernel 內的 SMB3 伺服器，讓 Linux 主機無需引入 user space 的協議棧，即可原生方式向 Windows 及其他 SMB 用戶端提供檔案服務。正因為其駐留於 kernel 之內，系統管理員對其配置介面及安全狀況均密切注視。</p>
+<p><strong>為何新選項對本機部署相當重要</strong></p>
+<p>對於自行託管 SMB 共享的團隊而言——包括檔案伺服器、備份目標，以及服務 Windows 工作站的 NAS 類型設備——KSMBD 相對於完整 user space 伺服器一直以佔用資源少見稱。但其代價是配置介面相對僵硬，許多行為選項實質上在編譯或模組載入時已告凍結。</p>
+<p>將更多此類決策移入一般配置檔案，令系統管理員可透過版本控制的配置管理，在多部主機之間統一調校行為，取代專用腳本或 kernel patch。對於維護大量本機共享的用戶而言，這確實是實用性的提升——配置可重複執行、可 diff 比對、可供審閱——儘管在撰寫本文時，具體選項仍未在報道中列明。</p>
+<p>此處有兩層不確定性，讀者宜同時留意。第一，選項清單本身尚未公開列舉。第二，Linux 7.4 仍處於合併窗口階段，kernel 尚未正式發布。任何人若計劃依賴特定設定，應待 7.4 正式發布後，對照已合併的 kernel 原始碼或 KSMBD 文件加以核實，而非從本文或任何概要層面的報道中推斷。</p>
+<p><strong>可用時間表</strong></p>
+<p>由於 7.4 是 mainline（非 LTS）版本，以上變更不會自動延伸至長期支援 kernel。若要將變更帶到 LTS 分支，須進行 cherry-pick 並在下游維護——這是各家供應商未經事先聲明、各自決定的事項，不同發行版做法不一，本批變更是否支援亦未獲確認。採用僅升級至 LTS 政策的機構，應將新的配置介面視為 7.4 及以後版本的功能，直至其發行版另行通知。</p>
+<p><strong>一則安全備註</strong></p>
+<p>KSMBD 過往屢次出現可遠端觸達的漏洞，因此無論最終有哪些選項落實，其配置介面的任何擴展都值得例行追蹤補丁。同時須留意，配置變更可能改變驗證（authentication）、簽署（signing）及共享曝光（share exposure）的預設值；新的調校選項應與任何涉及對外網絡服務行為的變更一樣，接受同等審視。</p>
+<p><strong>與 Samba 的比較</strong></p>
+<p>在大多數混合環境 SMB 部署中，Samba 仍是首選：它成熟穩定、廣泛打包，支援完整功能集（包括目錄服務整合），並透過正常發行渠道提供補丁。KSMBD 適合較窄的應用場景——即純粹的檔案共享角色，其中較小的 kernel 佔用面積比協議廣度或 Active Directory 整合更為重要。新調校選項縮窄了兩者在可配置性上的差距，但憑藉生態系統的成熟度，Samba 對於需要可預期長期支援的本機 SMB 環境而言，仍然是較穩妥的通用選擇。</p>
+<p>上述變更由 Phoronix 在其 Linux 7.4 合併窗口報道中介紹。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.4-KSMBD" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
