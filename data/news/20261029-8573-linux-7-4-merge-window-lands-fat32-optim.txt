@@ -1,0 +1,32 @@
+Date: 2026-10-29 12:45:00
+Author: HKLUG Team
+Title: Linux 7.4 Merge Window Lands FAT32 Optimisations, With One Benchmark Peaking at 265x
+Content:
+<p>A file-system change queued for Linux 7.4 is set to speed up FAT32, according to Phoronix's coverage of the merge window, which reports one benchmark peaking at 265 times faster in a specific test.</p>
+<p>That multiplier is a best-case result from a single workload rather than an expected general uplift for everyday FAT32 use. Results measured during a merge window are sensitive to the workload, cache state, and operation mix involved, and the underlying code can still be adjusted before release.</p>
+<h4>What changed</h4>
+<p>The optimisations target the FAT32 driver's directory- and search-heavy code paths, reducing overhead in operations where the file-system has historically lagged behind modern journaling alternatives.</p>
+<p>The file-system's reach extends well beyond legacy desktop partitions: USB sticks, SD cards, and camera media are commonly FAT-formatted, as are removable media in point-of-sale terminals, kiosks, CCTV/DVR recorders, and a long tail of embedded devices. Any change to those code paths therefore has an unusually broad blast radius.</p>
+<p>Because the change lands in the merge window, its journey to production is only beginning. Distributions must pick it up, embedded vendors must rebuild and validate kernels against their hardware, and long-lived appliance images must be updated. In deployments where devices sit several kernel versions behind — a common situation for field hardware with long support cycles — the gain will not arrive until an explicit upgrade path exists.</p>
+<h4>Why it matters in practice</h4>
+<p>The practical relevance is less about the 265x figure and more about FAT32's ubiquity. Retail and hospitality environments still rely on FAT32-formatted removable media for POS terminals and kiosk content; CCTV and DVR appliances frequently use SD cards or USB storage formatted with FAT; and a long tail of embedded and legacy systems boot or store data on the file-system. Any measurable speed-up in that code path matters precisely because the file-system is so unglamorous and so widespread.</p>
+<p>Removable-media performance is also a security and reliability concern: slow or unpredictable writes can affect logging, firmware update packages, and offline maintenance workflows. Faster, more consistent operations on FAT32 reduce a recurring source of operational friction that rarely makes headlines.</p>
+<h4>Reading the numbers</h4>
+<p>Merge-window benchmarks are provisional. Code queued during the window can be revised or reverted before the final release, and a single extreme result rarely carries over to general workloads. On Phoronix's reporting, the summary at this stage is: a meaningful FAT32 optimisation is queued for Linux 7.4, with unusually large gains reported in at least one measured scenario. The source article and the merge commit carry the benchmark setup, contributor details, kernel version, and commit reference for anyone who wants to confirm those specifics directly.</p>
+<p>The broader takeaway for the open-source community is a familiar one — file-system performance gains often come from long-neglected drivers rather than headline-grabbing new technology, and the real work is getting those gains from the merge window onto the devices that need them.</p>
+<p><em>Source: Phoronix, "FAT32 File-System Seeing As Much As 265x Improvement With Linux 7.4."</em></p>
+<hr>
+<p>據 Phoronix 就 merge window 的報導，一項已排隊納入 Linux 7.4 的檔案系統改動將加快 FAT32 的速度，其中一項基準測試在特定項目錄得最高快 265 倍的結果。</p>
+<p>該倍數只是單一工作負載下的最佳情況結果，並非日常 FAT32 使用可預期的整體提升。在 merge window 期間量度的結果，會受所涉工作負載、快取狀態及操作組合影響，而底層代碼在正式發布前仍可能作出調整。</p>
+<h4>改動內容</h4>
+<p>有關優化針對 FAT32 driver 中涉及大量目錄及搜尋（search）操作的代碼路徑，減輕該檔案系統過往相對現代 journaling 方案表現落後的運算開銷。</p>
+<p>該檔案系統的應用範圍遠不止舊有桌面分割碟：USB 記憶棒、SD 卡及相機儲存媒體通常均以 FAT 格式化，POS 終端、kiosk、CCTV／DVR 錄影機內的可移除媒體，以及大量嵌入式設備亦然。因此，任何針對該等代碼路徑的改動，影響範圍都異常廣泛。</p>
+<p>由於改動剛納入 merge window，其走向生產環境的過程才剛開始。各發行版須將其收錄，嵌入式廠商須針對自身硬件重新編譯及驗證 kernel，長壽命的設備映像亦須更新。在設備仍落後數個 kernel 版本的部署環境中——這在支援週期長的現場硬件中十分常見——有關提升要待明確的升級途徑出現後方能到位。</p>
+<h4>實際意義</h4>
+<p>實際意義與其說在於 265 倍這個數字，不如說在於 FAT32 的無處不在。零售及餐飲環境至今仍依賴 FAT32 格式的可移除媒體運作 POS 終端及 kiosk 內容；CCTV 及 DVR 設備經常使用 FAT 格式的 SD 卡或 USB 儲存；大量嵌入式及舊系統則以該檔案系統開機或儲存數據。該代碼路徑上任何可量度的加速，正是因為這個檔案系統如此不起眼又如此普及，而別具意義。</p>
+<p>可移除媒體的效能同樣是保安及可靠性問題：緩慢或不可預測的寫入會影響日誌記錄、韌體更新套件及離線維護流程。在 FAT32 上更快、更穩定的操作，可減少一個鮮少登上頭條、卻反覆出現的營運摩擦來源。</p>
+<h4>如何解讀數字</h4>
+<p>Merge window 期間的基準測試只是暫時性結果。在窗口期排隊的代碼，可能在最終發布前被修訂或回退，而單一極端結果很少能延續至一般工作負載。根據 Phoronix 的報道，此階段的總結是：一項具實質意義的 FAT32 優化已排隊進入 Linux 7.4，且至少在一個量度情境中回報了異常龐大的提升。來源文章及 merge commit 載有基準測試設置、貢獻者詳情、kernel 版本及 commit 參考資料，供任何希望直接核實這些細節的人士查閱。</p>
+<p>對開源社群而言，更大的啟示是眾所周知的一點——檔案系統的效能提升往往來自長期被忽略的 driver，而非搶盡頭條的新技術；而真正的工作，是把這些提升由 merge window 帶到需要它們的設備之上。</p>
+<p><em>來源：Phoronix，〈FAT32 File-System Seeing As Much As 265x Improvement With Linux 7.4〉</em></p>
+<p><a href="https://www.phoronix.com/news/Linux-7.4-Faster-FAT32" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
