@@ -1,0 +1,28 @@
+Date: 2026-10-29 01:24:00
+Author: HKLUG Team
+Title: Kernel developers tackle priority inversion in BPF-based sched_ext at Prague Plumbers gathering
+Content:
+<p>Kernel developers converged on one of sched_ext's hardest open problems at the Linux Plumbers Conference in Prague, spending a working session on how a BPF-driven scheduler should cope with priority inversion — and, in LWN.net's account of the session, surveying four competing approaches without naming a winner.</p>
+<p>LWN.net has reported on a Linux Plumbers Conference blog post — filed under the playful title "The sched_exit Microconference" — covering the sched_ext microconference held in Prague during LPC 2026. There, three main topics dominated the discussions: priority inversion and how to handle it in sched_ext, time-slice extension, and making proxy execution work together with BPF schedulers.</p>
+<h4>Why DevOps teams care about a scheduler written in BPF</h4>
+<p>sched_ext, which landed in the mainline kernel in Linux 6.12, lets developers write a scheduler as a BPF program and load it at runtime, rather than patching and rebuilding the kernel. For performance engineers and SRE teams, that is the entire appeal: latency, throughput and fairness policies become tunable artefacts that can be deployed, tested and rolled back like any other piece of infrastructure, without waiting for a bespoke kernel build to propagate across a fleet.</p>
+<p>That promise, however, rests on a contract. If a priority-inversion workaround inside the kernel can sidestep the loaded BPF scheduler entirely, the guarantees a DevOps team thought it had tuned for may no longer hold in production. The Prague session was, at bottom, an argument about how much of that contract the kernel itself must enforce — and proxy execution puts the tension in structural terms, because it sits below the scheduler in the stack, meaning the kernel may run tasks the BPF scheduler never chose.</p>
+<h4>Four approaches, no decision</h4>
+<p>In LWN.net's account, four lines of attack were on the table: lock-holder and lock-waiter preemption, time-slice extension, and proxy execution. Lock-holder preemption lets the kernel preempt a lower-priority task that is holding a lock a higher-priority task needs, while lock-waiter preemption takes the opposite tack by stepping in on the waiting side. Time-slice extension keeps a running task going beyond its normal slice to let it release a lock promptly. And proxy execution — arguably the deepest design tension discussed — lets a blocked task's scheduling priority be "proxied" onto the thread actually doing the work.</p>
+<p>That last option raises an unresolved question about how much priority-inheritance logic should be visible to, or controllable by, userspace dispatch programs — and how much the kernel will enforce regardless of what is loaded.</p>
+<p>The session scoped the problem publicly rather than settled it. The report frames the outstanding questions as still open: which approach upstream will converge on, and where the responsibility split lies between kernel-enforced priority inheritance and logic delegated to the loaded BPF program. Readers looking for a decided outcome, or a named winning approach, will not find one in this round of discussions; a follow-up is warranted once actual patches appear upstream.</p>
+<p>The answer will determine what guarantees sched_ext schedulers can credibly offer — a question with practical weight for anyone running custom schedulers in latency-sensitive deployments, where tail latency budgets are measured in microseconds and kernel upgrades are rolled out cautiously.</p>
+<p><em>Source: LWN.net, reporting on the Linux Plumbers Conference blog post titled The sched_exit Microconference, from LPC 2026 in Prague.</em></p>
+<hr>
+<p>多位內核開發者在布拉格舉行的 Linux Plumbers Conference 上，集中處理 sched_ext 其中最難解的公開問題之一，花了一個工作會議討論 BPF 驅動的 scheduler 應如何應對優先權反轉（priority inversion）；據 LWN.net 對是次會議的報道，與會者評估了四種相互競爭的方案，但未有選出優勝者。</p>
+<p>LWN.net 報道了 Linux Plumbers Conference 網誌的一篇文章——以戲謔的標題「The sched_exit Microconference」發表——內容涵蓋於布拉格 LPC 2026 期間舉行的 sched_ext microconference。據該報道，討論由三個主要議題主導：優先權反轉及其在 sched_ext 內的處理方式、時間片延長（time-slice extension），以及如何讓 proxy execution 與 BPF scheduler 協同運作。</p>
+<h4>為何 DevOps 團隊關心用 BPF 編寫的 scheduler</h4>
+<p>sched_ext 已在 Linux 6.12 進入主線內核（mainline kernel），它讓開發者以 BPF program 的形式編寫 scheduler，並在運行時載入，毋須修改內核原始碼再重新編譯。對於效能工程師和 SRE 團隊而言，這正是其吸引力所在：延遲、吞吐量和公平性政策變成可調校的產物，可以像其他基建一樣部署、測試和回退（rollback），不必等待專屬內核 build 在整個 fleet 中逐一部署生效。</p>
+<p>然而，這項承諾有賴一份契約。如果內核內建的優先權反轉對策可以完全繞過已載入的 BPF scheduler，DevOps 團隊以為已調校妥當的各項保證，在生產環境中可能不再成立。布拉格會議的核心，其實是關於內核本身必須強制執行這份契約中多少條款的爭論；而 proxy execution 把這股張力以結構方式凸顯出來，因為它位於 scheduler 之下、堆疊更深的層面，意味著內核可能運行 BPF scheduler 從未選擇的任務。</p>
+<h4>四種方案，未有定案</h4>
+<p>據 LWN.net 的報道，會議上提出了四條技術路線：lock-holder 搶佔、lock-waiter 搶佔、時間片延長以及 proxy execution。Lock-holder preemption 允許內核搶佔持有高優先權任務所需鎖的較低優先權任務；lock-waiter preemption 則反其道而行，在等待的一方介入。Time-slice extension 讓運行中的任務超出正常時間片繼續執行，以便它盡快釋放鎖。至於 proxy execution——可謂討論中設計張力最深的一項——則容許被阻塞任務的調度優先權「代理」轉移到實際執行工作的 thread 上。</p>
+<p>最後一項方案引出一個未有答案的問題：優先權繼承（priority inheritance）邏輯應有多少可見於用戶空間調度程式、或受其控制，以及無論載入何種程式，內核會強制執行其中多少。</p>
+<p>是次會議公開界定問題範圍，而未有將其解決。報告把尚未有結論的問題列為仍然開放：上游（upstream）最終會收斂採用哪種方案，以及內核強制的優先權繼承與委託給已載入 BPF program 的邏輯之間，責任界線應如何劃分。期待看到已拍板定案結果或指定優勝方案的讀者，在本輪討論中不會找到答案；待實際 patch 提交上游後，實有跟進報導的必要。</p>
+<p>最終答案將決定 sched_ext scheduler 能夠可信地提供哪些保證——對於在延遲敏感部署環境中運行自訂 scheduler 的人來說，這個問題事關實務，因為此類環境的尾部延遲（tail latency）預算以微秒計算，內核升級亦需謹慎推行。</p>
+<p><em>來源：LWN.net 報道 Linux Plumbers Conference 網誌文章 The sched_exit Microconference，出自布拉格 LPC 2026。</em></p>
+<p><a href="https://lpc.events/blog/current/index.php/2026/10/28/the-sched_exit-microconference/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
