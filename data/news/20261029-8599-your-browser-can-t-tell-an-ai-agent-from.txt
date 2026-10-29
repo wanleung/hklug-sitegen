@@ -1,0 +1,34 @@
+Date: 2026-10-29 16:05:00
+Author: HKLUG Team
+Title: Your Browser Can't Tell an AI Agent From an Employee — And That's the Problem
+Content:
+<p>AI agents are already running inside authenticated corporate browser sessions, and security teams often have no reliable way to tell them apart from human staff, according to research from Keep Aware — a vendor that sells browser-layer detection tooling — published by BleepingComputer in its article "3 Ways AI Agents Already Operate in Your Browser."</p>
+<p>The finding is not that agents are breaking in. It is that they do not need to. Once a browser session is authenticated — through cookies, single sign-on tokens, or an identity provider's session — an agent can inherit that trust and act within it, producing an audit trail that looks, for all practical purposes, like ordinary employee activity.</p>
+<h4>Three modes of operation</h4>
+<p>Keep Aware describes three patterns of agent behaviour inside the browser.</p>
+<p><strong>Riding an existing authenticated session.</strong> The agent operates within a browser context that has already completed login. Mechanically, browser automation can be driven through interfaces such as the Chrome DevTools Protocol, Playwright, or Selenium — standard tooling that lets software navigate pages and interact with them much as a person would. The point is not the specific tool, but that no new authentication event occurs: the session was established by someone or something else, and the agent simply continues to use it.</p>
+<p><strong>Driving corporate applications directly.</strong> Rather than stopping at data retrieval, agents interact with internal web applications at the application layer — issuing scripted DOM events, generating synthetic form input, and moving sequentially through multi-step workflows such as approvals, ticket updates, or record edits. To the application, the requests are well-formed and arrive from a legitimate session; the distinction between scripted and manual interaction disappears at this layer.</p>
+<p><strong>Reaching sensitive data while appearing to be an employee.</strong> Because agent activity inherits the human user's identity, it generates no separate identity in audit logs. Retrospectively, investigators cannot reliably distinguish which actions originated from a person and which from software operating on that person's behalf.</p>
+<h4>Why existing controls fall short</h4>
+<p>The visibility gap runs across network, endpoint, and perimeter defenses alike: those controls generally assume that a valid session implies a human decision-maker behind it. Agents operate comfortably inside that assumption rather than violating it — which is why a decade of investment in session hijacking prevention, bot detection, and network-level inspection does not necessarily catch them. Traditional tools are looking for a breach; there may be none to find.</p>
+<p>The implication for IT and security teams is that detection and governance must move into the browser itself. Session ownership, attribution, and auditability shift from edge cases to routine operational questions: which session belongs to whom, which actions were taken by a person versus a tool acting with their credentials, and whether logs can answer that question after the fact.</p>
+<h4>What this means for enterprises</h4>
+<p>The gap is structural rather than specific to any one region, and applies broadly to any organisation running browser-delivered applications behind SSO.</p>
+<p>That raises practical questions enterprises will need to put to vendors deploying agent tooling: Does the agent carry a distinct identity, or does it borrow the human user's? Are agent actions separately attributable in audit logs? Where is human-in-the-loop confirmation required before an action is committed, and is that enforcement or convention?</p>
+<p>The trusted session is no longer proof of a trusted human. For IT teams, that single reframe turns agent attribution from a niche concern into an everyday operational one.</p>
+<hr>
+<p>根據瀏覽器層面偵測工具供應商 Keep Aware 的研究，AI Agent 已經在通過身份驗證的企業瀏覽器 session 內運作，而安全團隊往往沒有可靠方法將其與人類員工區分開來。BleepingComputer 在題為《3 Ways AI Agents Already Operate in Your Browser》的報道中披露了這項研究。</p>
+<p>研究的重點並非 AI Agent 正在入侵系統，而是它們根本不需要入侵。一旦瀏覽器 session 已通過驗證 — 無論是透過 cookies、單一登入（single sign-on）token，還是身份提供者的 session — AI Agent 便可繼承這份信任並在其中行動，產生的審計記錄在實際效果上與一般僱員的活動無異。</p>
+<h4>三種運作模式</h4>
+<p>Keep Aware 描述了 AI Agent 在瀏覽器內的三種行為模式。</p>
+<p><strong>沿用已驗證的 session。</strong> AI Agent 在已完成登入的瀏覽器上下文中運作。技術上，瀏覽器自動化可透過 Chrome DevTools Protocol、Playwright 或 Selenium 等介面驅動 — 這些標準工具令軟件能像人類一樣瀏覽頁面及與其互動。重點不在於使用哪款工具，而在於沒有新的驗證事件發生：session 由其他人或系統建立，AI Agent 只是繼續沿用。</p>
+<p><strong>直接驅動企業應用程式。</strong> AI Agent 不止於擷取資料，而是在應用程式層面與內部網頁應用程式互動 — 發出腳本化的 DOM events、產生虛擬表單輸入，並逐步執行多步驟工作流程，例如審批、工單更新或紀錄修改。對應用程式而言，這些請求格式正確且來自合法 session；在這一層面，腳本化互動與手動互動的區別已不復存在。</p>
+<p><strong>在貌似僱員的情況下接觸敏感資料。</strong> 由於 AI Agent 的活動繼承了人類用戶的身份，審計記錄中不會產生獨立的身份。事後調查時，調查人員無法可靠分辨哪些操作由人親自執行、哪些由代表該人的軟件代為執行。</p>
+<h4>為何現有防禦措施不敷應用</h4>
+<p>這一可見性盲點橫跨網絡、端點及邊界防禦：這些控制措施一般假設有效 session 背後有人類決策者。AI Agent 正是在這假設內行事而非違反它 — 這正是過去十年在 session hijacking 防護、bot 偵測及網絡層檢查方面的投資未必能將其識別的原因。傳統工具尋找的是入侵跡象；但可能根本沒有入侵可尋。</p>
+<p>對 IT 及安全團隊的啟示是，偵測與治理必須延伸至瀏覽器本身。Session 所屬權、歸因及可審計性將從邊緣情況變成日常營運問題：哪個 session 屬於誰、哪些操作由人親自執行、哪些由使用其憑證的工具代為執行，以及日誌能否在事後回答這些問題。</p>
+<h4>對企業的意義</h4>
+<p>這個盲點屬結構性問題，而非特定地區的現象，適用於所有在 SSO 後方運行瀏覽器交付應用程式的機構。</p>
+<p>這引發企業在引入 AI Agent 工具時須向供應商提出的實際問題：AI Agent 是否帶有獨立身份，還是借用人類用戶的身份？AI Agent 的操作在審計記錄中能否單獨歸因？哪些操作在執行前必須經人類在迴圈中（human-in-the-loop）確認，而這項要求屬強制執行還是僅屬慣例？</p>
+<p>可信 session 已不再等同於可信人類的證明。對 IT 團隊而言，這一個思維轉變，將 AI Agent 歸因問題由小眾關注變成日常營運課題。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/3-ways-ai-agents-already-operate-in-your-browser/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
