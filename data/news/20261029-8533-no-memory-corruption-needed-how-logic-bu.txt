@@ -1,0 +1,34 @@
+Date: 2026-10-29 10:00:00
+Author: HKLUG Team
+Title: No Memory Corruption Needed: How Logic Bugs Alone Escaped Microsoft Edge's Sandbox
+Content:
+<p>A chain of design and logic flaws — no memory corruption required — was enough to break out of Microsoft Edge's sandbox and reach the underlying Windows system, according to technical details published on 28 October by DEVCORE researcher Orange Tsai.</p>
+<p>The write-up, summarised by The Hacker News, lays out the method behind a winning entry at the Pwn2Own Berlin contest held in May, which earned the researcher $175,000. Microsoft shipped fixes for the Edge components involved the day after the contest concluded. Tsai's full disclosure arrived roughly five months later.</p>
+<h4>What the research shows</h4>
+<p>The headline result is not a new class of memory-safety bug. Instead, the exploit chain reportedly relies on a sequence of design and logic errors within Edge itself, allowing a malicious web page to steer execution beyond the browser's sandbox boundary. No memory-corruption primitive was needed to cross that line.</p>
+<p>Much of the current hardening effort in browser and operating-system security is built around memory-corruption primitives: compiler mitigations, control-flow integrity, and sandboxed process isolation all presuppose an attacker who overwrites something. This chain reached the same destination without one, relying instead on how Edge sequences its features, delegates trust between components, and composes intended behaviours into unintended outcomes.</p>
+<p>The exact number and identity of the individual flaws in the chain have not been stated in the publicly summarised account; the disclosed technique is described only as a sequence of design and logic errors. As with any exploit chain, the individual steps may each look minor in isolation while combining into a full escape.</p>
+<h4>Logic bugs and memory-safety defences</h4>
+<p>Logic-bug classes — confused-deputy problems, inconsistent security checks across code paths, bypassable feature gates, and type or state confusion that never touches a buffer — fall into a different category from the vulnerabilities that memory-safety rewrites in languages such as Rust are built to eliminate. A component rewritten memory-safely still carries an authentication check that is applied on one code path and skipped on another.</p>
+<p>For defenders, the practical implication is that a sandbox boundary holds only as long as the logic governing access to it holds. Runtime monitoring and exploit-mitigation tooling tuned for anomalous memory behaviour may not flag a chain that operates entirely within well-formed, intended operations; approaches of this kind also need to account for control-flow and authorisation anomalies, not just corruption signals.</p>
+<h4>A post-mortem, not an incident</h4>
+<p>The immediate risk here is limited: Microsoft patched the Edge side of the chain promptly after Pwn2Own Berlin, and the disclosure followed months later. The value of the release is diagnostic. It offers a worked example of how a boundary an entire product's threat model depends on can be crossed without triggering the defences designed for a different kind of attack.</p>
+<p>For organisations running managed Windows and Edge estates, the write-up is background reading rather than an action item — the relevant vendor fixes are already confirmed as shipped, and the exercise is mainly a prompt to check whether sandbox and site-isolation settings beyond the defaults are part of the estate's normal hardening posture.</p>
+<p>DEVCORE, the Taiwanese research team behind the work, has a track record of high-profile browser and virtualisation disclosures. Publishing the full method after the vendor fix cycle is standard practice for Pwn2Own entries, and gives the defensive community time to study the technique against patched software.</p>
+<p><em>Source: The Hacker News, 28 October 2026, summarising Orange Tsai's DEVCORE write-up.</em></p>
+<hr>
+<p>DEVCORE 研究員 Orange Tsai 於 10 月 28 日發表的技術細節顯示，僅靠一連串設計及邏輯缺陷——毋須涉及任何記憶體損毀——已足以逃出 Microsoft Edge 的 sandbox，直達底層 Windows 系統。</p>
+<p>The Hacker News 摘要的這篇技術文章，闡述了今年 5 月舉行的 Pwn2Own Berlin 比賽其中一個奪獎方案的方法，該研究員藉此贏得 17 萬 5 千美元。微軟在比賽結束翌日已就涉及的 Edge 組件發出修補程式。Tsai 的完整披露則約五個月後才正式公布。</p>
+<h4>研究揭示了甚麼</h4>
+<p>這次研究的核心成果並非一類新的 memory safety 漏洞。據報，該 exploit chain 依賴的是 Edge 本身一連串設計及邏輯錯誤，令惡意網頁得以將執行流程引導至瀏覽器 sandbox 邊界之外。越過這條界線，並不需要任何 memory-corruption primitive。</p>
+<p>現時瀏覽器及作業系統保安的加固工作，大多圍繞 memory-corruption primitive 建立：編譯器緩解措施、control-flow integrity 以及 sandboxed process 隔離，全部都預設攻擊者會覆寫某項東西。這條 exploit chain 在沒有這類前提下到達同一目的地，反而依賴 Edge 如何排序其功能、如何在組件之間委託信任，以及如何將預期行為組合成非預期的後果。</p>
+<p>鏈條中各個漏洞的確實數目及身份，在公開摘要中並未列明；已披露的技術僅被描述為一連串設計及邏輯錯誤。與所有 exploit chain 一樣，各個步驟單獨來看可能微不足道，但組合起來卻足以構成一次完整的 sandbox escape。</p>
+<h4>邏輯漏洞與 memory safety 防禦</h4>
+<p>邏輯漏洞類別——例如 confused deputy 問題、不同 code path 之間不一致的安全檢查、可繞過的 feature gate，以及從未觸及 buffer 的類型或狀態混淆——與 Rust 等語言的 memory safety 重寫工程所要消除的漏洞，屬於截然不同的範疇。一個以 memory safety 方式重寫的組件，依然可能保留一項身份驗證檢查：在某條 code path 上執行，卻在另一條 code path 上被略過。</p>
+<p>對防禦者而言，實際意義在於：sandbox 邊界能否守住，取決於管轄其存取權限的邏輯是否成立。針對異常記憶體行為而調校的 runtime monitoring 及 exploit mitigation 工具，未必會標記一條完全在格式正確、符合預期的運作範圍內運行的鏈條；此類方案亦需要涵蓋 control-flow 及授權異常，而不單是損毀訊號。</p>
+<h4>事後剖析，而非事故</h4>
+<p>此處的即時風險有限：微軟在 Pwn2Own Berlin 之後已迅速修補鏈條中 Edge 一方的漏洞，而披露則在數月後才跟進。這次公布的價值在於診斷性質。它提供了一個實例，說明整個產品 threat model 所依賴的邊界，如何可在無需觸發針對另一類攻擊而設計的防禦下被突破。</p>
+<p>對於管理 Windows 及 Edge 裝置組合的機構而言，這篇技術文章屬背景參考資料，而非即時行動項目——相關供應商修補程式已確認發出，這次研究主要是提醒機構檢查：除預設設定以外的 sandbox 及 site-isolation 設定，是否已納入其裝置組合的常規加固方針。</p>
+<p>進行此項研究的台灣團隊 DEVCORE，過往有多次矚目的瀏覽器及 virtualisation 漏洞披露紀錄。在供應商修補周期完成後才公布完整方法，是 Pwn2Own 參賽項目的慣常做法，亦讓防禦社群有時間在已修補的軟件上研究相關技術。</p>
+<p><em>資料來源：The Hacker News，2026 年 10 月 28 日，摘要 Orange Tsai 的 DEVCORE 技術文章。</em></p>
+<p><a href="https://thehackernews.com/2026/10/researcher-reveals-how-logic-bugs-alone.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
