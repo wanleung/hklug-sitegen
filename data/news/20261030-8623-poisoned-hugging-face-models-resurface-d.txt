@@ -1,0 +1,42 @@
+Date: 2026-10-30 00:03:00
+Author: HKLUG Team
+Title: Poisoned Hugging Face models resurface days after takedown, hijacking GPUs for mining
+Content:
+<p>A crypto-mining campaign that abuses model files hosted on Hugging Face has reappeared just days after security teams moved to take it down — and one of the poisoned models in the revived wave was downloaded more than 28,000 times before it was flagged, according to a report by BleepingComputer.</p>
+<p>That figure encapsulates the story. A model hub's download counter is not precisely the same metric as an npm or PyPI package tally — model weights are consumed wholesale by pipelines rather than reviewed individually — but the reach it indicates is equally significant: a single artefact, published anonymously to a public repository, can reach thousands of machines before detection responds.</p>
+<p>The malware itself is direct in purpose: it hijacks GPU servers for cryptocurrency mining and installs backdoors on compromised hosts. Having been neutralised, it resurfaced within days, illustrating the influence a single poisoned artefact can exert on a public model hub.</p>
+<p><strong>Deleting files, not infrastructure</strong></p>
+<p>The campaign's techniques are not novel; what has changed is the operation's durability. Because takedowns addressed specific uploaded models rather than the accounts, credentials and publishing pipeline behind them, operators needed only to re-upload. This is a common weakness across hosted repositories: the artefact is straightforward to delete, but the pipeline that produces it is not.</p>
+<p><strong>A second front aimed at agents, not people</strong></p>
+<p>Alongside the Hugging Face activity, BleepingComputer documents a separate but related lure on GitHub — a counterfeit Solana starter kit engineered specifically to deceive AI coding agents rather than human developers.</p>
+<p>The technique is deliberate. Where traditional social engineering targets a person reviewing a README, this payload is written to be consumed by the tooling that reads repositories on a developer's behalf. An agent asked to scaffold a Solana project may retrieve the counterfeit kit and execute its instructions, ultimately installing the NetSupport remote-access trojan on the machine where it runs.</p>
+<p>The pattern across both incidents is identical, and it represents the genuinely newsworthy angle: attackers are poisoning the artefacts that AI systems consume automatically — whether model files pulled into training pipelines or repositories scanned by autonomous coding assistants. The human review step, treated as the last line of defence in most open-source workflows, is being bypassed by design.</p>
+<p><strong>What teams can actually do</strong></p>
+<p>The shift places a premium on provenance over convenience. Organisations running GPU workloads or adopting AI agents are effectively treating third-party artefacts as trusted input when they are nothing of the sort. For teams across the industry — including IT and open-source practitioners in Hong Kong introducing public models and agent tooling into development workflows — the practical implications are largely consistent regardless of jurisdiction: untrusted inputs must be handled as untrusted inputs.</p>
+<ol>
+<li><strong>Verify provenance before download.</strong> Review uploader account age and history, examine repository and model metadata, and prefer pinned versions from publishers you can identify.</li>
+<li><strong>Treat model and repository downloads as untrusted input.</strong> Sandbox ingestion and agent execution; require explicit human approval before any agent runs installers or scripts from a retrieved package.</li>
+<li><strong>Baseline your GPU and CPU telemetry.</strong> Sustained high utilisation on idle machines, unexplained thermal load, or unexpected outbound connections are the practical signatures of cryptojacking.</li>
+<li><strong>Monitor re-uploads, not just takedowns.</strong> Removals are reversible. Track re-appearing artefacts under the same or related accounts, and treat the underlying account as the indicator rather than the individual file.</li>
+</ol>
+<p>The campaign's rapid return is a reminder that a takedown is a symptom-level remedy. Until repositories enforce account- and infrastructure-level disruption, the cycle of upload, removal and re-upload will continue to repeat — and the systems consuming those artefacts automatically will continue to bear the cost.</p>
+<hr>
+<p>一場濫用 Hugging Face 托管模型檔案的加密貨幣挖礦行動，在安全團隊採取下架行動後僅數日便重新現身——據 BleepingComputer 報道，復活浪潮中其中一個遭投毒的模型，在被標記之前下載次數已超過 28,000 次。</p>
+<p>這個數字正正是整篇報導的縮影。模型中樞（model hub）的下載計數與 npm 或 PyPI 套件的統計，並非完全同類指標——模型權重是整批由 pipeline 取用，而非逐一經審閱者檢視——但它所標示的影響範圍同樣不容忽視：一個以匿名方式發佈到公開 repository 的檔案，在偵測機制作出回應之前，已可進入數千部機器。</p>
+<p>惡意程序本身目的明確：劫持 GPU 伺服器進行加密貨幣挖礦，並在被入侵的主機上安裝後門。它一度被清除，卻在數日內重新浮現，正好說明單一遭投毒的檔案在公開模型中樞上所能產生的影響。</p>
+<p><strong>刪除的是檔案，不是基礎設施</strong></p>
+<p>這場行動的技術並非新穎；有所改變的是運作的持續能力。由於下架行動針對的是個別上傳的模型，而非背後的帳戶、憑證及發佈 pipeline，營運者只需重新上傳即可。這是各類托管 repository 的常見弱點：檔案本身容易刪除，但產生它的 pipeline 並不容易。</p>
+<p><strong>第二條戰線：針對 agent，而非人類</strong></p>
+<p>除 Hugging Face 的活動外，BleepingComputer 亦記述 GitHub 上另一個獨立但相關的誘餌——一套冒牌 Solana 起手套件，專門設計用來欺騙 AI 編碼 agent，而非人類開發者。</p>
+<p>手法相當具針對性。傳統社交工程針對的是閱讀 README 的人，而這枚 payload 的撰寫對象，是代為讀取 repository 的工具本身。當 agent 被要求為 Solana 專案搭建架構時，可能抓取這套冒牌套件並執行其指令，最終在運行的機器上安裝 NetSupport 遙距存取木馬。</p>
+<p>兩宗事件的模式如出一轍，也正是本則報導真正具新聞價值的角度：攻擊者正在污染 AI 系統自動消費的檔案——不論是拉入訓練 pipeline 的模型檔案，還是被自主編碼助手掃描的 repository。在大多數開放源碼工作流程中被視為最後防線的人手審核環節，正被刻意繞過。</p>
+<p><strong>團隊可以採取的實際措施</strong></p>
+<p>這一轉變令「來源可溯」比「便利取用」更為重要。運行 GPU 工作負載或採用 AI agent 的機構，實際上是把第三方檔案當作可信輸入處理，但它們並非可信。對於業界各團隊——包括把公開模型與 agent 工具引入開發流程的香港 IT 及開放源碼從業人員——不論司法管轄區為何，實際影響大致一致：不受信任的輸入，必須按不受信任的輸入來處理。</p>
+<ol>
+<li><strong>下載前查證來源。</strong> 審閱上傳帳戶的帳齡與歷史、檢視 repository 及模型 metadata，並優先採用來自可識別發佈者的固定版本。</li>
+<li><strong>把模型及 repository 下載視為不受信任的輸入。</strong> 對資料導入及 agent 執行進行沙箱隔離；任何 agent 執行已擷取套件中的安裝程序或腳本前，須先取得人手明確批准。</li>
+<li><strong>為 GPU 及 CPU 遙測建立基線。</strong> 閒置機器持續處於高使用率、無法解釋的熱負載，或意外的對外連線，都是加密貨幣挖礦劫持的實務特徵。</li>
+<li><strong>持續監控重新上傳，而不只是下架。</strong> 移除是可以逆轉的。追蹤同一或關聯帳戶下重新出現的檔案，並把底層帳戶視為指標，而非個別檔案本身。</li>
+</ol>
+<p>該行動迅速回歸，提醒我們下架只是症狀層面的處理。在 repository 實施帳戶層面及基礎設施層面的阻斷措施之前，上傳、移除、再上傳的循環將持續重演——而自動消費這些檔案的系統，亦將持續為此付出代價。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/hugging-face-malware-campaign-returns-to-hijack-gpus-for-crypto-mining/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
