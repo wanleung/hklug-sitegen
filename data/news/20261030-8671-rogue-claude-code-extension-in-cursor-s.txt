@@ -1,0 +1,42 @@
+Date: 2026-10-30 17:48:00
+Author: HKLUG Team
+Title: Rogue Claude Code Extension in Cursor's Marketplace Installed SSH Backdoors
+Content:
+<p>A trojanised extension impersonating Anthropic's Claude Code was distributed through Cursor's own extension marketplace for roughly 11 hours on 29 October, in a supply-chain incident that may have exposed as many as 5,000 developers to malware engineered to install persistent SSH backdoors on their workstations, according to BleepingComputer, which reported the incident on 30 October.</p>
+<p>The extension was not shipped by Anthropic. It was a rogue listing that borrowed Claude Code's name and branding to claim trust it had not earned — a distinction that matters for both remediation and accountability. Neither Anthropic's official VS Code extension nor Cursor itself distributed the payload; the danger came from the combination of a familiar product name appearing inside a marketplace that many developers implicitly treat as vetted.</p>
+<p><strong>What happened</strong></p>
+<p>The malicious build sat in Cursor's marketplace for approximately 11 hours before being pulled. Exposure is estimated at up to 5,000 developers — a ceiling on possible reach rather than a confirmed count of infected machines. The listing has since been removed; the source report does not specify whether Cursor, Anthropic, or both carried out the takedown.</p>
+<p><strong>The payload</strong></p>
+<p>Once installed, the extension dropped malware that established persistent SSH access to the affected machine. A durable SSH foothold is not a throwaway compromise: on a developer workstation it is a bridge into source repositories, CI/CD runners, container registries and cloud consoles, wherever the same keys or agent sessions reach. Blast radius on a dev endpoint is effectively the blast radius of everything that endpoint can authenticate to.</p>
+<p><strong>Checking whether you were affected</strong></p>
+<p>Generic advice — "keep tools updated" — does not tell a developer whether they were hit. The actionable step is an indicator check against BleepingComputer's technical write-up, which carries the technical detail accompanying the story. In parallel, teams can run a short audit:</p>
+<ul>
+<li>Inspect <code>~/.ssh/</code> for unexpected entries: unfamiliar files in <code>authorized_keys</code>, new key pairs, or modifications to <code>config</code> and <code>known_hosts</code>.</li>
+<li>Review the contents of <code>authorized_keys</code> against a known-good baseline; look for keys without comments or with anomalous options such as <code>command=</code> or <code>permitopen</code> forwards.</li>
+<li>List installed extensions in Cursor and compare publisher and version against the official Claude Code listing; remove anything that does not match.</li>
+<li>Check for unfamiliar outbound SSH traffic and long-lived connections to unknown hosts in shell history and endpoint logs.</li>
+<li>Rotate SSH keys and review active sessions on any machine where an indicator matches.</li>
+</ul>
+<p><strong>Why this matters beyond one incident</strong></p>
+<p>Extension marketplaces are a distinct trust boundary. Cursor draws from its own marketplace rather than the official VS Code Marketplace, so familiar names, familiar iconography and familiar publishers do not carry the guarantees developers have learned to associate with them. Anyone auditing an AI-assisted development toolchain should treat every marketplace — including first-party ones — as an untrusted distribution channel requiring publisher verification, version pinning and, ideally, an allowlist of approved extensions.</p>
+<p>For teams in Hong Kong running AI coding assistants alongside corporate SSH and CI infrastructure, the checklist above applies directly: the relevant question is not whether a tool is popular, but whether the copy on your machine came from the channel you think it did.</p>
+<hr>
+<p>據 BleepingComputer 於 10 月 30 日報道，一款偽冒 Anthropic Claude Code 的木馬化擴充功能，曾於 10 月 29 日在 Cursor 自家的擴充功能市集上流通約 11 小時。這宗供應鏈事故據估計可能令多達 5,000 名開發者暴露於惡意軟件之下，該軟件專門用來在其工作站安裝持久性 SSH 後門。</p>
+<p>該擴充功能並非由 Anthropic 發布，而是一個借用 Claude Code 名稱及品牌形象、企圖騙取不應得信任的惡意上架項目——這一區分對補救措施及責任追究均十分重要。Anthropic 官方的 VS Code 擴充功能及 Cursor 本身皆未散播有關載荷；危險在於一個熟悉的產品名稱出現在許多開發者不假思索視為已經過審核的市集之中。</p>
+<p><strong>事件經過</strong></p>
+<p>惡意版本在 Cursor 市集上停留約 11 小時後被下架。受影響範圍估計最多達 5,000 名開發者——這是可能波及人數的上限，而非已確認受感染機器的數目。該上架項目其後已被移除；原始報道並無註明是由 Cursor、Anthropic 還是雙方共同執行下架行動。</p>
+<p><strong>惡意載荷</strong></p>
+<p>擴充功能一經安裝，便會投放惡意軟件，在受影響機器上建立持久性 SSH 存取權限。穩固的 SSH 據點絕非一次性的入侵：在開發者工作站上，它是通往 source repositories、CI/CD runners、container registries 及 cloud consoles 的橋樑——凡是同一組 keys 或 agent sessions 可及之處皆然。開發終端機的爆炸半徑，實質上等於該終端機所能驗證身份的一切目標的爆炸半徑。</p>
+<p><strong>檢查是否受到影響</strong></p>
+<p>一般性建議——「保持工具更新」——並不能告訴開發者自己是否已受感染。實際可行的做法，是依據 BleepingComputer 技術詳述中的 indicators 作比對檢查，該詳述載有與報道相關的技術細節。與此同時，團隊亦可進行一項簡短審計：</p>
+<ul>
+<li>檢查 <code>~/.ssh/</code> 是否出現預期之外的項目：<code>authorized_keys</code> 中有陌生檔案、新增 key pairs，或 <code>config</code> 及 <code>known_hosts</code> 遭到修改。</li>
+<li>將 <code>authorized_keys</code> 內容與已知良好基準作比對；留意沒有註釋的 keys，或帶有 <code>command=</code>、<code>permitopen</code> 轉發等異常選項的 keys。</li>
+<li>列出 Cursor 中已安裝的擴充功能，將 publisher 及版本與官方 Claude Code 上架項目逐一核對；移除任何不符的項目。</li>
+<li>檢查 shell history 及終端機 logs 中是否有陌生的外傳 SSH 流量及連往不明主機的長時間連線。</li>
+<li>在任何 indicators 命中的機器上更換 SSH 金鑰，並審查現行 sessions。</li>
+</ul>
+<p><strong>為何此事影響不限於單一事故</strong></p>
+<p>擴充功能市集本身就是一道獨特的信任邊界。Cursor 從自家市集取用擴充功能，而非官方 VS Code Marketplace，因此熟悉的名稱、熟悉的圖示及熟悉的 publisher 並不會帶來開發者向來慣於與之掛鈎的保證。任何審計 AI 輔助開發工具鏈的人士，都應將每一個市集——包括第一方市集——視為不可信任的分發渠道，須進行 publisher 驗證、版本鎖定，理想情況下更應設有已核准擴充功能的 allowlist。</p>
+<p>對於在香港同時運行 AI coding assistants 及企業 SSH、CI 基礎設施的團隊而言，上述清單直接適用：相關問題並非某項工具是否流行，而是你機器上的那份副本是否真如你所想，源自你以為的那個渠道。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/malicious-claude-code-extension-on-cursor-planted-ssh-backdoors/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
