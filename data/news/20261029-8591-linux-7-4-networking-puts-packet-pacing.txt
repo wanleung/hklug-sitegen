@@ -1,0 +1,32 @@
+Date: 2026-10-29 23:38:00
+Author: HKLUG Team
+Title: Linux 7.4 Networking Puts Packet Pacing in Hardware — If Your NIC Supports It
+Content:
+<h3>Linux 7.4 Networking Puts Packet Pacing in Hardware — If Your NIC Supports It</h3>
+<p>Phoronix reports that wired and wireless networking driver improvements have been merged for the Linux 7.4 merge window, with hardware transmit-pacing offload, new drivers and further networking performance work listed among the headline additions for the release.</p>
+<p>The feature with the clearest operational consequence is tx-pacing offload. The change hands the question of when each packet should hit the wire from the kernel's software pacing path to the NIC, with Phoronix describing the adapter scheduling transmission on its own rather than deferring every packet to host-side software. If that holds in practice, it strips a per-packet scheduling cost out of the hot path and returns CPU headroom on hosts where the network stack competes with application work — containers, proxies, storage nodes and traffic-heavy middleware.</p>
+<p>The pull also carries driver work across the networking tree, and that is where the practical evaluation begins for operators. The offload only exists if the in-tree driver exposes the control, and only delivers if the silicon behind it can schedule transmission itself. Procurement teams should treat that pairing as the checklist item, not the kernel version number.</p>
+<p>That caveat is the operational core of the story. Where a NIC supports pacing offload and its driver exposes the control, the uplift shows up as reclaimed CPU cycles. Where it does not — older or commodity hardware — operators can expect the kernel to fall back to software pacing, with no offload benefit to claim. In other words, this is a feature you acquire at hardware-refresh time, not one you unlock by upgrading the kernel alone: the pacing offload converts a recurring per-packet software cost into a hardware capability that can be specified at purchase.</p>
+<p>A three-point rollout checklist follows:</p>
+<ol>
+<li><strong>Confirm NIC and driver support.</strong> Check that the NIC and its in-tree driver expose the pacing offload before assuming any benefit; verify on the specific firmware revision in production.</li>
+<li><strong>Watch the release cycle.</strong> Merge-window timing moves quickly, and distribution backports habitually lag. Upstream availability is not the same as availability on your current LTS or vendor kernel.</li>
+<li><strong>Benchmark on your own traffic mix.</strong> Pacing savings scale with packet rate and flow count; small-packet, many-flow workloads should show the clearest CPU headroom, while low-rate links may show nothing measurable.</li>
+</ol>
+<p>The broader significance for the open-source and DevOps community is a familiar pattern: Linux continues to shift recurring software overhead into hardware capabilities as vendors expose them, but the payoff remains gated on a driver-and-silicon combination that operators must verify rather than assume. The merge window will settle the final shape of the pull before release; until then, treat any performance figure as provisional and re-run your own numbers once the code reaches your kernel.</p>
+<p><em>Source: <a href="https://www.phoronix.com/news/Linux-7.4-Networking">Phoronix</a></em></p>
+<hr>
+<h3>Linux 7.4 網絡功能將封包節奏調節交由硬件處理 — 前提是你的網卡支持</h3>
+<p>Phoronix 報道，有線及無線網絡驅動程序的改進已納入 Linux 7.4 合併視窗（merge window），當中包括硬件 transmit-pacing 卸載（offload）、全新驅動程序，以及進一步的網絡性能優化，均列為是次版本的主要新增項目。</p>
+<p>其中營運影響最明確的功能，是 tx-pacing 卸載。這項改動把每個封包何時「上線」的決定，由 kernel 的軟件節奏調節路徑移交給 NIC，據 Phoronix 描述，網絡介面卡會自行安排傳輸時序，而不是把每個封包都推遲交由主機端軟件處理。若實際運作確實如此，便能從熱路徑（hot path）之中移除逐個封包的調度成本，為 network stack 與應用程式爭用 CPU 的主機 —— 例如容器、代理、儲存節點以及流量繁重的 middleware —— 釋出 CPU 空間。</p>
+<p>這批 pull 同時涵蓋整個網絡子系統的驅動程序改動，而營運人員的實務評估正是由此開始。卸載功能只有在樹內（in-tree）驅動程序暴露相關控制時才會存在，也只有在背後的芯片本身具備自行安排傳輸的能力時才真正生效。採購團隊應把這項「驅動程序配芯片」的配對列為檢查清單上的項目，而不是只看 kernel 版本號。</p>
+<p>這項限制正是整則報道的營運核心。網卡支持節奏調節卸載、其驅動程序亦暴露相關控制的，收益會以騰出的 CPU 週期形式浮現；不支持的 —— 舊款或通用型硬件 —— 營運人員則可預期 kernel 回落至軟件節奏調節，沒有卸載效益可言。換言之，這是一項要到硬件更新時才能取得的功能，而不是單靠升級 kernel 便能啟用：節奏調節卸載把反覆出現的逐封包軟件成本，轉化為一項可以在採購時指定的硬件能力。</p>
+<p>以下是三點部署檢查清單：</p>
+<ol>
+<li><strong>確認 NIC 及驅動程序支持。</strong> 在假設任何效益之前，先檢查網絡介面卡及其樹內驅動程序是否暴露節奏調節卸載；並在生產環境所用的特定韌體版本上加以驗證。</li>
+<li><strong>留意發佈周期。</strong> 合併視窗的時間表變動迅速，而發行版的向後移植（backport）向來存在滯後。上游可用，並不等同於你現有的 LTS 或廠商 kernel 可用。</li>
+<li><strong>以自己的流量組合做基準測試。</strong> 節奏調節帶來的節省會隨封包速率與流數而變；小封包、多流的工作負載應顯示最清晰的 CPU 空間，而低速率線路可能量度不到任何差異。</li>
+</ol>
+<p>對開源及 DevOps 社群而言，更廣泛的意義在於一個熟悉的模式：隨着供應商逐步開放相關能力，Linux 持續把反覆出現的軟件開銷轉移到硬件功能之上，但回報仍取決於驅動程序與芯片的組合，營運人員必須實地驗證而非想當然。合併視窗將決定這批 pull 在正式發佈前的最終形態；在那之前，任何性能數字都應視為暫定值，待相關代碼進入你的 kernel 後，再自行重跑一次基準測試。</p>
+<p><em>來源：<a href="https://www.phoronix.com/news/Linux-7.4-Networking">Phoronix</a></em></p>
+<p><a href="https://www.phoronix.com/news/Linux-7.4-Networking" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
