@@ -1,0 +1,34 @@
+Date: 2026-10-30 00:10:00
+Author: HKLUG Team
+Title: Polymarket Halts Trading After Third-Party Script Injection Traced to $2.5M
+Content:
+<p>Prediction market platform Polymarket suspended trading after attackers compromised a third-party service and used it to push cryptocurrency-draining JavaScript to users, with roughly $2.5 million in assets traced to a wallet attributed to a suspected attacker.</p>
+<p>According to BleepingComputer, which reported the incident, the breach did not originate in Polymarket's own code. An external dependency the platform relied on was compromised, and the resulting payload injected malicious script capable of siphoning funds from connected wallets. Trading was halted while the platform worked to contain the injection and assess the damage, and it later indicated it expected to resume trading once the investigation concluded.</p>
+<p>The mechanics are textbook supply-chain: attackers did not need to break Polymarket's authentication, smart contracts, or backend directly. Compromising a single upstream component — a library, an embedded widget, a build artefact — is the sort of thing typically enough to reach every browser session loading it. Once the script runs client-side, it sits exactly where the user's wallet credentials and signing prompts live, which is why drainers of this class are so effective against Web3 front ends.</p>
+<p>That pattern is now commoditised, according to security researchers who track this class of tooling: drainer-as-a-service kits lower the bar for operators considerably. The hard part is no longer writing the theft logic, it is finding a distribution path with legitimate trust. Third-party dependencies supply that path for free, inheriting the reputation of the platform that embeds them.</p>
+<p>What distinguishes this case is the transparency of the forensics. Rather than reporting an unquantified loss, the platform was able to trace approximately $2.5 million to a specific suspected wallet — a level of on-chain attribution that traditional financial incidents rarely permit. It is a reminder that public ledgers cut both ways for attackers: funds may be moved, but they are not easily hidden.</p>
+<p>For engineering teams, the incident is a concrete argument for browser-side supply-chain controls. A practical hardening checklist includes:</p>
+<ul>
+<li><strong>Subresource Integrity (SRI):</strong> pin cryptographic hashes on externally hosted scripts so a modified file fails to load rather than executes silently.</li>
+<li><strong>Content Security Policy:</strong> restrict <code>script-src</code> to an explicit allowlist, blocking injected or unexpected origins outright.</li>
+<li><strong>Dependency monitoring and pinning:</strong> track upstream packages for unexpected releases or maintainer changes, and avoid floating version ranges in production builds.</li>
+<li><strong>Build provenance:</strong> verify that what ships to the browser matches what was reviewed, ideally with signed artefacts.</li>
+<li><strong>Wallet-side limits:</strong> treat session permissions as revocable, and cap approval amounts rather than granting unlimited token allowances.</li>
+</ul>
+<p>The broader lesson is architectural rather than platform-specific: the trust boundary of a modern web application extends to every third party whose code it executes. For Hong Kong teams running Web3 front ends, that boundary is worth auditing before — not after — an incident makes the point.</p>
+<hr>
+<p>預測市場平台 Polymarket 在攻擊者入侵一項第三方服務，並藉此向用戶推送可竊取加密貨幣的 JavaScript 後暫停交易。約 250 萬美元資產已被追蹤至一個懷疑屬於攻擊者的錢包地址。</p>
+<p>據報道此事的 BleepingComputer 指出，是次入侵並非源於 Polymarket 自身的程式碼。平台依賴的一項外部 dependency 遭到入侵，產生的 payload 注入了惡意 script，能夠從已連接的錢包中抽走資金。平台在著手控制注入影響及評估損失期間暫停交易，其後表示預計在調查完成後恢復交易。</p>
+<p>事件的運作機制是典型的 supply-chain 手法：攻擊者無需直接攻破 Polymarket 的身份驗證、smart contract 或後端系統。只要入侵一個上游組件——無論是一個 library、一個嵌入式 widget，抑或一個 build artefact——通常已足以接觸到所有載入該組件的瀏覽器 session。一旦 script 在用戶端執行，它便正好處於用戶錢包憑證及簽名提示所在的位置，這正是此類 drainer 對 Web3 前端如此奏效的原因。</p>
+<p>追蹤此類工具的安全研究人員指出，這種模式現已商品化：drainer-as-a-service 套件大幅降低了攻擊者的門檻。困難的已不再是編寫盜竊邏輯，而是尋找一條具備正當信任的分發途徑。第三方 dependency 恰好免費提供了這條途徑，並繼承了嵌入它們的平台的信譽。</p>
+<p>是次事件的獨特之處在於取證工作的透明度。平台並非報告一項未能量化的損失，而是成功將約 250 萬美元追蹤至一個特定的懷疑錢包——這種鏈上歸因程度在傳統金融事故中鮮少能夠做到。這提醒人們，公開分類帳對攻擊者而言是一把雙刃劍：資金或可轉移，但絕非輕易隱匿。</p>
+<p>對工程團隊而言，是次事件是支持在瀏覽器端實施 supply-chain 管控的具體理據。一份實用的強化清單包括：</p>
+<ul>
+<li><strong>Subresource Integrity (SRI)：</strong> 為外部託管的 script 固定 cryptographic hash，使被改動的檔案載入失敗，而非靜默執行。</li>
+<li><strong>Content Security Policy：</strong> 將 <code>script-src</code> 限制於明確的 allowlist，即時阻擋被注入或意料之外的來源。</li>
+<li><strong>Dependency 監控與版本固定：</strong> 追蹤上游 package 的異常發布或維護者變動，並避免在 production build 中使用浮動版本範圍。</li>
+<li><strong>Build provenance：</strong> 核實交付到瀏覽器的內容與經審查的內容一致，最好使用已簽署的 artefact。</li>
+<li><strong>錢包端限額：</strong> 將 session 權限視為可撤回，並設定 approval 上限，而非授予無限額度的 token allowance。</li>
+</ul>
+<p>更廣泛的教訓在於架構層面，而非特定平台：現代 web 應用程式的 trust boundary 已延伸至其執行程式碼的每一個第三方。對於營運 Web3 前端的香港團隊而言，這條邊界值得在事故發生「之前」審視，而非等到事故發生「之後」才明白其重要性。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/polymarket-halts-trading-after-crypto-draining-script-breach-25m-traced/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
