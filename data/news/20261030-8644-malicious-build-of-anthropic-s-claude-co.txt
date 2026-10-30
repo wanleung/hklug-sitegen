@@ -1,0 +1,40 @@
+Date: 2026-10-30 13:44:00
+Author: HKLUG Team
+Title: Malicious Build of Anthropic's Claude Code VS Code Extension Shipped SSH Backdoor via Open VSX
+Content:
+<p>Developers who installed Anthropic's official Claude Code extension for VS Code should check their build immediately: cybersecurity researchers disclosed that a tampered copy of the extension distributed through the Open VSX registry installed a persistent SSH backdoor on infected hosts.</p>
+<p>The first step for anyone who may have pulled the extension is a version check. Compare the installed build against the version Anthropic currently lists as the official release on its own channels, and treat any mismatch as suspect. If in doubt, uninstall and reinstall only from a channel you can verify — cached copies and registry mirrors should not be trusted by default.</p>
+<h4>A chain-of-trust failure, not a vendor breach</h4>
+<p>As reported by The Hacker News on 30 October, the compromise did not originate inside Anthropic's build pipeline. Investigators traced it upstream to a breach of the Cursor Marketplace, the distribution service of the AI coding platform Cursor — an attribution that remains provisional pending further confirmation. The tainted package then propagated onward through Open VSX — the registry used by non-Microsoft VS Code builds such as VSCodium and various enterprise distributions — before reaching end users' editors. In response, Cursor briefly took its marketplace down to strip out the malware. Anthropic has since acknowledged the incident publicly.</p>
+<p>That chain matters for how the incident should be understood. Three trust boundaries were crossed before a developer's editor ever saw the package, and the failure happened at a distribution channel already expected to serve authentic builds. The malicious copy carried the genuine publisher name, extension identifier and marketplace listing — meaning conventional trust signals alone were not enough to spot it. For users of Open VSX-backed editors in particular, there is no Microsoft-side marketplace review to fall back on; registry provenance becomes the only remaining control. Whether Open VSX has since pulled the malicious build is not confirmed in the reporting.</p>
+<h4>What developers should do now</h4>
+<ul>
+<li><strong>Verify your installed extension version</strong> against what Anthropic lists as current; treat discrepancies as compromise indicators.</li>
+<li><strong>Reinstall only from a verifiable channel</strong> — do not accept cached or registry copies blindly.</li>
+<li><strong>Audit SSH access.</strong> Inspect <code>~/.ssh/authorized_keys</code>, <code>~/.ssh/config</code> and running SSH services, and remove any unfamiliar entries. This is the most visible indicator of this class of backdoor.</li>
+<li><strong>Rotate credentials</strong> — API keys, tokens and passwords — used from any affected workspace. The SSH persistence mechanism outlives the extension itself, surviving reboots and uninstallation, so removing the add-on alone is not remediation.</li>
+<li><strong>Pin and gate extension updates</strong> through an internal mirror or proxy where your organisation can. Centralised pinning converts a distributed, manual verification problem into a single controlled chokepoint.</li>
+</ul>
+<h4>Why this matters beyond the immediate fix</h4>
+<p>Compromised developer endpoints are attractive staging grounds for second-wave supply-chain attacks: a machine that builds and publishes software can turn one tampered extension into a much wider compromise. For teams running AI coding assistants in production workflows, extension provenance is now part of the software supply chain, not a convenience feature.</p>
+<p>At the time of reporting, precise affected version ranges and detailed remediation guidance from Anthropic or the Open VSX maintainers had not been detailed in the source disclosure; developers should watch the official project advisories — and Anthropic's official extension listing — for canonical instructions, version identifiers and any confirmation of the exact build affected.</p>
+<p>Organisations that discover indicators of compromise on their systems can report them through Hong Kong CERT coordination channels such as HKCERT, alongside any internal incident-response process. This story is broadly relevant to Hong Kong IT professionals standardising on non-Microsoft VS Code builds, where registry-side verification carries most of the trust burden.</p>
+<hr>
+<p>曾安裝 Anthropic 官方 Claude Code VS Code 擴充功能的開發者，應立即檢查其安裝版本：網絡安全研究人員披露，經 Open VSX 登記庫派發的該擴充功能遭竄改副本，會在受感染主機上安裝持久性 SSH 後門。</p>
+<p>任何可能下載過該擴充功能的人，第一步應是核對版本：將已安裝的建置版本，與 Anthropic 目前在其自家渠道列為官方發布的版本比較，任何不一致均應視為可疑。如有疑問，應先解除安裝，並只從可驗證的渠道重新安裝——快取副本及登記庫鏡像站不應被視為預設可信。</p>
+<h4>屬信任鏈失效，而非供應商被入侵</h4>
+<p>據 The Hacker News 於 10 月 30 日報道，此次入侵並非源自 Anthropic 的建置管線（build pipeline）。調查人員向上追溯至 Cursor Marketplace 遭入侵——該平台為 AI 編程工具 Cursor 的分發服務——此歸因仍屬初步判斷，尚待進一步確認。受污染的封裝其後經 Open VSX 繼續傳播——該登記庫由非微軟的 VS Code 建置版本採用，例如 VSCodium 及多種企業發行版——最終抵達終端用戶的編輯器。作為回應，Cursor 曾短暫將其 marketplace 下線以清除惡意軟件。Anthropic 其後已公開承認是次事件。</p>
+<p>這條信任鏈對於理解事件至關重要。在開發者的編輯器接觸到該封裝之前，已有三重信任邊界被跨越，而失效正發生在一個本應派發真實建置的分發渠道上。惡意副本攜帶了真實的發布者名稱、擴充功能識別碼及 marketplace 上架資料——這意味單靠傳統信任指標不足以識別它。尤其對於使用 Open VSX 支援編輯器的用戶，並無微軟方面的 marketplace 審核作為後盾；登記庫的來源可信度（provenance）因而成為唯一餘下的管控手段。報道中並未確認 Open VSX 此後是否已撤下該惡意版本。</p>
+<h4>開發者現階段應採取的行動</h4>
+<ul>
+<li><strong>核對已安裝的擴充功能版本</strong>是否與 Anthropic 列示的最新版本一致；任何差異均應視為已被入侵的指標。</li>
+<li><strong>只從可驗證的渠道重新安裝</strong>——切勿盲目接受快取或登記庫副本。</li>
+<li><strong>審計 SSH 存取。</strong> 檢查 <code>~/.ssh/authorized_keys</code>、<code>~/.ssh/config</code> 以及正在運行的 SSH 服務，移除任何不熟悉的條目。這是此類後門最顯而易見的指標。</li>
+<li><strong>更換憑證</strong>——包括 API key、token 及密碼——凡在受影響工作區使用過的均應更換。SSH 持久化機制的壽命長於擴充功能本身，可歷經重新啟動及解除安裝後仍然存在，因此僅移除附加元件並不算完成補救。</li>
+<li><strong>盡量透過內部鏡像或代理固定（pin）及管控擴充功能更新。</strong> 集中式固定可把分散的人手驗證問題，轉化為單一受控的管控樞紐。</li>
+</ul>
+<h4>為何此事的影響遠超即時修復</h4>
+<p>遭入侵的開發者端點是第二輪供應鏈攻擊的理想跳板：一台負責建置及發布軟件的機器，可令一個被竄改的擴充功能演變成更大範圍的入侵。對於在正式工作流程中運用 AI 編程助手的團隊而言，擴充功能的來源可信度如今已是軟件供應鏈的一部分，而非一項便利功能。</p>
+<p>在報道之時，Anthropic 或 Open VSX 維護者並未在原始披露中詳列受影響的確切版本範圍及詳細補救指引；開發者應留意官方專案的通告（advisory）——以及 Anthropic 的官方擴充功能上架頁——以獲取權威指示、版本識別碼及受影響建置版本的任何確認資訊。</p>
+<p>機構如在自身系統發現入侵指標（IOC），可透過香港 CERT 協調渠道（例如 HKCERT）通報，並同時啟動內部事故應變流程。此報道對採用非微軟 VS Code 建置版本的香港 IT 專業人士尤具參考價值——在此情境下，登記庫端的來源核實承擔了大部分的信任責任。</p>
+<p><a href="https://thehackernews.com/2026/10/official-claude-code-vs-code-extension.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
