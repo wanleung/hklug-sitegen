@@ -1,0 +1,46 @@
+Date: 2026-10-30 15:24:00
+Author: HKLUG Team
+Title: Signalling Protocol Flaws Undermine Trust in SMS Banking Codes
+Content:
+<p>Vulnerabilities in the SS7 and Diameter signalling protocols can let attackers track a handset's location, intercept calls and read SMS messages — including the one-time passcodes used as a second factor for online banking — without ever touching the victim's device, according to a write-up by BleepingComputer.</p>
+<p>The exposure is not a software bug that can be patched with an update. It stems from the way legacy interconnect standards between mobile networks trust one another: any operator on a global signalling path can, in principle, send queries and messages on behalf of another network, and the receiving core elements generally accept them as legitimate.</p>
+<p>For end users, the practical consequence is that the security of an SMS-delivered code depends not only on their phone, but on every network their message transits. SMS codes are commonly used as a second factor for online banking logins, fund transfers and card-not-present payments in Hong Kong as elsewhere — which makes this a live question for anyone relying on them, regardless of whether any local incident has come to light.</p>
+<p><strong>A roaming scenario</strong></p>
+<p>Consider a subscriber who roams onto a regional network while travelling, or who receives a code while connected abroad. Their traffic may pass through infrastructure outside the jurisdiction of their home regulator, and signalling-level interception does not require malware, phishing or a compromised handset. Attacks of this class also allow an adversary to redirect a target's number — a technique historically abused for call and SMS interception — while the subscriber sees nothing unusual.</p>
+<p>What that adds up to for Hong Kong users is exposure rather than a documented local incident: the risk arrives through roaming and cross-border message routing, where traffic transits signalling infrastructure beyond the reach of the home regulator's oversight.</p>
+<p>The weaknesses themselves are well established rather than theoretical. Publicly documented research over the past decade has repeatedly demonstrated that signalling-level flaws can be used to capture two-factor codes and hijack account verification flows, and industry standards bodies have published guidance on mitigating signalling interconnect abuse. Adoption of that guidance, however, varies by operator and by country.</p>
+<p><strong>Two sentences on Cape</strong></p>
+<p>US mobile provider Cape, whose findings BleepingComputer's report builds on, argues that carrier-independent defences can detect and block malicious signalling traffic before it reaches a subscriber. Its pitch — a security-focused mobile service running on private infrastructure — is a vendor position, and buyers should treat it alongside the independently documented protocol weaknesses rather than as a substitute for them.</p>
+<p><strong>What readers can actually do</strong></p>
+<p>The direction of travel is already visible: banks that have moved to in-app approvals or authenticator apps have quietly exited the SMS trust path, and what remains on text messages are the lower-friction flows — password resets, contact-detail changes, SIM-linked account recovery — where a redirected number still causes real damage. That reframes the practical advice: the goal is not to disable SMS, but to make sure SMS is never the only key to the account.</p>
+<p>End users cannot rewrite interconnect policy, but they can reduce their exposure:</p>
+<ul>
+<li><strong>Move high-value authorisation off SMS.</strong> Where a bank offers an authenticator app, a hardware security key, or its own in-app approval push, use that instead of codes delivered by text message.</li>
+<li><strong>Treat SMS as a delivery channel, not a vault.</strong> Never rely on an SMS code as the sole protection for password resets on email or banking accounts; a redirected number defeats it.</li>
+<li><strong>Lock down the recovery path.</strong> Set a separate PIN or passphrase for telecom account changes, and prefer app-based or in-app support contact over SMS callbacks.</li>
+<li><strong>Watch for the tell-tale signs.</strong> Unexpected "no service" drops, delayed texts, or a number that suddenly stops receiving codes can indicate call-forwarding or redirection abuse.</li>
+<li><strong>Check roaming settings.</strong> Disable unnecessary roaming and be wary of unfamiliar networks or SSIDs when handling authentication-sensitive tasks abroad.</li>
+</ul>
+<p>The durable fixes sit with operators deploying filtering at signalling gateways and with regulators mandating interconnect controls; the steps above reduce blast radius, they do not close the gap. Until those fixes are universal, the message for banking customers is straightforward: an SMS code is a convenience, not a guarantee.</p>
+<hr>
+<p>據 BleepingComputer 一篇報導指出，SS7 及 Diameter 通訊協定存在漏洞，攻擊者無須接觸受害者的裝置，便可追蹤手機位置、截聽通話及讀取短訊——包括網上銀行用作第二重認證的一次性密碼。</p>
+<p>這項風險並非可以用更新修補的軟件漏洞，而是源自流動網絡之間舊有互聯標準的互相信任機制：全球信令路徑上的任何營運商，原則上均可代表其他網絡發出查詢及訊息，而接收方的核心網絡元件通常會將其視為合法訊息接納。</p>
+<p>對最終用戶而言，實際後果是以短訊接收的驗證碼，其安全性不單取決於自己的手機，更取決於訊息經過的每一個網絡。無論在香港還是其他地區，短訊密碼普遍用作網上銀行登入、轉帳及無卡付款的第二重認證——因此，對所有依賴此機制的人來說，這都是一個切身問題，不論本地是否已有相關事故曝光。</p>
+<p><strong>漫遊情境</strong></p>
+<p>試想一位旅客漫遊至區內其他網絡，或身處外地時接收驗證碼。其通訊流量可能經過本身母國監管機構管轄範圍以外的基礎設施，而信令層面的截聽根本不涉及惡意軟件、釣魚攻擊或被入侵的手機。此類攻擊亦允許對手重新導向目標電話號碼——這種手法歷來曾被濫用於截聽通話及短訊——而用戶本身不會察覺任何異樣。</p>
+<p>對香港用戶而言，這代表的是風險敞口而非已曝光的本地事故：風險透過漫遊及跨境訊息路由而來，流量所經的信令基礎設施超出母國監管機構的監督範圍。</p>
+<p>這些弱點本身已有充分實證，並非純屬理論。過去十年公開的研究已多次證明，信令層面的漏洞可用以截取雙重認證碼及劫持帳戶驗證流程；業界標準機構亦已就防範信令互聯濫用發布指引。然而，各營運商及各國對該指引的採用程度不一。</p>
+<p><strong>談談 Cape</strong></p>
+<p>美國流動通訊供應商 Cape——BleepingComputer 報告的研究基礎正是源自其發現——主張採用與營運商無關的防禦措施，可在惡意信令流量到達用戶之前予以偵測及阻截。其產品定位——運行於私有基礎設施、以保安為核心的流動服務——屬於廠商立場，買家應將其與獨立有據的協定弱點一併考慮，而非視之為後者的替代品。</p>
+<p><strong>讀者實際可以做些什麼</strong></p>
+<p>趨勢已經顯而易見：已改用 app 內批准或認證器應用程式的銀行，其實已悄然退出短訊信任路徑；仍然依賴短訊的是那些較低門檻的流程——重設密碼、更改聯絡資料、與 SIM 卡綁定的帳戶恢復——在這些環節，遭重新導向的號碼依然會造成實質損害。這重新定義了實用建議的重點：目標並非停用短訊，而是確保短訊永遠不是開啟帳戶的唯一鑰匙。</p>
+<p>最終用戶無法改寫互聯政策，但可以降低自身風險敞口：</p>
+<ul>
+<li><strong>將高價值授權移離短訊。</strong> 如銀行提供認證器應用程式、硬件保安密鑰，或本身的 app 內批准推送，應改用這些方式，取代以短訊發送的密碼。</li>
+<li><strong>視短訊為傳送渠道，而非保險箱。</strong> 切勿將短訊密碼視為重設電郵或銀行帳戶密碼的唯一保障；號碼遭重新導向即可破解。</li>
+<li><strong>鎖緊恢復路徑。</strong> 為電訊帳戶變更設定獨立的 PIN 或密碼短語，並優先使用 app 或 app 內客服，而非短訊回撥。</li>
+<li><strong>留意異常跡象。</strong> 意外出現「無服務」、短訊延遲，或號碼突然收不到驗證碼，都可能顯示通話轉駁或號碼重新導向遭濫用。</li>
+<li><strong>檢查漫遊設定。</strong> 停用不必要的漫遊，身處外地處理認證敏感事務時，對陌生網絡或 SSID 保持警惕。</li>
+</ul>
+<p>長久的解決方案有賴營運商在信令閘道部署過濾機制，以及監管機構強制推行互聯管制；上述步驟只能縮小衝擊範圍，並不能彌補漏洞。在這些修復措施普及之前，給銀行客戶的訊息十分直接：短訊密碼是便利，不是保證。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/ss7-and-diameter-attacks-how-signaling-flaws-expose-your-phone/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
