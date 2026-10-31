@@ -1,0 +1,36 @@
+Date: 2026-10-31 13:25:00
+Author: HKLUG Team
+Title: AI Test-Noise Filter Lands In Linux 7.4, Gets Pulled Days Later Over VFIO Instability
+Content:
+<p>```</p>
+<p>A feature merged into the Linux 7.4 development window to help filter out noise from automated, AI-generated test runs has been backed out almost as soon as it landed, according to Phoronix, which reported the revert after maintainers ran into what it relayed as a "crazy beast" in the VFIO subsystem.</p>
+<p>The quick reversal is a small technical footnote on its own. What makes it worth watching is the problem it was designed to solve: the growing volume of patches, test reports and configuration noise that kernel maintainers have to triage as AI tools make it easier than ever to produce plausible-looking contributions.</p>
+<h4>Why the kernel wanted an AI-noise filter in the first place</h4>
+<p>Linux maintainers have long relied on a "taint" mechanism — a set of flags stamped on a running kernel to record that something unusual happened, such as loading a proprietary module. Taints give users and developers context when they file bug reports, and they give maintainers a quick signal about how much weight to give a given report.</p>
+<p>The feature merged for 7.4 extended that idea to testing. The goal was to let automated tooling mark results that came from invalid or irrelevant test configurations, so that noise from shotgun-style test runs would not flood bug trackers and mailing lists. In effect, the mechanism would have made it easier to separate a real regression report from the output of a script that tried hundreds of configurations and reported all of them.</p>
+<p>That matters because the cost of a contribution is not only the time spent writing it. It is also the maintainer time spent deciding whether it deserves attention at all. When a single automated run can generate dozens of reports, triage becomes the bottleneck.</p>
+<h4>Where it went wrong</h4>
+<p>The trouble surfaced in VFIO, the kernel subsystem responsible for assigning devices to virtual machines. VFIO is notoriously intricate, and interactions between the new taint-binding code and the subsystem's device-handling paths produced behaviour that maintainers could not quickly characterise. Phoronix relayed the instability as a "crazy beast," and rather than ship a half-understood feature into a release cycle, the code was pulled.</p>
+<p>No revised design or timeline for the functionality has been published since the revert. For now, the pull stands as the last word.</p>
+<h4>The bigger picture</h4>
+<p>For generalist IT and DevOps teams, the episode is a useful case study in how open-source projects absorb — and sometimes reject — automation-driven change. The kernel community did not object to the premise: automated and AI-assisted testing does create noise, and maintainers do want better tools to filter it. What stalled the feature was the ordinary discipline of integration testing against a mature, interdependent codebase.</p>
+<p>What the episode shows is the calculation maintainers make when reviewing AI-assisted work: a change must prove itself against the subsystems it touches before it earns its place in a release. Contributing upstream with AI assistance means running changes against those subsystems, reporting results with enough context for a maintainer to reproduce them, and being explicit about how a patch was produced — the standard any contribution is held to, regardless of how it was written.</p>
+<p>Linux 7.4 continues through its development cycle without the feature.</p>
+<p><em>Source: Phoronix, "New Linux 7.4 Feature For Reducing AI Noise Already Reverted Due To A 'Crazy Beast'."</em></p>
+<hr>
+<p>```</p>
+<p>據 Phoronix 報道，一項合入 Linux 7.4 開發視窗、旨在過濾自動化及 AI 生成測試運行所產生雜訊的功能，幾乎在合入後旋即被撤回。維護者在 VFIO 子系統遇到一個被形容為「crazy beast」的問題後，該功能遭到回退。</p>
+<p>這次迅速的逆轉本身只是一個技術小插曲。值得關注的是它原本要解決的問題：隨著 AI 工具令產生看似合理的貢獻從未如此容易，kernel 維護者需要分類處理的 patch、測試報告和配置雜訊正不斷增加。</p>
+<h4>為何 kernel 一度需要 AI 雜訊過濾器</h4>
+<p>Linux 維護者長久以來依賴一套「taint」機制——即在一組執行中的 kernel 上加上旗標，記錄曾發生不尋常的情況，例如載入專有模組。Taint 為用戶和開發者提交 bug report 時提供背景脈絡，亦讓維護者能快速判斷某份報告應給予多少重視。</p>
+<p>為 7.4 合入的功能把這概念延伸至測試範疇。目標是讓自動化工具標記源自無效或無關測試配置的結果，以免「霰彈槍式」測試運行所產生的雜訊淹沒 bug tracker 和 mailing list。實際上，該機制原可讓人更容易分辨真正的 regression 報告與一份嘗試了數百種配置並全部匯報的腳本輸出。</p>
+<p>這一點很重要，因為一次貢獻的成本不只在於撰寫所花的時間，還包括維護者判斷它是否值得注意所耗的時間。當單次自動運行便可產生數十份報告時，triage 便成為瓶頸。</p>
+<h4>問題出在哪裡</h4>
+<p>麻煩在 VFIO——負責把設備分配予虛擬機的 kernel 子系統——浮現。VFIO 向來以複雜見稱，新加入的 taint-binding 代碼與該子系統的設備處理路徑相互作用後，產生了維護者無法迅速釐清的行為。Phoronix 將此不穩定情況形容為「crazy beast」，結果代碼未經充分理解便被抽走，以免把半知半解的功能帶入 release cycle。</p>
+<p>自回退以來，尚未有修訂後的設計或功能時間表公布。目前而言，這次撤回便是最後定案。</p>
+<h4>更宏觀的圖景</h4>
+<p>對一般 IT 及 DevOps 團隊而言，這次事件是觀察開源項目如何吸納——以至有時拒絕——自動化驅動變革的有用案例。Kernel 社群並非反對其前提：自動化及 AI 輅助測試確實會製造雜訊，維護者亦確實希望有更好工具去過濾。令功能受阻的，是針對成熟且互相依賴的 codebase 進行 integration testing 的一般紀律要求。</p>
+<p>事件所揭示的，是維護者審閱 AI 輅助工作時的考量：一項變更必須先證明自己經得起它所涉及子系統的考驗，才有資格在 release 中佔一席位。以 AI 輅助向上游貢獻，意味著要讓變更在相關子系統上運行、以足夠背景脈絡匯報結果以便維護者重現、並清楚交代 patch 是如何產生的——無論以何種方式撰寫，這都是任何貢獻一概適用的標準。</p>
+<p>Linux 7.4 將在沒有該功能的情況下繼續其開發周期。</p>
+<p><em>Source: Phoronix, "New Linux 7.4 Feature For Reducing AI Noise Already Reverted Due To A 'Crazy Beast'."</em></p>
+<p><a href="https://www.phoronix.com/news/Linux-7.4-Drops-Taint-Bind" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
