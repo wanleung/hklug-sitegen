@@ -1,0 +1,38 @@
+Date: 2026-10-31 01:36:00
+Author: HKLUG Team
+Title: Unauthenticated Remote Root Reported in Linux Kernel's MPTCP Stack
+Content:
+<p>A critical flaw in the Linux kernel's Multipath TCP (MPTCP) implementation could let an unauthenticated remote attacker run commands with root privileges on servers exposing MPTCP listeners, according to a report from BleepingComputer. The report describes an exploit as already in the hands of "security researchers at Anthropic." If the account holds up, this is the severity class Linux administrators plan around: no credentials required, no user interaction, and a privilege level that hands an attacker the whole machine.</p>
+<h4>What is confirmed — and what is not</h4>
+<p>BleepingComputer's account, as read at publication time, does not carry a CVE identifier, does not name the affected kernel versions, and does not state whether a fix has shipped. That does not mean those things are absent from the underlying research — it means they were not verified here, and readers should check the vendor advisories and the original disclosure for authoritative answers before making patch decisions.</p>
+<p>The attribution also deserves a flag rather than a nod. Crediting an AI company with kernel exploitation work is an unusual pairing, and the claim is repeated here as reported, not adopted as fact. Anyone acting on this story should trace it back to the original source and confirm who actually did the work.</p>
+<h4>Is your server exposed?</h4>
+<p>Until patch status is confirmed, containment is the practical first move for sysadmins. A short triage list:</p>
+<ol>
+<li><strong>Find MPTCP listeners.</strong> Check whether anything in your stack actually negotiates MPTCP — <code>ss -M</code> or an <code>ip mptcp endpoint show</code> inspection will reveal configured endpoints. On many distributions MPTCP is not enabled by default, but custom kernel builds and newer releases vary.</li>
+<li><strong>Patch from your distribution's own channel.</strong> Do not chase upstream commit messages in a hurry. When your vendor issues an advisory and a kernel update, take it.</li>
+<li><strong>Restrict exposure meanwhile.</strong> If an MPTCP-capable service must stay up, firewall its port to trusted ranges rather than leaving it open to the internet.</li>
+<li><strong>Audit for post-exploitation.</strong> If there is any chance the service was already reachable, treat the host as compromised: check cron entries, authorised keys, and unexpected listening sockets.</li>
+</ol>
+<h4>Why MPTCP specifically matters</h4>
+<p>Multipath TCP is an extension of the standard transport protocol that lets a single connection stripe traffic across multiple network paths — the design goal being resilience when one path degrades, and the appeal being exactly what mobile, satellite, and multi-homed deployments want. It has been mainlined in Linux for several years. That appeal is also the risk factor: every new protocol implementation in the kernel expands the network-reachable attack surface, and MPTCP parsing sits in a code path exercised before any authentication exists anywhere in the stack. The gap between "interesting transport feature" and "internet-facing root shell" is a memory-safety bug, and kernel networking code is exactly where those historically surface.</p>
+<p>For Hong Kong's IT teams — many of them running internet-facing Linux fleets across multi-site and multi-carrier environments where multipath features look attractive — the practical takeaway is straightforward: MPTCP is a feature worth auditing before it is a feature worth deploying at scale.</p>
+<p><em>Source: BleepingComputer, "Critical Linux kernel flaw allows remote root attacks on MPTCP servers."</em></p>
+<hr>
+<p>據 BleepingComputer 報道，Linux 核心多路徑 TCP（MPTCP）實作中存在一項嚴重漏洞，未經驗證的遠端攻擊者可在暴露 MPTCP 監聽器的伺服器上，以 root 權限執行指令。該報導形容漏洞利用程式已落入「Anthropic 的安全研究人員」手中。若此說法屬實，這正是 Linux 系統管理員需要據以規劃的漏洞等級：毋須憑證、毋須用戶互動，攻擊者一旦得手便掌控整部機器。</p>
+<h4>已獲確認的範圍 — 以及尚未確認的部分</h4>
+<p>就刊出時所見，BleepingComputer 的報導沒有 CVE 編號、沒有列明受影響的核心版本，亦沒有交代修補是否已發布。這並不等於原始研究中沒有這些資料 — 而是本文未曾核實，讀者在作出修補決定前，應查閱廠商公告及原始披露以取得權威答案。</p>
+<p>另一方面，報導的歸因亦應加以存疑，而非照單全收。將核心漏洞利用研究歸功於一間人工智能公司，屬罕見的組合；此說法在此僅按原報導轉述，並非接納為事實。任何根據此報導採取行動的人士，都應追溯至原始來源，查證究竟是誰完成該項工作。</p>
+<h4>你的伺服器是否暴露於風險之中？</h4>
+<p>在修補狀態獲得確認之前，containment（隔離）是系統管理員最實際的第一步。以下是簡短的分類檢視清單：</p>
+<ol>
+<li><strong>找出 MPTCP 監聽器。</strong> 檢查系統堆疊中是否有組件確實會協商 MPTCP — 以 <code>ss -M</code> 或 <code>ip mptcp endpoint show</code> 檢視，便可顯示已設定的端點。許多發行版預設並未啟用 MPTCP，但自訂核心編譯版本及較新版本則各有不同。</li>
+<li><strong>從你所用發行版的官方渠道進行修補。</strong> 切勿急於追查上游提交訊息。當你的供應商發布公告及核心更新時，便應採用。</li>
+<li><strong>同時限制暴露範圍。</strong> 如某項支援 MPTCP 的服務必須維持運作，應以防火牆將其端口限制在可信範圍之內，而非直接對互聯網開放。</li>
+<li><strong>審核事後入侵痕跡。</strong> 若該服務有可能早已可被外界接觸，便應視主機已被入侵：檢查 cron entries（cron 項目）、授權金鑰，以及異常的監聽 socket。</li>
+</ol>
+<h4>為何 MPTCP 尤其值得關注</h4>
+<p>多路徑 TCP 是標準傳輸協議的擴展，讓單一連線可將流量分佈於多條網絡路徑之上 — 設計目標是當其中一條路徑劣化時仍能維持運作，而其吸引力亦正是流動網絡、衛星及多宿主部署環境所追求的。相關功能在 Linux 主線已存在多年。這種吸引力同時也是風險因素：核心中每新增一項協議實作，都會擴大可經網絡觸及的攻擊面，而 MPTCP 的解析程式位於堆疊中任何認證機制運作之前的程式碼路徑（code path）。 「有趣的傳輸功能」與「面向互聯網的 root shell」之間的距離，只是一個 memory-safety（記憶體安全）漏洞的差別，而核心網絡代碼正是此類漏洞歷來最常出現的地方。</p>
+<p>對於香港的 IT 團隊 — 不少人在多站點、多營運商環境下運行面向互聯網的 Linux 機群，多路徑功能看似頗具吸引力 — 實際結論相當直接：MPTCP 是一項在大規模部署之前值得先作審核的功能。</p>
+<p><em>來源：BleepingComputer，〈Critical Linux kernel flaw allows remote root attacks on MPTCP servers〉。</em></p>
+<p><a href="https://www.bleepingcomputer.com/news/security/critical-linux-kernel-flaw-allows-remote-root-attacks-on-mptcp-servers/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
