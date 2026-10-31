@@ -1,0 +1,34 @@
+Date: 2026-10-31 11:26:00
+Author: HKLUG Team
+Title: Ceph's Lazy-I/O Behaviour Heads Toward a Fleet-Wide Mount Switch in Linux 7.4
+Content:
+<p>A change to the Ceph kernel client would give administrators a fleet-wide mount switch for lazy-I/O behaviour — a setting applied once at mount time, scoped to the mount rather than to individual files or applications. It is important to be clear about what this is: a submission ahead of the Linux 7.4 merge window, which is expected to close on Sunday, not a feature that has shipped in a released kernel, according to Phoronix.</p>
+<p>If the patch set lands as proposed, one mount option would govern whether the client takes the lazy path for I/O, putting lazy-I/O policy under one control point. That is a small change on paper and a meaningful one in practice: the policy becomes something you can record in a mount command, reproduce identically across every node in a cluster, and verify after the fact with a single inspection of the mount options in use.</p>
+<p>One caveat should accompany any discussion of the feature: the precise name and semantics of the option are not final until the merge window closes and Linux 7.4 documentation lands. Administrators planning around it should treat any name circulating now as provisional and confirm it against the merged kernel documentation before writing it into deployment tooling.</p>
+<h4>Why mount-level configuration matters</h4>
+<p>Lazy I/O — deferring or decoupling write work from the application's immediate request path — is the kind of decision usually made at fine granularity, close to the workload that needs it: a particular file, a particular process, a particular mount used by one team. That granularity works when a single workload needs it and becomes a liability when a fleet does. Fine-grained tuning has to be applied, remembered, and re-applied; it drifts when someone forgets a flag, when a new node is provisioned from a stale template, or when a container lands on a host configured differently from its siblings.</p>
+<p>Moving the setting to mount time changes the operational character of the feature. The decision becomes infrastructure configuration rather than application configuration — owned by whoever writes the mount configuration, reviewable in code, and diagnosable when a mount shows unexpected behaviour.</p>
+<h4>Why merge-window timing matters for storage teams</h4>
+<p>The distinction between the Ceph kernel client and the FUSE-based client is what makes this worth watching now rather than later. A change merged into the kernel does not arrive on a cluster's schedule; it arrives on the distribution's schedule, when a distro rebases its kernel package. Ceph's own release cadence governs the daemons and the FUSE client, but kernel-client features ride an entirely different, and often slower, train.</p>
+<p>For teams running the kernel client — common where mount performance and reduced userspace overhead matter — the practical availability of this option is therefore a distribution question, not a Ceph release-notes question. A merge-window item is early, but it is the earliest point at which the timeline becomes legible.</p>
+<h4>What storage teams should watch for</h4>
+<p>Because a mount option scopes to everything using that mount, our advice is to start any fleet-wide rollout on a single, non-critical mount — not a shared production mount serving mixed workloads. Confirm the behaviour under your own load before widening the blast radius, and check that the option survives whatever automation re-mounts or provisions your volumes. Any workload-fit assessment should be made against measurement rather than assumption once the option is available in a supported kernel.</p>
+<h4>What comes next</h4>
+<p>The merge window's expected close marks the first checkpoint: whether the option lands unchanged, is renamed, or is narrowed during review. A follow-up once Linux 7.4 documentation is available would settle the open questions on naming and semantics.</p>
+<p>Source: <a href="https://www.phoronix.com/news/Linux-7.4-Ceph">Phoronix</a></p>
+<hr>
+<p>Ceph kernel client 的一項改動將為系統管理員提供一個涵蓋全機群的 lazy-I/O 行為 mount 開關——該設定只需在 mount 時套用一次，作用範圍涵蓋整個 mount，而非個別檔案或應用程式。必須清楚說明其性質：這是 Linux 7.4 merge window 開啟前的一項提交，預計 merge window 將於星期日關閉；這並非已隨正式發布 kernel 推出的功能，據 Phoronix 報導。</p>
+<p>若 patch set 如期獲接納，單一 mount option 將決定 client 是否對 I/O 採用 lazy 路徑，令 lazy-I/O policy 集中於同一控制點。這在紙面上看似微小，實質意義卻相當重要：該 policy 變成可以寫進 mount command 的設定，可在整個 cluster 的每個節點上完全重現，事後亦只需一次檢查現用的 mount options 即可核實。</p>
+<p>討論此功能時應同時指出一項注意事項：該選項的準確名稱和語意，在 merge window 關閉及 Linux 7.4 文件發布之前並非最終版本。規劃相關部署的系統管理員應視目前流傳的任何名稱為暫定名稱，並在將其寫入部署工具之前，對照已合併的 kernel 文件加以確認。</p>
+<h4>為何 mount 層級設定重要</h4>
+<p>Lazy I/O——將寫入工作延後或與應用程式的即時 request path 解耦——通常是細緻層級的決定，貼近實際有需要的 workload：某個特定檔案、某個特定程序、某個特定團隊使用的 mount。當只有一個 workload 有此需要時，這種細緻程度運作良好；但當整個機群都有需要時，便會成為負擔。細緻調校必須逐一套用、記憶、再套用；一旦有人遺漏某個 flag、新節點以過時的模板 provision，或 container 落在設定與其他同儕不同的主機上，設定便會出現偏差。</p>
+<p>將設定改為在 mount 時套用，改變了這項功能的營運性質。這項決定由應用程式設定變成基礎設施設定——由編寫 mount configuration 的人負責，可在程式碼中審查，mount 出現異常行為時亦可診斷。</p>
+<h4>為何 merge window 時機對儲存團隊重要</h4>
+<p>Ceph kernel client 與 FUSE-based client 之間的分別，正是此事值得即時關注而非日後留意的原因。合併到 kernel 的改動並非按 cluster 的時間表推出；而是按發行版的時間表，待 distro 將其 kernel 軟件包 rebase 時才會到位。Ceph 自身的發布節奏主導 daemons 和 FUSE client，但 kernel-client 功能則搭上一條截然不同、往往更緩慢的軌道。</p>
+<p>對於使用 kernel client 的團隊——在 mount 性能和降低 userspace overhead 至關重要的環境中相當常見——這項選項的實際可用性因此取決於發行版，而非 Ceph release notes。merge window 的項目固然尚早，但這已是時間表變得清晰可見的最早時點。</p>
+<h4>儲存團隊應留意的事項</h4>
+<p>由於 mount option 的作用範圍涵蓋使用該 mount 的一切，我們建議任何全機群推行都應先從單一、非關鍵的 mount 開始——而非服務混合 workload 的共享生產 mount。在擴大影響範圍之前，先在自身負載下確認行為，並檢查該選項能否在任何自動化重新 mount 或 provision volumes 的流程中保留。一旦選項在受支援的 kernel 中可用，任何 workload 適用性評估都應基於測量數據而非假設。</p>
+<h4>下一步</h4>
+<p>merge window 預計關閉的時點標誌著第一個檢視時點：該選項會否原樣接納、遭到更名，還是在審核中被收窄。待 Linux 7.4 文件可用後再作跟進，將可釐清命名和語意方面的懸而未決問題。</p>
+<p>Source: <a href="https://www.phoronix.com/news/Linux-7.4-Ceph">Phoronix</a></p>
+<p><a href="https://www.phoronix.com/news/Linux-7.4-Ceph" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
