@@ -1,0 +1,44 @@
+Date: 2026-10-31 13:36:00
+Author: HKLUG Team
+Title: Ivanti Connect Secure Chain Prompts CISA KEV Listing — and a Patch Window Measured in Days
+Content:
+<p>The U.S. Cybersecurity and Infrastructure Security Agency (CISA) has added two Ivanti Connect Secure (ICS) vulnerabilities to its Known Exploited Vulnerabilities (KEV) catalog, following reports that attackers chained three flaws together to reach unauthenticated root access on the remote-access gateway. The Hacker News published the source reporting on 30 October 2026.</p>
+<p>The Hacker News reports that the advisory names CVE-2026-111357 as the lead identifier, a missing-authentication-for-a-critical-function bug carrying a CVSS base score of 8.8. A second ICS flaw was listed alongside it in the KEV addition, but the published summary of the source report was truncated before that identifier appeared. Organisations should therefore read CISA's own advisory entry for the complete CVE list and affected version ranges rather than relying on secondary reporting.</p>
+<h4>Chaining, not individual scores, is the story</h4>
+<p>The discrepancy in the reporting — three flaws exploited, two added to KEV — is worth dwelling on. One reading is that it reflects how the campaign actually works: an attacker chains a pre-authentication weakness with two further issues to escalate from an unauthenticated position to root on an internet-facing gateway. No single step in that path looks catastrophic in isolation. The 8.8 pre-auth bug, taken alone, understates the outcome, which is a persistent foothold on a trusted edge device capable of log tampering and credential theft.</p>
+<p>That is the wider lesson for anyone running edge appliances. Per-CVE scoring describes components, not campaigns, and KEV listing is the signal that a chain is demonstrably working in the wild — not hypothetically.</p>
+<h4>What the KEV listing actually obliges</h4>
+<p>KEV inclusion does two things. It confirms active exploitation, and it triggers a remediation deadline for U.S. federal agencies under CISA's Binding Operational Directive 22-01 framework. The directive has historically afforded roughly 21 days for KEV-listed flaws, though CISA has set shorter windows for some zero-days, so the entry itself is the authority on the applicable date. That deadline does not legally bind anyone outside the federal government, but it functions as a practical yardstick: CISA's position is that these should be fixed within weeks, not parked until the next patch cycle.</p>
+<h4>A same-day checklist for appliance owners</h4>
+<p>For teams running Ivanti ICS or comparable remote-access gateways, the sequence matters more than the speed:</p>
+<ol>
+<li><strong>Patch first</strong>, to a version CISA's advisory lists as fixed for both KEV-listed CVEs.</li>
+<li><strong>Scan integrity after patching</strong>, not before. Ivanti's Integrity Checker Tool is the standard instrument here — but a clean scan taken on a compromised, unpatched appliance proves nothing, so verify only once remediation is applied.</li>
+<li><strong>Rotate credentials and keys</strong> stored on or reachable from the appliance, including administrative and VPN credentials.</li>
+<li><strong>Hunt downstream</strong> for lateral movement, new accounts, and unexpected persistence left behind by the initial foothold.</li>
+<li><strong>Reassess exposure</strong>, including whether the appliance truly needs to be internet-facing at all.</li>
+</ol>
+<h4>The Hong Kong angle</h4>
+<p>The source reporting concerns a U.S. federal directive, and nothing in it indicates action by local regulators or CERT teams. Hong Kong organisations derive no direct obligation from the KEV catalog — but the underlying vulnerabilities do not stop at the U.S. border. Any enterprise here running Ivanti Connect Secure should treat CISA's deadline as a realistic remediation window rather than waiting for a local mandate that may never arrive, and should confirm current status against HKCERT's published advisories before assuming coverage.</p>
+<p>This is a directive, not a background alert: the chain is confirmed, the flaws are being used, and the window is measured in days.</p>
+<hr>
+<p>美國網絡安全及基礎設施安全局（CISA）已將兩個 Ivanti Connect Secure（ICS）漏洞列入其已知被利用漏洞（KEV）目錄，起因是有報告指攻擊者將三個漏洞串連利用，在遠程存取閘道器上取得未經身份驗證的 root 權限。The Hacker News 於 2026 年 10 月 30 日刊出了來源報導。</p>
+<p>The Hacker News 報道稱，安全公告以 CVE-2026-111357 為主要識別編號，該漏洞屬關鍵功能缺少身份驗證的缺陷，CVSS 基礎評分為 8.8。另一個 ICS 漏洞與其一同列入 KEV，但來源報告的已刊摘要在該識別編號出現前已被截斷。因此，各機構應直接查閱 CISA 本身的公告條目，以獲取完整的 CVE 清單及受影響版本範圍，而非依賴二手報導。</p>
+<h4>關鍵在於漏洞鏈，而非個別評分</h4>
+<p>報導中的差異 — 實際利用了三個漏洞，卻只有兩個列入 KEV — 值得深究。其中一種解讀是，這正反映了該攻擊行動的運作方式：攻擊者將一個預身份驗證（pre-authentication）弱點與另外兩個問題串連，從未經驗證的狀態逐步提升至對外連接閘道器的 root 權限。在該路徑中，單一步驟單獨來看並不可怕。評分 8.8 的 pre-auth 漏洞若孤立地看，會低估最終後果 — 也就是在受信任的邊緣設備上取得持久立足點，可篡改日誌及竊取憑證。</p>
+<p>這對所有運行邊緣設備的人來說是更廣泛的教訓。按個別 CVE 的評分描述的是元件，而非攻擊行動；列入 KEV 才是漏洞鏈已被證實在現實中運作的信號 — 而非只屬假設。</p>
+<h4>列入 KEV 實際上意味著甚麼</h4>
+<p>列入 KEV 有兩個作用。其一是確認漏洞正被積極利用；其二是依據 CISA 的 Binding Operational Directive 22-01 框架，為美國聯邦機構啟動修補期限。該指令歷來為列入 KEV 的漏洞預留約 21 天，但 CISA 就部分零日漏洞曾設定更短的限期，因此條目本身的日期才是適用期限的權威依據。該期限在法律上並不限制聯邦政府以外的任何人士，但在實踐中可作衡量標準：CISA 的立場是這些漏洞應在數週內修復，而非擱置至下一個修補周期。</p>
+<h4>設備擁有者的即日清單</h4>
+<p>對於運行 Ivanti ICS 或同類遠程存取閘道器的團隊，執行次序比速度更重要：</p>
+<ol>
+<li><strong>先套用修補程式</strong>，升級至 CISA 公告中列為已修復兩個 KEV 列名 CVE 的版本。</li>
+<li><strong>修補後才掃描完整性</strong>，而非修補前。Ivanti 的 Integrity Checker Tool 是這裡的標準工具 — 但在已被入侵且未修補的設備上取得的「乾淨」掃描結果毫無意義，因此只應在完成修補後才作驗證。</li>
+<li><strong>輪換儲存在設備上或可從設備存取的憑證及密鑰</strong>，包括管理員憑證及 VPN 憑證。</li>
+<li><strong>向下追查</strong>是否存在橫向移動、新帳戶，以及初始立足點留下的異常持久化機制。</li>
+<li><strong>重新評估暴露面</strong>，包括該設備是否真的必須暴露於互聯網之上。</li>
+</ol>
+<h4>香港角度</h4>
+<p>來源報導涉及美國聯邦指令，其中並無提及本地監管機構或 CERT 團隊的行動。香港機構不會從 KEV 目錄直接產生法律義務 — 但底層漏洞並不以美國邊境為界。本港任何運行 Ivanti Connect Secure 的企業，都應把 CISA 的期限視為實際可行的修補窗口，而非等待一個可能永遠不會來臨的本地指令，並應在假設已獲涵蓋前，對照 HKCERT 已發布的公告確認現狀。</p>
+<p>這是一道指令，而非背景警報：漏洞鏈已獲證實，漏洞正被利用，而窗口以天計算。</p>
+<p><a href="https://thehackernews.com/2026/10/attackers-chain-three-ivanti-connect.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
