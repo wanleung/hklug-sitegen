@@ -1,0 +1,52 @@
+Date: 2026-10-31 01:23:00
+Author: HKLUG Team
+Title: Twelve Hours of Trust: Backdoored Anthropic Extension Pushed Through Cursor's Marketplace
+Content:
+<p>A tampered build of Anthropic's official VS Code extension sat on Cursor's marketplace for roughly 12 hours before anyone pulled it, Ars Technica reports. How the attacker somehow gained access to what Ars Technica describes as "Anthropic's verified Cursor account" in the first place remains unknown.</p>
+<h4>What is confirmed — and what is not</h4>
+<p>Details so far are limited, and the gaps matter as much as the facts:</p>
+<ul>
+<li><strong>Initial access.</strong> No credential-theft method, insider angle, or takeover technique has been established for the compromise of Anthropic's verified Cursor account.</li>
+<li><strong>Distribution scope.</strong> Neither the number of affected users nor the regions they sit in have been stated. Because extensions update in the background, a tampered build can reach unattended machines silently — but the install base itself is unquantified in available reporting.</li>
+<li><strong>Payload behaviour.</strong> What the backdoored build actually did — exfiltration, execution, credential harvesting, anything — has not been characterised.</li>
+</ul>
+<p>The reporting supports the headline claims and little beyond them.</p>
+<h4>A badge is not a login</h4>
+<p>Cursor is a fork of VS Code, but it ships with its own marketplace, its own publisher accounts, and its own trust signals. That makes it a distinct supply-chain surface, not merely a skin over the extensions developers already know from the official VS Code marketplace.</p>
+<p>The "verified" label — as Ars Technica's own summary frames it — is the pivot of the whole incident. The badge speaks to where a listing came from; it says nothing about whether the account behind that listing is still in the publisher's hands. This is the same failure mode npm and PyPI maintainers have spent years absorbing: the publisher's credentials are the supply chain, and once they go, the badge keeps glowing. The episode simply moves that lesson up a layer — into the editor, on the machine that writes and runs your code.</p>
+<p>The 12-hour window cuts both ways. It is short enough to suggest something caught it — automated scanning, vendor reporting, or manual review plausibly surfaced the listing, though the detection path has not been stated. It is also long enough for auto-updates to land on developer workstations nobody was watching in real time.</p>
+<h4>Why it lands here too</h4>
+<p>Hong Kong's developer community runs on the same global toolchain as everyone else: extensions pulled from third-party marketplaces, refreshed in the background, trusted on the strength of a badge. As of this writing, no local response to the incident has been reported — the exposure Hong Kong developers face is the same one everyone else does.</p>
+<h4>Three things worth doing this week</h4>
+<ol>
+<li><strong>Inventory your extensions.</strong> List every VS Code and Cursor extension installed across your team, including ones that arrive by default through profiles or dotfile setups.</li>
+<li><strong>Treat publisher accounts as production infrastructure.</strong> Long-lived tokens, unrotated keys, and missing second factors on a marketplace account carry the same risk class as an exposed production server.</li>
+<li><strong>Confirm clean versions with the vendor.</strong> Available reporting has not pinned down a known-good version number for Anthropic's extension, so verify directly with Anthropic before rolling back or reinstalling rather than trusting a number from a secondary source.</li>
+</ol>
+<p>We will update this article as reporting develops on the initial access vector, the affected install base, or what the tampered build did.</p>
+<p><em>Source: Ars Technica — https://arstechnica.com/security/2026/10/anthropic-vs-code-extension-on-cursor-backdoored-for-nearly-12-hours/</em></p>
+<hr>
+<p>據 Ars Technica 報道，一個經竄改的 Anthropic 官方 VS Code 擴展版本在 Cursor 市場上架約 12 小時後才被下架。攻擊者究竟是如何取得 Ars Technica 所稱的「Anthropic 已驗證的 Cursor 帳戶」，至今仍然成謎。</p>
+<h4>已確認的事實——以及尚未確認的部分</h4>
+<p>目前可確認的資料仍然有限，而這些空白與事實同樣重要：</p>
+<ul>
+<li><strong>初始入侵途徑。</strong> 究竟以哪種 credential 竊取方法、內部人士渠道或帳戶接管手段入侵 Anthropic 已驗證的 Cursor 帳戶，尚無定論。</li>
+<li><strong>分發範圍。</strong> 受影響用戶的數目及其所在地區尚未公布。由於擴展會在背景自動更新，經竄改的版本可以在無人察覺下安裝到無人看管的電腦——但現有報道中，安裝基數本身亦無量化數據。</li>
+<li><strong>惡意行為。</strong> 後門版本實際上做了什麼——資料外洩、指令執行、credential 收集，抑或其他——尚未有具體描述。</li>
+</ul>
+<p>現有報道僅足以支持標題所述的核心說法，除此以外所知不多。</p>
+<h4>徽章不等於登入權限</h4>
+<p>Cursor 是 VS Code 的一個 fork，但它配備自己的 marketplace、自己的 publisher 帳戶，以及自己的 trust 標記。這使它成為一個獨立的供應鏈攻擊面（supply-chain surface），而不僅僅是套用在開發者早已熟悉的官方 VS Code marketplace 擴展之上的一層外殼。</p>
+<p>「已驗證」（verified）標籤——按 Ars Technica 自身的總結所述——是整起事件的關鍵。這個徽章只說明列表（listing）的來源，卻完全沒有提及該列表背後的帳戶是否仍在 publisher 手中。這正是 npm 和 PyPI 維護者多年來屢見不鮮的失效模式：publisher 的 credentials 就是供應鏈本身，一旦失守，徽章依然發光。這次事件只是把教訓提升了一個層次——深入到編輯器之中，就在你撰寫和執行程式碼的電腦上。</p>
+<p>12 小時的窗口有兩面。它足夠短，暗示有人或某個系統發現了問題——自動掃描、廠商報告或人工審查都有可能是找出該列表的原因，儘管檢測途徑尚未公布。它同時也足夠長，足以令自動更新安裝到無人即時監察的開發者工作站。</p>
+<h4>為何香港同樣受影響</h4>
+<p>香港的開發者社群與全球各地一樣，依賴同一套工具鏈：從第三方 marketplace 安裝擴展、在背景自動更新、僅憑徽章便予以信任。截至本文撰寫之時，尚未有本地應對行動的相關報導——本港開發者所面對的風險，與全球其他地方並無分別。</p>
+<h4>本週值得做的三件事</h4>
+<ol>
+<li><strong>盤點你的擴展。</strong> 列出團隊所有已安裝的 VS Code 和 Cursor 擴展，包括那些透過 profile 或 dotfile 設定預設安裝的擴展。</li>
+<li><strong>將 publisher 帳戶視為生產基礎設施。</strong> 長期有效的 token、未輪換的密鑰，以及 marketplace 帳戶缺少第二重驗證，所帶來的風險等同於一台暴露的 production server。</li>
+<li><strong>向廠商確認乾淨版本。</strong> 現有報道並未確認 Anthropic 擴展的已知良好版本號（known-good version），因此在回滾或重新安裝前，應直接向 Anthropic 核實，而不是輕信來自二手來源的版本號。</li>
+</ol>
+<p>我們會隨著有關初始入侵途徑、受影響安裝基數或竄改版本實際行為的報道進展，更新本文。</p>
+<p><em>來源：Ars Technica — https://arstechnica.com/security/2026/10/anthropic-vs-code-extension-on-cursor-backdoored-for-nearly-12-hours/</em></p>
+<p><a href="https://arstechnica.com/security/2026/10/anthropic-vs-code-extension-on-cursor-backdoored-for-nearly-12-hours/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
