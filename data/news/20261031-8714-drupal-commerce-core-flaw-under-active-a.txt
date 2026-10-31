@@ -1,0 +1,52 @@
+Date: 2026-10-31 11:24:00
+Author: HKLUG Team
+Title: Drupal Commerce Core flaw under active attack; operators urged to patch without delay
+Content:
+<h3>Drupal Commerce Core flaw under active attack; operators urged to patch without delay</h3>
+<p>Drupal has warned that threat actors are exploiting a critical authorization flaw in its Commerce Core module, putting online stores built on the open-source e-commerce framework at risk, Security Affairs reports.</p>
+<p>The flaw, tracked as CVE-2026-118539, is caused by missing authorization checks in a module that underpins storefronts running on Drupal. Drupal's advisory rates the issue as highly critical and confirms that exploitation is already underway — a pairing that typically moves a bug from "patch when you can" to "patch now."</p>
+<p>Operators should treat the Drupal Security Team's SA-CONTRIB advisory and the CVE record as the authoritative references for affected version ranges, the fixed release, and the CVSS vector and score, rather than relying on secondary summaries. Before acting, confirm three points in writing: the Commerce Core version deployed in each environment, whether that version falls within the affected range, and which release resolves the issue.</p>
+<h4>Why it matters</h4>
+<p>Commerce Core handles the transaction-facing side of a Drupal site. Because the root cause is a missing authorization check rather than a memory-safety or injection issue, an attacker who reaches the affected code paths can invoke functionality they were never granted — for example, administrative or configuration-level actions reachable without the privileges the application assumes they hold. In practical terms, that is the difference between a defaced page and a store whose pricing, orders, or customer data can be altered by someone who should not be able to touch them.</p>
+<p>Missing-authorization bugs are also quiet. There is no crash, no obvious error, and often no log entry that reads as an attack until someone compares what happened against what should have happened. By the time a merchant notices an anomaly in orders or permissions, the window for abuse may already be wide open.</p>
+<h4>Mitigation checklist</h4>
+<p>Standard incident-response guidance for an actively exploited flaw points to a patch-first sequence. Operators are advised to work through the following steps in order:</p>
+<ol>
+<li><strong>Inventory every environment.</strong> Compare production, staging, and any legacy or regional stores against the affected version ranges in Drupal's SA-CONTRIB advisory for CVE-2026-118539. Unmanaged storefronts are the usual blind spot.</li>
+<li><strong>Patch immediately.</strong> Upgrade to the fixed release published by the Drupal Security Team. Do not wait for a maintenance window if the site is publicly reachable and processing payments.</li>
+<li><strong>Verify the patch actually landed.</strong> Confirm the deployed module version after updating; cached or overridden code directories are a common reason a "patched" site remains exposed.</li>
+<li><strong>If you cannot patch right away, take the module offline.</strong> Disabling Commerce Core removes the exposed surface, at the cost of storefront functionality — usually the right trade during an active-exploitation event.</li>
+<li><strong>Block the affected routes at the edge.</strong> Web application firewall rules or reverse-proxy deny rules targeting the vulnerable paths can hold the line while the upgrade is staged.</li>
+<li><strong>Review logs for abuse.</strong> Look for requests to administrative, checkout, or configuration endpoints from unexpected sources, and audit recent role, permission, and content changes for signs of tampering.</li>
+<li><strong>Rotate and harden credentials afterwards.</strong> If exploitation is suspected, change admin passwords, revoke and reissue sessions and API keys, and re-review user accounts with elevated roles.</li>
+</ol>
+<h4>Timing</h4>
+<p>The window for patching is unlikely to be convenient for regional operators. With year-end shopping events such as 9.9, 11.11, and December 12 (雙十二) driving traffic spikes across Asia, merchants are often reluctant to touch production code — but an actively exploited authorization flaw is precisely the kind of issue that turns a busy sales period into an incident response exercise. Where in-flight promotions make an immediate upgrade genuinely impossible, deploy the interim controls above first and schedule the patch at the earliest safe opportunity.</p>
+<p>Hong Kong IT teams running Drupal-based storefronts should check their own Commerce Core versions against the advisory and assess the risk against their own deployment rather than assuming a generic alert does or does not apply.</p>
+<hr />
+<p><em>Editor's note: The mitigation sequence, timing considerations, and local guidance in this article reflect this publication's editorial recommendations for operators in the region; they are not instructions issued by the Drupal Security Team. Readers should verify affected versions, fix status, and severity ratings against the SA-CONTRIB advisory and the CVE record before acting.</em></p>
+<hr>
+<h3>Drupal Commerce Core 漏洞遭積極攻擊；敦促營運商即時修補</h3>
+<p>據 Security Affairs 報道，Drupal 已警告有威脅行為者正利用其 Commerce Core 模組中的一個嚴重授權漏洞，令建基於這套開源電子商務框架的網上商店面臨風險。</p>
+<p>該漏洞編號為 CVE-2026-118539，源於一個支撐 Drupal 商店前台的模組欠缺授權檢查。Drupal 的通告將該問題的風險級別列為「極嚴重」（Highly Critical），並證實利用已在進行之中——此組合通常會令漏洞的處理方針由「有空便修補」轉變為「即時修補」。</p>
+<p>營運商應以 Drupal 安全團隊的 SA-CONTRIB 通告及 CVE 紀錄為權威參考，以確認受影響的版本範圍、已修復的發布版本，以及 CVSS 向量和評分，而非依賴二手摘要。採取行動前，須以書面確認三項事項：各環境已部署的 Commerce Core 版本、該版本是否落在受影響範圍之內，以及哪個發布版本已解決此問題。</p>
+<h4>為何重要</h4>
+<p>Commerce Core 負責 Drupal 網站面向交易的部分。由於根本原因是欠缺授權檢查，而非記憶體安全或 injection 問題，攻擊者一旦能接觸受影響的代碼路徑，便可呼叫從未獲授權的功能——例如無需應用程式假定其具備的權限，即可進行管理層或設定層級的操作。實際而言，這就是「網頁被竄改」與「商店的定價、訂單或客戶資料被不應接觸的人任意修改」之間的差別。</p>
+<p>欠缺授權的漏洞亦相當隱蔽。它不會導致崩潰，沒有明顯錯誤，而且在有人將實際發生的情況與應有的情況作比對之前，往往不會留下看似攻擊的日誌紀錄。當商戶察覺訂單或權限出現異常時，濫用的窗口可能早已大開。</p>
+<h4>緩解措施清單</h4>
+<p>針對正遭積極利用的漏洞，標準事故應對指引均指向先修補、後處理的次序。建議營運商按以下步驟依序處理：</p>
+<ol>
+<li><strong>盤點所有環境。</strong> 將生產環境、預備環境，以及任何舊有或地區性商店，逐一對照 Drupal SA-CONTRIB 通告中針對 CVE-2026-118539 的受影響版本範圍。缺乏管理的商店前台通常是盲點所在。</li>
+<li><strong>即時修補。</strong> 升級至 Drupal 安全團隊發布的已修復版本。若網站對外開放並正在處理付款，切勿等待維護窗口。</li>
+<li><strong>確認修補已真正生效。</strong> 更新後須核實已部署的模組版本；已編譯快取或被覆蓋的代碼目錄，是「已修補」網站仍然暴露的常見原因。</li>
+<li><strong>若無法即時修補，先將模組下線。</strong> 停用 Commerce Core 可移除暴露面，代價是商店前台功能停擺——在正在遭積極利用的事件中，這通常是正確的取捨。</li>
+<li><strong>在邊緣層封鎖受影響的路由。</strong> 針對存在漏洞的路徑設定 Web application firewall 規則或 reverse-proxy deny 規則，可在升級部署期間穩住防線。</li>
+<li><strong>檢視日誌查找濫用跡象。</strong> 留意來自意外來源的管理、結帳或設定端點請求，並審核近期的角色、權限及內容變更，查看有無竄改跡象。</li>
+<li><strong>其後輪換並強化憑證。</strong> 如懷疑已遭利用，應更改管理員密碼、撤銷並重新簽發 session 及 API key，並重新覆核擁有提升權限的用戶帳戶。</li>
+</ol>
+<h4>時機</h4>
+<p>對地區營運商而言，修補的時機未必湊巧。隨著 9.9、11.11 及 12 月 12 日（雙十二）等年末購物節帶動全亞洲流量尖峰，商戶往往不願觸動生產環境代碼——但一個正遭積極利用的授權漏洞，恰恰是會把繁忙銷售期變成事故應對演習的問題。若進行中的推廣活動令即時升級確實不可行，請先部署上述臨時控制措施，並盡早在安全可行的時機安排修補。</p>
+<p>營運 Drupal 商店前台的香港 IT 團隊，應以自己的 Commerce Core 版本對照該通告，並根據自身部署情況評估風險，而非假設一則一般性警報必然適用或不適用。</p>
+<hr />
+<p><em>編按：本文中的緩解步驟、時機考慮及地區指引，反映本刊就該地區營運商所作的編輯建議；並非 Drupal 安全團隊發出的指示。讀者在行動前，應根據 SA-CONTRIB 通告及 CVE 紀錄核實受影響版本、修復狀態及嚴重程度評級。</em></p>
+<p><a href="https://securityaffairs.com/202162/security/attackers-exploit-critical-drupal-commerce-core-vulnerability-cve-2026-118539.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
