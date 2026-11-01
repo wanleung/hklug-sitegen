@@ -1,0 +1,52 @@
+Date: 2026-11-01 11:26:00
+Author: HKLUG Team
+Title: Undocumented .NET Loader Hits Bespoke Government Windows 10 Build in Asia
+Content:
+<h3>Undocumented .NET Loader Hits Bespoke Government Windows 10 Build in Asia</h3>
+<p>A previously undocumented .NET assembly-loading framework, codenamed NetamLoader, has been deployed against a custom Windows 10 image used exclusively by government entities in Asia, according to research disclosed by Kaspersky and reported by The Hacker News this week.</p>
+<p>What makes the campaign stand out is not the loader itself but the target selection: rather than spraying commodity tooling across generic Windows fleets, the operators invested in tailoring an attack to a bespoke operating system build with a small, known user base. Kaspersky has described the operation as a "highly sophisticated infection chain."</p>
+<h4>What is confirmed, and what is not</h4>
+<p>The confirmed core of the story is narrow but significant. Kaspersky's researchers have identified a previously undocumented .NET assembly-loading framework. They have established that the activity targets government organizations in Asia, and that the campaign focuses on a custom Windows 10 build deployed only by those government entities.</p>
+<p>Several important details have not been published in the coverage available so far. The individual stages of the infection chain, the initial access vector, and the exfiltration outcomes remain unconfirmed in the public reporting. Attribution has likewise not been established — Kaspersky has described the activity but has not publicly linked it to a named state sponsor, and this article makes no such claim. No specific victim organizations have been named. Finally, no CVE has appeared in the coverage so far, meaning there is no public evidence yet of a zero-day being exploited in this campaign; that question should be treated as open pending Kaspersky's full write-up. These details are candidates for a follow-up report, not assumptions to build on now.</p>
+<h4>How .NET assembly loading works as a technique</h4>
+<p>As background on the technique class — not a description of NetamLoader's specific internals, which have not been fully published — .NET's assembly-loading model gives Windows applications a convenient, legitimate mechanism for fetching and executing compiled code at runtime. Applications routinely load libraries on demand, resolve them from configured paths, and instantiate types dynamically. That flexibility is a core feature of the platform.</p>
+<p>Attackers abuse the same feature. Malicious code is packaged as a .NET assembly and loaded into the address space of a legitimate process, often one already carrying a trusted signature. Because the payload arrives as managed code rather than a dropped executable, it can evade detection logic tuned for traditional file-based malware, and the loading activity can blend into the ordinary behaviour of .NET-heavy applications.</p>
+<h4>A bespoke image is fingerprintable, not protective</h4>
+<p>The most durable lesson of this disclosure is a counterintuitive one: a custom OS build is not a security control. Organisations sometimes assume that a proprietary Windows image — hardened, non-standard, internally distributed — is inherently harder to attack than mainstream builds. In practice, the opposite dynamic applies.</p>
+<p>A bespoke image means a small, uniquely identifiable target population. Once an adversary knows which organisations run that build, the addressable field narrows to a handful of high-value estates, which justifies the investment in tailored tooling and custom loaders. Uniformity can be fingerprinted; rarity concentrates the reward. The custom build tells an attacker exactly who they are dealing with.</p>
+<h4>Detection and hardening: a general .NET injection checklist</h4>
+<p>The following is our own general guidance for .NET injection defence, drawn from widely accepted endpoint hygiene practice — not a summary of Kaspersky's mitigations, which were not included in the coverage. It applies to any Windows 10 estate carrying heavy .NET workloads, including those operated by organisations in Hong Kong:</p>
+<ol>
+<li><strong>Monitor runtime assembly loads</strong>, not just file hashes — flag assemblies loaded from unusual paths, user-writable directories, or non-standard locations.</li>
+<li><strong>Audit AppDomain activity</strong> for unexpected creation or loading patterns in long-running processes.</li>
+<li><strong>Inspect parent-child process relationships</strong> involving legitimate .NET hosts such as <code>powershell.exe</code>, <code>msbuild.exe</code>, <code>regsvcs.exe</code>, and <code>installutil.exe</code> spawning unusual children.</li>
+<li><strong>Restrict .NET execution paths</strong> through application allowlisting and constrained language modes where operational requirements permit.</li>
+<li><strong>Baseline normal loading behaviour</strong> for your line-of-business .NET applications so anomalous loads stand out.</li>
+<li><strong>Keep Windows 10 and .NET runtimes current</strong>, and track vendor advisories for any CVE that may emerge once Kaspersky's full write-up is released.</li>
+</ol>
+<p>The bigger picture: as defenders shift attention from static indicators to runtime telemetry, the visibility gap closes fastest for organisations that instrument .NET behaviour before an incident forces the issue. We will follow up when Kaspersky publishes the complete infection chain.</p>
+<hr>
+<h3>未有文件記錄的 .NET 載入器鎖定亞洲政府專屬訂製 Windows 10 版本</h3>
+<p>據卡巴斯基披露、並由 The Hacker News 本周報導的研究指出，代號 NetamLoader 的 .NET 組件載入框架——此前未有文件記錄——已被用於攻擊一套專供亞洲政府實體專屬使用的訂製 Windows 10 映像。</p>
+<p>是次行動值得留意之處並非載入器本身，而是目標的揀選：攻擊者沒有在通用 Windows 環境中大量投放商品化工具，反而投放資源，為一個使用者群組細小而已知的專屬作業系統版本度身設計攻擊。卡巴斯基形容相關操作為「高度複雜的感染鏈」。</p>
+<h4>已確認的事實，與尚未確認的事項</h4>
+<p>故事已確認的核心範圍狹窄但重要。卡巴斯基研究人員識別出一個此前未有文件記錄的 .NET 組件載入框架，並確認相關活動針對亞洲的政府組織，集中於一套只由這些政府實體部署的訂製 Windows 10 版本。</p>
+<p>多項重要細節仍未見於現有報導。感染鏈的各個階段、初始入侵途徑，以及外洩結果，在公開報導中尚未獲證實。歸因同樣未有定案——卡巴斯基描述了相關活動，但未有公開將其歸屬於任何具名的國家支持者，本文亦不作此聲稱。沒有具名的受害組織。最後，現有報導未見任何 CVE，意味著目前沒有公開證據顯示此行動涉及零時差漏洞利用；在卡巴斯基完整報告發布之前，這個問題應視為懸而未決。這些細節應留待後續報導跟進，而非現階段假設的基礎。</p>
+<h4>.NET 組件載入作為一項技術的原理</h4>
+<p>以下就技術類別提供背景說明——並非 NetamLoader 具體內部運作的描述，因其尚未完全公開——.NET 的組件載入模型為 Windows 應用程式提供了一個便利且正當的機制，用以在執行時期擷取及執行已編譯的代碼。應用程式經常按需載入程式庫、從設定的路徑加以解析，並動態實例化類型。這種彈性正是平台的核心功能。</p>
+<p>攻擊者濫用的正是同一功能。惡意代碼被打包成 .NET 組件，載入到合法處理程序的位址空間之中——該處理程序往往已帶有可信簽章。由於負載以受管代碼而非落地執行檔的形式送達，它可以繞過針對傳統檔案型惡意軟件的偵測邏輯，而載入活動也能混入 .NET 密集型應用程式的日常行為之內。</p>
+<h4>專屬映像可被指紋辨識，而非提供防護</h4>
+<p>這次披露最耐人尋味的啟示帶有反直覺意味：一套訂製的作業系統版本並非保安控制。機構有時會假設一套專有的 Windows 映像——經加固、非標準、內部部署——天生較主流版本更難攻擊。實際上，動態恰恰相反。</p>
+<p>訂製映像意味著一個細小、獨一無二而可被識別的目標群體。一旦攻擊者掌握哪些機構運行該版本，可攻擊的範圍便收窄至少數高價值系統，這正正解釋了為何值得投放資源訂製工具及專屬載入器。標準化可被指紋辨識；罕有則令回報集中。這套專屬版本等同向攻擊者表明，對手是誰。</p>
+<h4>偵測與鞏固：.NET 注入通用檢查清單</h4>
+<p>以下是我們自行整理的 .NET 注入防禦通用指引，取自廣泛獲業界認可的端點保安慣例——並非卡巴斯基防禦建議的摘要（相關內容未見於報導）。它適用於任何 .NET 工作負載繁重的 Windows 10 系統，包括香港機構所營運的環境：</p>
+<ol>
+<li><strong>監察執行時期的組件載入</strong>，而非只看檔案雜湊——對從異常路徑、使用者可寫入目錄或非標準位置載入的組件作出標記。</li>
+<li><strong>審核 AppDomain 活動</strong>，留意長時間運行的處理程序中出現的異常建立或載入模式。</li>
+<li><strong>檢視父子處理程序關係</strong>，留意合法的 .NET 主機（例如 <code>powershell.exe</code>、<code>msbuild.exe</code>、<code>regsvcs.exe</code>、<code>installutil.exe</code>）衍生出異常的子處理程序。</li>
+<li><strong>限制 .NET 執行路徑</strong>，在營運條件許可的情況下採用應用程式允許清單及受限語言模式。</li>
+<li><strong>為自有 .NET 應用程式建立正常載入行為基線</strong>，使異常載入更易被察覺。</li>
+<li><strong>保持 Windows 10 與 .NET 執行環境最新</strong>，並追蹤供應商公告，以在卡巴斯基完整報告發布後掌握任何可能浮現的 CVE。</li>
+</ol>
+<p>更大的圖景是：防禦者正把注意力由靜態指標轉向執行時期遙測，而那些在事故迫在眉睫之前便已為 .NET 行為加上儀表化的機構，能最快縮小可視性缺口。待卡巴斯基公布完整感染鏈，我們會跟進報導。</p>
+<p><a href="https://thehackernews.com/2026/11/netamloader-malware-targets-government.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
