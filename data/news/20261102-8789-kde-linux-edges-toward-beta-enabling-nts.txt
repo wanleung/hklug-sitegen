@@ -1,0 +1,32 @@
+Date: 2026-11-02 12:03:00
+Author: HKLUG Team
+Title: KDE Linux Edges Toward Beta, Enabling NTSYNC by Default
+Content:
+<p>KDE's in-house reference distribution, KDE Linux, is moving closer to its beta milestone, and its October update brings a change that matters to anyone running Windows games through Wine or Proton: NTSYNC is now enabled by default.</p>
+<p>The details come via KDE developer Nate Graham's monthly project blog, covered by Phoronix on 2 November, which rounds up the work done on the distribution throughout October. KDE Linux has been in development for more than a year as KDE's own reference platform — the environment the project maintains to showcase the desktop the way its developers intend it to be used. Graham's post surveys the state of the distribution and the changes landed over the course of the month, of which NTSYNC's default enablement is the item drawing the most attention.</p>
+<h4>What NTSYNC actually does</h4>
+<p>NTSYNC is a kernel subsystem that handles the NT synchronization primitives that Windows applications rely on. Historically, Wine has emulated these in user space through its <code>wineserver</code> process, with community-built alternatives such as esync and fsync patching the approach to reduce overhead. All of that coordination between threads happens outside the kernel, and on heavily multithreaded games it can become a bottleneck — threads spend time contending for locks managed by user-space machinery rather than being scheduled efficiently.</p>
+<p>Moving those primitives into the kernel removes that layer of indirection. The practical effect for gamers is smoother frame delivery and fewer stutters in CPU-bound, multithreaded titles running under Wine or Proton, because synchronization calls no longer bounce through a user-space server. Phoronix reports that KDE Linux now ships with NTSYNC enabled by default, which is arguably the more significant half of the news: the subsystem is not new, but making it the default takes it out of the realm of manual configuration and puts it in front of ordinary users who would never have sought it out.</p>
+<p>The requirement worth flagging for long-term-support users: NTSYNC was mainlined in Linux 6.14, so anyone running an LTS kernel older than that will need a newer kernel to take advantage of it. Distributions still shipping pre-6.14 LTS kernels will not expose the feature regardless of distribution-level defaults.</p>
+<p>Graham's post does not commit to a date for the beta release, only that the milestone is drawing nearer after a year of development.</p>
+<h4>KDE Linux is not KDE neon</h4>
+<p>One point of confusion worth settling early: KDE Linux and KDE neon are different projects with different purposes. KDE Linux is the project's official reference distribution — the environment KDE develops against and ships as its own recommended baseline. KDE neon, by contrast, is an Ubuntu-based project that packages KDE's software on top of an Ubuntu foundation, aimed at users who want upstream Plasma applications on a familiar base. The two share a name lineage and a desktop, but they are not interchangeable, and readers tracking KDE's release roadmaps should not conflate their milestones.</p>
+<h4>Why it matters</h4>
+<p>For the open-source desktop community, October's update is a small but meaningful data point. KDE Linux has spent more than a year in a pre-beta state, and each monthly changelog has been incremental — this one happens to bundle a kernel-level improvement with broader ecosystem significance. NTSYNC's default enablement signals that the Linux gaming stack's remaining rough edges are being addressed at the distribution level, not left to enthusiasts willing to rebuild components by hand.</p>
+<p>Whether the beta lands soon remains to be seen; KDE has not named a target window. For now, the concrete takeaway is that KDE's reference platform is aligning its defaults with where the Wine and Proton gaming stack is heading.</p>
+<p><em>Source: <a href="https://www.phoronix.com/news/KDE-Linux-October-2026">Phoronix</a>, 2 November 2026.</em></p>
+<hr>
+<p>KDE 自家的參考發行版 KDE Linux 正逐步邁向 beta 里程碑，其十月更新帶來一項對所有透過 Wine 或 Proton 執行 Windows 遊戲的用戶都至關重要的改動：NTSYNC 現已預設啟用。</p>
+<p>相關細節出自 KDE 開發者 Nate Graham 的每月專案部落格，並由 Phoronix 於 11 月 2 日報導，該文總結了發行版整個十月的工作進展。KDE Linux 作為 KDE 自有的參考平台——即專案為展示開發者預期使用方式的桌面環境而維護的系統——開發已逾一年。Graham 的文章盤點了發行版的現狀以及當月落實的各項改動，其中 NTSYNC 的預設啟用最受外界關注。</p>
+<h4>NTSYNC 究竟有何作用</h4>
+<p>NTSYNC 是一個 kernel 子系統，負責處理 Windows 應用程式所依賴的 NT synchronization primitives（NT 同步原語）。過去，Wine 一直透過其 <code>wineserver</code> 進程在 user space（用戶空間）模擬這些原語，而社區建立的 esync、fsync 等替代方案則透過 patch 改良此方式以減少開銷。所有這些 thread（線程）之間的協調都在 kernel 之外進行，在 thread 密集型的遊戲中便可能成為瓶頸——thread 需花費時間爭奪由 user space 機制管理的 lock，而非獲得有效排程。</p>
+<p>將這些原語移入 kernel，便可去除這一層 indirection。對玩家而言，實際效果是在 Wine 或 Proton 下執行、受 CPU 限制的多 thread 遊戲中，幀輸出更為流暢、卡頓更少，因為 synchronization 呼叫不再需要經由 user space server 轉接。Phoronix 報道稱 KDE Linux 現已預設啟用 NTSYNC，這一點可說是報道內容中更為關鍵的一半：該子系統本身並非新事物，但將其設為預設值，意味著它脫離了手動設定的範疇，轉而惠及一般用戶——這些用戶原本根本不會主動尋找此功能。</p>
+<p>長期支持（LTS）用戶須留意一項要求：NTSYNC 已於 Linux 6.14 mainline（合入主線），因此任何執行早於該版本的 LTS kernel 的用戶，都需要更新的 kernel 方可使用此功能。仍在出貨 6.14 之前 LTS kernel 的發行版，無論發行版層面如何設定預設值，都不會開放該功能。</p>
+<p>Graham 的文章並未承諾 beta 發布的具體日期，只表示經過一年開發，該里程碑正逐步逼近。</p>
+<h4>KDE Linux 並非 KDE neon</h4>
+<p>有一點混淆值得及早釐清：KDE Linux 和 KDE neon 是兩個用途不同的專案。KDE Linux 是該專案的官方參考發行版——KDE 以其進行開發，並作為自身推薦基準推出。相比之下，KDE neon 是一個以 Ubuntu 為基礎的專案，在 Ubuntu 基底之上打包 KDE 的軟件，適合希望在熟悉的基礎上使用上游 Plasma 應用程式的用戶。兩者名稱同源且共用同一個桌面環境，但並不可互換，追蹤 KDE 發布路線圖的讀者不應混淆兩者的里程碑。</p>
+<h4>為何重要</h4>
+<p>對開源桌面社區而言，十月的更新是一個雖小卻意義明確的數據點。KDE Linux 已處於 pre-beta 狀態逾一年，每月的 changelog 均屬漸進式改動——今次恰好將一項 kernel 層面的改進與更廣泛的生態意義結合在一起。NTSYNC 的預設啟用表明，Linux gaming stack 尚存的粗糙之處正在發行版層面得到處理，而非留待願意手動重新構建組件的發燒友自行解決。</p>
+<p>beta 版是否會近期推出仍有待觀察；KDE 尚未公布目標時間窗口。就目前而言，具體的結論是：KDE 的參考平台正將其預設設定與 Wine 及 Proton gaming stack 的發展方向對齊。</p>
+<p><em>來源：<a href="https://www.phoronix.com/news/KDE-Linux-October-2026">Phoronix</a>，2026 年 11 月 2 日。</em></p>
+<p><a href="https://www.phoronix.com/news/KDE-Linux-October-2026" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
