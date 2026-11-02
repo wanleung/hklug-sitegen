@@ -1,0 +1,30 @@
+Date: 2026-11-02 12:26:00
+Author: HKLUG Team
+Title: RADV Sets Out Written Rules for LLM-Assisted Contributions, a First for a Mesa Driver
+Content:
+<h3>RADV Sets Out Written Rules for LLM-Assisted Contributions, a First for a Mesa Driver</h3>
+<p>RADV, the Mesa component that provides Vulkan support for AMD Radeon GPUs on Linux, has adopted a written policy governing code contributions drafted with large language models. Phoronix reports the change as a driver-specific LLM policy, making it an early instance of a Mesa sub-project codifying AI contribution norms in its own document rather than inheriting them from tree-wide practice or reviewer discretion.</p>
+<p>The significance lies in the granularity. Contributors to a codebase the size of Mesa have historically been able to work from broad project conventions or an individual maintainer's judgement at review time. A driver publishing its own rules moves that decision-making down a level: governance is being written at subsystem scope, which means integrators can no longer assume that a single AI policy governs everything they consume from a project. What remains unclear from the report alone is the policy's exact reach — whether it binds RADV only or carries implications for the wider Mesa tree — and the precise obligations it sets out. Those details should be read in the policy text, published alongside RADV's documentation in Mesa's repository, rather than in any summary of it.</p>
+<h4>Why a graphics driver moved first</h4>
+<p>A Vulkan driver is not an obvious pioneer for AI governance. The reason it went first is exposure. Shader compiler and driver code is where plausible-looking-but-wrong changes are most expensive: a patch can compile cleanly, survive casual review, and still be subtly defective — surfacing months later as an intermittent, hardware-dependent fault on a machine the reviewer does not own, in a rendering artefact or hang that resists reproduction.</p>
+<p>That risk profile compounds an imbalance already familiar in open source. When patches can be drafted faster than anyone can read them, the burden falls on a small group of maintainers who must review every line anyway. A written policy reframes what is usually an unenforceable grumble about volume into a stated condition of entry — and gives downstream distribution, OEM, and platform maintainers something concrete to point at during triage, security review, and support exchanges, instead of having to infer expectations from review threads.</p>
+<h4>A widening patchwork</h4>
+<p>RADV is not alone. Across open source, projects are converging on disclosure as the uncontroversial half of the question while settling the rest independently: whether model-generated code is welcome at all, what human explanation must accompany it, and which subsystems are off limits. The Linux kernel community has tightened expectations around machine-generated patches amid review-load and quality concerns, and similar moves keep appearing elsewhere.</p>
+<p>For anyone contributing across multiple repositories, the result is a patchwork — one project's routine disclosure is another's disqualifying omission, and the rules can shift between trees maintained by the same people.</p>
+<h4>What downstream teams should do</h4>
+<p>Practically, treat AI-provenance rules as part of a project's contribution surface, alongside licensing and coding standards: record which upstreams require disclosure and where. Where your team consumes RADV or Mesa builds, check the policy before assuming it applies only to upstream submissions — local backports and hotfixes may inherit the same expectations. And when a suspected model-generated regression lands in your queue, a published upstream policy gives you a documented basis for asking the submitter about provenance, rather than opening that conversation cold.</p>
+<p>RADV's move may matter less for what its policy requires than for what it signals: written AI-contribution rules are becoming a routine artefact of open-source governance, and the projects that consume upstream code will increasingly have to track them.</p>
+<hr>
+<h3>RADV 制定 LLM 輔助貢獻書面規則　Mesa 驅動程式首例</h3>
+<p>RADV 是 Mesa 中負責在 Linux 為 AMD Radeon GPU 提供 Vulkan 支援的元件，現已通過一項書面政策，規管以大型語言模型（LLM）起草的程式碼貢獻。Phoronix 將此舉報導為針對特定驅動程式的 LLM 政策，使 RADV 成為 Mesa 子項目中首個以自身文件確立 AI 貢獻規範、而非沿用整個代碼庫既有做法或交由 reviewer 審核時自行裁量的例子。</p>
+<p>其意義在於細分層級。Mesa 規模龐大，其貢獻者一直以來可依據寬泛的項目慣例，或個別 maintainer 在審核時的判斷行事。如今一個驅動程式自行公布規則，把決策層級再往下推一級：治理規範正以 subsystem 範圍寫定，這意味著 integrator 再不能假設單一 AI 政策已涵蓋他們從某個項目所採用的一切。單憑該報導，尚不清楚的是政策的確切適用範圍——究竟只約束 RADV，還是對整個 Mesa 樹構成影響——以及其列明的具體義務。這些細節應直接閱讀政策原文，該文本已隨 RADV 文件一併發布於 Mesa 的 repository 中，而不應依賴任何摘要。</p>
+<h4>為何是一款圖形驅動程式先行</h4>
+<p>Vulkan 驅動程式並非 AI 治理的顯然開路先鋒。它率先出手的原因是風險暴露。Shader 編譯器及驅動程式代碼，正是「看似合理實則有誤」的改動代價最高之處：一個 patch 可以編譯無誤、安然通過粗略審查，卻仍存在細微缺陷——數月後才浮現為間歇性、取決於硬件的故障，而出現於 reviewer 並不擁有的機器上，以難以重現的 rendering artefact 或當機形式表現。</p>
+<p>此一風險特徵，加劇了開源領域早已熟知的失衡。當 patch 起草的速度比任何人閱讀的速度都要快，重擔便落在少數必須逐行審核的 maintainer 身上。書面政策把原本無法執行、只屬牢騷的數量問題，重新界定為明文列示的入場條件——並讓下游發行版、OEM 及平台 maintainer 在 triage、security review 及支援往來時有實實在在的依據可援引，而不必從審核 thread 中自行揣測期望。</p>
+<h4>規則拼湊日趨複雜</h4>
+<p>RADV 並非孤例。在開源領域，各項目正就「披露」這一毫無爭議的半邊趨於一致，其餘問題則各自獨立了結：模型生成的代碼是否完全不受歡迎、必須附上什麼樣的人類說明，以及哪些 subsystem 屬於禁區。Linux kernel 社群在審核負荷及質量憂慮之下，已收緊對機器生成 patch 的期望，類似舉動亦不斷在其他地方出現。</p>
+<p>對跨多個 repository 貢獻的人而言，結果是一片規則拼湊的局面——某個項目視為例行披露的事，另一個項目卻視為致命疏漏，而規則甚至可能在同一班人維護的不同代碼樹之間出現差異。</p>
+<h4>下游團隊應如何跟進</h4>
+<p>實務上，應把 AI 溯源規則視為項目貢獻面向的一部分，與授權協議及 coding standards 並列：記錄哪些 upstream 要求披露、在哪裡要求。凡你的團隊使用 RADV 或 Mesa build 之處，先查閱政策，別假設它只適用於 upstream 提交——本地 backport 及 hotfix 可能須承繼同樣的期望。當懷疑由模型生成的 regression 進入你的 queue 時，已公布的 upstream 政策為你向提交者詢問代碼來源提供有文件依據的基礎，而不必由你突兀地開啟話題。</p>
+<p>RADV 此舉的重要性，未必在於政策要求了什麼，而在於它釋出的信號：書面 AI 貢獻規則正成為開源治理的常規文件，而採用 upstream 代碼的項目，將日益需要追蹤這些規則。</p>
+<p><a href="https://www.phoronix.com/news/RADV-Adopts-LLM-Policy" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
