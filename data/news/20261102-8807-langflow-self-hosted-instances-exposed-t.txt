@@ -1,0 +1,50 @@
+Date: 2026-11-02 15:40:00
+Author: HKLUG Team
+Title: Langflow Self-Hosted Instances Exposed to Unauthenticated RCE — Patch to 1.13.0 Now
+Content:
+<h3>Langflow Self-Hosted Instances Exposed to Unauthenticated RCE — Patch to 1.13.0 Now</h3>
+<p>Two critical flaws in the open-source AI workflow tool Langflow could allow a remote attacker with no account to bypass authentication or execute arbitrary code on a server, The Hacker News recently reported, citing an advisory IBM disclosed last week.</p>
+<p>IBM is the channel through which Langflow vulnerability reports are handled. Every release from 1.0.0 through 1.12.8 carries both flaws, and version 1.13.0 is the only fix — meaning any self-hosted instance still running an older build is exposed to both issues simultaneously.</p>
+<h4>An Attack Surface That Needs No Credentials</h4>
+<p>For self-hosted deployments, the nature of these flaws is far more serious than a typical authentication defect: the precondition is not a leaked password, not a phishing kit, and not a misconfigured permission — it is the complete absence of an account. Both attack paths described in the advisory, authentication bypass and remote code execution (RCE), work without the attacker holding any credentials.</p>
+<p>That shifts the remediation question from login hygiene to network position. If a Langflow instance is reachable directly from the public internet, the only meaningful interim control before the upgrade completes is to place it behind a VPN, an internal network, or an authenticated reverse-proxy layer. WAF rules or a "stronger password policy" will not reduce this risk.</p>
+<h4>Absent from CISA KEV: A Reprieve, Not a Guarantee</h4>
+<p>Neither flaw currently appears in CISA's Known Exploited Vulnerabilities (KEV) catalog. In practice, that means there are no confirmed cases of in-the-wild exploitation — but it should not be read as license to schedule the work for later.</p>
+<p>Security practitioners' experience is that unauthenticated RCE in developer tooling is often weaponised within days of disclosure; once mass scanning begins, internet-exposed self-hosted instances are typically the first targets. Absence from KEV represents a time lag, not an absence of risk.</p>
+<h4>Self-Hosted Patching Checklist</h4>
+<ol>
+<li><strong>Inventory your instances.</strong> Identify the version number of every Langflow deployment, including development, test, and throwaway environments — forgotten legacy instances are usually the actual intrusion path.</li>
+<li><strong>Upgrade to 1.13.0.</strong> All releases from 1.0.0 to 1.12.8 are affected and 1.13.0 is stated as the sole fix; if that holds, partial or rolling upgrades will resolve neither flaw.</li>
+<li><strong>Restart and verify.</strong> Restart the service after upgrading and confirm the running version is genuinely 1.13.0, rather than trusting the package manager's report alone.</li>
+<li><strong>Treat reverse-proxy authentication as containment, not remediation.</strong> It shrinks the attack surface, but the vulnerabilities themselves remain.</li>
+<li><strong>Assume compromise prior to patching.</strong> If the instance was exposed to the public internet before the upgrade, rotate credentials, keys, and access tokens, and review logs.</li>
+</ol>
+<p>Readers who need CVE identifiers, CVSS scores, and affected endpoints should consult IBM's full advisory and any subsequent coordinated disclosure for the formal risk rating.</p>
+<h4>The Bigger Picture</h4>
+<p>Langflow belongs to the category of AI orchestration tools that have proliferated over the past two years — tools that often prioritise developer convenience by binding services directly to reachable networks, and that ship updates quickly. The release of 1.13.0 shows the patch pipeline is working; for self-hosted users, the real test is keeping up with version status.</p>
+<p>Teams across Hong Kong running self-hosted developer tools should treat this as a general reminder: patch scheduling for AI toolchain software deserves the same standing as traditional server patching, rather than waiting for the next maintenance window.</p>
+<p>Source: The Hacker News, reporting IBM's disclosure.</p>
+<hr>
+<h3>Langflow 自架部署暴露於未經認證的遠端程式碼執行 — 立即升級至 1.13.0</h3>
+<p>開源 AI 工作流工具 Langflow 存在兩項重大漏洞，遠端攻擊者無需任何帳戶即可繞過認證，或在伺服器上執行任意程式碼。The Hacker News 近日引述 IBM 上週披露的公告報道此事。</p>
+<p>IBM 是 Langflow 漏洞通報的處理渠道。由 1.0.0 至 1.12.8 的所有發行版本同時存在兩項漏洞，而 1.13.0 是唯一的修復版本——換言之，任何仍運行舊版本的自架實例都同時暴露於兩項漏洞之下。</p>
+<h4>無需憑證的攻擊面</h4>
+<p>對自架部署而言，這兩項漏洞的性質遠比一般認證缺陷嚴重：其前提不是密碼外洩、不是釣魚工具，也不是權限配置錯誤，而是帳戶的完全缺失。公告所述的兩條攻擊路徑——認證繞過與遠端程式碼執行（RCE）——攻擊者即使不持有任何憑證亦可達成。</p>
+<p>這使補救重點由登入衛生轉移到網絡位置。若 Langflow 實例可由公網直接存取，在完成升級之前，唯一有意義的臨時控制手段是將其置於 VPN、內網或經認證的反向代理層之後。套用 WAF 規則或「更嚴格的密碼政策」都無法降低這項風險。</p>
+<h4>未列入 CISA KEV：是緩衝，不是保證</h4>
+<p>兩項漏洞目前均未出現於 CISA 的已知遭利用漏洞（KEV）目錄。就實務而言，這表示尚無已確認的在野利用個案，但不應被解讀為可以把工作排期延後的許可。</p>
+<p>按安全業界的經驗，開發者工具中的未認證 RCE 往往在公開後數天內即被武器化；一旦大規模掃描展開，暴露於公網的自架實例通常是首個目標。未列入 KEV 只代表時間差，並不代表風險不存在。</p>
+<h4>自架部署修補檢查清單</h4>
+<ol>
+<li><strong>盤點實例。</strong> 確認每一項 Langflow 部署的版本號，包括開發、測試及一次性環境——被遺忘的舊版本實例往往是實際的入侵途徑。</li>
+<li><strong>升級至 1.13.0。</strong> 1.0.0 至 1.12.8 的所有發行版本均受影響，公告指明 1.13.0 是唯一修復版本；若此說法成立，部分升級或滾動升級都無法解決任何一項漏洞。</li>
+<li><strong>重啟並驗證。</strong> 升級後重啟服務，並確認實際運行的版本確為 1.13.0，而非僅憑套件管理器的回報。</li>
+<li><strong>視反向代理認證為遏制手段，而非補救。</strong> 它能收縮攻擊面，但漏洞本身依然存在。</li>
+<li><strong>假定修補前已遭入侵。</strong> 若實例在升級前曾暴露於公網，應更換憑證、金鑰及存取權杖，並檢視日誌。</li>
+</ol>
+<p>需要 CVE 識別碼、CVSS 評分及受影響端點的讀者，應查閱 IBM 的完整公告及其後的協調披露，以取得正式風險評級所需資料。</p>
+<h4>更大的圖景</h4>
+<p>Langflow 屬於過去兩年迅速普及的 AI 編排工具類別；這類工具往往以「開發者便利」為優先，把服務直接綁定至可存取的網絡，而且更新節奏較快。1.13.0 的發布顯示修補管道運作正常；但對自架用戶而言，真正的考驗在於能否跟上版本狀態。</p>
+<p>本港眾多運行自架開發工具的團隊，應把此事視為一個通用提醒：AI 工具鏈軟件的漏洞修補排期，應當與傳統伺服器補丁享有同等地位，而非留待下一個維護窗口。</p>
+<p>Source: The Hacker News, reporting IBM's disclosure.</p>
+<p><a href="https://thehackernews.com/2026/11/critical-langflow-flaws-could-let.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
