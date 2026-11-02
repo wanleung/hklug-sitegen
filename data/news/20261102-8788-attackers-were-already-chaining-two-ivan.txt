@@ -1,0 +1,46 @@
+Date: 2026-11-02 14:15:00
+Author: HKLUG Team
+Title: Attackers Were Already Chaining Two Ivanti Connect Secure Zero-Days Before Fixes Shipped
+Content:
+<p>Attackers were using two Ivanti Connect Secure zero-days <strong>together</strong> in real-world assaults from at least 1 October 2024 — months before Ivanti had a fix ready for either flaw. The vendor has now released patches for both, but the sequence of events matters more to defenders than the patch announcement itself: the fixes arrived long after the chain was already in use, which means an upgrade alone does not tell you whether your gateway was ever touched.</p>
+<h4>Two flaws, one attack path</h4>
+<p>The vulnerabilities are <strong>CVE-2025-22457</strong>, a stack-based buffer overflow in Connect Secure rated 9.0 on the CVSS scale, and <strong>CVE-2024-53704</strong>, an authentication weakness in the product's SSL VPN component. (The first carries a 2025 identifier because that is when the issue was formally catalogued — the campaign against it was already under way well before that.)</p>
+<p>The detail worth acting on is not the pair of CVE listings but the fact that they were <strong>chained</strong>: the authentication bypass was used to get past the VPN gate, and the overflow delivered code execution behind it. That combination is what turned two separate weaknesses into a dependable route to authenticated access and remote code execution on internet-facing gateways.</p>
+<p>Chaining also changes what "mitigated" means. If you have blocked, virtually patched, or applied a WAF rule covering only one leg of the pair, the attack path is still open. Partial coverage of a chained exploit is closer to no coverage than most remediation tickets assume.</p>
+<h4>Why this is a patch-priority item</h4>
+<p>Connect Secure appliances live at the network edge by design — they are the VPN front door for remote staff and branch offices. Once one is compromised, the attacker sits inside the perimeter with traffic that looks legitimate, which makes detection far harder than with a noisy external break-in. Organisations in Hong Kong running Ivanti Connect Secure, or exposing it to the internet in any form, should treat this as a priority item rather than a routine maintenance ticket.</p>
+<p>The version landscape matters as much as the CVE identifiers. Ivanti's advisory specifies affected and fixed release ranges per product line; the fix shipped for Connect Secure as build <strong>22.7R2.5</strong>, and administrators should check Ivanti's current advisory for the definitive fixed release rather than assuming a cited build is the final word. An appliance one maintenance update behind the fixed release is still exposed — confirm the exact build, do not infer scope.</p>
+<h4>Remediation checklist</h4>
+<ol>
+<li><strong>Inventory.</strong> Identify every Connect Secure appliance in the estate, including forgotten or duplicated gateways, and record firmware versions and internet exposure.</li>
+<li><strong>Patch.</strong> Upgrade affected appliances to the current fixed release. Where an immediate upgrade is not feasible, restrict management-interface exposure and apply vendor mitigations as an interim step only — never as the end state.</li>
+<li><strong>Verify integrity.</strong> Run Ivanti's <strong>external Integrity Checker</strong> against each gateway. Ivanti's guidance is explicit: <strong>a failed check means the appliance must be treated as compromised</strong>, and incident response should begin immediately rather than after further confirmation.</li>
+<li><strong>Hunt retrospectively.</strong> Because exploitation dates back to at least 1 October 2024, patching alone does not close the exposure window. Search logs, active sessions, scheduled tasks and configuration changes for signs of persistence, and review Ivanti's published indicators of compromise (IOCs).</li>
+<li><strong>Rotate credentials.</strong> Reset local and directory passwords, administrative credentials, and any secrets or certificates that could have been harvested from a compromised gateway — then force re-authentication of existing VPN sessions.</li>
+</ol>
+<h4>The gap that should change your process</h4>
+<p>The uncomfortable part of this story is the delay between the start of exploitation and the availability of a vendor fix: for months, defenders had nothing to deploy while attackers already had a working chain. That is why retrospective compromise hunting, not the firmware upgrade, is the real measure of whether an organisation has closed the incident — the patch stops the bleeding, it does not rewind it.</p>
+<p>Ivanti's dual-patch release lands amid a sustained run of Connect Secure and edge-gateway vulnerabilities that have repeatedly drawn attention from both researchers and attackers. The pattern is consistent enough to treat edge VPN gateways as a standing priority class: inventory them, patch them on an accelerated clock, verify their integrity, and assume that any gap between exploitation and disclosure needs to be investigated after the fix ships, not just acknowledged.</p>
+<p><em>Reported via BleepingComputer's coverage of Ivanti's Connect Secure advisory.</em></p>
+<hr>
+<p>攻擊者至少自 2024 年 10 月 1 日起，已於實戰攻擊中<strong>同時</strong>使用兩個 Ivanti Connect Secure 零日漏洞 —— 數月前 Ivanti 仍未能為任何一個漏洞準備好修補方案。該廠商現已為兩個漏洞發布修補程式，但對防守方而言，事件發生的先後次序比修補公告本身更為重要：修補程式在攻擊鏈已投入使用後很久才推出，這意味著僅憑升級並無從得知該閘道是否曾遭入侵。</p>
+<h4>兩個漏洞，同一條攻擊路徑</h4>
+<p>相關漏洞分別是 <strong>CVE-2025-22457</strong>，即 Connect Secure 中一個 CVSS 評分達 9.0 的 stack-based buffer overflow，以及 <strong>CVE-2024-53704</strong>，即該產品 SSL VPN 組件的認證機制缺陷。（前者帶有 2025 年編號，是因為問題於該年正式入冊 —— 針對它的攻擊行動早在那之前已展開。）</p>
+<p>真正值得據以行動的重點，並非兩個 CVE 編號本身，而是它們被<strong>串連（chained）</strong>使用的事實：認證繞過被用來突破 VPN 閘口，而 buffer overflow 則在其後執行代碼。正是這組合，把兩個各自獨立的弱點轉化為通往面向互聯網閘道的已認證存取及 remote code execution 的可靠路徑。</p>
+<p>串連亦改變了「已緩解」的含義。若你只針對這對漏洞的其中一環作出封鎖、virtual patch 或套用 WAF 規則，攻擊路徑依然暢通。對串連式 exploit 而言，部分涵蓋比多數修補工單所假設的更接近於毫無涵蓋。</p>
+<h4>為何這是一項優先修補事項</h4>
+<p>Connect Secure 設備按設計部署於網絡邊緣 —— 它們是遙距員工及分公司的 VPN 正門。一旦其中一部被攻陷，攻擊者便置身於 perimeter 之內，流量看似合法，令偵測難度遠高於嘈雜的外部入侵。在香港營運 Ivanti Connect Secure，或以任何形式將其暴露於互聯網的機構，應將此事視為優先事項，而非一般性維護工單。</p>
+<p>版本分佈的重要性不亞於 CVE 編號。Ivanti 的 advisory 按產品線列明受影響及已修復的版本範圍；Connect Secure 的修補以 build <strong>22.7R2.5</strong> 形式推出，管理員應查閱 Ivanti 最新的 advisory 以確認確實的 fixed release，而非假設公告中提及的 build 即為最終版本。一部僅落後一個維護更新的設備，依然暴露於風險之中 —— 務必確認確切 build，切勿自行推斷影響範圍。</p>
+<h4>修補及應變清單</h4>
+<ol>
+<li><strong>盤點（Inventory）。</strong> 識別範圍內每一部 Connect Secure 設備，包括被遺忘或重複的閘道，並記錄 firmware 版本及互聯網暴露情況。</li>
+<li><strong>修補（Patch）。</strong> 將受影響設備升級至現行 fixed release。若無法即時升級，可限制管理界面的暴露並套用廠商緩解措施，但僅可作為過渡手段 —— 絕不可作為最終狀態。</li>
+<li><strong>驗證完整性。</strong> 對每部閘道執行 Ivanti 的 <strong>external Integrity Checker</strong>。Ivanti 的指引十分明確：<strong>檢查失敗即代表必須視該設備已被攻陷</strong>，事故應變應立即展開，毋須等待進一步確認。</li>
+<li><strong>回溯搜查（Hunt retrospectively）。</strong> 由於漏洞利用至少可追溯至 2024 年 10 月 1 日，僅靠修補並不能封閉暴露窗口。應搜查日誌、活動 session、排程任務及配置變更，尋找持久化（persistence）跡象，並查閱 Ivanti 已公布的 indicators of compromise（IOCs）。</li>
+<li><strong>輪換憑證。</strong> 重設本地及目錄密碼、管理員憑證，以及任何可能從被攻陷閘道中被擷取的 secrets 或 certificates —— 然後強制現有 VPN session 重新認證。</li>
+</ol>
+<h4>應促使你修改流程的缺口</h4>
+<p>這宗事件令人不安之處，在於漏洞利用開始與廠商修補推出之間的時間差：數月間，防守方無可部署，攻擊者卻已擁有運作自如的攻擊鏈。這正是為何回溯搜查已被攻陷的跡象，而非 firmware 升級，才是衡量機構是否已終結事故的真正標準 —— 修補程式只會止血，不會時光倒流。</p>
+<p>Ivanti 的雙重修補發布，正值 Connect Secure 及邊緣閘道漏洞接連不斷之際 —— 這些漏洞屢屢引起研究人員與攻擊者雙方關注。這一模式的一致程度，足以將邊緣 VPN 閘道視為一類恆常優先處理的對象：盤點它們、以更緊湊的周期為其修補、驗證其完整性，並假定任何漏洞利用與披露之間的缺口，均須在修補推出後加以調查，而非僅僅知悉了事。</p>
+<p><em>資料來源：BleepingComputer 對 Ivanti Connect Secure advisory 的報道。</em></p>
+<p><a href="https://www.bleepingcomputer.com/news/security/ivanti-patches-two-more-connect-secure-zero-days-chained-in-attacks/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
