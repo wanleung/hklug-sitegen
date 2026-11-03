@@ -1,0 +1,108 @@
+Date: 2026-11-03 13:35:00
+Author: HKLUG Team
+Title: Linux 7.5 Set to Drop the Kernel's Last MMX-Optimised Code
+Content:
+<p>The mainline Linux kernel is preparing to retire the last of its MMX-optimised code, according to Phoronix, in a change expected to land in the Linux 7.5 release — a version not due until 2027. It is the latest step in a decade-long pattern of the kernel quietly raising the bar for the x86 hardware it bothers to tune for.</p>
+<p>That puts a hard date on the end of an era. MMX arrived with the Intel Pentium MMX — silicon that debuted in 1997, and whose optimised paths the kernel has carried for the better part of three decades.</p>
+<p><strong>This is a cleanup, not a compatibility break.</strong></p>
+<p>The distinction matters more than the headline suggests. Removing MMX-optimised code does not mean the kernel stops booting on a Pentium MMX or a Pentium II. It means those processors lose their dedicated fast paths and fall back to the generic, portable implementations that already exist across architectures. Functionality is preserved; a sliver of performance tuning for ancient silicon is not.</p>
+<p>Optimisation removal is not hardware support removal — a distinction Linux has drawn repeatedly as it retires legacy cruft. The kernel's build infrastructure still targets architectures far older than MMX-era x86, and dropping an optimised branch is one of the least disruptive changes a maintainer can make.</p>
+<p><strong>Why the baseline keeps creeping upward</strong></p>
+<p>Maintainers have reasons that are easy to under-appreciate from the outside. Every specialised code path carries a maintenance cost — it must be tested, reviewed and kept correct as surrounding code evolves — and if continuous integration never exercises it on real MMX-class hardware, bit rot is likely. Dead weight in a hot subsystem is dead weight everywhere; removing it shrinks the surface area every kernel contributor has to reason about.</p>
+<p>The MMX path is also unusually entangled: x87 floating-point code and MMX share the same physical register file, so carrying MMX special-cases complicates code that modern hardware runs constantly. Untangling them benefits current CPUs, not just legacy ones.</p>
+<p><strong>Checking which x86 level your machine is running</strong></p>
+<p>Raising baselines is not confined to the kernel. Distributions and toolchain projects have been moving their floor from the original x86-64 baseline (v1) up through the x86-64-v2, v3 and v4 microarchitecture levels, which map roughly to these hardware generations:</p>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Key instructions</th>
+<th>Typical hardware from</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>x86-64-v1</td>
+<td>baseline AMD64</td>
+<td>2003 and later</td>
+</tr>
+<tr>
+<td>x86-64-v2</td>
+<td>SSE4.2, POPCNT</td>
+<td>~2008–2009 (Nehalem, Barcelona era)</td>
+</tr>
+<tr>
+<td>x86-64-v3</td>
+<td>AVX, AVX2, BMI2</td>
+<td>~2013 onwards (Haswell and successors)</td>
+</tr>
+<tr>
+<td>x86-64-v4</td>
+<td>AVX-512</td>
+<td>~2016–2017 onwards (Skylake-SP and successors)</td>
+</tr>
+</tbody>
+</table>
+<p>Two quick self-checks on Linux:</p>
+<pre><code class="language-bash"># CPU model and generation
+lscpu | grep 'Model name'
+
+# Which SIMD feature sets your CPU advertises
+grep -o -E 'sse4_2|avx2|avx512f' /proc/cpuinfo | sort -u
+</code></pre>
+<p>If <code>avx2</code> shows up, you clear the x86-64-v3 bar that several distributions now treat as the floor. If you only see SSE-era flags, you are on v1/v2 territory — still supported, but increasingly the segment where generic fallback paths, not tuned ones, will do the work.</p>
+<p>That is the real story behind the MMX removal: Linux is not abandoning old hardware, but it is steadily withdrawing the effort spent making it fast. For anyone in Hong Kong or anywhere else keeping ageing x86 boxes in service, Linux 7.5 in 2027 is a useful prompt to check where your own machine sits before the next baseline move arrives.</p>
+<p><em>Source: Phoronix, "The Linux Kernel Preparing To Remove The Last Of Its MMX Optimized Code."</em></p>
+<hr>
+<p>據 Phoronix 報導，主線 Linux 核心正準備淘汰最後的 MMX 優化代碼，此項變更預計會在 Linux 7.5 版本中落實——該版本要到 2027 年才會推出。這是核心多年來不斷悄然提高其願意為之調校的 x86 硬件門檻的最新一步。</p>
+<p>這為一個時代的終結訂下了明確日期。MMX 隨 Intel Pentium MMX 誕生——該款晶片於 1997 年首次亮相，而核心一直攜帶其優化路徑長達近三十年之久。</p>
+<p><strong>這是清理，而非兼容性中斷。</strong></p>
+<p>這個區別比標題所暗示的更為重要。移除 MMX 優化代碼並不意味著核心無法在 Pentium MMX 或 Pentium II 上啟動。它意味著這些處理器將失去專屬的快速路徑，轉而回落到各架構中早已存在的通用、可攜式實作。功能得以保留；失去的只是為古老晶片而設的些許效能調校。</p>
+<p>移除優化不等於移除硬件支持——Linux 在淘汰遺留舊代碼時屢次強調這一區別。核心的建構基礎設施所針對的架構遠比 MMX 時代的 x86 更為古老，而刪除一條優化分支是維護者所能作出的最不具破壞性的變更之一。</p>
+<p><strong>為何基準門檻不斷上調</strong></p>
+<p>維護者所持的理由，從外界往往難以充分理解。每一條專用代碼路徑都附帶維護成本——它必須經過測試、審查，並在周邊代碼演進時持續保持正確——而如果持續整合（continuous integration）從未在真正的 MMX 級硬件上運行它，代碼腐化（bit rot）便很可能發生。熱門子系統中的冗餘代碼，就是整個系統的冗餘；將其移除可縮小每位核心貢獻者需要考量的範圍。</p>
+<p>MMX 路徑的糾纏亦非比尋常：x87 浮點代碼與 MMX 共用同一組實體暫存器，因此保留 MMX 的特殊處理會令現代硬件持續運行的代碼變得複雜。將兩者釐清，受益的不僅是遺留處理器，亦包括現役 CPU。</p>
+<p><strong>檢查你的機器運行在哪個 x86 級別</strong></p>
+<p>提高基準門檻並不局限於核心。發行版（distribution）及工具鏈項目一直將其最低要求由最初的 x86-64 基準（v1），逐步上調至 x86-64-v2、v3 及 v4 微架構級別，這些級別大致對應以下硬件世代：</p>
+<table>
+<thead>
+<tr>
+<th>級別</th>
+<th>關鍵指令</th>
+<th>典型硬件年份</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>x86-64-v1</td>
+<td>基準 AMD64</td>
+<td>2003 年及以後</td>
+</tr>
+<tr>
+<td>x86-64-v2</td>
+<td>SSE4.2、POPCNT</td>
+<td>約 2008–2009 年（Nehalem、Barcelona 世代）</td>
+</tr>
+<tr>
+<td>x86-64-v3</td>
+<td>AVX、AVX2、BMI2</td>
+<td>約 2013 年起（Haswell 及其後繼型號）</td>
+</tr>
+<tr>
+<td>x86-64-v4</td>
+<td>AVX-512</td>
+<td>約 2016–2017 年起（Skylake-SP 及其後繼型號）</td>
+</tr>
+</tbody>
+</table>
+<p>在 Linux 上快速自我檢查兩項：</p>
+<pre><code class="language-bash"># CPU 型號及世代
+lscpu | grep 'Model name'
+
+# 你的 CPU 對外宣稱支援哪些 SIMD 功能集
+grep -o -E 'sse4_2|avx2|avx512f' /proc/cpuinfo | sort -u
+</code></pre>
+<p>如果顯示 <code>avx2</code>，你已達到多個發行版目前視為最低門檻的 x86-64-v3 標準。如果只看到 SSE 時代的旗標，你便處於 v1/v2 範圍——仍獲支持，但越來越依靠通用回退路徑而非專門調校路徑來運作的領域。</p>
+<p>這才是 MMX 移除背後的真正故事：Linux 並非放棄舊硬件，而是逐步收回為提升其效能所投放的精力。對於香港及其他地方仍在運作老化 x86 主機的人士而言，2027 年的 Linux 7.5 是一個有用的提示——在下一輪基準門檻調整來臨之前，先檢查一下自己的機器處於哪個位置。</p>
+<p><em>來源：Phoronix，〈The Linux Kernel Preparing To Remove The Last Of Its MMX Optimized Code〉</em></p>
+<p><a href="https://www.phoronix.com/news/Linux-Dropping-Last-MMX-Opt" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
