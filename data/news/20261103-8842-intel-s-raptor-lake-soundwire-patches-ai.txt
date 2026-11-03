@@ -1,0 +1,30 @@
+Date: 2026-11-03 03:02:00
+Author: HKLUG Team
+Title: Intel's Raptor Lake SoundWire Patches Aim at Cars, Not Just Desktops
+Content:
+<p>Intel has posted a patch series adding SoundWire support to the upstream Intel AVS Linux driver for Raptor Lake, according to Phoronix, which framed the submissions as targeting Raptor Lake–powered automobiles.</p>
+<p>The series covers the RPL-M and RPL-P variants of the Raptor Lake family and would bring the SoundWire audio bus interface into the mainline kernel's Intel audio driver rather than leaving it to out-of-tree or vendor-maintained code.</p>
+<p>Two caveats matter here. First, the automotive framing is Phoronix's characterisation of the work, not something confirmed by an Intel press release. Second, posted patches begin a maintainer review process; they are not a guarantee of a merge. Whether the series lands as proposed will only become clear once subsystem maintainers have had their say.</p>
+<p><strong>What SoundWire is</strong></p>
+<p>SoundWire is a MIPI Alliance–standardised two-wire interface for connecting audio codecs and other audio peripherals to a host processor. It competes with older serial audio links such as I2S and SLIMbus, and is designed to carry audio data, control signalling and clocking over a single low-pin-count bus. Its standardisation under MIPI means the interface is not tied to one vendor's silicon, which matters when a board designer is specifying components years ahead of a product shipping.</p>
+<p><strong>Why upstream timing matters</strong></p>
+<p>The interesting part of this story is less the individual patches than the calendar. Intel is doing this work in 2026 for a Linux kernel that will ship in 2027 — and, if Phoronix's reading is right, for vehicle platforms that will not reach consumers until well after that. Automotive hardware has a long lead time: silicon, board design, infotainment stacks and certification all run ahead of production. Any driver support that is not in mainline by the time an automotive vendor builds its kernel tree has to be carried as a private fork.</p>
+<p>That is the real incentive behind avoiding downstream divergence. Audio support has historically been one of the areas where vendor kernel trees drift furthest from mainline. A private SoundWire implementation has to be rebased onto every new kernel, audited separately, and maintained long after the vehicle is on the road — a vehicle lifecycle measured in a decade or more, against a mainline kernel that moves every nine weeks. Landing the code upstream instead means the fixes, refactors and new-hardware support flow both ways for the life of the product.</p>
+<p>Each patch that makes it into mainline therefore narrows the gap between what Intel ships downstream and what the community can build on, and it signals that the upstream AVS driver is being treated as a serious target for embedded and automotive deployments rather than just desktop and laptop audio.</p>
+<p><strong>What to watch</strong></p>
+<p>The open question is straightforward: does the series survive review? If it does, the 2027 kernel cycle will carry Raptor Lake SoundWire support for anyone building on that silicon. If it needs rework, the automotive timeline — not the code itself — is what gets squeezed.</p>
+<p>Source: Phoronix, "Intel Brings RPL-M/RPL-P SoundWire To Upstream Linux For Raptor Lake Powered Automobiles" — https://www.phoronix.com/news/Intel-SoundWire-Raptor-Lake</p>
+<hr>
+<p>據 Phoronix 報導，Intel 已提交一系列補丁，為上游 Intel AVS Linux driver 加入 Raptor Lake 的 SoundWire 支援，並將這些提交描述為面向搭載 Raptor Lake 的汽車。</p>
+<p>該系列補丁涵蓋 Raptor Lake 家族的 RPL-M 及 RPL-P 變體，並將 SoundWire 音頻匯流介面納入主線 kernel 的 Intel 音頻 driver，而非留待 out-of-tree 或由廠商自行維護的代碼處理。</p>
+<p>有兩點需要注意。其一，汽車應用的定位是 Phoronix 對該項工作的解讀，並非 Intel 新聞稿所確認的內容。其二，已提交的補丁只是 maintainer 審核流程的開始，並不代表保證會 merge。該系列補丁能否按原建議納入，須待 subsystem maintainer 作出審視後才能知曉。</p>
+<p><strong>SoundWire 是什麼</strong></p>
+<p>SoundWire 是由 MIPI Alliance 標準化的雙線介面，用於將 audio codec 及其他音頻周邊連接至主處理器。它與 I2S、SLIMbus 等較舊的串行音頻鏈路競爭，設計上可在單一低針腳數的匯流排上傳輸音頻資料、控制信號及時鐘信號。由於其標準由 MIPI 制定，該介面不綁定任何單一廠商的晶片方案，這對於板卡設計者而言至關重要，因為元件選型往往須在產品上市前數年便已確定。</p>
+<p><strong>為何上游時機重要</strong></p>
+<p>這則新聞的重點與其說是單一補丁，不如說是時間表。Intel 於 2026 年進行這項工作，為的是 2027 年才會發布的 Linux kernel——而且，如果 Phoronix 的解讀正確，面向的車輛平台更要在那之後很久才會到達消費者手中。汽車硬件的前置期很長：晶片、板卡設計、infotainment 系統及認證都須先於量產進行。任何在汽車廠商建立其 kernel tree 時仍未進入主線的 driver 支援，都必須以私有 fork 的形式自行攜帶。</p>
+<p>這正是避免下游分叉的真正動機。歷來，音頻支援一直是廠商 kernel tree 偏離主線最嚴重的領域之一。私有的 SoundWire 實現須在每次新 kernel 發布時 rebase、單獨審計，並在車輛投入使用後長期維護——車輛的生命周期以十年甚至更久計算，而主線 kernel 每九週便推進一次。將代碼納入上游，意味著修補、重構及新硬件支援能在產品的整個生命周期內雙向流通。</p>
+<p>每一則進入主線的補丁，都會縮小 Intel 下游交付版本與社區可據以構建的版本之間的差距，同時也表明上游 AVS driver 正被視為嵌入式及汽車部署的嚴肅目標，而不僅供桌面及筆記本音頻之用。</p>
+<p><strong>值得關注之處</strong></p>
+<p>懸而未決的問題很直接：該系列補丁能否通過審核？如果通過，2027 年的 kernel 版本將為任何基於該晶片構建的用戶帶來 Raptor Lake SoundWire 支援。如果需要返工，受到擠壓的將是汽車產品的時間表——而非代碼本身。</p>
+<p>來源：Phoronix，"Intel Brings RPL-M/RPL-P SoundWire To Upstream Linux For Raptor Lake Powered Automobiles" — https://www.phoronix.com/news/Intel-SoundWire-Raptor-Lake</p>
+<p><a href="https://www.phoronix.com/news/Intel-SoundWire-Raptor-Lake" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
