@@ -1,0 +1,63 @@
+Date: 2026-11-03 19:47:00
+Author: HKLUG Team
+Title: Kernel TCP Flaw Rated 9.8: Red Hat Ships Fixes, Ubuntu Holds Them in Testing
+Content:
+<p>```</p>
+<p>Red Hat has shipped fixed kernels for a remotely exploitable use-after-free flaw in the Linux kernel's IPv4 TCP code across Red Hat Enterprise Linux 8, 9 and 10, while Ubuntu's equivalents for its three newest long-term-support releases remain confined to an opt-in testing channel with no announced date for a regular update. Administrators on Red Hat can close the exposure now; Ubuntu users face an open-ended window in which a working fix exists but has not yet reached the default update path.</p>
+<p>The vulnerability, tracked as CVE-2026-98432 and carrying a CVSS score of 9.8, can be reached by a remote, unauthenticated attacker, according to The Hacker News. The mechanism The Hacker News describes involves the kernel's TCP state handling: a connection object is freed while a reference to it is still live, leaving the kernel to operate on memory that has already been released. On that account, the dangling pointer gives an attacker on the network a path toward corrupting kernel memory and, potentially, executing code with the highest privileges.</p>
+<p>The severity rating follows from that reachability profile — network-accessible, no credentials required, with impact spanning confidentiality, integrity and availability. Crucially for defenders, the defect sits below the application layer: because the bug is in the kernel's own TCP stack, no web application firewall rule, reverse-proxy configuration or input-validation change can neutralise it. A kernel update is the only real remediation, which is why the per-distribution difference in patch availability matters in practice.</p>
+<table>
+<thead>
+<tr>
+<th>Distribution</th>
+<th>Releases affected</th>
+<th>Fix status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Red Hat Enterprise Linux</td>
+<td>8, 9, 10</td>
+<td>Fixed kernels available</td>
+</tr>
+<tr>
+<td>Ubuntu LTS</td>
+<td>Three newest LTS releases</td>
+<td>Fixes in opt-in testing channel; no promotion date stated</td>
+</tr>
+</tbody>
+</table>
+<p>Ubuntu's position is not a failure to produce a fix — the corrected code exists — but a matter of channel policy. Patches land first in a repository administrators must explicitly enable and test, and only later roll into the standard update stream. For teams running Ubuntu, that sets up a genuine trade-off: take the fix early from the testing channel and accept the stability risk of an unproven kernel, or wait for the default promotion and accept an exposure window of unknown length. The Hacker News reported the situation without indicating when Ubuntu expects the fixes to leave testing.</p>
+<p>The episode also illustrates a standing pattern in Linux fleet management: upstream mainline fixes do not propagate to downstream distributions on a uniform schedule. A kernel fix merged in the mainline tree can reach RHEL customers before it lands in an Ubuntu LTS update, so a CVE's publication date tells administrators little about when their specific distribution and release will actually be covered. Organisations running mixed RHEL and Ubuntu estates are, in this case, managing a single CVE on two different remediation timelines.</p>
+<p>For Red Hat deployments, that means applying the fixed kernels for RHEL 8, 9 or 10 through the normal update path and rebooting into the patched kernel — a complete remediation. Ubuntu administrators should decide explicitly between enabling the testing channel to obtain the fix now and waiting for promotion to the standard update stream, weighing patch latency against kernel-stability guarantees, and re-evaluate if a promotion date is announced. On any still-unpatched host, reducing unnecessary exposure of TCP services to untrusted networks and prioritising affected systems for the next maintenance window offers useful risk reduction, but it is not a substitute for the kernel update.</p>
+<p>Administrators tracking fleet-wide exposure should treat per-distribution, per-release patch status as a routine inventory item rather than assuming a published CVE maps to a timely fix everywhere.</p>
+<hr>
+<p>Red Hat 已為 Linux 核心 IPv4 TCP 程式碼中一個可遠端利用的釋放後使用（use-after-free）漏洞推出修補核心，涵蓋 Red Hat Enterprise Linux 8、9 及 10；Ubuntu 三個最新長期支援（LTS）版本的對應修補則仍局限於需自行啟用的測試通道，未有公布轉入正式更新通道的日期。Red Hat 系統管理員現時可以關閉相關暴露面；Ubuntu 用戶則面對一個未設時限的空窗——修補確實存在，卻尚未進入預設更新路徑。</p>
+<p>該漏洞編號為 CVE-2026-98432，CVSS 評分 9.8，據 The Hacker News 報導，可由未經身份驗證的遠端攻擊者觸及。The Hacker News 所描述的機制牽涉核心的 TCP 狀態處理：連線物件在仍有一個指向它的參照存活時已被釋放，令核心繼續操作已遭釋放的記憶體。按此說法，懸空指標（dangling pointer）讓網絡上的攻擊者有途徑破壞核心記憶體，並有可能以最高權限執行代碼。</p>
+<p>評分反映的正是上述可觸及性——可經網絡存取、毋須憑證，影響涵蓋機密性、完整性與可用性。對防禦者而言關鍵在於：缺陷位於應用層之下。由於錯誤出現在核心自身的 TCP 協定堆疊（TCP stack），網絡應用程式防火牆（WAF）規則、反向代理設定或輸入驗證變更都無法化解；核心更新才是唯一的實質修補方案，這正是各發行版本在修補供應上的差異於實務上值得注意的原因。</p>
+<table>
+<thead>
+<tr>
+<th>發行版本</th>
+<th>受影響版本</th>
+<th>修補狀態</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Red Hat Enterprise Linux</td>
+<td>8、9、10</td>
+<td>已提供修補核心</td>
+</tr>
+<tr>
+<td>Ubuntu LTS</td>
+<td>三個最新 LTS 版本</td>
+<td>修補置於需自行啟用的測試通道；未有公布轉入正式更新通道的日期</td>
+</tr>
+</tbody>
+</table>
+<p>Ubuntu 的做法並非未能產出修補——修正後的程式碼確實存在——而是通道政策使然。修補會先落入一個系統管理員須明確啟用及測試的儲存庫，之後才逐步納入標準更新流。對 Ubuntu 團隊而言，這構成一個實際取捨：早一步由測試通道取得修補，承受未經驗證核心的穩定性風險；或等待修補轉入正式更新通道，接受長度未知的暴露空窗。The Hacker News 報道此事時，未有指出 Ubuntu 何時會把修補移出測試通道。</p>
+<p>這件事亦反映了 Linux 機群管理的一項長期規律：上游主線（mainline）的修補並不會以統一節奏傳遞至下游發行版本。主線程式碼樹中已合入的核心修補，可以早於 Ubuntu LTS 更新到達 RHEL 客戶，因此 CVE 的公布日期並不能告訴系統管理員，他們所用的特定發行版本與版本號何時才真正獲得覆蓋。同時營運 RHEL 與 Ubuntu 系統的機構，此刻正是在兩條不同的修補時間線上管理同一個 CVE。</p>
+<p>對 Red Hat 部署而言，這表示透過正常更新路徑套用 RHEL 8、9 或 10 的修補核心，並重新啟動至已修補的核心——這已屬完整補救。Ubuntu 系統管理員則須明確取捨：現在啟用測試通道以取得修補，或等待修補轉入正式更新通道，於修補時效與核心穩定性保證之間作出衡量，並在轉入正式更新通道的日期公布後重新評估。對仍未修補的主機，減少 TCP 服務對不受信任網絡的不必要暴露，以及優先安排相關系統進入下一個維護窗口，可帶來有用的風險降低，但並不能取代核心更新。</p>
+<p>追蹤整體機群暴露面的系統管理員，應把「按發行版本、按版本的修補狀態」列為例行盤點項目，而不是假設每一個公布的 CVE 都會及時在所有環境獲得修補。</p>
+<p><a href="https://thehackernews.com/2026/11/red-hat-patches-98-rated-linux-tcp-rce.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
