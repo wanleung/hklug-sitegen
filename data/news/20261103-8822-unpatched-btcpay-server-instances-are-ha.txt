@@ -1,0 +1,40 @@
+Date: 2026-11-03 11:29:00
+Author: HKLUG Team
+Title: Unpatched BTCPay Server instances are having their hot wallets emptied
+Content:
+<p>The maintainer of BTCPay Server is telling operators of the open-source cryptocurrency payment processor to install the latest release, after attackers were found draining funds from "hot wallets" on deployments still running older versions of the software, BleepingComputer reported.</p>
+<p>Hot wallets are the slice of funds held in online, spending-ready storage — precisely the money a payment processor needs on hand to settle transactions. That makes them the most exposed balance on any self-hosted BTCPay deployment, and, according to the report, the direct target of the campaign against instances left unpatched.</p>
+<p>Neither the report nor the source material reviewed here publishes a list of exploit indicators, a confirmed count of compromised instances, or the specific BTCPay Server version range affected. Operators should treat any deployment not running the current release as potentially in scope, and check the project's official release notes and advisory channels for authoritative version guidance rather than working from assumptions.</p>
+<h4>The patching burden sits with the operator</h4>
+<p>Unlike hosted payment gateways, where a vendor pushes fixes to customers, BTCPay Server is self-hosted: the person running the server monitors releases, applies updates, and restarts services. The warning underscores that this model transfers the entire vulnerability-management lifecycle onto the operator — an abandoned or "set-and-forget" deployment is precisely the profile an internet-wide scan tends to surface.</p>
+<h4>General hardening steps for self-hosted instances</h4>
+<p>BTCPay's maintainer has asked for one thing: install the latest version. The checklist below is general hardening guidance rather than instruction attributed to that maintainer, and applies to anyone running self-hosted software that handles money:</p>
+<ul>
+<li><strong>Upgrade immediately.</strong> Bring the deployment to the latest officially released version from the project's own repositories, and verify the integrity of downloaded packages before installation.</li>
+<li><strong>Sweep hot wallet balances to cold storage.</strong> Keep only what day-to-day settlement requires online, and move the excess to offline or hardware-backed storage on a routine schedule.</li>
+<li><strong>Audit recent activity.</strong> Review transaction logs, payout records, and admin access history for transfers nobody on staff initiated, and rotate credentials and API keys after the upgrade.</li>
+<li><strong>Restrict exposure.</strong> Confirm the instance is not unnecessarily reachable from the public internet — check firewall rules, reverse-proxy configuration, and admin-panel access controls, and remove dormant or legacy endpoints.</li>
+</ul>
+<h4>Why it matters beyond one project</h4>
+<p>BTCPay Server is a widely used, self-hosted alternative to commercial crypto payment processors, popular precisely because operators keep custody of their own funds and their own infrastructure. That independence is the software's selling point, but this incident shows its corollary: custody of funds implies custody of patching.</p>
+<p>The episode is also a case study for the wider self-hosting community. Open-source infrastructure software does not degrade gracefully when neglected — particularly software that moves money. For IT teams and merchants running self-hosted payment or storefront software of any kind, the advisory is a prompt to confirm that an update process exists, someone owns it, and hot funds are kept deliberately small.</p>
+<p>Operators should watch BTCPay Server's official channels for the confirmed affected version range and further update guidance.</p>
+<hr>
+<p>據 BleepingComputer 報道，BTCPay Server 維護者呼籲這款開源加密貨幣支付處理器的營運者安裝最新版本，此前有攻擊者被發現從仍運行舊版軟件的部署中的「hot wallet（熱錢包）」轉走資金。</p>
+<p>Hot wallet 是保存在聯網、隨時可供支用儲存中的那部分資金——正是支付處理器結算交易時需要隨時動用的款項。這令 hot wallet 成為任何自行託管 BTCPay 部署中最容易暴露的餘額；據報道，它亦是針對未修補實例的攻擊行動的直接目標。</p>
+<p>無論是該報道抑或本文檢視的原始材料，均未列出攻擊指標（exploit indicators）、已確認被入侵實例的數目，亦未說明受影響的具體 BTCPay Server 版本範圍。營運者應將任何未運行當前正式版本的部署視為可能受影響，並查閱項目的官方 release notes 及 advisory 渠道以獲取權威版本指引，而非依假設行事。</p>
+<h4>修補漏洞的責任在營運者一方</h4>
+<p>與由供應商向客戶推送修復程式的託管支付閘道不同，BTCPay Server 屬自行託管：營運伺服器的人士須自行監察 release、套用更新並重啟服務。是次警告凸顯，此模式將整個漏洞管理生命周期轉移到營運者身上——遭人棄置或「set-and-forget」式的部署，正是互聯網大範圍掃描往往會揪出的目標。</p>
+<h4>自行託管實例的通用加固步驟</h4>
+<p>BTCPay 維護者只提出了一項要求：安裝最新版本。以下清單屬一般加固指引，並非來自該維護者的指示，適用於任何營運涉及金錢的自行託管軟件的人士：</p>
+<ul>
+<li><strong>立即升級。</strong> 將部署升級至項目自家儲存庫正式發布的最新版本，並在安裝前核實已下載軟件包的完整性。</li>
+<li><strong>將 hot wallet 餘額轉移至 cold storage。</strong> 只保留日常結算所需款項在線上，多餘資金按固定時間表轉移至離線或硬件支持的儲存。</li>
+<li><strong>審核近期活動。</strong> 檢查交易日誌、付款記錄及管理員存取歷史，留意有無非員工發起的轉帳，並於升級後輪換憑證及 API key。</li>
+<li><strong>收窄暴露面。</strong> 確認實例並非不必要地可從公共互聯網存取——檢查 firewall 規則、reverse proxy 配置及 admin panel 存取控制，並移除閒置或過時的 endpoint。</li>
+</ul>
+<h4>為何此事影響不限於單一項目</h4>
+<p>BTCPay Server 是廣泛使用的自行託管方案，用作商業加密貨幣支付處理器的替代品；它之所以受歡迎，正因營運者自行保管資金及自有基礎設施。這種獨立性是該軟件的賣點，但今次事件顯示其必然的另一面：保管資金即意味著承擔修補漏洞的責任。</p>
+<p>是次事件亦是整個自行託管社群的案例研究。開源基礎設施軟件在被忽視時不會優雅地降級運作——涉及金錢轉移的軟件尤其如此。對於營運任何類型自行託管支付或網店軟件的 IT 團隊及商戶而言，是次 advisory 提醒各方確認：更新流程確實存在、有人負責跟進，以及 hot funds 的金額維持在刻意調低的水平。</p>
+<p>營運者應留意 BTCPay Server 官方渠道，以獲取已確認的受影響版本範圍及進一步更新指引。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/btcpay-server-warns-of-hot-wallet-thefts-targeting-outdated-instances/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
