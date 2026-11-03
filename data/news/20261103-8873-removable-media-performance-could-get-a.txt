@@ -1,0 +1,24 @@
+Date: 2026-11-03 15:39:00
+Author: HKLUG Team
+Title: Removable-Media Performance Could Get a Major Lift as FAT32 Patches Target Linux 7.4 and 7.5
+Content:
+<p>FAT32, the decades-old file system that still runs the bulk of the world's USB flash drives, SD cards and camera media, is in line for a substantial speed-up in the Linux kernel — with one patch set demonstrating as much as a 4.06x improvement in testing.</p>
+<p>According to Phoronix, the work is part of an ongoing series of FAT32 optimisations. Improvements are already slated for Linux 7.4, with a further round of patches — including the headline 4.06x figure — expected to land in Linux 7.5, a release Phoronix anticipates arriving in 2027. Both the version targeting and the timeline rest on Phoronix's reading of the patch work; nothing is merged into the mainline kernel yet, so the final numbers and scheduling could shift.</p>
+<p><strong>What the 4.06x figure does and does not mean</strong></p>
+<p>The 4.06x result should be read as a microbenchmark ceiling, not a promise that every user will see four times the throughput when copying files to a thumb drive. As with most filesystem benchmarks, the peak gains typically come from specific, controlled workloads — and real-world transfers are constrained by the USB controller, the flash media's own write speed and wear levelling, and the size and pattern of the files being moved. On a slow no-name USB stick, the storage hardware will remain the bottleneck.</p>
+<p><strong>Why FAT32 still matters</strong></p>
+<p>The reason this work is worth doing at all is that FAT32 never went away. exFAT, ext4, Btrfs and others have chipped away at its dominance in particular niches, but interoperability keeps FAT32 in place: printers, car infotainment systems, routers, embedded devices and countless gadgets expect it, and the EFI system partition that boots x86 machines is formatted with it. In practice, that means performance work on this code path reaches beyond hobbyist flash-drive use — the EFI boot path alone touches nearly every Linux desktop and server that boots via UEFI.</p>
+<p>For IT teams, the appeal is mundane but real: faster bulk copies to and from removable media, quicker staging of firmware or installer images, and reduced time spent on the legacy-media chores that still fill up a support desk's week. FAT32 is also a stability-sensitive code path, which makes meaningful optimisation technically non-trivial — changes here have to be proven carefully before they're merged.</p>
+<p>The story is an upstream kernel development rather than anything with a local policy dimension, but removable-media and FAT-formatted volumes remain commonplace across provisioning, field service and retail hardware work, so the gains are broadly relevant to practitioners in Hong Kong running Linux on operational hardware.</p>
+<p>For those who want to track the progress, the full coverage, including the benchmark details behind the 4.06x claim, is available in Phoronix's report. Until the patches land in mainline, the sensible expectation is incremental gains arriving across Linux 7.4 and 7.5 rather than an overnight transformation.</p>
+<hr>
+<p>FAT32 這個已有數十年歷史的檔案系統，至今仍驅動著全球大部分 USB 快閃記憶體碟、SD 卡及相機儲存卡，現正計劃在 Linux kernel 中獲得大幅提速——其中一套 patch 在測試中顯示高達 4.06 倍的提升。</p>
+<p>據 Phoronix 報導，此項工作屬一連串 FAT32 優化工程的一部分。相關改進已確認會納入 Linux 7.4，而另一輪 patch——包括這個 4.06 倍的重點數據——預計將進入 Linux 7.5，Phoronix 預計該版本將於 2027 年推出。上述版本目標及時間表均基於 Phoronix 對 patch 工作的判讀；目前尚無任何改動合併至 mainline kernel，因此最終數據及排程仍可能調整。</p>
+<p><strong>4.06 倍數據代表與不代表甚麼</strong></p>
+<p>4.06 倍的結果應理解為 microbenchmark 的上限，而非每位用戶將檔案複製到 USB 手指碟時均可獲得四倍吞吐量的承諾。與大多數檔案系統基準測試一樣，峰值提升通常來自特定、受控的工作負載——實際傳輸則受制於 USB 控制器、快閃記憶體本身的寫入速度及 wear levelling，以及所傳輸檔案的大小和類型。在一枝速度緩慢的無名 USB 手指碟上，儲存硬件仍將是瓶頸。</p>
+<p><strong>為何 FAT32 依然重要</strong></p>
+<p>這項工作之所以值得進行，原因在於 FAT32 從未真正消失。exFAT、ext4、Btrfs 等已在其特定利基市場蠶食其主導地位，但互操作性使 FAT32 穩佔一席之地：打印機、汽車資訊娛樂系統、路由器、嵌入式設備及無數電子產品都依賴它，而用於啟動 x86 電腦的 EFI system partition 亦以它格式化。實際上，這意味著針對此代碼路徑的效能優化已超越業餘快閃記憶體碟用途——單是 EFI 啟動路徑，便涉及幾乎每一台經 UEFI 啟動的 Linux 桌面電腦及服務器。</p>
+<p>對於 IT 團隊而言，其吸引力看似平凡卻十分實際：更快地批量存取可移動媒體、更快部署固件或安裝映像，以及減少服務台每週處理舊式媒體瑣事所耗費的時間。FAT32 同樣是一條對穩定性敏感的代碼路徑，這使得有意義的優化在技術上絕非易事——此處的改動必須經過嚴格驗證才可合併。</p>
+<p>此項報導屬上游 kernel 開發範疇，並無本地政策層面的含意，但可移動媒體及 FAT 格式磁碟區在系統部署、現場服務及零售硬件工作中仍十分常見，故相關效能提升對香港在運行設備上使用 Linux 的從業者普遍具參考價值。</p>
+<p>如欲追蹤進展，包括支撐 4.06 倍說法的基準測試細節在內的完整報導，可參閱 Phoronix 的報告。在相關 patch 合入 mainline 之前，合理的預期應是效能隨 Linux 7.4 及 7.5 逐步提升，而非一夕之間的蛻變。</p>
+<p><a href="https://www.phoronix.com/news/Faster-FAT32-Linux-In-2027" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
