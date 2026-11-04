@@ -1,0 +1,58 @@
+Date: 2026-11-04 21:23:00
+Author: HKLUG Team
+Title: Ubuntu Releases Fix for APT Vulnerability CVE-2026-109518; Administrators Should Run apt upgrade Promptly
+Content:
+<h3>Ubuntu Releases Fix for APT Vulnerability CVE-2026-109518; Administrators Should Run apt upgrade Promptly</h3>
+<p>Ubuntu has shipped a fix for the APT package-manager vulnerability CVE-2026-109518. The flaw sits in an on-path HTTP attack scenario, allowing an attacker to intervene during package transfer and ultimately obtain root privileges. Ubuntu's advisory lists a CVSS 4.0 score of <strong>7.7</strong>, with the attack vector string AV:N/AC:L/AT:P/PR:N/UI:P (full vector available in the Ubuntu advisory).</p>
+<p>Affected releases span from Trusty 14.04 through Resolute 26.04 LTS, as well as Stonking 26.10. The fixed APT package version differs per release; for example:</p>
+<ul>
+<li><strong>Jammy 22.04 LTS:</strong> APT 2.4.15ubuntu0.1</li>
+<li><strong>Noble 24.04 LTS:</strong> APT 2.8.4ubuntu0.1</li>
+</ul>
+<p>Note that on <strong>Stonking 26.10</strong>, the fix (APT 3.3.3ubuntu0.1) is still being published rather than fully available, so users of that release should check back once the package lands in the archive.</p>
+<p>Administrators should check the package version matching the release they have deployed before upgrading. Ubuntu recommends carrying the <code>Acquire::Retries=0</code> option during the upgrade — that is, adding <code>-o Acquire::Retries=0</code> to the command, or setting <code>Acquire::Retries</code> to 0 in the configuration — noting that this setting provides a mitigation while the update is being installed:</p>
+<pre><code>sudo apt update
+sudo apt upgrade -o Acquire::Retries=0
+</code></pre>
+<h4>Why the APT Vulnerability Deserves Priority</h4>
+<p>APT sits upstream in the trust chain: nearly all software installed, updated and patched on an Ubuntu system depends on this toolset and its package-transfer mechanism. In other words, when APT itself breaks, what is affected is not a single package but the channel for "receiving every other fix." The attack surface of this vulnerability lies precisely along that channel — an attacker intervening in HTTP transfers on-path can inject content into the installation flow and end up with root privileges, which is why flaws like this should not be taken lightly.</p>
+<p>Ubuntu also offers a mitigation path: switching to <strong>HTTPS/TLS repositories</strong> lowers the risk of transfer interception. The advisory further notes that <strong>snap packages and FTP are unaffected</strong>; if unattended-upgrades is enabled on the host, security fixes are typically applied automatically <strong>within 24 hours</strong>.</p>
+<h4>Reminders for Operations Teams</h4>
+<p>For teams managing multiple Ubuntu hosts, this incident has three operational implications:</p>
+<ol>
+<li><strong>Prioritise <code>apt upgrade</code> with <code>-o Acquire::Retries=0</code> in this maintenance window.</strong> That the fix has shipped indicates upstream judged a code change to be warranted; the update is low-cost and reversible, so applying it early outweighs waiting for further analysis.</li>
+<li><strong>Confirm that the automatic update policy (unattended-upgrades) covers security updates, and check the related logs</strong> to avoid hosts lingering in an unpatched state due to policy configuration; at the same time, follow the advisory's guidance and prefer HTTPS/TLS repositories.</li>
+<li><strong>Track Ubuntu security advisories</strong> to cross-check the fixed package version matching your deployed release and the CVSS data, and use that to adjust vulnerability-scanning and compliance baselines.</li>
+</ol>
+<p>For fix and advisory details, see the Ubuntu official blog and security advisory pages.</p>
+<h4>What This Means for Hong Kong Readers</h4>
+<p>Package managers are routinely treated as an assumed utility of the operating system; this advisory is a reminder that they themselves should be part of asset inventory and threat monitoring, not just an entry in an "installed software" list. Ubuntu-based servers and workstations in Hong Kong — whether deployed within organisations or by individual users — are equally affected by this advisory; this article does not speak for any local organisation's response measures, and readers can check host status according to their own maintenance processes and follow up on Ubuntu's subsequent advisories.</p>
+<p><em>(This article is written based on Ubuntu's official release; for fixed package versions per release, CVSS 4.0 score and attack vector details, refer to the Ubuntu security advisory.)</em></p>
+<hr>
+<h3>Ubuntu 釋出 APT 漏洞 CVE-2026-109518 修補，管理員應儘速執行 apt upgrade</h3>
+<p>Ubuntu 已發布修補程式，處理 APT 套件管理器漏洞 CVE-2026-109518。該漏洞屬 on-path（中間人）HTTP 攻擊情境，攻擊者有機會在套件傳輸過程中介入，最終取得 root 權限。Ubuntu 公告列出的 CVSS 4.0 評分為 <strong>7.7</strong>，攻擊向量字串為 AV:N/AC:L/AT:P/PR:N/UI:P（完整字串見 Ubuntu 公告）。</p>
+<p>受影響的發行版本由 Trusty 14.04 一直涵蓋至 Resolute 26.04 LTS，以及 Stonking 26.10。各版本的已修補 APT 套件版本不同，例如：</p>
+<ul>
+<li><strong>Jammy 22.04 LTS：</strong> APT 2.4.15ubuntu0.1</li>
+<li><strong>Noble 24.04 LTS：</strong> APT 2.8.4ubuntu0.1</li>
+</ul>
+<p>需留意的是，<strong>Stonking 26.10</strong> 的修補程式（APT 3.3.3ubuntu0.1）仍在發布中，尚未完全可用；該版本用戶應待套件正式收錄至軟件庫後再行查核。</p>
+<p>管理員應按所部署的發行版本核對對應的套件版本，再執行升級。Ubuntu 建議在升級時帶上 <code>Acquire::Retries=0</code> 參數（即於指令加上 <code>-o Acquire::Retries=0</code>，或在設定中將 <code>Acquire::Retries</code> 設為 0），並指出此設定可在安裝更新時提供緩解：</p>
+<pre><code>sudo apt update
+sudo apt upgrade -o Acquire::Retries=0
+</code></pre>
+<h4>為何 APT 漏洞需要優先處理</h4>
+<p>APT 位於整條信任鏈的上游：Ubuntu 系統上幾乎所有安裝、更新及修補的軟件，都依賴這組工具與它的套件傳輸機制。換言之，一旦 APT 本身出問題，受影響的不是單一套件，而是「接收所有其他修補程式」的管道。此漏洞的攻擊面正是在這條管道之上——攻擊者以 on-path 方式介入 HTTP 傳輸，便可向安裝流程植入內容並最終取得 root 權限，這正是此類漏洞不能等閒視之的原因。</p>
+<p>Ubuntu 同時給出緩解方向：改用 <strong>HTTPS／TLS 軟件源（repositories）</strong>可降低傳輸被截取的風險。公告並註明，<strong>snap 套件與 FTP 均不受此漏洞影響</strong>；若主機已啟用 unattended-upgrades，安全性修補通常會在 <strong>24 小時內</strong>自動套用。</p>
+<h4>給營運團隊的提醒</h4>
+<p>對負責多台 Ubuntu 主機的團隊而言，此事的作業意義有三點：</p>
+<ol>
+<li><strong>把帶上 <code>-o Acquire::Retries=0</code> 的 <code>apt upgrade</code> 納入本輪維護窗口的優先項目。</strong> 修補程式既已發布，代表上游判斷程式碼變更有其必要；更新成本低且可回退，先套用比等待進一步分析更划算。</li>
+<li><strong>確認自動更新政策（unattended-upgrades）確實涵蓋安全性更新，並檢查相關日誌</strong>，避免主機因政策設定而長期滯留在未修補狀態；同時按公告指引，優先使用 HTTPS／TLS 軟件源。</li>
+<li><strong>追蹤 Ubuntu 安全公告</strong>，核對所部署版本對應的已修補套件版本與 CVSS 資料，據此調整漏洞掃描與合規基線。</li>
+</ol>
+<p>相關修補與公告細節，可參閱 Ubuntu 官方網誌與安全公告頁面。</p>
+<h4>對香港讀者的意義</h4>
+<p>套件管理器平日被當作理所當然的作業系統工具，這次公告提醒的是：它本身也應納入資產盤點與威脅監控的範圍，而不只是列在「已安裝軟件」清單裡。本港使用 Ubuntu 的伺服器與工作站環境——不論是機構內部部署還是個人用戶——都同樣受此公告影響；本文不代述任何本地機構的應變措施，讀者可按自身維護流程核對主機狀態並跟進 Ubuntu 的後續公告。</p>
+<p>（本文依 Ubuntu 官方公布內容撰寫；各發行版本的已修補套件版本、CVSS 4.0 評分與攻擊向量詳情，以 Ubuntu 安全公告為準。）</p>
+<p><a href="https://ubuntu.com//blog/apt-vulnerability-fixes-available" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
