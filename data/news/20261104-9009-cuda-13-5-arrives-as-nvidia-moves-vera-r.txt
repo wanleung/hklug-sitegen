@@ -1,0 +1,38 @@
+Date: 2026-11-04 22:37:00
+Author: HKLUG Team
+Title: CUDA 13.5 Arrives as NVIDIA Moves Vera Rubin Into Production Support
+Content:
+<p>NVIDIA has shipped CUDA 13.5 alongside the 620.70.06 Linux driver, and the headline change is that Vera Rubin — the company's next datacentre GPU architecture — is now covered by general availability support rather than a preview-tier designation, Phoronix reported.</p>
+<p>That wording matters more than the incremental version number. Preview support means the architecture is visible to the toolchain and usable for experiments; GA means NVIDIA is prepared to stand behind the toolkit-and-driver pairing for production workloads. For anyone running CUDA-based training, inference or simulation clusters, the two states carry very different procurement implications.</p>
+<p><strong>Why the timing matters for planners</strong></p>
+<p>Until a new architecture reaches GA, GPU refresh decisions tend to run ahead of the software stack. Hardware can be sampled and benchmarks can be run, but a fleet-wide commitment rests on assumptions rather than supported configurations. A GA toolkit plus a matching driver release is normally the point at which NVIDIA's own accelerated libraries — cuDNN, TensorRT, NCCL and the like — and the major ML frameworks begin publishing compatible builds in earnest. The exact schedule for each downstream project varies, but historically those projects have tracked GA releases closely rather than preview drops. That last point is analysis based on past release cycles, not a sourced claim about this round.</p>
+<p>In practical terms, this converts GPU refresh planning from a speculative exercise into a schedulable one: rebuilding containers, profiling real workloads and benchmarking schedulers now has a supported target instead of a moving one. For AI and HPC teams in Hong Kong sizing up a GPU refresh, GA support is a reasonable trigger to start that validation work in earnest.</p>
+<p><strong>What GA does not guarantee</strong></p>
+<p>Three caveats are worth keeping in front of any migration plan.</p>
+<p>First, toolkit availability is not workload readiness. GA status says the stack is supported, not that your in-house kernels, scheduler policies, container base images or profiling tooling have been exercised on the new silicon. It is a starting gun for testing, not a certificate of completion.</p>
+<p>Second, a major CUDA generation change is closer to a port than a patch. Applications generally need recompilation against the new toolkit, and APIs deprecated in earlier releases may be removed. Engineering time should be budgeted for deprecation warnings and behaviour changes rather than assuming an in-place upgrade.</p>
+<p>Third, the 620.70.06 driver will be validated most heavily against the hardware it launches with. Organisations running mixed estates — older datacentre cards alongside newer nodes — should stage the driver through a limited canary group before any broad rollout, because regressions that do not appear in a Vera Rubin-centric lab image can surface on older cards.</p>
+<p><strong>Practical migration items</strong></p>
+<p>Three steps follow directly from the release. Rebuild and test CUDA-dependent applications against the 13.5 toolkit, watching for deprecation warnings. Confirm that the pinned versions of cuDNN, TensorRT and framework builds in your container images have corresponding 13.5-compatible releases before rebuilding — including checking whether your distribution or container registry has published updated variants. And canary the 620.70.06 driver across representative older nodes first, so any regression is caught before it reaches production.</p>
+<p><strong>Open-source and Linux angle</strong></p>
+<p>The release lands alongside NVIDIA's regular Linux driver cadence, a reminder that CUDA's production story is inseparable from its proprietary driver stack. For Linux distributions, HPC sites and container platforms, a new driver-plus-toolkit pair usually means refreshed module packages, updated base images and a round of rebuilds for anything that links against CUDA at compile time. Teams pinned to long-lived container images should verify package availability rather than assuming it will line up automatically.</p>
+<p>The release itself is a changelog entry. What it signals to infrastructure teams is that the window for funded, supported migration testing on Vera Rubin is now open — and that the practical work of rebuilding, retesting and canary-deploying begins at the same time.</p>
+<p><em>Source: Phoronix, "NVIDIA CUDA 13.5 Released With Production Support For Vera Rubin."</em></p>
+<hr>
+<p>NVIDIA 已隨 620.70.06 Linux 驅動程式推出 CUDA 13.5，據 Phoronix 報道，最重要的一項變動是 Vera Rubin —— 該公司下一代數據中心 GPU 架構 —— 現已獲納入正式可用（general availability，GA）支援，而非預覽級別。</p>
+<p>措辭本身比版本號的遞增更為關鍵。預覽支援意味著該架構已為工具鏈（toolchain）所識別，可供實驗用途；GA 則表示 NVIDIA 願意為該工具組與驅動程式的組合承擔生產工作負載的支援責任。對於任何運行基於 CUDA 的訓練、推理或模擬叢集的人來說，這兩種狀態帶來的採購意義截然不同。</p>
+<p><strong>為何時機對規劃者很重要</strong></p>
+<p>在新架構達到 GA 之前，GPU 更新換代的決定往往領先於軟件堆疊。硬件可以取樣、基準測試可以進行，但全機隊的承諾是建立在假設而非受支援配置之上。一般而言，當 GA 工具組與配套驅動版本推出之時，正是 NVIDIA 自家加速函數庫 —— cuDNN、TensorRT、NCCL 之類 —— 以及各大 ML 框架開始認真發布相容版本的節點。各下游項目的確切時間表不盡相同，但從歷史來看，這些項目一直是緊隨 GA 版本而非預覽版本發布。最後一點是基於過去發布週期的分析判斷，並非針對本輪發布的有來源依據之說法。</p>
+<p>從實際角度而言，這使 GPU 更新規劃由一項投機性工作轉變為可排程的工作：重建 container、剖析實際工作負載以及為調度器（scheduler）進行基準測試，如今有了一個受支援的目標而非不斷移動的目標。對於正在評估 GPU 更新換代的香港 AI 及 HPC 團隊而言，GA 支援可作為合理觸發點，正式啟動相關驗證工作。</p>
+<p><strong>GA 不能保證的事</strong></p>
+<p>在任何遷移計劃之前，有三點保留事項值得留意。</p>
+<p>第一，工具組可用不等於工作負載已就緒。GA 狀態表示堆疊獲得支援，但並不代表貴機構的自有 kernel、調度策略、container 基礎映像或性能剖析工具已在新硬件上測試過。它是測試的發令槍，而非完工證明。</p>
+<p>第二，CUDA 大版本更迭較接近移植（port）而非補丁（patch）。應用程式一般需要針對新工具組重新編譯，而早前版本中已棄用（deprecated）的 API 可能已被移除。工程時間應預留予處理棄用警告及行為變更，而非假設可以原地升級。</p>
+<p>第三，620.70.06 驅動程式將主要針對其隨之推出的硬件進行驗證。運行混合環境的機構 —— 舊數據中心顯示卡搭配較新節點 —— 應在任何大規模部署之前，先透過有限的金絲雀（canary）群組對驅動程式進行分階段測試，因為在以 Vera Rubin 為中心的實驗室映像中不出現的回歸問題，可能在舊顯示卡上浮現。</p>
+<p><strong>實際遷移事項</strong></p>
+<p>本次發布直接引出三項步驟。針對 13.5 工具組重新編譯並測試依賴 CUDA 的應用程式，留意棄用警告。在重建之前，確認 container 映像中鎖定版本的 cuDNN、TensorRT 及框架構建均有對應的 13.5 相容版本 —— 包括檢查所用的發行版或 container registry 是否已發布更新版本。以及先在具代表性的舊節點上對 620.70.06 驅動程式進行金絲雀測試，以便在任何回歸問題進入生產環境前將其攔截。</p>
+<p><strong>開源與 Linux 角度</strong></p>
+<p>本次發布與 NVIDIA 常規 Linux 驅動程式發布節奏同步，提醒我們 CUDA 的生產故事與其專有驅動堆疊密不可分。對於 Linux 發行版、HPC 站點及 container 平台而言，新的驅動程式加工具組組合通常意味著更新的模組套件、更新的基礎映像，以及一輪針對任何在編譯時鏈接 CUDA 的項目的重建。鎖定長期 container 映像的團隊應自行確認套件可用性，而非假設會自動對應。</p>
+<p>發布本身只是一則 changelog 條目。它向基礎設施團隊傳遞的訊號是：在 Vera Rubin 上進行有資金及支援的遷移測試的窗口現已開啟 —— 而重建、重測及金絲雀部署的實際工作也同時開始。</p>
+<p><em>來源：Phoronix，〈NVIDIA CUDA 13.5 Released With Production Support For Vera Rubin〉</em></p>
+<p><a href="https://www.phoronix.com/news/NVIDIA-CUDA-13.5" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
