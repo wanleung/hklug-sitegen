@@ -1,0 +1,31 @@
+Date: 2026-11-04 13:24:00
+Author: HKLUG Team
+Title: systemd Merges Initial Rust Support: Leaf Components First, Root Layer Still Off-Limits
+Content:
+<p>```</p>
+<h3>systemd Merges Initial Rust Support: Leaf Components First, Root Layer Still Off-Limits</h3>
+<p>systemd has merged Rust code into its mainline — the first time one of the most consequential projects in the Linux user space has formally adopted the language. Coverage of the change was published by Phoronix, and the initial scope is deliberately narrow: Rust is enabled only for leaf components, meaning standalone binaries that run independently and sit outside the early boot path. The merged scope does not include root-layer components, the parts responsible for early startup, mounting and service management; the project's stated ambition is to bring Rust into that layer once enough implementation and testing experience has been accumulated.</p>
+<p>Two details are worth pinning down for anyone tracking the change. First, the build system: systemd uses meson, which has built-in Rust support, and this merge folds Rust compilation into systemd's normal build flow — crate dependencies are resolved and pinned at build time, and the toggle follows systemd's usual tri-state feature option (auto / enabled / disabled). When the option is not enabled, build hosts do not need a Rust toolchain installed. Second, the trail of the initiative itself: the changes have been discussed on the upstream GitHub repository and the systemd-devel mailing list, and landed incrementally as separate pull requests rather than as a single sweeping rewrite.</p>
+<h4>What the Leaf / Root Boundary Means</h4>
+<p>Within systemd's architecture, leaf components are typically single-purpose tools with clearly defined interfaces: dedicated configuration parsers, query utilities, and helper binaries. When one of these fails, the blast radius is contained — a crash or memory issue is unlikely to leave the system unable to boot.</p>
+<p>Root components are a different matter. They execute at the very earliest stages of system startup, tightly interwoven with the kernel, initramfs, and filesystem mounting; a regression there can leave a machine stuck at the boot prompt. That is why systemd is working from the outside in, leaves before roots — a cadence that mirrors how the Linux kernel adopted Rust, starting with drivers and non-critical-path modules before validating whether the runtime, toolchain and review process can carry core code.</p>
+<h4>What This Means for Packagers and System Administrators</h4>
+<p>For distribution maintainers, the immediate impact lands on the build system and packaging. Rust components require a stable toolchain, crate dependency resolution, and cross-compilation settings for different architectures. On LTS distributions, that means deciding how far to track a pinned rustc version, how to sync security updates, and what fallback to use when no toolchain is available. Rolling releases face fewer obstacles, but still need to fold crate builds into existing reproducible-build checks.</p>
+<p>The flip side is supply chain. Adding Rust introduces registry-based third-party packages into systemd's dependency tree; even with the current leaf-only scope, crate maintenance status, transitive dependencies and interface stability all become new items in distribution security review. Treating the newly added binaries as not-yet-fully-validated attack surface, with tighter monitoring during rollout, is the pragmatic default.</p>
+<p>For day-to-day system administrators, no change in routine is needed in the short term: systemd's CLI interface and unit file syntax will not shift because of an internal language change. What does deserve attention is upgrade cadence — once a distribution's systemd starts shipping Rust-based components, reporting bugs with an exact version and build configuration will be worth more than it was before.</p>
+<p>Root-layer Rust support still depends on implementation quality and community consensus, with no firm timeline announced; until then, the change is nearly invisible to end users, but it sets a new baseline for the language mix in Linux user space.</p>
+<p>(Source: <a href="https://www.phoronix.com/news/systemd-Loves-Rust">Phoronix — systemd With Its Initial Support For Rust</a>)</p>
+<hr>
+<p>```</p>
+<h3>systemd 首度合併 Rust 支援：leaf components 優先，root 層仍未開放</h3>
+<p>systemd 已把 Rust 程式碼合併進主幹——這是 Linux 使用者空間中最具影響力的專案之一首次正式採納這門語言。據 Phoronix 報道，這次變更的首批範圍刻意收窄：Rust 僅在 leaf components 啟用，即獨立執行、不屬於早期啟動流程的個別 binaries。已合併的範圍不包括 root 層元件——負責早期啟動、掛載及服務管理的部分；專案方表明，待累積足夠的實作與測試經驗後，才會把 Rust 帶進該層。</p>
+<p>對追蹤此變更的人士而言，有兩點細節值得留意。其一是 build 系統：systemd 採用內建 Rust 支援的 meson，這次合併把 Rust 編譯納入 systemd 的既有 build 流程——crate 依賴在 build 階段解析並鎖定版本，開關則沿用 systemd 一貫的 tri-state feature option（auto / enabled / disabled）。當選項未啟用時，build 主機無需安裝 Rust toolchain。其二是推動工作的脈絡：相關變更已在上游 GitHub repository 及 systemd-devel mailing list 上討論，並以獨立 pull request 的形式分批落地，而非一次性大規模重寫。</p>
+<h4>Leaf 與 root 的界線意味什麼</h4>
+<p>在 systemd 的架構中，leaf components 通常是功能單一、介面清晰的工具程式：專用的設定解析器、查詢工具及 helper binaries。這類元件一旦出錯，影響範圍相對可控——崩潰或記憶體問題不太可能令系統無法開機。</p>
+<p>Root components 則是另一回事。它們在系統啟動的最早期階段執行，與 kernel、initramfs 及檔案系統掛載緊密交織；一旦出現回歸，最壞情況是整台機器卡在 boot prompt。這正是 systemd 由外而內、先 leaf 後 root 的原因——這一節奏與 Linux kernel 採用 Rust 的方式如出一轍：kernel 陣營同樣先從驅動及非關鍵路徑的模組開始，再驗證 runtime、toolchain 與審核流程能否承載核心程式碼。</p>
+<h4>對 packager 與系統管理者的實際意義</h4>
+<p>對發行版維護者而言，最直接的衝擊落在 build 系統與 packaging。Rust component 需要穩定的 toolchain、crate 依賴解析，以及針對不同 architecture 的 cross-compilation 設定。在 LTS 發行版上，這代表要決定 pinned 的 rustc 版本追蹤到多新、security update 如何同步，以及無法取得 toolchain 時的 fallback 方案。Rolling release 的障礙較少，但仍須把 crate build 納入既有的 reproducible build 檢查。</p>
+<p>同一枚硬幣的另一面是 supply chain。加入 Rust 等於在 systemd 的依賴樹中引入 registry-based 的第三方 packages；即使目前僅限 leaf 範圍，crate 的維護狀態、transitive dependencies 與介面穩定性，都會成為 distro 安全審查的新項目。把新加入的 binaries 視為尚未充分驗證的 attack surface，並在推出初期加強監控，是務實的預設做法。</p>
+<p>對日常系統管理者來說，短期內毋須改變操作習慣：systemd 的 CLI 介面與 unit file 語法不會因內部語言改變而變動。真正值得關注的是升級節奏——當某個發行版的 systemd 開始引入 Rust-based components 時，回報 bug 時提供確切版本與 build 組態，將比以往更有價值。</p>
+<p>Root 層的 Rust 支援仍取決於實作品質與社群共識，目前未有明確時間表；在此之前，這項變更對終端使用者幾乎難以察覺，但它為 Linux 使用者空間的語言組合訂下了新的基準。</p>
+<p>（原文來源：<a href="https://www.phoronix.com/news/systemd-Loves-Rust">Phoronix — systemd With Its Initial Support For Rust</a>）</p>
