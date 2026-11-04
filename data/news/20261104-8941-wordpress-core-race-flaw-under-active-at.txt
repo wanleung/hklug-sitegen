@@ -1,0 +1,38 @@
+Date: 2026-11-04 12:06:00
+Author: HKLUG Team
+Title: WordPress Core Race Flaw Under Active Attack: CISA Adds CVE-2026-119977 to Exploited Vulnerabilities Catalog
+Content:
+<p>The U.S. Cybersecurity and Infrastructure Security Agency (CISA) has added a high-severity flaw in WordPress Core to its Known Exploited Vulnerabilities (KEV) catalog, confirming that attackers are exploiting it in the wild — and starting a remediation clock that operators of internet-facing WordPress sites should treat as their own deadline.</p>
+<p>The vulnerability, tracked as CVE-2026-119977 with a CVSS score of 8.1, is a Time-of-check Time-of-use (TOCTOU) race condition that can be exploited to achieve arbitrary code execution, The Hacker News reported on 4 November. Crucially, it plays out during software upgrades — a detail that inverts many teams' normal hardening assumptions.</p>
+<p><strong>Why the listing matters.</strong> The CVE itself was already public; the actionable development is CISA's confirmation of observed exploitation. Inclusion in the KEV catalog obliges U.S. federal agencies to remediate affected systems within the window set by Binding Operational Directive 22-01 — generally 21 days for such flaws, with the specific due date recorded in the KEV entry. That deadline does not bind private operators, but for Hong Kong SMEs, agencies, and managed-service providers running public-facing WordPress estates — where a Core update reaches every installation — it is a credible benchmark for how quickly an exploited flaw should be closed.</p>
+<p><strong>A race condition, in plain terms.</strong> TOCTOU bugs arise when a program checks a condition and then acts on it after a gap in which the underlying state can change. In this case, the flaw is tied to upgrade operations, where WordPress performs validation and then executes file and code changes. An attacker who can interleave activity into that window causes the system to act on state that no longer matches what was checked — potentially running attacker-controlled code.</p>
+<p>Race conditions in WordPress Core are comparatively rare; most disclosed Core issues are input-validation or permission bugs. That rarity matters operationally: steady-state protections — file permissions, input filtering, login hardening, WAF rules tuned for injection attempts — were not designed to cover a race that unfolds mid-upgrade. In effect, the maintenance window becomes the attack window.</p>
+<p><strong>Six-point remediation checklist</strong></p>
+<ol>
+<li><strong>Patch against the KEV due date, not the news cycle.</strong> Inventory every WordPress installation, prioritising internet-facing and payment- or credential-handling sites, and measure your actual production lag in days.</li>
+<li><strong>Virtual-patch the gap.</strong> Deploy a WAF rule covering the upgrade-path exploit pattern, and confirm your vendor ships coverage specifically for CVE-2026-119977. This buys time; it does not replace the update.</li>
+<li><strong>Control the upgrade window.</strong> Schedule upgrades during staffed hours, take and verify a backup beforehand, and — after upgrading — verify file checksums against published core files. Race artefacts can survive a version bump, so a successful version number alone proves nothing.</li>
+<li><strong>Harden who can trigger updates.</strong> Remove shared or dormant administrator accounts, enforce MFA on wp-admin, and assign a named owner for auto-update policy.</li>
+<li><strong>Audit the forgotten corners.</strong> Include staging environments, legacy campaign microsites, and client-owned installations in the sweep — these are frequently missed in patch inventories.</li>
+<li><strong>Make patch status visible.</strong> Scan for other KEV-listed items across the estate and publish remediation status where installations are shared across teams or vendors.</li>
+</ol>
+<p>The broader lesson for the open-source community is that maintenance itself expands attack surface: every routine upgrade is now a moment requiring backup discipline, access control, and post-change verification — not just a version bump.</p>
+<p>CISA's advisory and KEV entry carry the authoritative details on the affected release and remediation date; operators should confirm both directly against the CISA entry before setting internal deadlines.</p>
+<hr>
+<p>美國網絡安全及基礎設施安全局（CISA）已將一項 WordPress Core 的高危漏洞列入其已知遭利用漏洞（Known Exploited Vulnerabilities，KEV）目錄，確認攻擊者正於野外利用該漏洞——同時啟動修補限期，對外公開的 WordPress 網站營運者應將其視為自身的截止期限。</p>
+<p>該漏洞編號為 CVE-2026-119977，CVSS 評分為 8.1，屬時序檢查時序使用（Time-of-check Time-of-use，TOCTOU）競爭條件（race condition），可被利用以達至任意代碼執行。The Hacker News 於 11 月 4 日報道指出，關鍵在於漏洞於軟件升級期間觸發——此一細節顛覆了多數團隊的常規加固假設。</p>
+<p><strong>為何列入目錄至關重要。</strong> 該 CVE 此前已屬公開資訊；具行動意義的進展在於 CISA 確認已觀察到實際利用。列入 KEV 目錄意味著美國聯邦機構須依《具有約束力的操作指令 22-01》（Binding Operational Directive 22-01）所訂期限修補受影響系統——此類漏洞一般為 21 日，具體到期日則載於 KEV 條目。該限期對私營營運者不具約束力，但對香港中小企、機構及託管服務供應商所營運的公開 WordPress 環境而言——其中一次 Core 更新即覆蓋全部安裝——此期限可作為已遭利用漏洞應於多快時間內修補的可信基準。</p>
+<p><strong>競爭條件，淺白而言。</strong> TOCTOU 漏洞源於程式先檢查某一條件，其後在狀態可能已變更的間隙中方據以行動。在此個案中，漏洞與升級操作相關：WordPress 先進行驗證，隨後執行檔案及代碼更改。攻擊者若能將操作交錯注入該時窗，即令系統基於與所檢查者不再相符的狀態行動——有機會執行攻擊者可控的代碼。</p>
+<p>WordPress Core 的競爭條件相對罕見；已披露的 Core 問題大多屬輸入驗證或權限漏洞。此罕見性在操作層面意義重大：常態防護——檔案權限、輸入過濾、登入加固、針對注入嘗試調校的 WAF 規則——從設計上並未涵蓋升級中途展開的競爭。實際上，維護時窗即成攻擊時窗。</p>
+<p><strong>六點修補清單</strong></p>
+<ol>
+<li><strong>按 KEV 截止日期排定補丁，而非按新聞週期。</strong> 盤點所有 WordPress 安裝，優先處理對外公開及處理付款或憑證的網站，並以日數計量實際生產環境的部署滯後。</li>
+<li><strong>以虛擬補丁填補空檔。</strong> 部署涵蓋升級路徑利用模式的 WAF 規則，並確認供應商確已提供針對 CVE-2026-119977 的防護。此舉僅爭取時間，並不能取代更新。</li>
+<li><strong>管控升級時窗。</strong> 安排升級於有值班人員的時段進行，事先備份並加以驗證；升級後再對照已發布的 core 檔案核驗檔案校驗和。競爭條件遺留物可在版本升級後依然存在，故僅版本號碼正確並不能證明任何事。</li>
+<li><strong>加固觸發更新的權限。</strong> 移除共用或閒置的管理員帳戶，在 wp-admin 強制執行 MFA，並為自動更新政策指派專責負責人。</li>
+<li><strong>審計被遺忘的角落。</strong> 將 staging 環境、舊式宣傳 microsites 及客戶自有的安裝納入掃描範圍——這些在補丁盤點中最常被遺漏。</li>
+<li><strong>令補丁狀態透明可見。</strong> 就整個環境掃描其他 KEV 列入項目，並於安裝由多個團隊或供應商共用時公開修補狀態。</li>
+</ol>
+<p>對開源社群而言，更廣泛的教訓是：維護本身即會擴大攻擊面——每一次例行升級如今都成為須講求備份紀律、訪問控制及變更後驗證的時刻，而非僅是版本號碼的提升。</p>
+<p>CISA 的通告及 KEV 條目載有受影響版本及修補日期的權威細節；營運者在訂立內部限期前，應直接對照 CISA 條目核實兩者。</p>
+<p><a href="https://thehackernews.com/2026/11/cisa-confirms-hackers-exploiting.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
