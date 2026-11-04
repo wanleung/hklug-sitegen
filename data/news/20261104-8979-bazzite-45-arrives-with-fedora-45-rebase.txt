@@ -1,0 +1,33 @@
+Date: 2026-11-04 18:17:00
+Author: HKLUG Team
+Title: Bazzite 45 arrives with Fedora 45 rebase and refreshed gaming kernel stack
+Content:
+<p>```</p>
+<p>Version 45 of Bazzite, the image-based gaming distribution built on Fedora Linux, has been released, according to an item published by LWN on 4 November.</p>
+<p>LWN's item lists substantive changes: Bazzite 45 rebases onto Fedora 45, ships updated Open Gaming Collective (OGC) kernels, and adds support for Logitech TrueWheel devices, alongside a longer list of refinements. Beyond the gaming audience, the release also invites a closer look at how image-based distributions handle major upstream transitions.</p>
+<p><em>The following sections are editorial analysis of what the release implies for image-based OS engineering, drawing on Bazzite's documented architecture rather than statements in the announcement itself.</em></p>
+<p><strong>Analysis: an immutable desktop in practice</strong></p>
+<p>Bazzite is distributed as a container-built, atomic OS image rather than a traditionally upgraded installation. Users consume a prebuilt image, apply updates as a single transactional switch, and can roll back to a previous image if something goes wrong. The distribution is a downstream product of the Universal Blue project, which uses CI pipelines to assemble Fedora-derived images with custom package sets and configuration layered on top.</p>
+<p>Read against that architecture, the Fedora 45 rebase is a meaningful data point. Rebasing an entire distribution onto a new Fedora release — repackaging the image, reconciling package dependencies, validating hardware enablement, and producing a new set of bootable artifacts — is an operation that in traditional installations would require a reinstall or an in-place upgrade. In the Bazzite model, it is handled as a routine transactional step, letting a rebasable desktop track Fedora's release cadence without leaving users stranded between versions.</p>
+<p><strong>Analysis: downstream kernels and hardware enablement</strong></p>
+<p>Shipping an updated OGC kernel alongside the Fedora 45 rebase addresses a long-standing challenge for distributions that carry patched kernels on top of a moving upstream base: patch drift, rebuild failures, and lag behind hardware enablement work landing in Fedora. In this release, that reconciliation appears to run through the same image pipeline as the rest of the system.</p>
+<p>Hardware features like Logitech TrueWheel support follow the same pattern. Rebuilt images can carry fresh kernel and userspace components without waiting on a distribution-wide upgrade cycle.</p>
+<p><strong>Analysis: the trade-offs</strong></p>
+<p>The model carries dependencies worth noting. Bazzite's release process runs through Fedora's schedule, the Universal Blue image tooling, and the OGC kernel effort. Each layer contributes to the result, but the distribution inherits the pace and health of all three. For a gaming-oriented desktop this is a reasonable arrangement; for organisations evaluating immutable images for kiosks, workstations, or embedded deployments, it is a factor to weigh when choosing a base.</p>
+<p>Bazzite remains one of the more visible real-world examples of the image-based approach: a distribution that rebases on schedule, publishes reproducible images, and offers atomic rollback as a standard part of its update flow.</p>
+<p>Bazzite 45 is available from the <a href="https://bazzite.gg/">project's website</a>, where the full change list and release details are published.</p>
+<hr>
+<p>基於 Fedora Linux 建立、以映像檔方式發行的遊戲 Linux 發行版 Bazzite，現已推出第 45 版；消息由 LWN 於 11 月 4 日刊發。</p>
+<p>LWN 的報道列出多項實質變更：Bazzite 45 將 rebase 至 Fedora 45、配備更新的 Open Gaming Collective（OGC）kernel，並新增 Logitech TrueWheel 裝置支援，另有一系列優化。除遊戲受眾之外，這次發布亦值得進一步審視映像檔式發行版如何處理上游重大版本過渡。</p>
+<p><em>以下各節為編輯分析，探討是次發布對映像檔式作業系統工程的啟示；分析依據為 Bazzite 已有文獻記載的架構，而非公告本身的表述。</em></p>
+<p><strong>分析：immutable 桌面的實際運作</strong></p>
+<p>Bazzite 以 container 範式建置、以原子式（atomic）OS 映像檔形式發行，而非傳統的升級式安裝。用戶使用預先建置的映像檔，更新時以單次 transactional 切換完成，一旦出錯亦可回滾至先前的映像檔。該發行版是 Universal Blue 專案的下游產品；後者利用 CI pipeline 組裝衍生自 Fedora 的映像檔，並在之上疊加自訂軟件包組合及配置。</p>
+<p>從此架構加以審視，Fedora 45 rebase 是一個頗具指標意義的數據點。將整個發行版 rebase 至新版 Fedora——重新封裝映像檔、調和軟件包依賴關係、驗證 hardware enablement、並產出一組新的可開機 artifacts——在傳統安裝模式下需要重新安裝或原位升級。而在 Bazzite 模式下，這被處理為一項例行的 transactional 步驟，讓可 rebase 的桌面緊貼 Fedora 的發布節奏，同時不會令用戶困在版本之間。</p>
+<p><strong>分析：下游 kernel 與 hardware enablement</strong></p>
+<p>在 Fedora 45 rebase 的同時推出更新版 OGC kernel，處理了一項長期困擾此類發行版的挑戰——即在持續變動的上游基礎之上維護帶補丁的 kernel：補丁偏移（patch drift）、重建失敗，以及在 Fedora 內 hardware enablement 工作落地時的滯後。在本次發布中，該項調和工作似乎與系統其他部分共用同一 image pipeline 處理。</p>
+<p>Logitech TrueWheel 支援等硬體功能亦遵循同一模式。重新建置的映像檔可直接載入嶄新的 kernel 及 userspace 組件，毋須等待整個發行版的升級周期。</p>
+<p><strong>分析：取捨所在</strong></p>
+<p>此模式存在若干值得注意的依賴關係。Bazzite 的發布流程貫穿 Fedora 的發布時間表、Universal Blue 的映像檔工具鏈，以及 OGC kernel 工作。每一層都對成果有所貢獻，但發行版同時繼承了三者的節奏與健康狀況。對於以遊戲為導向的桌面而言，這是一項合理的安排；但對正評估以 immutable 映像檔用於 kiosk、工作站或嵌入式部署的機構來說，在選擇基礎平台時，這是一項需要權衡的因素。</p>
+<p>Bazzite 仍是映像檔式方案在現實世界中較為矚目的實例之一：一個準時 rebase、發布可重現（reproducible）映像檔，並將原子式回滾作為更新流程標準環節的發行版。</p>
+<p>Bazzite 45 現已可於<a href="https://bazzite.gg/">專案官方網站</a>下載，完整變更清單及發布詳情已在該處刊出。</p>
+<p><a href="https://lwn.net/Articles/1105395/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
