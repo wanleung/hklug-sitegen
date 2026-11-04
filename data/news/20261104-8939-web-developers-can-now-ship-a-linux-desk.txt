@@ -1,0 +1,42 @@
+Date: 2026-11-04 07:24:00
+Author: HKLUG Team
+Title: Web Developers Can Now Ship a Linux Desktop Shell With Domicile
+Content:
+<p>A developer who only knows HTML, CSS and JavaScript now has a plausible path to shipping a complete Linux desktop shell — that is the pitch behind <strong>Domicile</strong>, a new Wayland compositor that embeds Chromium as its interface layer, according to Phoronix.</p>
+<p>Rather than asking applications to be rewritten, Domicile turns the desktop itself — panels, launchers, settings surfaces, widgets — into web pages. Shells are authored in HTML, CSS and JavaScript or TypeScript, then rendered by a Chromium instance bound to the compositor. The result is a Wayland desktop whose look and behaviour can be produced with the same tooling already used for the web.</p>
+<h5>What Domicile actually is</h5>
+<p>Wayland compositors sit at the base of the modern Linux graphics stack: they own the display server role that X11 used to fill, handling surfaces, input and output. Building one traditionally means working close to the metal of graphics drivers and protocol implementations. Domicile's bet is that this work can be decoupled from interface design, letting the compositor handle pixels and inputs while everything a user can see and touch is authored as a web document.</p>
+<p>That split matters because of who currently writes desktops. The existing routes each impose their own language and framework on contributors.</p>
+<h5>How it compares to the alternatives</h5>
+<ul>
+<li><strong>wlroots</strong> offers a modular C library for assembling a compositor — powerful and efficient, but it hands you protocol plumbing, not a user interface. On top of that sits a separate decision about what toolkit and language build the shell.</li>
+<li><strong>GNOME</strong> runs extensions and much of its glue through <strong>GJS</strong>, JavaScript bound to the Mutter compositor via GObject Introspection. The language is familiar to web developers, but the APIs are GNOME-specific: GTK widgets, GObject patterns and Mutter internals, not the DOM.</li>
+<li><strong>KDE Plasma</strong> is built on <strong>QML</strong> and the Qt framework. QML is declarative and comparatively approachable, yet it is its own ecosystem with its own runtime, styling model and component libraries — knowledge that does not transfer to the browser.</li>
+</ul>
+<p>Domicile's differentiator is that none of these apply. The authoring environment is the browser stack — a toolkit the reader almost certainly already has installed. A front-end developer can open a browser devtools session, iterate on a panel with familiar CSS, and deploy the same code to a running desktop.</p>
+<h5>Why it matters beyond hobbyist rice</h5>
+<p>The practical appeal shows up in embedded and appliance-style deployments. For a retailer rolling out in-store displays, or an embedded vendor shipping a locked-down terminal, the ability to define an entire desktop experience in web technologies — and to reuse an existing web team — is a meaningful reduction in the specialised skills required. Digital signage, kiosks, point-of-sale and industrial terminals are all candidates for shells that need to look specific, be maintained by non-Linux-specialist staff, and change frequently.</p>
+<p>It also inverts a long-standing problem for the free desktop: recruitment. Linux desktop environments have historically grown by training contributors in C, GTK, Qt or Mutter internals. A compositor that accepts pull requests written in TypeScript widens that funnel considerably.</p>
+<h5>Caveats before you switch</h5>
+<p>Enthusiasm should be tempered by the ordinary realities of a young project. As Phoronix's coverage makes clear, Domicile is early-stage; prospective users and contributors should verify the repository's licence terms, release maturity and community activity directly before depending on it. Chromium embedded as a compositor component also raises obvious questions about resource footprint and security update cadence that the project will need to answer as it stabilises.</p>
+<p>For now, Domicile is best read as a proof of concept with a genuinely different thesis: the desktop shell is a rendering problem, and the web already knows how to render. Whether that thesis survives contact with packaging, GPU drivers and long-term maintenance will determine if it becomes infrastructure — or a curiosity.</p>
+<hr>
+<p>據 Phoronix 報道，只懂 HTML、CSS 和 JavaScript 的開發員，如今有了一條切實可行的途徑去推出一套完整的 Linux 桌面 shell——這正是 <strong>Domicile</strong> 背後的理念。Domicile 是一款新的 Wayland compositor，以 Chromium 作為其介面層。</p>
+<p>Domicile 並不要求應用程式改寫，而是將桌面本身——面板、啟動器、設定介面、widget——轉化為網頁。shell 以 HTML、CSS 及 JavaScript 或 TypeScript 撰寫，再由一個綁定至 compositor 的 Chromium 實例繪製。成品是一個外觀與行為均可沿用現有網頁開發工具製作出來的 Wayland 桌面。</p>
+<h5>Domicile 究竟是什麼</h5>
+<p>Wayland compositor 位於現代 Linux 圖形堆疊的底層：它承擔了昔日 X11 的 display server 角色，處理 surface、輸入與輸出。傳統上，建立一個 compositor 意味著要貼近圖形驅動程式及協議實作的底層。Domicile 的押注是，這部分工作可以與介面設計分離，由 compositor 處理像素與輸入，而用戶所見所觸的一切則以網頁文件的形式撰寫。</p>
+<p>這種分工之所以重要，取決於目前是誰在編寫桌面。現有途徑各自向貢獻者強加了本身的語言及框架。</p>
+<h5>與其他方案的比較</h5>
+<ul>
+<li><strong>wlroots</strong> 提供一個模組化的 C library，用以組裝 compositor——功能強大且高效，但它交給你的是協議管線（protocol plumbing），而非用戶介面。在此之上，還須另外決定以哪個 toolkit 及語言來建構 shell。</li>
+<li><strong>GNOME</strong> 透過 <strong>GJS</strong> 執行 extension 及大部分黏合代碼，GJS 是經 GObject Introspection 綁定至 Mutter compositor 的 JavaScript。該語言對 web 開發員來說並不陌生，但其 API 是 GNOME 專屬的：GTK widget、GObject 模式及 Mutter 內部結構，而非 DOM。</li>
+<li><strong>KDE Plasma</strong> 建基於 <strong>QML</strong> 及 Qt framework。QML 屬宣告式（declarative），相對易於上手，但它本身自成一個生態系，擁有獨立的 runtime、樣式模型及元件 library——這些知識並不能移用到瀏覽器。</li>
+</ul>
+<p>Domicile 的與眾不同之處在於上述限制一概不適用。其創作環境就是瀏覽器 stack——一套讀者幾乎肯定已安裝的 toolkit。前端開發員可以開啟瀏覽器 devtools，以熟悉的 CSS 反覆調整面板，再將同一代碼部署至運行中的桌面。</p>
+<h5>為何不只關乎業餘美化桌面</h5>
+<p>其實用價值在嵌入式及 appliance 式部署中最為顯現。對於推出店內展示屏的零售商，或出貨鎖定終端的嵌入式廠商而言，能夠以 web 技術定義整個桌面體驗——並重用現有 web 團隊——可實質降低所需專業技能。數碼標牌（digital signage）、kiosk、銷售終端（point-of-sale）及工業終端，都是需要特定外觀、須由非 Linux 專才員工維護、且需頻繁變動的 shell 之理想應用場景。</p>
+<p>這亦顛覆了自由桌面長期以來的一大問題：招募。Linux 桌面環境歷來的擴張方式，是培訓貢獻者掌握 C、GTK、Qt 或 Mutter 內部結構。一個接受以 TypeScript 撰寫 pull request 的 compositor，大大拓寬了這個漏斗。</p>
+<h5>轉用前須注意的事項</h5>
+<p>對一個年輕項目而言，熱情亦應按常見的現實情況降溫。正如 Phoronix 的報道所指出，Domicile 仍處於早期階段；潛在用戶及貢獻者在依賴它之前，應直接查核該 repository 的 licence 條款、release 成熟度及社群活躍程度。以 Chromium 作為 compositor 元件嵌入，亦明顯引發關於資源佔用及安全更新節奏的問題，項目需在穩定過程中作出解答。</p>
+<p>目前，Domicile 最恰當的定位是一個理念真正與別不同的概念驗證（proof of concept）：桌面 shell 是一個渲染問題，而 web 已經懂得如何渲染。這個論述能否經受打包、GPU 驅動程式及長期維護的考驗，將決定它會否成為基礎設施——抑或只是新奇一時的玩意。</p>
+<p><a href="https://www.phoronix.com/news/Domicile-Desktop-Wayland" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
