@@ -1,0 +1,32 @@
+Date: 2026-11-04 19:04:00
+Author: HKLUG Team
+Title: Calendar Invites Bypass MFA by Stolen Sessions, Not Stolen Passwords
+Content:
+<p>A phishing campaign tracked by security vendor Material Security as Operation CloudFire is targeting corporate Google accounts through a chain that begins with an unexpected Google Calendar invite and ends with the attacker holding an authenticated session rather than a password, according to research covered by BleepingComputer.</p>
+<p>The chain works by borrowing trust at each hop. An unexpected calendar invite arrives from a legitimate Google service, carries an innocuous-looking link, and routes through a trusted, high-reputation redirect before landing the recipient on a lookalike login page. Because the early stages pass through reputable infrastructure, conventional link scanners and user suspicion are both weakened. The final stage is where the MFA bypass claim lands: the objective is not merely to capture credentials the attacker must then replay, but to end up with a usable session — the state that multi-factor prompts during login are not designed to police. The source material does not detail how that session is captured, whether by relaying the authentication, stealing a token outright, or completing the sign-in on the attacker's side.</p>
+<p>That distinction is the story for security teams. MFA, including time-based one-time passwords, hardens the moment of authentication; it does little to protect the session established afterwards. Any chain that yields a live, authenticated session effectively renders the login-time prompt moot. Material Security describes how its team tracked the attacks and blocked malicious messages, and says it contributed to the takedown of close to 900 domains used by the operation. That figure is the vendor's own account of its involvement. Material Security sells mail-security and session-recovery tooling, so it has a commercial interest in the findings — a caveat worth carrying alongside them. Treat the takedown as a temporary disruption to infrastructure, not a conclusion to the campaign; victim counts have not been disclosed.</p>
+<p><strong>What Google Workspace administrators should check</strong></p>
+<ul>
+<li><strong>Invite hygiene.</strong> Review calendar invite settings that permit events from unknown external senders, and require invitations with links to pass through review before they appear on user calendars. Warn staff that a Google-sourced invite is not, by itself, an authenticity signal.</li>
+<li><strong>Inspect the whole redirect chain.</strong> Train users and configure tooling to evaluate final destinations, not just the display text or the first hop. A link that begins on a Google domain can still resolve elsewhere.</li>
+<li><strong>Move privileged accounts to phishing-resistant MFA.</strong> Passkeys or hardware security keys bind authentication to the origin, defeating lookalike login pages in a way that TOTP codes cannot. This is the single most important control for this class of attack.</li>
+<li><strong>Shorten session lifetimes and require continuous evaluation.</strong> Conditional access policies that re-check device trust, location, and risk during a session reduce the value of a stolen token even when the initial login was legitimate.</li>
+<li><strong>Monitor for anomalous sessions.</strong> Flag sign-ins that skip expected MFA steps, originate from unfamiliar ASNs or geographies shortly after a normal login, or show simultaneous activity across regions.</li>
+</ul>
+<p>The broader lesson is architectural: session tokens are credentials too, and they deserve the same lifecycle controls — issuance, rotation, revocation, and monitoring — as passwords. For IT teams in Hong Kong running Google Workspace, the campaign is a useful stress test of whether their current MFA posture protects only the front door or the building afterwards.</p>
+<p>Source: BleepingComputer.</p>
+<hr>
+<p>據 BleepingComputer 報道的安全研究顯示，保安供應商 Material Security 追蹤到一場名為 Operation CloudFire 的釣魚攻擊，鎖定企業 Google 帳戶，攻擊鏈以一封意外的日曆邀請開始，最終令攻擊者取得已驗證的 session 而非密碼。</p>
+<p>該攻擊鏈的手法是在每個環節借取信任。一封意外的日曆邀請由合法 Google 服務發出，附帶看似無害的連結，先經一個信譽良好、高評級的 redirect，再將收件人帶到一個仿冒登入頁。由於早期階段經由信譽良好的基建，傳統連結掃描器及用戶警覺性同時被削弱。MFA 繞過的關鍵在最後階段：目標並非僅取得 credentials 後再重放，而是直接取得可用的 session——這正是多重驗證登入提示所無法管轄的狀態。原始資料並未詳述該 session 如何被捕獲，是透過轉發認證、直接竊取 token，還是在攻擊者一端完成登入。</p>
+<p>這個分別正是保安團隊應關注的重點。MFA（包括 time-based one-time password，TOTP）強化的是認證那一刻；對其後建立的 session 保護甚微。任何能產生有效、已驗證 session 的攻擊鏈，實際上令登入時的提示形同虛設。Material Security 說明其團隊如何追蹤攻擊並攔截惡意訊息，並表示其協助移除近 900 個該行動使用的域名。該數字是此供應商對自身參與程度的說法。Material Security 銷售電郵保安及 session 恢復工具，因此對相關發現存在商業利益——這一點值得與研究結論一併考慮。應將此次域名清除視為基建上的暫時中斷，而非攻擊行動的終結；受害數目尚未公布。</p>
+<p><strong>Google Workspace 管理員應檢查的事項</strong></p>
+<ul>
+<li><strong>審核日曆邀請。</strong> 檢視容許來自未知外部寄件人的日曆邀請設定，要求附有連結的邀請須先經審核才會出現在用戶日曆上。提醒員工，來自 Google 的邀請本身並非真實性憑證。</li>
+<li><strong>檢查整個 redirect 鏈。</strong> 訓練用戶並配置工具，評估最終目的地，而非只看顯示文字或第一個跳轉。以 Google 域名開頭的連結仍可能指向其他地方。</li>
+<li><strong>將特權帳戶轉用抗釣魚的 MFA。</strong> Passkey 或 hardware security key 將認證綁定至 origin，能有效對抗仿冒登入頁，這是 TOTP code 所做不到的。對此類攻擊而言，這是最重要的單一防護措施。</li>
+<li><strong>縮短 session 生命週期並要求持續評估。</strong> 條件式存取 policy 在 session 期間重新檢查裝置信任、位置及風險，即使最初登入合法，也可降低被竊 token 的價值。</li>
+<li><strong>監察異常 session。</strong> 標記跳過預期 MFA 步驟的登入、在正常登入後不久來自不熟悉的 ASN 或地區的登入，或顯示跨地區同時活動的 session。</li>
+</ul>
+<p>更宏觀的教訓是架構層面的：session token 同樣是 credentials，應獲得與密碼相同的生命週期管治——簽發、輪換、撤銷及監察。對香港營運 Google Workspace 的 IT 團隊而言，此攻擊行動是檢視現有 MFA 部署能否在「前門」以外繼續保護整棟大樓的有用壓力測試。</p>
+<p>Source: BleepingComputer.</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/google-calendar-phishing-campaign-hijacks-sessions-bypasses-mfa/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
