@@ -1,0 +1,44 @@
+Date: 2026-11-04 15:04:00
+Author: HKLUG Team
+Title: Sogou Input Method DNS Requests Hijacked to Deliver DarkVigil Implant, Researchers Say
+Content:
+<h3>Sogou Input Method DNS Requests Hijacked to Deliver DarkVigil Implant, Researchers Say</h3>
+<p>Cleartext HTTP communications in the Windows edition of Sogou Input Method — a Chinese-language typing utility installed on millions of machines — were abused to hijack DNS requests and deliver a surveillance implant, according to research reported by The Hacker News on 4 November.</p>
+<p>The interception requires nothing more than a position on the network path: because the input method sends its lookups over unencrypted HTTP on port 80, an attacker can observe and rewrite them in transit — no memory-corruption exploit and no compromise of the software's build pipeline.</p>
+<p>The campaign, attributed by the researching team to a threat actor it calls SlippyNunchucks, has been running since 1 July 2026. The researchers characterise the actor as China-aligned and say the operation is designed to deploy an implant tracked as DarkVigil, also known as FDMTP. That attribution, and the actor's assessed alignment, represent the reporting vendor's conclusion and should be treated as pending independent corroboration.</p>
+<h4>A mundane weakness in a trusted utility</h4>
+<p>What makes the technique notable is its simplicity. Any on-path attacker — on the same Wi-Fi, the same segment, or a compromised router — can observe the input method's unencrypted lookups and redirect domain name resolutions toward infrastructure they control, with no exploit required.</p>
+<p>The victim then receives whatever the attacker serves, in this case the DarkVigil backdoor, while the application itself appears to behave normally.</p>
+<p>For anyone assessing supply-chain exposure, the lesson extends beyond software factories. Input methods are among the most-trusted components on a desktop: they sit in every text field, run with high privileges, and are rarely subject to the security reviews applied to browsers or endpoint agents. When such a utility fails to encrypt its egress, a cheap and difficult-to-detect interception point opens up — and every update cycle keeps the door open.</p>
+<p>That relevance is not limited to any single market. Sogou's install base is concentrated among Chinese-language Windows users across Greater China, which makes the affected software broadly common on desks in Hong Kong and the region. Any organisation where staff run the tool should treat it as an in-scope network dependency, not as a benign productivity accessory. The source material does not specify which organisations or sectors were targeted, and no local victim profile has been confirmed.</p>
+<h4>What defenders should do</h4>
+<p>The researchers' mitigations, as reported, point to a short but concrete checklist:</p>
+<ul>
+<li><strong>Enforce HTTPS-only egress.</strong> Block cleartext HTTP from managed endpoints, or at minimum flag it, so that an IME quietly falling back to port 80 does not go unnoticed.</li>
+<li><strong>Baseline and log DNS traffic.</strong> Unusual resolution patterns — repeated queries to unfamiliar domains from a single process, or sudden shifts in authoritative servers — are the visible residue of this technique.</li>
+<li><strong>Consider DNS encryption.</strong> Deploying DNS-over-HTTPS or DNS-over-TLS limits the ability of an on-path attacker to observe or rewrite lookups, though it should complement, not replace, application-level fixes.</li>
+<li><strong>Inventory input methods.</strong> Add IMEs to the software asset register and their network behaviour to egress allowlists.</li>
+</ul>
+<p>Specific affected version ranges and indicators of compromise were not detailed in the material reviewed here; readers should consult the researchers' full disclosure before applying patch or blocking decisions.</p>
+<p>For the wider IT community, the story is a reminder that supply-chain risk is not confined to dependencies pulled at build time. It also lives in the utilities employees type with every day — and in the unencrypted requests they send.</p>
+<hr>
+<h3>搜狗輸入法 DNS 請求遭劫持用以投放 DarkVigil 監察植入程式，研究人員稱</h3>
+<p>據 The Hacker News 於 11 月 4 日報道的研究顯示，搜狗輸入法 Windows 版本——這款安裝於數以百萬計電腦的中文輸入工具——其明文 HTTP 通訊遭人濫用，以劫持 DNS 請求並投放監察植入程式。</p>
+<p>進行攔截只需身處網絡路徑之上即可：由於輸入法以未加密的 HTTP 透過 80 埠發送查詢，攻擊者可在傳輸過程中加以觀看及改寫——毋須利用 memory-corruption 漏洞，亦毋須攻陷軟件的 build pipeline。</p>
+<p>研究團隊將此攻擊活動歸屬於一個名為 SlippyNunchucks 的威脅行為者，活動自 2026 年 7 月 1 日起持續進行。研究人員形容該行為者與中國有關連，並稱行動旨在部署代號 DarkVigil（又名 FDMTP）的植入程式。此歸屬判斷及對行為者立場的評估，均屬報告方的結論，應視為尚待獨立佐證。</p>
+<h4>可信工具中的一項平庸漏洞</h4>
+<p>此手法之值得留意，在於其異常簡單。任何身處網絡路徑的攻擊者——無論在同一 Wi-Fi、同一網段，抑或經被攻陷的路由器——均可觀看輸入法未加密的查詢，並將域名解析重定向至其控制的基礎設施，全程毋須任何 exploit。</p>
+<p>受害隨即收到攻擊者提供的內容，此處即 DarkVigil backdoor，而應用程式本身表面上運作如常。</p>
+<p>對任何評估供應鏈風險的人士而言，教訓不限於軟件工廠。輸入法是桌面上最受信任的元件之一：它們存在於每一個文字欄位、以高權限執行，且極少接受瀏覽器或 endpoint agent 所需的保安審查。當這類工具未能加密其出站流量時，一個成本低廉且難以察覺的攔截點便應運而生——而每次更新周期都令這扇門保持敞開。</p>
+<p>此關連性並不局限於任何單一市場。搜狗的安裝基礎集中於大中華區的中文 Windows 用戶，這使受影響軟件在香港及區內的辦公桌上相當常見。任何有員工使用該工具的機構，均應將其視為範圍內的網絡依賴，而非無害的生產力配件。原始資料並未指明哪些機構或行業成為目標，亦未有本地受害者情況獲得證實。</p>
+<h4>防禦者應採取的措施</h4>
+<p>研究人員提出的緩解措施（據報道所述）指向一份簡短但具體的清單：</p>
+<ul>
+<li><strong>強制僅限 HTTPS 出站。</strong> 封鎖受管端點的明文 HTTP，或至少加以標記，令 IME 悄悄回落至 80 埠的情況不致無人察覺。</li>
+<li><strong>為 DNS 流量建立基準並記錄日誌。</strong> 異常的解析模式——單一程序反覆查詢不熟悉的域名，或權威伺服器突然轉變——正是此手法所遺下的可見痕跡。</li>
+<li><strong>考慮 DNS 加密。</strong> 部署 DNS-over-HTTPS 或 DNS-over-TLS 可限制 on-path 攻擊者觀看或改寫查詢的能力，惟此舉應作為應用程式層面修補的補充，而非取代。</li>
+<li><strong>盤點輸入法。</strong> 將 IME 列入軟件資產登記冊，並將其網絡行為納入出站 allowlist。</li>
+</ul>
+<p>在本文所審閱的資料中，並未詳列具體受影響版本範圍及 indicators of compromise；讀者在作出修補或封鎖決定前，應查閱研究人員的完整披露。</p>
+<p>對更廣泛的 IT 社群而言，此事提醒我們：供應鏈風險並不局限於 build 時引入的依賴。它同樣存在於員工每日用以打字的工具之中——以及他們所發出的那些未加密請求。</p>
+<p><a href="https://thehackernews.com/2026/11/china-aligned-hackers-hijack-sogou.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
