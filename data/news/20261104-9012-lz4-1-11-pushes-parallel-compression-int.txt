@@ -1,0 +1,44 @@
+Date: 2026-11-04 22:28:00
+Author: HKLUG Team
+Title: LZ4 1.11 Pushes Parallel Compression Into liblz4, Retiring a Decade of Homegrown Thread Wrappers
+Content:
+<p>The LZ4 project has released version 1.11, and its headline change addresses something library consumers have been implementing themselves for years: multi-threaded compression now lives inside liblz4, so applications no longer need to wrap the codec in their own parallel plumbing. According to Phoronix's report on the release, the version also arrives with additional performance improvements.</p>
+<h4>What changed</h4>
+<p>liblz4 was, by design, single-threaded for most of its history — its appeal has always been extreme speed on a single core, with decompression rates well above general-purpose codecs such as zlib and XZ. Teams that wanted to spread compression work across multiple cores had to build the orchestration layer themselves: splitting input, scheduling workers, ordering output frames, and propagating errors from each thread.</p>
+<p>Version 1.11 folds that logic into the library. Applications linking against liblz4 can now request parallel compression through the library's own interface, while the underlying frame format remains unchanged — a point stated explicitly in the changelog. Thread support arrives alongside further speed-ups to existing code paths, as described in the release notes.</p>
+<h4>Why it matters</h4>
+<p>Two trends converge here. Core counts on server and workstation hardware continue to rise, while single-threaded codec performance has largely plateaued — LZ4's ceiling is a function of memory bandwidth and instruction efficiency rather than available parallelism. Workloads that compress large volumes of data on a single thread therefore leave a substantial share of available capacity underused.</p>
+<p>For production teams, the maintenance argument is the more compelling one. Wrappers hand-written around LZ4 tend to be the most fragile code in a backup or storage pipeline: they must guarantee frame ordering across threads, split chunks on boundaries that do not corrupt seeking, and surface partial failures without silently producing truncated output. Each of those edge cases is a source of subtle bugs. Moving the logic into liblz4 shifts the correctness burden to a maintained upstream project rather than to a local glue layer that may only be exercised along rare failure paths.</p>
+<p>Because liblz4 is linked as a library rather than invoked as a subprocess, the improvement propagates broadly at the next dependency bump. Kernel-side consumers, storage stacks, container runtimes, databases, and backup tooling that link the library inherit multi-threaded capability without downstream code changes, provided their integration points remain API- and ABI-compatible. Integrators should confirm that compatibility, and check whether platform-specific build configurations gate the new threading code, before treating the upgrade as drop-in.</p>
+<h4>Practical considerations</h4>
+<p>As with any compression library update, a staged rollout remains the sensible default:</p>
+<ul>
+<li><strong>Review threading defaults.</strong> Establish whether parallel mode is opt-in or automatic, and confirm how thread counts are configured relative to process-level worker pools. A compression library that spawns its own threads can oversubscribe cores inside an already-parallel application.</li>
+<li><strong>Check the memory footprint.</strong> Each worker holds its own buffers; multi-worker operation multiplies peak memory usage in a way single-threaded deployments never exercised.</li>
+<li><strong>Validate data compatibility.</strong> Re-run round-trip tests against existing compressed archives to cover the corpora and configurations you actually depend on.</li>
+<li><strong>Stage in a test environment first</strong>, watching both throughput and CPU saturation under realistic load rather than relying on synthetic single-stream benchmarks.</li>
+</ul>
+<h4>Context</h4>
+<p>LZ4 competes in a category where it has long prioritised speed over ratio — Zstandard, its better-known sibling from the same lineage, targets the compression-efficiency end of the spectrum. The release matters less as a competitive move against other codecs and more as an ecosystem update: LZ4 is a widely used dependency across infrastructure software, so a library-level capability gain tends to reach production systems without fanfare and without application-level work.</p>
+<p>The Phoronix coverage notes the release arriving today; teams tracking the project should consult the official LZ4 release notes and changelog for concrete threading parameters, API entry points, and any benchmark figures before committing to an upgrade path.</p>
+<hr>
+<p>LZ4 專案今日發布 1.11 版，其最受矚目的改動，針對的是函式庫用戶多年來一直自行實現的功能：多執行緒壓縮如今內建於 liblz4 本身，應用程式不再需要自行為編解碼器包上一層平行處理管線。根據 Phoronix 對此次發布的報導，這個版本同時帶來了其他效能改進。</p>
+<h4>變化在哪</h4>
+<p>liblz4 過去在設計上長期以單執行緒運作——它的賣點一直是單核心下的極致速度，解壓速度遠高於 zlib、XZ 等通用編解碼器。希望將壓縮工作分散至多個核心的團隊，只能自行搭建編排層：切分輸入、排程工作者、排列輸出幀序，並把各個執行緒的錯誤傳遞回來。</p>
+<p>1.11 版把這套邏輯收進函式庫。連結 liblz4 的應用程式現在可透過函式庫自身的介面要求平行壓縮，而底層的幀格式維持不變——變更日誌對此有明確說明。與執行緒支援一同到來的，還有針對既有程式碼路徑的進一步提速，詳見發布說明。</p>
+<h4>為何重要</h4>
+<p>兩個趨勢在此交匯。伺服器與工作站硬體的核心數持續上升，單執行緒編解碼效能卻大致停滯——LZ4 的上限取決於記憶體頻寬與指令效率，而非可用的平行運算能力。以單一執行緒壓縮大量資料的負載，因此有相當比例的可用運算容量未獲充分利用。</p>
+<p>對生產環境團隊而言，維護層面的論點更具說服力。圍繞 LZ4 自行編寫的封裝，往往是備份或儲存管線中最脆弱的程式碼：它們必須保證跨執行緒的幀序、在不會破壞隨機存取的邊界上切分區塊，並在部分失敗時如實呈現，避免無聲地產出被截斷的輸出。每一個邊界情況都是隱晦錯誤的來源。把邏輯移入 liblz4，等於把正確性負擔轉移到有人維護的上游專案，而非只在罕見故障路徑才會被執行的本地銜接層。</p>
+<p>由於 liblz4 是以函式庫形式連結，而非以子程序方式呼叫，這項改進在下一次依賴更新時便能廣泛傳播。核心端用戶、儲存堆疊、容器執行環境、資料庫及備份工具，只要連結此函式庫，無需改動下游程式碼即可具備多執行緒能力——前提是其整合點維持 API 與 ABI 相容。整合方在視此次升級為無縫替換之前，應先確認該相容性，並檢查平台相關的建置設定是否會對新增的執行緒程式碼作出限制。</p>
+<h4>實務考量</h4>
+<p>如同任何壓縮函式庫更新，分階段推出仍是合理的預設做法：</p>
+<ul>
+<li><strong>檢視執行緒預設值。</strong> 確定平行模式是需要自行啟用還是自動生效，並確認執行緒數目相對於程序層工作者池如何配置。一個自行建立執行緒的壓縮函式庫，可能在本已平行的應用程式內造成核心的超額分配。</li>
+<li><strong>檢查記憶體佔用。</strong> 每個工作者各自持有緩衝區；多工作者運作會以單執行緒部署從未經歷的方式放大峰值記憶體用量。</li>
+<li><strong>驗證資料相容性。</strong> 對既有壓縮存檔重新執行往返測試，以涵蓋你實際依賴的資料集與設定。</li>
+<li><strong>先在測試環境分階段推出</strong>，在真實負載下同時觀察吞吐量與 CPU 飽和程度，而非依賴合成的單串流基準測試。</li>
+</ul>
+<h4>背景</h4>
+<p>LZ4 所處的類別一向以速度優先於壓縮率——同源系譜中更為人熟知的 Zstandard，則針對壓縮效率的一端。這次發布與其說是針對其他編解碼器的競爭舉措，不如說是一次生態系統更新：LZ4 是基礎設施軟件中被廣泛使用的相依項目，函式庫層面的能力提升，往往在沒有任何宣傳、亦無需應用層改動的情況下進入生產系統。</p>
+<p>Phoronix 的報導指出該版本於今日發布；追蹤該專案的團隊在確定升級路徑之前，應查閱官方 LZ4 發布說明與變更日誌，以取得具體的執行緒參數、API 入口點及各項基準測試數據。</p>
+<p><a href="https://www.phoronix.com/news/LZ4-1.11-Released" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
