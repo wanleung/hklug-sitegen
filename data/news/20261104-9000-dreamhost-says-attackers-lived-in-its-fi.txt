@@ -1,0 +1,72 @@
+Date: 2026-11-04 22:03:00
+Author: HKLUG Team
+Title: DreamHost Says Attackers Lived in Its File Manager for Two Months
+Content:
+<h3>DreamHost Says Attackers Lived in Its File Manager for Two Months</h3>
+<p>Attackers maintained access to DreamHost's browser-based File Manager for roughly eight weeks, exfiltrating customers' FTP and SFTP usernames and passwords as well as active webmail session data, the web hosting provider has confirmed.</p>
+<p>Two figures that matter remain unknown: DreamHost has not disclosed how many accounts were affected, and it has not said whether it forced credential rotations or merely recommended them. Both gaps should temper any premature read on scope.</p>
+<p>The credential exposure is significant on its own. But the detail that should hold the attention of anyone who runs shared hosting — or manages servers on behalf of clients — is the dwell time. This was not a smash-and-grab. Intruders sat inside an administrative convenience tool, the browser-based File Manager that panel users reach for to drag, drop and edit files, for two months before the incident came to light.</p>
+<h4>Why a convenience tool is the interesting part</h4>
+<p>File Manager sits in an awkward middle ground in most hosting stacks. It is an application-layer feature — a friendly web UI over the filesystem — but it inherits the reach of infrastructure: read and write access to hosted sites, configuration files, and stored connection details. It is rarely instrumented like a database or scrutinised like an edge service. That combination of broad privilege and light monitoring is exactly what makes a two-month foothold plausible.</p>
+<p>The incident underlines a wider pattern worth stating plainly: control panels and file-management add-ons are as much a target as the hosted sites they manage.</p>
+<h4>What two months of write access buys an attacker</h4>
+<p>Sustained write access through a file manager is not a transient opportunity; it is a platform. Four outcomes are worth assuming possible until content scans say otherwise:</p>
+<ul>
+<li><strong>SEO spam.</strong> Injected pages and keyword blocks that quietly siphon search traffic toward malicious or commercial destinations.</li>
+<li><strong>Redirect harvesting.</strong> Rewritten <code>.htaccess</code> rules or scripts that bounce selected visitors — often search-engine crawlers — to third-party sites.</li>
+<li><strong>Webshells.</strong> Dropped PHP or ASP scripts that hand the attacker authenticated-looking access long after credentials change.</li>
+<li><strong>JavaScript supply-chain injection.</strong> Skimming or malvertising code appended to templates and checkout pages, propagating to every visitor of an affected site.</li>
+</ul>
+<p>Each of these survives a password rotation. That is why the content-scanning step below is remediation, not housekeeping.</p>
+<h4>The blast radius travels on legacy rails</h4>
+<p>Two credential classes leaked here, and both propagate far beyond a single server.</p>
+<p>FTP and SFTP passwords are, in practice, often plaintext. They sit in deployment scripts, CI variables, <code>.env</code> files, and configuration repositories that get copied between projects for years. One leaked FTP password frequently means access to more than one box, and access that persists long after the original owner believes the credential was retired.</p>
+<p>Webmail sessions are worse in one specific respect: a stolen session token bypasses passwords entirely — including two-factor authentication. Rotating a password does not necessarily close the hole, because the attacker never needed it. The session has to be invalidated server-side.</p>
+<h4>What shared-hosting operators should do</h4>
+<p>The following checklist is our own recommendation for anyone running or administering shared hosting, generalised from the incident rather than reproduced from a vendor advisory:</p>
+<ol>
+<li><strong>Rotate FTP and SFTP passwords</strong> across all hosted accounts, and audit where those credentials are stored in plaintext — CI pipelines, deployment scripts, config repositories, and local <code>.env</code> files.</li>
+<li><strong>Invalidate all active webmail sessions</strong>, not just passwords. Token revocation is the only step that actually cuts off an attacker who is riding an existing session.</li>
+<li><strong>Enable two-factor authentication</strong> on hosting control panels and webmail — useful, but note it does not protect a session that was already hijacked.</li>
+<li><strong>Scan hosted content for injected scripts, backdoors, and added files.</strong> With two months of write access in a file-management tool, persistence has to be assumed until proven absent.</li>
+<li><strong>Audit File Manager and control-panel access logs</strong> for anomalous activity, and treat administrative convenience features as monitored surfaces going forward, not ancillary ones.</li>
+</ol>
+<h4>The local angle</h4>
+<p>For Hong Kong IT professionals running or administering shared hosting, this story is a useful forcing function for a housekeeping session: find the credentials, rotate them, kill stale sessions, and check whether anything was added to hosted content while nobody was watching. The failure modes described above are not specific to any one provider's customer base.</p>
+<p>The breach itself will be one data point among many; the two-month residency inside a file manager is the detail worth remembering.</p>
+<p><em>Source: BleepingComputer.</em></p>
+<hr>
+<h3>DreamHost 稱攻擊者在其 File Manager 內潛伏兩個月</h3>
+<p>這家網頁寄存服務商證實，攻擊者在其瀏覽器版 File Manager 內維持存取權約八星期，趁機竊取客戶的 FTP 及 SFTP 用戶名稱、密碼，以及現存的 webmail session 數據。</p>
+<p>有兩個關鍵數字至今不明：DreamHost 未披露受影響帳戶的數目，亦未說明是否已強制輪換憑證，抑或僅作建議。這兩項缺口令人不宜過早就外洩範圍下結論。</p>
+<p>單是憑證外洩本身已屬嚴重。然而，凡管理虛擬主機寄存（shared hosting）——或代客戶管理伺服器——的人士，都應留意的細節是攻擊者停留的時間（dwell time）。這並非速戰速決式的劫掠。入侵者在一個管理層面的便利工具——即控制面板用家慣常以拖放方式處理及編輯檔案的瀏覽器版 File Manager——之內停留了兩個月，事件才告曝光。</p>
+<h4>為何一個便利工具反而是焦點所在</h4>
+<p>File Manager 在大多數寄存架構中處於一個尷尬的中間地帶。它屬應用層功能——即覆蓋檔案系統之上的友善網頁 UI——但同時繼承了基礎設施層的權限範圍：可讀寫託管網站、設定檔及已儲存的連線資料。它很少像資料庫那樣加設監測，亦鮮獲如同邊緣服務般的嚴密審視。這種廣泛權限與薄弱監測的組合，正是令為期兩個月的立足點得以成立的原因。</p>
+<p>是次事故突顯了一個值得明言的普遍模式：控制面板及檔案管理附加元件，與其管理的託管網站本身一樣，都是攻擊目標。</p>
+<h4>兩個月的寫入權限能為攻擊者帶來什麼</h4>
+<p>透過 file manager 持續擁有寫入權限，並非轉瞬即逝的機會，而是一個平台。在內容掃描結果證偽之前，以下四種後果應假定有可能發生：</p>
+<ul>
+<li><strong>SEO 垃圾內容。</strong> 注入網頁及關鍵字區塊，暗中將搜尋流量引導至惡意或商業目的地。</li>
+<li><strong>Redirect 採集。</strong> 改寫 <code>.htaccess</code> 規則或腳本，將特定訪客——通常是搜尋引擎爬蟲——重定向至第三方網站。</li>
+<li><strong>Webshells。</strong> 植入 PHP 或 ASP 腳本，即使事後憑證已更改，仍能向攻擊者提供看似已認證的存取權。</li>
+<li><strong>JavaScript 供應鏈注入。</strong> 在範本及結帳頁面附加竊取資料或惡意廣告（malvertising）代碼，傳播予受影響網站的每一位訪客。</li>
+</ul>
+<p>以上每一種手法都能在密碼輪換後繼續存活。這正是下文內容掃描步驟屬補救措施、而非例行清掃的原因。</p>
+<h4>影響範圍沿舊有渠道擴散</h4>
+<p>此次外洩涉及兩類憑證，兩者影響均遠超單一伺服器。</p>
+<p>FTP 及 SFTP 密碼在實務上往往以明碼（plaintext）形式存放，散落於部署腳本、CI 變數、<code>.env</code> 檔案及設定版本庫（configuration repository）之中，而這些資料往往在不同項目之間複製流傳多年。一個外洩的 FTP 密碼通常意味著可存取不止一部機器，而且這種存取權往往在原持有人認為該憑證早已棄用之後仍然存在。</p>
+<p>Webmail session 在某一方面更為嚴重：被盜的 session token 完全繞過密碼——包括雙重認證（two-factor authentication）。更換密碼未必能堵塞漏洞，因為攻擊者根本無需密碼。必須在伺服器端使該 session 失效。</p>
+<h4>虛擬主機營運者應採取的措施</h4>
+<p>以下是我們就管理或營運虛擬主機寄存人士所提出的建議清單，乃從是次事故歸納而成，並非照錄供應商通告：</p>
+<ol>
+<li><strong>輪換所有託管帳戶的 FTP 及 SFTP 密碼</strong>，並審計哪些地方以明碼存放這些憑證——CI pipeline、部署腳本、設定版本庫及本地 <code>.env</code> 檔案。</li>
+<li><strong>使所有現存 webmail session 失效</strong>，而不只是更改密碼。唯有撤銷 token，才能真正切斷正利用現存 session 的攻擊者。</li>
+<li><strong>在寄存控制面板及 webmail 啟用雙重認證</strong>——有用，但須注意它無法保護一個已被劫持的 session。</li>
+<li><strong>掃描託管內容中有否注入的腳本、後門（backdoor）及額外檔案。</strong> 既然攻擊者曾在檔案管理工具中擁有兩個月寫入權限，便須假定系統已被植入持久性機制，直至證實並無為止。</li>
+<li><strong>審計 File Manager 及控制面板的存取日誌</strong>，查找異常活動，並由現時起將管理層面的便利功能視為受監測的範圍，而非附屬功能。</li>
+</ol>
+<h4>本地角度</h4>
+<p>對營運或管理虛擬主機寄存的香港 IT 專業人士而言，這篇報道是促使各方進行一次系統性清理的有用契機：找出憑證、輪換密碼、終止過時 session，並檢查託管內容有否在無人看管期間被加入任何東西。上述失效模式並非任何單一供應商的客戶群所獨有。</p>
+<p>是次外洩本身只是眾多數據點之一；但在 file manager 內長達兩個月的盤踞，才是值得記住的細節。</p>
+<p><em>Source: BleepingComputer.</em></p>
+<p><a href="https://www.bleepingcomputer.com/news/security/dreamhost-confirms-data-breach-exposed-ftp-logins-and-webmail-sessions/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
