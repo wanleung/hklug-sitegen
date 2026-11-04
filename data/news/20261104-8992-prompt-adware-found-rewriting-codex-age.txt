@@ -1,0 +1,28 @@
+Date: 2026-11-04 21:03:00
+Author: HKLUG Team
+Title: 'Prompt Adware' Found Rewriting Codex Agent Instructions to Serve Ads, Check Point Warns
+Content:
+<p>Check Point Research has disclosed a jailbreak bundle for OpenAI's Codex coding agent that quietly rewrites the agent's trusted instructions to promote a third-party AI gateway — a technique the firm has named "prompt adware." The Hacker News reported the findings in November 2026.</p>
+<p>The bundle, called Haiou (Chinese for "seagull"), alters Codex's configuration so the advertising sits inside the instruction layer the agent treats as authoritative, rather than in content pulled from a repository or a session prompt. Per Check Point's characterization, the modification is applied at the instruction and configuration layer rather than through a traditional executable.</p>
+<p>The naming carries the point: "adware" has traditionally meant software that serves unwanted ads, but Haiou brings no installer. What persists is configuration that shapes every subsequent interaction the agent has.</p>
+<h4>A different shape from prompt injection</h4>
+<p>Unlike prompt-injection attacks, which smuggle instructions through untrusted input such as fetched web pages, issue comments, or documentation, this technique operates on configuration the agent already trusts. The malicious text is applied before the session begins and stays in place across tasks, so it does not depend on tricking the model mid-conversation.</p>
+<p>That distinction is editorial, not observational: Check Point's disclosure describes the mechanism, not a catalogue of signals that endpoint tooling failed to catch. The practical implication is that review has to happen where the configuration lives, not only where prompts are assembled.</p>
+<p>Importantly, this is a report on third-party tooling that manipulates agent configuration — not a vulnerability in OpenAI's platform. The implicated party is the authors of a "jailbreak toolkit" a developer would have chosen to download, not the Codex service itself.</p>
+<h4>Where the attack surface actually sits</h4>
+<p>The finding reframes the blast radius of AI coding assistants. Hardening the model is only one layer; every configuration file, plugin, hook, gateway reference, and shared starter prompt a developer adopts is part of the trusted stack as well. A toolkit that rewrites instructions functions as a supply-chain threat aimed at the workflow rather than the codebase.</p>
+<p>The finding is broadly relevant to development teams adopting AI coding assistants — anyone pulling agent tooling from third-party sources is effectively extending the trust boundary of their development environment.</p>
+<p>The response is less a checklist than a change in habit. Treat agent configuration as source code: diff changes to instruction and config files with the same scrutiny as a pull request, including files inside hidden or tool-managed directories. Prefer pinned versions from verifiable publishers, and inspect what a "productivity" or jailbreak bundle actually ships before installing it. If tampering is suspected, rebuild from a known-good baseline rather than patching in place — and constrain the agent's network and secrets access so a rewritten instruction set has a smaller blast radius.</p>
+<hr>
+<p>Check Point Research 披露了一個針對 OpenAI Codex 編碼 agent 的 jailbreak 套件，該套件會暗中改寫 agent 的可信指令，以推廣第三方 AI gateway——該公司將此技術命名為「prompt adware」。The Hacker News 於 2026 年 11 月報導了這項研究結果。</p>
+<p>該套件名為 Haiou（中文意為「海鷗」），會改動 Codex 的配置，令廣告嵌入 agent 視為權威的指令層（instruction layer）之內，而非放在從 repository 或 session prompt 抓取的內容之中。根據 Check Point 的描述，該修改是應用於指令及配置層，而非透過傳統的可執行檔進行。</p>
+<p>命名本身已點出重點：「adware」傳統上指投放不必要廣告的軟件，但 Haiou 並無附帶安裝程式。持續存在的是一項配置，它會塑造 agent 之後每一次互動。</p>
+<h4>與 prompt injection 形式不同</h4>
+<p>與 prompt injection 攻擊不同——後者透過不可信輸入（例如抓取的網頁、issue 評論或文件）夾帶指令——此技術是針對 agent 本身已經信任的配置運作。惡意文本在 session 開始之前便已套用，並在各項任務之間持續生效，因此並不依賴在對話中途誤導模型。</p>
+<p>這一區別屬於編輯層面的判斷，而非實證觀察：Check Point 的披露描述的是機制本身，而非端點工具未能攔截的信號清單。實際意義在於，審查必須在配置存放之處進行，而不只是在 prompt 組裝之處。</p>
+<p>值得強調的是，這是一份關於第三方工具操縱 agent 配置的報告——並非 OpenAI 平台本身的漏洞。受牽連的一方是某套「jailbreak toolkit」的作者，該工具是開發者自行選擇下載的，而非 Codex 服務本身。</p>
+<h4>攻擊面的真正所在</h4>
+<p>這項發現重新界定了 AI 編碼助手的影響範圍（blast radius）。強化模型只是其中一層；開發者採用的每一個配置檔案、plugin、hook、gateway 引用以及共用的 starter prompt，同樣屬於可信技術棧（trusted stack）的一部分。一套改寫指令的工具包，構成的是針對工作流程而非代碼庫的 supply chain 威脅。</p>
+<p>這項發現對採用 AI 編碼助手的開發團隊具有廣泛參考價值——任何從第三方來源拉取 agent 工具的人，實質上都在擴展其開發環境的信任邊界（trust boundary）。</p>
+<p>應對方法與其說是一份檢查清單，不如說是習慣上的轉變。應把 agent 配置視為 source code：對指令及配置檔案的改動，須以跟審查 pull request 同等的嚴謹程度進行 diff 審閱，包括隱藏目錄或由工具管理目錄內的檔案。應優先採用由可驗證發佈者提供的固定版本（pinned version），並在安裝前檢視一套「生產力」或 jailbreak 套件實際包含的內容。如懷疑遭到篡改，應從已知良好的基線（baseline）重新構建，而非就地打補丁；同時限制 agent 的網絡及 secrets 存取權限，令被改寫的指令集所能造成的 blast radius 得以收窄。</p>
+<p><a href="https://thehackernews.com/2026/11/researchers-uncover-prompt-adware.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
