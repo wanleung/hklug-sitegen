@@ -1,0 +1,40 @@
+Date: 2026-11-05 14:23:00
+Author: HKLUG Team
+Title: AWS Base GPU Deep Learning Images Now Run on Ubuntu Pro, Extending Security Patches Past the LTS Window
+Content:
+<p>Amazon Web Services published its first Deep Learning AMIs (DLAMIs) built on Ubuntu Pro in September 2026, Canonical announced, starting with the Base GPU image family. For anyone running GPU workloads on EC2, the headline addition is Expanded Security Maintenance (ESM), which Canonical says extends overall security coverage from five years to ten on these images — a meaningful extension given how long a validated machine-learning stack tends to outlive its launch window.</p>
+<p>DLAMIs are AWS-maintained machine images preloaded with GPU drivers, CUDA toolchains and common deep learning frameworks. That preloading is exactly why the patch tail matters. A DLAMI freezes a large dependency tree — CUDA, cuDNN, Python runtimes, framework builds — in a configuration validated by the cloud provider. Users who keep instances alive, or snapshot and respawn them across model training cycles, inherit an operating system whose OS-level security updates stop at the standard LTS boundary long before the ML stack is retired. ESM covers those OS packages in the gap, according to Canonical's announcement.</p>
+<p>The announcement positions these as the first DLAMI line to carry Pro's extended coverage; it does not characterise what earlier DLAMI lines ran.</p>
+<p><strong>What ships in the image</strong></p>
+<p>Canonical's post is specific about the current build state: 31 DLAMI lines are actively built, split across Ubuntu releases — the Ubuntu 24.04-based Base GPU images ship kernel 7.0.0-1013-aws, while the 22.04 line runs 6.8.0-1064-aws. CUDA 13.2 is the default toolchain, and 38 packages already present in the base image are explicitly listed as covered by ESM. Operators querying the catalogue programmatically can resolve current image identifiers through SSM parameters rather than clicking through the console. The announcement also documents the support matrix for Grace Blackwell–based P6e-GB200 and GB300 instances, which is the reference point for teams sizing the next training cluster.</p>
+<p><strong>What the announcement does not say</strong></p>
+<p>Two questions that procurement teams tend to ask first are not answered in Canonical's post. The first is compliance: the announcement does not enumerate certifications such as FIPS, Common Criteria or CIS hardening profiles, so buyers with audit requirements should confirm against Canonical's Ubuntu Pro documentation and the marketplace listing what entitlements actually attach to these DLAMIs before assuming a compliant GPU base. The second is regional rollout — availability in <code>ap-east-1</code> (Hong Kong), <code>ap-southeast-1</code>, <code>ap-northeast-1</code> or any other APAC region is not addressed in Canonical's announcement, and should be verified in the AWS console or Marketplace before migration planning.</p>
+<p>Pricing sits in the same category. Ubuntu Pro is not free, but neither the announcement nor its linked material publishes a per-hour uplift for these DLAMIs, and how the entitlement is metered — AWS Marketplace subscription, a pre-attached Canonical token, or an instance-level subscription — will determine renewal and cost-allocation workflows for fleet operators. Any per-hour figure should be treated as unconfirmed until it appears in the Marketplace listing or a Canonical price sheet.</p>
+<p><strong>When Pro is worth it vs. plain LTS</strong></p>
+<ul>
+<li><strong>Worth the uplift:</strong> long-lived inference endpoints, multi-year training clusters, images snapshotted and relaunched repeatedly, and workloads with audit requirements.</li>
+<li><strong>Plain LTS is fine:</strong> short-lived disposable instances spun from current images, experiments torn down within the LTS window, and environments where your own tooling already owns patching.</li>
+</ul>
+<p><strong>What to watch</strong></p>
+<p>Coverage is narrow for now — only the Base GPU family is affected. The other DLAMI lines Canonical names in the announcement — framework images with PyTorch preinstalled, and Neuron images targeting AWS Trainium and Inferentia accelerators — are the natural next candidates to watch for Pro coverage, as is whether Pro becomes a selectable option across the catalogue rather than a fixed property of certain image lines.</p>
+<p>For IT professionals across APAC, the practical relevance of this release is mostly lifecycle arithmetic rather than a new feature set: deep learning images are now getting the same long-horizon security maintenance story that enterprise Ubuntu servers have had for years. Whether that story reaches a given region, and at what price, remains the detail to confirm before committing a workload to it.</p>
+<p><em>Source: Canonical, Ubuntu Official blog.</em></p>
+<hr>
+<p>Canonical 宣布，Amazon Web Services 於 2026 年 9 月發布首個以 Ubuntu Pro 為基礎的 Deep Learning AMI（DLAMI），首先推出 Base GPU 映像系列。對於在 EC2 上執行 GPU 工作負載的用戶而言，最重要的新增功能是 Expanded Security Maintenance（ESM）：Canonical 表示，ESM 將這些映像的整體安全保障由五年延長至十年——鑑於一套經驗證的機器學習 stack 往往遠比其啟用時段更長壽，此延長別具意義。</p>
+<p>DLAMI 是由 AWS 維護的機器映像，預載 GPU 驅動程式、CUDA toolchains 及常用深度學習框架。正因如此預載特性，修補期的「尾巴」才格外重要。DLAMI 將一大棵 dependency tree——CUDA、cuDNN、Python runtimes、framework builds——凍結在經雲端供應商驗證的配置之中。用戶若讓 instances 長期運行，或在多個模型訓練週期之間 snapshot 並重新啟動它們，便會繼承一個作業系統，其 OS 層面的安全更新早在 ML stack 退役之前便已停在標準 LTS 邊界。根據 Canonical 的公告，ESM 正是涵蓋這段空檔期間的 OS 套件。</p>
+<p>該公告將這批映像定位為首個具備 Pro 延伸保障的 DLAMI 系列；並未說明較早的 DLAMI 系列運行甚麼。</p>
+<p><strong>映像包含甚麼</strong></p>
+<p>Canonical 的文章對目前建置狀態說得相當具體：現有 31 條 DLAMI lines 正在積極建置，並按 Ubuntu 版本劃分——以 Ubuntu 24.04 為基礎的 Base GPU 映像搭載 kernel 7.0.0-1013-aws，而 22.04 系列則運行 6.8.0-1064-aws。預設 toolchain 為 CUDA 13.2，另有 38 個已存在於基礎映像中的套件，被明確列為受 ESM 覆蓋。營運人員如以程式方式查詢目錄，可透過 SSM parameters 取得最新映像識別碼，毋須逐頁點擊 console。公告亦記錄了基於 Grace Blackwell 的 P6e-GB200 及 GB300 instances 的支援矩陣，可作為團隊規劃下一個 training cluster 規格的參考基準。</p>
+<p><strong>公告未有說明的事</strong></p>
+<p>採購團隊往往最先提出的兩個問題，Canonical 的文章並未回答。第一是合規：公告並未逐一列舉 FIPS、Common Criteria 或 CIS 加固設定檔等認證，因此有審計要求的買家應先對照 Canonical 的 Ubuntu Pro 文件及 marketplace 列表，確認實際附加於這些 DLAMI 的授權權益，再假設已有合規的 GPU 基礎映像。第二是地區 rollout——<code>ap-east-1</code>（香港）、<code>ap-southeast-1</code>、<code>ap-northeast-1</code> 及其他任何亞太區 regions 是否提供，Canonical 公告並無交代，遷移規劃前應先在 AWS console 或 Marketplace 查證。</p>
+<p>收費屬同類問題。Ubuntu Pro 並非免費，但公告及其連結材料均未公布這些 DLAMI 的每小時加價，而授權如何計量——AWS Marketplace 訂閱、預先附加的 Canonical token，抑或 instance 層面的訂閱——將決定 fleet 營運人員在續約及成本分攤方面的工作流程。任何每小時數字在出現在 Marketplace 列表或 Canonical 價目表之前，應視為未經證實。</p>
+<p><strong>Pro 值不值得，抑或一般 LTS 已足夠</strong></p>
+<ul>
+<li><strong>值得加價：</strong>長壽命 inference endpoints、跨年 training clusters、反覆 snapshot 重啟的映像，以及有審計要求的工作負載。</li>
+<li><strong>一般 LTS 足夠：</strong>以現行映像衍生的短壽命即棄 instances，於 LTS 期內便會拆除的實驗，以及已有自身工具負責 patching 的環境。</li>
+</ul>
+<p><strong>值得留意之處</strong></p>
+<p>目前覆蓋範圍仍窄——只有 Base GPU 系列受影響。Canonical 在公告中提及的其他 DLAMI 系列——預載 PyTorch 的 framework 映像，以及針對 AWS Trainium 及 Inferentia 加速器的 Neuron 映像——是下一批值得留意會否納入 Pro 覆蓋的候選者；Pro 會否由特定映像系列的固定屬性，變成全目錄可選的選項，同樣值得追蹤。</p>
+<p>對於整個亞太區的 IT 專業人士而言，此次發布的實際意義主要是生命周期的算術問題，而非一套新功能：深度學習映像如今獲得與企業級 Ubuntu 伺服器多年來相同的長遠安全維護安排。該安排是否覆蓋特定地區、價格幾何，仍是落實工作負載前須確認的細節。</p>
+<p><em>資料來源：Canonical、Ubuntu 官方 blog。</em></p>
+<p><a href="https://ubuntu.com//blog/ubuntu-pro-available-on-dlami" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
