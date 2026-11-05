@@ -1,0 +1,49 @@
+Date: 2026-11-05 15:04:00
+Author: HKLUG Team
+Title: Review-Stage Patches Open a Path to Native AirDrop on Linux for T2-Equipped Macs
+Content:
+<p>Teams running mixed macOS and Linux environments have long had to settle for workarounds when it comes to moving files between a Mac and a Linux box — but a new set of patches posted for review could eventually change that. A contributor has submitted Linux kernel patches intended to enable Apple AirDrop support, with the stated ambition of landing the code in the mainline kernel rather than shipping it as an out-of-tree module. The target platform is Macs equipped with Apple's T2 security chip.</p>
+<p>The catch: the patches are at the review stage only, not merged. Nothing about the proposal is guaranteed to ship, and there is no timeline attached to the work.</p>
+<h4>What the patches actually do</h4>
+<p>AirDrop, Apple's peer-to-peer file transfer feature, relies on AWDL (Apple Wireless Direct Link), a proprietary extension layered on top of Wi-Fi that lets nearby Apple devices discover each other and exchange files without going through an access point. That protocol has historically been closed, which is why Linux users have had no native path to AirDrop-style transfers.</p>
+<p>The posted patches reimplement the AWDL stack at kernel level, so that a Linux system on compatible hardware could participate in the same discovery and transfer flow that macOS and iOS devices use. Because the work touches a protocol layer that has never been open, multi-cycle review should be expected.</p>
+<p>T2-chip Macs are the supported platform named in the proposal. The wording matters: the T2 Macs are where the feature is targeted, not a hardware prerequisite for running Linux itself.</p>
+<h4>Why it matters beyond the patch queue</h4>
+<p>For anyone administering fleets that mix Apple laptops with Linux servers or workstations, the friction is well known: moving a file from a Mac to a Linux desktop today usually means reaching for an intermediary — a network share, a cloud drive, a chat app, or a USB stick. Native AirDrop only helps if both ends are Apple.</p>
+<p>If the patches eventually reach mainline, Linux machines could appear as AirDrop targets — potentially reducing that friction in mixed environments without requiring either side to install proprietary tooling. But that is an "if," not a "when." Review-stage kernel work can be revised, delayed, or dropped entirely, and proposals touching protocol support often take multiple cycles before acceptance.</p>
+<h4>What to use now</h4>
+<p>The current, practical options for cross-platform file sharing remain third-party tools, and they stand on their own merits regardless of how the patch series fares:</p>
+<ul>
+<li><strong>KDE Connect</strong> — pairs Linux desktops with Android and desktop clients over the local network, supporting file transfer, clipboard sharing, and notification sync.</li>
+<li><strong>Snapdrop</strong> — a browser-based, local-network file transfer tool inspired by Apple's AirDrop interface, requiring no installation on the receiving device.</li>
+<li><strong>Syncthing</strong> — a continuous peer-to-peer file synchronization tool for teams that want files kept in sync rather than sent one-off.</li>
+</ul>
+<p>All three work today, are open source or free to use, and require no changes to kernel code.</p>
+<h4>Guidance for IT teams</h4>
+<p>The sensible approach is threefold. First, keep existing workarounds in place — the patches are not in any kernel release, so no deployment planning should assume AirDrop on Linux. Second, track the patch series through the kernel mailing list review process; if it advances toward mainline, the change will be visible in merge-window announcements well before it ships in a distribution. Third, evaluate tools like KDE Connect or Syncthing on their own merits now, since their usefulness is independent of whether this proposal succeeds.</p>
+<p>Kernel features that bridge the Apple/Linux divide remain rare, and even a successful outcome would represent a small quality-of-life improvement rather than a strategic shift. Still, for teams tired of routing every file through a middleman, it is a watch item worth keeping an eye on.</p>
+<p><em>Source: Phoronix, "Linux Kernel Patches Posted For Review In Enabling Apple AirDrop Support."</em></p>
+<hr>
+<p>```</p>
+<p>長期以來，在混合使用 macOS 與 Linux 環境的團隊中，要在 Mac 與 Linux 主機之間傳輸檔案，往往只能依賴各種權宜方案——但近日一組提交審核的補丁，日後可能改變這一局面。有開發者已向 Linux 內核提交補丁，旨在啟用 Apple AirDrop 支援，並明確期望將相關代碼納入 mainline 內核，而非以 out-of-tree module 形式發布。目標平台為配備 Apple T2 安全晶片的 Mac。</p>
+<p>惟須注意：該批補丁目前僅處於審核階段，尚未合併。提案內容沒有任何部分保證會正式發布，工作亦未有時間表。</p>
+<h4>補丁的實際作用</h4>
+<p>AirDrop 是 Apple 的點對點檔案傳輸功能，依賴 AWDL（Apple Wireless Direct Link）運作。AWDL 是疊加於 Wi-Fi 之上的專有擴展，讓附近的 Apple 裝置無須經由 access point 即可互相發現並交換檔案。該協議一直以來均屬封閉，這正是 Linux 用戶過去無法原生使用 AirDrop 式傳輸的原因。</p>
+<p>現有補丁在 kernel 層面重新實現 AWDL 協議棧，使配備相容硬件的 Linux 系統得以參與 macOS 與 iOS 裝置所使用的同一套發現及傳輸流程。由於工作涉及一個從未開放的協議層，預計需經歷多輪審核。</p>
+<p>提案所指的支持平台為 T2 晶片 Mac。措辭值得注意：T2 Mac 是該功能的目標平台，而非運行 Linux 本身的硬件先決條件。</p>
+<h4>為何超出補丁佇列以外仍值得關注</h4>
+<p>對於管理混合 Apple 筆記本與 Linux 伺服器或工作站的機群而言，相關摩擦早已眾所周知：今日從 Mac 傳送檔案到 Linux 桌面系統，通常須借助中介——網絡共享、雲端硬盤、聊天應用程式，或 USB 記憶棒。原生 AirDrop 只有在兩端均為 Apple 裝置時才可發揮作用。</p>
+<p>假如補丁最終納入 mainline，Linux 機器便可以 AirDrop 目標裝置的身分出現——潛在地減少混合環境中的摩擦，無須任何一方安裝專有工具。然而這是一個「假如」，而非「何時」。處於審核階段的 kernel 工作可以修改、延誤，甚至完全放棄，而涉及協議支援的提案往往需經歷多個周期才獲接納。</p>
+<h4>現階段可用的方案</h4>
+<p>目前跨平台檔案分享的實際選項仍是第三方工具，無論該系列補丁最終命運如何，這些工具均各自具備獨立價值：</p>
+<ul>
+<li><strong>KDE Connect</strong> —— 透過本地網絡將 Linux 桌面與 Android 及桌面客戶端配對，支援檔案傳輸、剪貼簿分享及通知同步。</li>
+<li><strong>Snapdrop</strong> —— 以瀏覽器運行的本地網絡檔案傳輸工具，設計靈感來自 Apple 的 AirDrop 介面，接收端無須安裝任何軟件。</li>
+<li><strong>Syncthing</strong> —— 持續性點對點檔案同步工具，適合希望檔案保持同步而非逐次傳送的團隊。</li>
+</ul>
+<p>以上三者現時均可運作，屬開源或免費使用，且無須改動任何 kernel 代碼。</p>
+<h4>給 IT 團隊的建議</h4>
+<p>合理的做法有三方面。第一，維持現有權宜方案——補丁尚未進入任何 kernel 版本，因此部署規劃不應假設 Linux 已具備 AirDrop 功能。第二，透過 kernel mailing list 審核流程持續追蹤該系列補丁；若其推進至 mainline，相關改動會在 merge window 公告中率先可見，遠早於在發行版正式推出。第三，即時按照自身優劣評估 KDE Connect 或 Syncthing 等工具，因其實用性與該提案是否成功並無關聯。</p>
+<p>連接 Apple 與 Linux 鴻溝的 kernel 功能至今仍屬罕見，即使最終成功，亦只代表生活質素上的小幅改善，而非策略性轉變。儘管如此，對於厭倦了每份檔案都要轉經中介的團隊而言，這確是一個值得留意的動向。</p>
+<p><em>資料來源：Phoronix，「Linux Kernel Patches Posted For Review In Enabling Apple AirDrop Support」。</em></p>
+<p><a href="https://www.phoronix.com/news/Linux-Kernel-Apple-AirDrop-Code" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
