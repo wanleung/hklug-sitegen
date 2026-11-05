@@ -1,0 +1,40 @@
+Date: 2026-11-05 16:29:00
+Author: HKLUG Team
+Title: New patch revision targets file capabilities that slip past user-namespace isolation
+Content:
+<p>An eighth revision of a long-running kernel patch series is taking another run at a gap that containerised workloads have lived with for years: file capabilities quietly widening the privilege boundary that user namespaces are meant to draw. The series was published under the message identifier <code>20261027-b4-setfcap-userns-v8-0-2674adc6</code> and was flagged by LWN.net in a piece headlined "User namespaces + file capabilities = trouble".</p>
+<h4>Why the boundary matters</h4>
+<p>User namespaces are a foundational piece of the kernel's container toolkit. A process running inside one can present itself as root to everything it can see — mounting filesystems, manipulating network interfaces, owning files — while holding no additional privilege over the wider host. That illusion is what makes rootless containers and unprivileged CI runners practical: developers get an environment that behaves like a root shell without anyone handing out real root on the build machine.</p>
+<p>The promise has been difficult to keep. File capabilities — per-file privilege bits such as <code>cap_setuid</code> or <code>cap_dac_override</code> — interact awkwardly with that illusion. When a file carrying capabilities is reachable from inside a user namespace, the kernel must decide whether those capabilities should be honoured in a context where the process is nominally unprivileged. Getting that decision wrong means a process that was never meant to escape its sandbox can acquire effective privilege on the host. That is the classic container-escape shape: no memory-corruption exploit required, just a misapplied permission check.</p>
+<p>Rootless containers and unprivileged CI runners depend on this boundary holding.</p>
+<h4>Eight revisions, and still in review</h4>
+<p>The public LKML thread carrying <code>20261027-b4-setfcap-userns-v8-0-2674adc6</code> is the primary source for the precise mechanism the series changes, the kernel versions affected, and CVE status — specifics that LWN's full analysis addresses behind its paywall and that the available summary does not establish.</p>
+<p>The identifier reads as a <code>20261027</code> posting at revision v8, but that is an inference from the thread's naming convention rather than a confirmed fact. Either way, a series at its eighth iteration signals both that the problem is stubborn and that reviewers are still pushing back on earlier approaches. Patches at this stage can still change shape substantially before landing, and no merge-window placement has been announced.</p>
+<h4>Practical guidance</h4>
+<p>For operators and packagers, the sensible posture is:</p>
+<ul>
+<li><strong>Track the thread.</strong> Subscribe to the LKML discussion for <code>20261027-b4-setfcap-userns-v8-0-2674adc6</code> rather than relying on secondary summaries, and watch for a stable-tree backport once the series lands.</li>
+<li><strong>Audit capability-bearing binaries.</strong> Review which files in your container images carry file capabilities, and whether they are reachable from user namespaces they do not need to be.</li>
+<li><strong>Treat rootless as a moving target.</strong> Rootless container runtimes and unprivileged runners inherit whatever the kernel decides here; refresh base images and kernel versions once a fix ships.</li>
+<li><strong>Do not wait for a CVE identifier.</strong> Availability of a CVE should not gate a patch review; the LKML diff is the actionable artefact.</li>
+</ul>
+<p>For organisations running container estates, this is a reminder that container-isolation assumptions should be re-validated against upstream kernel security discussions rather than taken as a fixed property of the platform.</p>
+<hr>
+<p>一份長時間推進的 kernel patch 系列已發布第八版修訂，再度嘗試解決容器化工作負載多年來面對的缺口：file capabilities 悄無聲息地擴闊了 user namespaces 本應劃定的權限邊界。該系列以訊息識別碼 <code>20261027-b4-setfcap-userns-v8-0-2674adc6</code> 發布，並被 LWN.net 以標題「User namespaces + file capabilities = trouble」的文章點出。</p>
+<h4>為何這道邊界重要</h4>
+<p>User namespaces 是 kernel 容器工具組的基礎組件。在其中運行的進程可向其可見的一切自稱為 root——掛載檔案系統、操控網絡介面、擁有檔案——同時對更廣闊的主機並不持有任何額外權限。正是這重假象，令 rootless containers 及 unprivileged CI runner 變得可行：開發人員獲得一個表現如同 root shell 的環境，卻無人需要在 build machine 上交出真正的 root 權限。</p>
+<p>這承諾一直難以兌現。File capabilities——例如 <code>cap_setuid</code> 或 <code>cap_dac_override</code> 等逐檔案的權限位元——與這重假象的互動相當棘手。當一個帶有 capabilities 的檔案可從 user namespace 內部存取時，kernel 必須判斷在進程名義上屬無權限的語境下，這些 capabilities 是否應獲受理會。判斷錯誤意味著一個本不應逃離沙箱的進程，可在主機上取得有效權限。這正是典型的 container escape 形態：無需任何記憶體損毀漏洞利用，只需一次錯誤套用的權限檢查。</p>
+<p>Rootless containers 及 unprivileged CI runner 都有賴這道邊界得以維持。</p>
+<h4>八個修訂版本，仍在審閱之中</h4>
+<p>公開的 LKML 討論串 <code>20261027-b4-setfcap-userns-v8-0-2674adc6</code> 是核實此系列改動的精確機制、受影響的 kernel 版本及 CVE 狀態的主要資料來源；這三項細節則由 LWN 的完整分析在付費牆後深入探討，現有摘要並未予以確立。</p>
+<p>識別碼顯示為 <code>20261027</code> 發佈、修訂版本 v8，但這是從討論串命名慣例推斷而來，並非已核實的事實。無論如何，一個系列推進至第八個版本，既表明問題根深柢固，也反映審閱者對早期方案仍有保留。此階段的 patch 在正式合入之前仍可能大幅改變形式，而 merge window 的安排亦未有公布。</p>
+<h4>實務指引</h4>
+<p>對於系統維護及打包人員，合理的應對姿態是：</p>
+<ul>
+<li><strong>追蹤討論串。</strong> 訂閱 LKML 上關於 <code>20261027-b4-setfcap-userns-v8-0-2674adc6</code> 的討論，而非依賴二手摘要，並留意該系列合入後 stable tree 的 backport。</li>
+<li><strong>審查帶有 capability 的二進制檔案。</strong> 檢視容器映像中哪些檔案帶有 file capabilities，以及它們是否可從本不需存取的 user namespaces 內到達。</li>
+<li><strong>視 rootless 為移動目標。</strong> Rootless container runtime 及 unprivileged runner 會承受 kernel 在此事上的任何決定；一旦修補出爐，便要更新基礎映像及 kernel 版本。</li>
+<li><strong>不要等待 CVE 編號。</strong> CVE 是否可用不應成為補丁審查的門檻；LKML 的 diff 才是可據以行動的成果。</li>
+</ul>
+<p>對於營運容器叢集的機構而言，這是一次提醒：容器隔離的假設應對照上游 kernel 安全討論重新驗證，而非視為平台的固定特性。</p>
+<p><a href="https://lwn.net/Articles/1103429/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
