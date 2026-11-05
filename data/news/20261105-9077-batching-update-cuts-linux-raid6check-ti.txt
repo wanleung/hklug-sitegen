@@ -1,0 +1,22 @@
+Date: 2026-11-05 19:22:00
+Author: HKLUG Team
+Title: Batching Update Cuts Linux raid6check Time by Up to 3x
+Content:
+<p>```</p>
+<p>A newly merged change to Linux's <code>raid6check</code> utility is cutting verification time by up to 3x, according to Phoronix, which benchmarked the updated tool after the code landed upstream.</p>
+<p><code>raid6check</code> scans every device in an MD RAID6 software array, recomputing each stripe's parity syndromes and comparing them against what is stored on disk — the standard way administrators catch and repair silent errors before they compound. On multi-terabyte arrays a single pass runs for hours of sustained I/O and CPU work, and that cost usually determines how often scrubs can realistically be scheduled.</p>
+<p>The gain comes from batching rather than from new math. RAID6 stores two parity values per stripe: the P syndrome, a simple XOR, and the Q syndrome, a Reed–Solomon calculation over a Galois field. Verifying a stripe means regenerating both and diffing them against disk contents. The optimization groups that parity and syndrome work across multiple stripes instead of dispatching it one stripe at a time, cutting the per-stripe overhead that had become the dominant cost, particularly on wide arrays. The Reed–Solomon arithmetic itself is untouched.</p>
+<p>Phoronix puts the ceiling near 3x, but results vary with hardware. The RAID6 recovery paths lean on vector instructions, so SSE, AVX and newer SIMD support all influence the outcome, as do array width and the speed of the underlying disks. Administrators should treat 3x as a best case to confirm on their own systems rather than a guaranteed floor.</p>
+<p>Because the change merged into the mainline kernel rather than shipping as an out-of-tree patch or module, it should reach production machines through ordinary distribution update cycles — no manual rebuilds or custom patches required.</p>
+<p>For storage teams, the practical effect is shorter scrub windows, which makes running consistency checks more frequently realistic on arrays that may sit unread for stretches between accesses — still the most effective defence against silent bit rot. The same speedup applies during rebuild-related checking after a disk failure, narrowing the period the array runs degraded with only one parity's worth of protection.</p>
+<p><em>Source: Phoronix, "Linux's RAID6 Check Tool Sees 3x Performance Via Batching."</em></p>
+<hr>
+<p>```</p>
+<p>據 Phoronix 報導，一項剛合併至 Linux <code>raid6check</code> 工具的改動，使驗證時間最多縮短達三倍；該媒體在相關程式碼上游合併後，對更新後的工具進行了基準測試。</p>
+<p><code>raid6check</code> 會掃描 MD RAID6 軟件陣列中的每個裝置，重新計算每條 stripe 的 parity syndromes，並與磁碟上儲存的資料作比對——這是系統管理員偵測及修復靜默錯誤（silent error）的標準做法，以免錯誤持續累積。在多 terabyte 陣列上，單次掃描往往需要持續數小時的 I/O 和 CPU 運作，而這項開銷通常決定了 scrub 實際上多久才能安排一次。</p>
+<p>效能提升來自批次處理（batching），而非新的數學運算。RAID6 每條 stripe 儲存兩個 parity 值：P syndrome，即簡單的 XOR 運算；以及 Q syndrome，即在 Galois field 上進行的 Reed–Solomon 計算。驗證一條 stripe 意味著要同時重新產生這兩者，再與磁碟內容作比對。此項優化將 parity 和 syndrome 的運算跨多條 stripe 分組處理，取代以往逐條 stripe 派發的方式，從而削減了已成為主要開銷的每條 stripe 開銷，在寬陣列上尤其明顯。Reed–Solomon 運算本身並未改動。</p>
+<p>Phoronix 指出效能上限接近三倍，但實際結果因硬件而異。RAID6 恢復路徑依賴 vector 指令，因此 SSE、AVX 以及較新的 SIMD 支援均會影響結果，陣列寬度和底層磁碟速度同樣如此。系統管理員應將三倍視為最佳情況，須在自有系統上驗證，而非保證的最低提升幅度。</p>
+<p>由於該改動是合併至主線核心（mainline kernel），而非以 out-of-tree patch 或模組形式發布，因此透過一般發行版更新周期即可到達生產環境機器——無需手動重新編譯或套用自訂 patch。</p>
+<p>對儲存團隊而言，實際成效是 scrub 窗口縮短，使那些在兩次存取之間可能長期未被讀取的陣列，更能切實可行地增加一致性檢查的頻率——這依然是對付靜默位元衰變（bit rot）最有效的方法。同一項速度提升亦適用於磁碟故障後的 rebuild 相關檢查，縮短陣列在僅有一份 parity 保護水平下以降級狀態運行的時間。</p>
+<p><em>來源：Phoronix，〈Linux's RAID6 Check Tool Sees 3x Performance Via Batching〉</em></p>
+<p><a href="https://www.phoronix.com/news/Linux-3x-Faster-raid6check" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
