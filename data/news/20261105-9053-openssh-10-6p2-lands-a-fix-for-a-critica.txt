@@ -1,0 +1,47 @@
+Date: 2026-11-05 13:25:00
+Author: HKLUG Team
+Title: OpenSSH 10.6p2 lands a fix for a critical musl flaw that puts Alpine hosts on notice
+Content:
+<hr />
+<p>OpenSSH 10.6p2 has shipped with a workaround for a critical security vulnerability affecting Linux systems built on musl libc with PAM disabled — a combination that matches Alpine Linux's stock configuration and, by extension, a large share of container images. OpenSSH developer Damien Miller's guidance to operators was direct: set <code>PasswordAuthentication no</code> or disable SSH access while a fix rolls out — and he was explicit about which systems fall outside the affected set.</p>
+<p>Alpine is the default base for a significant share of cloud-native images, so teams running stock <code>nginx:alpine</code> deployments or Go static builds on Alpine end up with a musl-based sshd in their dependency tree whether or not anyone chose musl deliberately. That is why this story matters well beyond the usual libc community.</p>
+<p>LWN.net, which summarised the release, did not identify a CVE in its coverage, and no CVE identifier is asserted here; operators should confirm the identifier and the exact affected and fixed version ranges directly against the OpenSSH 10.6p2 release notes and any Alpine advisory. The precise nature of the exploit path, including whether it can be reached without valid credentials, likewise needs to be checked against those upstream sources rather than inferred from secondary summaries.</p>
+<h4>The configuration at issue</h4>
+<p>The vulnerability is gated by two conditions operating together: the system must use musl libc, and PAM must be disabled. Either one alone appears to move a host out of scope. Conventional glibc-based distributions — Debian, Ubuntu, RHEL and their derivatives — are therefore not implicated by default, and PAM-enabled builds of OpenSSH on musl systems are expected to be unaffected.</p>
+<p>That conjunction is easy to misread. Neither property is reliably advertised in a container manifest or an inventory export, and a mixed fleet can contain musl-based images running alongside glibc hosts without any obvious marker distinguishing them. Administrators auditing for exposure need to evaluate both the libc and the PAM configuration on each system independently, rather than assuming a distribution label settles the question.</p>
+<h4>What to do now</h4>
+<ol>
+<li><strong>Verify your position.</strong> Check the running sshd version with <code>sshd -V</code> and cross-reference package metadata to establish which libc and authentication stack each host uses.</li>
+<li><strong>Upgrade to 10.6p2</strong> — or the equivalent patched package from your distribution. On Alpine, that means <code>apk update &amp;&amp; apk upgrade openssh</code>.</li>
+<li><strong>If no vendor package is available yet,</strong> apply the configuration-level workaround published upstream in the 10.6p2 release notes.</li>
+<li><strong>Restart sshd</strong> so the patched binary or updated configuration takes effect.</li>
+<li><strong>Rebuild Alpine-based container images</strong> and refresh base layers; containers running an older base will continue to carry the vulnerable build until the image is rebuilt.</li>
+<li><strong>Re-verify</strong> the version in place and confirm updated image digests before declaring the remediation complete.</li>
+</ol>
+<p>Restricting network access to SSH — scoping port 22 to management networks or bastion hosts — is useful containment while upgrades roll out, but it is not remediation. It reduces exposure to a flaw that remains present in the running daemon.</p>
+<h4>Why this one matters</h4>
+<p>Security advisories for OpenSSH have historically leaned on assumptions of hardened posture or non-default settings, which concentrates attention on internet-facing systems. A flaw that sits in a default Alpine setup cuts against that habit: the systems teams scrutinise least are the ones that need checking first.</p>
+<p>It also underscores how container dependency chains have turned base-image refresh into a security operation. The vulnerable code is inherited silently from the base layer, and patching the host does nothing for the images built on top of it.</p>
+<p>Finally, the musl-plus-disabled-PAM combination functions as an unexpected security boundary — a detail that will not appear in any standard configuration review unless someone knows to look for it. For container-heavy infrastructure teams, the practical takeaway is not to assume your systems are outside the affected set until you have actively confirmed it, and to treat the version check as the first step rather than an afterthought.</p>
+<hr>
+<p>OpenSSH 10.6p2 已經發布，當中包含針對一項嚴重安全漏洞的應變措施。該漏洞影響採用 musl libc 並停用 PAM 的 Linux 系統——這一組合正好與 Alpine Linux 的原廠配置相符，亦即間接影響大量 container image。OpenSSH 開發者 Damien Miller 對系統營運商的指引十分直接：在修補推出期間，先設定 <code>PasswordAuthentication no</code> 或停用 SSH 存取——同時亦明確列出了哪些系統不在受影響範圍之內。</p>
+<p>Alpine 是相當大比例雲端原生 image 的預設 base，因此即使並無人刻意選擇 musl，運行原廠 <code>nginx:alpine</code> 部署或在 Alpine 上編譯 Go static build 的團隊，其依賴樹中始終會帶有基於 musl 的 sshd。正因如此，這則新聞的意義遠超一般 libc 社群的範疇。</p>
+<p>LWN.net 在總結此版本發布時，並未指明任何 CVE；本文亦不作此聲稱。系統營運商應直接查閱 OpenSSH 10.6p2 release notes 以及任何 Alpine 公告，以確認漏洞編號及確實受影響和已修復的版本範圍。漏洞利用路徑的確切性質，包括能否在沒有有效憑證的情況下觸發，同樣需要向上游一手來源核實，而非從二手總結中推斷。</p>
+<h4>事關的配置組合</h4>
+<p>該漏洞由兩項條件同時成立所觸發：系統必須採用 musl libc，且 PAM 必須處於停用狀態。單獨任何一項似乎都足以令主機脫離影響範圍。因此，傳統基於 glibc 的發行版——Debian、Ubuntu、RHEL 及其衍生版本——預設並不涉及此漏洞，而在 musl 系統上啟用 PAM 的 OpenSSH 編譯版本亦預期不受影響。</p>
+<p>這個組合條件甚易誤讀。兩項屬性都不會可靠地反映在 container manifest 或資產清單輸出之中；在混合環境中，基於 musl 的 image 可能與 glibc 主機並存，而沒有任何明顯標記加以區分。系統管理員審核暴露風險時，必須就每部系統獨立評估 libc 及 PAM 兩項配置，而不應假設發行版標籤足以解決問題。</p>
+<h4>現階段應採取的措施</h4>
+<ol>
+<li><strong>確認你的處境。</strong> 以 <code>sshd -V</code> 檢查正在運行的 sshd 版本，並交叉核對 package metadata，以確定每部主機採用哪種 libc 及認證機制。</li>
+<li><strong>升級至 10.6p2</strong>——或改用你所屬發行版提供的對應修補 package。在 Alpine 上即執行 <code>apk update &amp;&amp; apk upgrade openssh</code>。</li>
+<li><strong>若供應商 package 尚未提供，</strong> 請套用上游 10.6p2 release notes 公佈的配置層面應變措施。</li>
+<li><strong>重新啟動 sshd</strong>，令已修補的 binary 或更新後的配置生效。</li>
+<li><strong>重新建置基於 Alpine 的 container image</strong> 並更新 base layer；運行舊 base 的 container 在 image 重建之前，仍會繼續帶有存在漏洞的編譯版本。</li>
+<li><strong>再次核實</strong>現行版本，並在宣告修復完成前確認 image digest 已更新。</li>
+</ol>
+<p>在升級部署期間限制 SSH 的網絡存取——將 port 22 範圍限定於管理網絡或 bastion host——是有用的遏制手段，但並非修復措施。它只是降低暴露風險，而漏洞在正在運行的 daemon 中依然存在。</p>
+<h4>為何此事重要</h4>
+<p>過往 OpenSSH 的安全公告，往往建基於系統已加固或採用非預設設定的假設，因而令外界注意力集中在面向互聯網的系統上。一條存在於 Alpine 預設配置中的漏洞，偏偏衝擊了這種思維習慣：團隊審視最少的系統，正是最需要優先檢查的對象。</p>
+<p>此事亦突顯 container 依賴鏈已如何令 base image 更新演變成一項安全操作。存在漏洞的程式碼會從 base layer 無聲地繼承下來，修補主機對建立於其上的 image 毫無幫助。</p>
+<p>最後，musl 加上停用 PAM 的組合，意外地構成了一條安全邊界——除非有人知道要查找，否則這項細節不會出現在任何標準配置審核之中。對於以 container 為主的基礎設施團隊而言，實務上的要點是：在主動確認之前，切勿假設你的系統不在受影響範圍之內，並應把版本檢查視為第一步，而非事後補做的事。</p>
+<p><a href="https://lwn.net/Articles/1105464/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
