@@ -1,0 +1,62 @@
+Date: 2026-11-05 20:04:00
+Author: HKLUG Team
+Title: 停用密碼登入也擋不住：OpenSSH 漏洞讓攻擊者以超長密碼登入 musl 系統帳號
+Content:
+<h3>停用密碼登入也擋不住：OpenSSH 漏洞讓攻擊者以超長密碼登入 musl 系統帳號</h3>
+<p>對系統管理員而言，「把密碼登入關掉」幾乎是最基本的加固動作。但一項新披露的 OpenSSH 漏洞顯示：在 Alpine Linux 及其他基於 musl libc 的系統上，即使帳號已被明確設定為拒絕密碼驗證，攻擊者只需輸入一個過長的密碼（oversized password），仍可能成功取得互動式 shell。</p>
+<p>據 BleepingComputer 報道，這項漏洞被研究人員暱稱為「sshole」。截至報導時，公開資訊<strong>尚未給出 CVE 編號</strong>，確切的修補版本號也未在公開報導中列出；相關識別與版本請以 OpenSSH 及各發行版官方 advisory 為準。</p>
+<h4>為什麼這件事值得注意</h4>
+<p>漏洞的核心是<strong>兩層政策的脫節</strong>。帳號層級的政策寫在 <code>/etc/shadow</code> 的密碼欄位（以 <code>!</code> 或 <code>*</code> 標示帳號已鎖定），傳輸層級的政策則寫在 <code>sshd_config</code> 的 <code>PasswordAuthentication no</code>。這兩者由不同機制強制執行，平時看似一致，實際上可能靜默地彼此矛盾。</p>
+<p>換句話說，在受影響的系統上，shadow 層那面鎖定旗標<strong>似乎會失去作用</strong>——至於它是在哪一層、以何種方式被繞過，公開報導並未交代清楚。目前這只能視為一個架構層面的觀察：兩道獨立的閘門守著同一扇門，而其中一道可以靜默失效；這不是關於繞過細節的既定事實。</p>
+<p>也因此，單一控制不該被當作唯一的承重牆。鎖定旗標失效時，如果 <code>sshd</code> 層沒有自己的驗證限制，帳號就直接失守。</p>
+<p>需要澄清的是，這項繞過本身<strong>不等於遠端程式碼執行（remote code execution, RCE）</strong>，但它讓攻擊者取得一個本不該存在的互動式 shell——這等同於該身份的完整淪陷，後續視該使用者權限而定。</p>
+<h4>影響範圍：真正中招的是少數，但位置關鍵</h4>
+<p>風險主要集中在 Alpine Linux 主機、Edge/VPN 裝置，以及以 musl 為基礎的嵌入式或 appliance 系統。多數 Alpine 容器（container）根本不會執行 <code>sshd</code>，因此一般的 Alpine-based 微服務並不在風險名單上——真正需要緊急處理的是那些跑著運行中 <code>sshd</code> 常駐程序的少數容器與實體/虛擬主機。</p>
+<p>至於 glibc 系列發行版（如 Ubuntu、Debian、RHEL）：原始報導<strong>並未提及 glibc</strong>，這不等於 glibc 已獲確認安全。研究人員的完整 advisory 尚未全面公開，建議以各發行版官方公告為最終判斷依據，不要逕自假定不受影響。</p>
+<h4>目前尚未解答的問題</h4>
+<ul>
+<li><strong>CVE 編號：</strong> 尚未發布，本文刻意不填入任何推測編號。</li>
+<li><strong>攻擊向量在用戶端還是伺服端：</strong> 未確認。下列處置順序暫按「伺服端觸發」排序。</li>
+<li><strong>確切修補版本：</strong> 公開報導未列出，需追蹤各發行版 advisory。</li>
+<li><strong>繞過發生在哪一層：</strong> shadow 鎖定旗標如何失效，細節未獲證實，目前只以條件式措辭描述。</li>
+</ul>
+<h4>處置順序（暫按伺服端向量排序）</h4>
+<ol>
+<li><strong>套用修補並重啟 <code>sshd</code>。</strong> 優先處理 Alpine/musl 主機與裝置；各發行版的確切修補版本請查閱官方 advisory。</li>
+<li><strong>強制金鑰驗證（key-only authentication）。</strong> 在 <code>sshd_config</code> 設定 <code>PasswordAuthentication no</code>，並搭配 <code>AllowUsers</code> / <code>AllowGroups</code> 收緊可登入的帳號範圍——這是在傳輸層補上第二道獨立防線。</li>
+<li><strong>已暴露主機視為已遭入侵（assume breach）。</strong> 檢視認證日誌（auth log）中異常的失敗與成功嘗試，並輪替相關憑證，而不只是把套件更新到最新版。</li>
+<li><strong>鎖定的密碼欄位只是檢查旗標，不是保證。</strong> 看到 <code>!</code> 或 <code>*</code> 不代表該帳號安全，仍需以外層政策交叉驗證。</li>
+</ol>
+<p>若最終 advisory 顯示觸發點其實在用戶端（例如密碼輸入處理），第 1、2 項的先後次序需要重新評估，本文將隨之更新。</p>
+<p>這則消息對香港及各地 IT 團隊的啟示很直接：加固清單上的每一個勾勾，都值得確認它究竟在哪一層生效——以及那一層失效時，還有沒有別的東西撐住。</p>
+<p><em>資料來源：BleepingComputer</em></p>
+<hr>
+<h3>停用密碼登入也擋不住：OpenSSH 漏洞讓攻擊者以超長密碼登入 musl 系統帳號</h3>
+<p>對系統管理員而言，「把密碼登入關掉」幾乎是最基本的加固動作。但一項新披露的 OpenSSH 漏洞顯示：在 Alpine Linux 及其他基於 musl libc 的系統上，即使帳號已被明確設定為拒絕密碼驗證，攻擊者只需輸入一個過長的密碼（oversized password），仍可能成功取得互動式 shell。</p>
+<p>據 BleepingComputer 報道，這項漏洞被研究人員暱稱為「sshole」。截至報導時，公開資訊<strong>尚未給出 CVE 編號</strong>，確切的修補版本號也未在公開報導中列出；相關識別與版本請以 OpenSSH 及各發行版官方 advisory 為準。</p>
+<h4>為什麼這件事值得注意</h4>
+<p>漏洞的核心是<strong>兩層政策的脫節</strong>。帳號層級的政策寫在 <code>/etc/shadow</code> 的密碼欄位（以 <code>!</code> 或 <code>*</code> 標示帳號已鎖定），傳輸層級的政策則寫在 <code>sshd_config</code> 的 <code>PasswordAuthentication no</code>。這兩者由不同機制強制執行，平時看似一致，實際上可能靜默地彼此矛盾。</p>
+<p>換句話說，在受影響的系統上，shadow 層那面鎖定旗標<strong>似乎會失去作用</strong>——至於它是在哪一層、以何種方式被繞過，公開報導並未交代清楚。目前這只能視為一個架構層面的觀察：兩道獨立的閘門守著同一扇門，而其中一道可以靜默失效；這不是關於繞過細節的既定事實。</p>
+<p>也因此，單一控制不該被當作唯一的承重牆。鎖定旗標失效時，如果 <code>sshd</code> 層沒有自己的驗證限制，帳號就直接失守。</p>
+<p>需要澄清的是，這項繞過本身<strong>不等於遠端程式碼執行（remote code execution, RCE）</strong>，但它讓攻擊者取得一個本不該存在的互動式 shell——這等同於該身份的完整淪陷，後續視該使用者權限而定。</p>
+<h4>影響範圍：真正中招的是少數，但位置關鍵</h4>
+<p>風險主要集中在 Alpine Linux 主機、Edge/VPN 裝置，以及以 musl 為基礎的嵌入式或 appliance 系統。多數 Alpine 容器（container）根本不會執行 <code>sshd</code>，因此一般的 Alpine-based 微服務並不在風險名單上——真正需要緊急處理的是那些跑著運行中 <code>sshd</code> 常駐程序的少數容器與實體/虛擬主機。</p>
+<p>至於 glibc 系列發行版（如 Ubuntu、Debian、RHEL）：原始報導<strong>並未提及 glibc</strong>，這不等於 glibc 已獲確認安全。研究人員的完整 advisory 尚未全面公開，建議以各發行版官方公告為最終判斷依據，不要逕自假定不受影響。</p>
+<h4>目前尚未解答的問題</h4>
+<ul>
+<li><strong>CVE 編號：</strong> 尚未發布，本文刻意不填入任何推測編號。</li>
+<li><strong>攻擊向量在用戶端還是伺服端：</strong> 未確認。下列處置順序暫按「伺服端觸發」排序。</li>
+<li><strong>確切修補版本：</strong> 公開報導未列出，需追蹤各發行版 advisory。</li>
+<li><strong>繞過發生在哪一層：</strong> shadow 鎖定旗標如何失效，細節未獲證實，目前只以條件式措辭描述。</li>
+</ul>
+<h4>處置順序（暫按伺服端向量排序）</h4>
+<ol>
+<li><strong>套用修補並重啟 <code>sshd</code>。</strong> 優先處理 Alpine/musl 主機與裝置；各發行版的確切修補版本請查閱官方 advisory。</li>
+<li><strong>強制金鑰驗證（key-only authentication）。</strong> 在 <code>sshd_config</code> 設定 <code>PasswordAuthentication no</code>，並搭配 <code>AllowUsers</code> / <code>AllowGroups</code> 收緊可登入的帳號範圍——這是在傳輸層補上第二道獨立防線。</li>
+<li><strong>已暴露主機視為已遭入侵（assume breach）。</strong> 檢視認證日誌（auth log）中異常的失敗與成功嘗試，並輪替相關憑證，而不只是把套件更新到最新版。</li>
+<li><strong>鎖定的密碼欄位只是檢查旗標，不是保證。</strong> 看到 <code>!</code> 或 <code>*</code> 不代表該帳號安全，仍需以外層政策交叉驗證。</li>
+</ol>
+<p>若最終 advisory 顯示觸發點其實在用戶端（例如密碼輸入處理），第 1、2 項的先後次序需要重新評估，本文將隨之更新。</p>
+<p>這則消息對香港及各地 IT 團隊的啟示很直接：加固清單上的每一個勾勾，都值得確認它究竟在哪一層生效——以及那一層失效時，還有沒有別的東西撐住。</p>
+<p><em>資料來源：BleepingComputer</em></p>
+<p><a href="https://www.bleepingcomputer.com/news/security/openssh-flaw-lets-attackers-log-into-password-disabled-linux-accounts/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
