@@ -1,0 +1,52 @@
+Date: 2026-11-05 13:33:00
+Author: HKLUG Team
+Title: Core MM Tree Sends Second Linux 7.4 Pull Request, Fixing Bugs Maintainers Call 'Nasty and Long-Standing'
+Content:
+<h4>ENGLISH_ARTICLE</h4>
+<p>The second pull request from the Linux kernel's new Core MM tree has landed in the 7.4 merge window, carrying a batch of fixes that upstream maintainers describe as addressing "nasty long-standing bugs" in core memory management, according to Phoronix.</p>
+<h5>A new lane proves it isn't a one-off</h5>
+<p>The significance of the submission is as much structural as it is bug-specific. Linux 7.4 marks the first cycle in which core memory management patches travel through a dedicated Core MM tree rather than being funnelled exclusively through Andrew Morton's long-standing "MM" tree. A second pull request from that new branch — rather than a single token submission — indicates the lane is carrying a real workload and is intended as a permanent integration path for the subsystem.</p>
+<h5>What "long-standing" implies for deployed systems</h5>
+<p>The phrase "long-standing" is doing heavy lifting in the commit description. Defects that survive multiple release cycles in the memory management subsystem are typically the hardest class to diagnose: rare corruption under memory pressure, races in page reclaim, and accounting errors that only surface on specific workloads or hardware configurations. They are frequently hard to reproduce, hard to attribute to an introducing commit, and often only identified retrospectively once a fix is proposed.</p>
+<p>That has direct implications for production operators. A bug described as long-standing may well already be present in the kernels deployed across fleets today — not merely in code slated for 7.4. For teams running long-lived LTS-derived kernels, the relevant question is not whether the fixes are new, but whether the affected code paths are versioned in their installed kernels.</p>
+<h5>Verify at source before acting</h5>
+<p>Summary coverage is not authoritative on patch-level detail. Operators evaluating whether a given fix applies to their environment should go directly to the Linux Kernel Mailing List archives and the kernel git history to establish, for each fix: the affected versions, the specific code paths involved, and whether any fix has been assigned a CVE identifier. Individual bug breakdowns, reproducer details, and subsystem-level discussion are all best read at source rather than through secondary reporting.</p>
+<p>The same caveat applies to lifecycle expectations. The pull request sits in the merge window; the fixes must still complete integration, survive the full 7.4 cycle, and only then propagate downstream. Distributions and stable-tree maintainers typically evaluate merged fixes for backporting after release, on their own schedules and with their own regression criteria — timelines vary by project, and no backport commitment should be assumed until a distribution announces one.</p>
+<h5>Why it matters beyond 7.4</h5>
+<p>Two things are worth separating. First, the Core MM tree is now a going concern: it has been exercised twice in a single cycle, and it is the channel to follow for core memory management changes going forward. Second, the fixes themselves target defects old enough that "not running 7.4" is not automatically a defence.</p>
+<p>For Hong Kong IT teams and downstream stable maintainers, the practical move is unchanged regardless of the version number: identify which of the newly merged fixes touch code paths present in your deployed kernels, then track backport decisions against your distribution's published stable advisories. On stability grounds alone — with upstream itself flagging defects that have persisted across releases — Linux 7.4 will merit evaluation when it ships.</p>
+<hr />
+<p><em>Source: <a href="https://www.phoronix.com/news/Linux-7.4-Core-MM-Nasty-Fixes">Phoronix</a>.</em></p>
+<hr />
+<h4>ZH_TW_ARTICLE</h4>
+<p><strong>Core MM Tree 提交 Linux 7.4 第二份 pull request，修正維護者口中「棘手且長期存在」的缺陷</strong></p>
+<p>Linux kernel 全新 Core MM tree 的第二份 pull request 已進入 7.4 merge window，當中包含一批上游維護者形容為解決核心記憶體管理中「棘手且長期存在（nasty long-standing）」bug 的修正，據 Phoronix 報導。</p>
+<h5>新通道證明並非曇花一現</h5>
+<p>這份提交的意義，與其說在於修了哪些 bug，不如說在於結構層面。Linux 7.4 是核心記憶體管理 patch 首次改經專用的 Core MM tree 送交主線，而不再全部經由 Andrew Morton 長期主理的「MM」tree。這條新分支在單一週期內收到第二份 pull request——而非只交一次象徵性的提交——顯示該通道確實承載著實際工作量，並被定位為此子系統的長期整合路徑。</p>
+<h5>「長期存在」對已部署系統意味著什麼</h5>
+<p>「long-standing（長期存在）」一詞在 commit 描述中份量極重。能在記憶體管理子系統跨越多個 release 週期存活下來的缺陷，通常屬於最難診斷的一類：記憶體壓力下罕見的資料損壞、page reclaim 中的競爭狀態（race condition），以及只有在特定 workload 或硬件配置下才浮現的記帳錯誤。這類問題往往難以重現、難以追溯到引入問題的 commit，且通常要等到修正提出後才被回溯識別。</p>
+<p>對生產環境營運者而言，這有直接影響。一顆被描述為長期存在的 bug，很可能早已存在於現今大規模部署（fleet）的 kernel 之中——而不只是即將進入 7.4 的程式碼。對運行長期支援（LTS）衍生 kernel 的團隊來說，關鍵問題並不在於修正是否為新，而在於受影響的程式碼路徑是否存在於已安裝的 kernel 版本中。</p>
+<h5>動手前先到源頭核實</h5>
+<p>摘要式報導並不具備 patch 層級的權威性。營運者若要評估某項修正是否適用於自身環境，應直接查閱 Linux Kernel Mailing List 存檔與 kernel git 歷史，逐項確認：受影響的版本、涉及的具體程式碼路徑，以及該修正是否已獲配 CVE 編號。個別 bug 的細節拆解、重現步驟與子系統層級的討論，都宜直接閱讀源頭，而非依賴二手報導。</p>
+<p>生命週期方面的提醒同樣適用。這份 pull request 目前處於 merge window；修正仍須完成整合、走完整個 7.4 週期，之後才能向下游傳播。各發行版與 stable tree 維護者通常會在發布後，按各自的時間表與回歸標準評估是否 backport——時間表因專案而異，在發行版正式宣布之前，不應假定任何 backport 承諾。</p>
+<h5>超越 7.4 的啟示</h5>
+<p>有兩件事需要分開來看。其一，Core MM tree 已經正式運作：它在單一週期內已被使用兩次，往後核心記憶體管理的變更都應循此通道提交。其二，這批修正所針對的缺陷年代夠久，意味著「不跑 7.4」本身並不是防護。</p>
+<p>對香港 IT 團隊與下游 stable 維護者而言，無論版本號為何，實務上的下一步都一樣：先辨識哪些新合併的修正觸及已部署 kernel 中存在的程式碼路徑，再對照所用發行版已公布的 stable advisories 追蹤 backport 決策。單憑穩定性理由——上游本身已標示出跨越多個 release 持續存在的缺陷——Linux 7.4 在正式發布時就值得評估。</p>
+<hr />
+<p><em>Source: <a href="https://www.phoronix.com/news/Linux-7.4-Core-MM-Nasty-Fixes">Phoronix</a>.</em></p>
+<hr>
+<p>Linux kernel 全新 Core MM tree 的第二份 pull request 已進入 7.4 merge window，當中包含一批上游維護者形容為解決核心記憶體管理中「棘手且長期存在（nasty long-standing）」bug 的修正，據 Phoronix 報導。</p>
+<h4>新通道證明並非曇花一現</h4>
+<p>這份提交的意義，與其說在於修了哪些 bug，不如說在於結構層面。Linux 7.4 是核心記憶體管理 patch 首次改經專用的 Core MM tree 送交主線，而不再全部經由 Andrew Morton 長期主理的「MM」tree。這條新分支在單一週期內收到第二份 pull request——而非只交一次象徵性的提交——顯示該通道確實承載著實際工作量，並被定位為此子系統的長期整合路徑。</p>
+<h4>「長期存在」對已部署系統意味著什麼</h4>
+<p>「long-standing（長期存在）」一詞在 commit 描述中份量極重。能在記憶體管理子系統跨越多個 release 週期存活下來的缺陷，通常屬於最難診斷的一類：記憶體壓力下罕見的資料損壞、page reclaim 中的競爭狀態（race condition），以及只有在特定 workload 或硬件配置下才浮現的記帳錯誤。這類問題往往難以重現、難以追溯到引入問題的 commit，且通常要等到修正提出後才被回溯識別。</p>
+<p>對生產環境營運者而言，這有直接影響。一顆被描述為長期存在的 bug，很可能早已存在於現今大規模部署（fleet）的 kernel 之中——而不只是即將進入 7.4 的程式碼。對運行長期支援（LTS）衍生 kernel 的團隊來說，關鍵問題並不在於修正是否為新，而在於受影響的程式碼路徑是否存在於已安裝的 kernel 版本中。</p>
+<h4>動手前先到源頭核實</h4>
+<p>摘要式報導並不具備 patch 層級的權威性。營運者若要評估某項修正是否適用於自身環境，應直接查閱 Linux Kernel Mailing List 存檔與 kernel git 歷史，逐項確認：受影響的版本、涉及的具體程式碼路徑，以及該修正是否已獲配 CVE 編號。個別 bug 的細節拆解、重現步驟與子系統層級的討論，都宜直接閱讀源頭，而非依賴二手報導。</p>
+<p>生命週期方面的提醒同樣適用。這份 pull request 目前處於 merge window；修正仍須完成整合、走完整個 7.4 週期，之後才能向下游傳播。各發行版與 stable tree 維護者通常會在發布後，按各自的時間表與回歸標準評估是否 backport——時間表因專案而異，在發行版正式宣布之前，不應假定任何 backport 承諾。</p>
+<h4>超越 7.4 的啟示</h4>
+<p>有兩件事需要分開來看。其一，Core MM tree 已經正式運作：它在單一週期內已被使用兩次，往後核心記憶體管理的變更都應循此通道提交。其二，這批修正所針對的缺陷年代夠久，意味著「不跑 7.4」本身並不是防護。</p>
+<p>對香港 IT 團隊與下游 stable 維護者而言，無論版本號為何，實務上的下一步都一樣：先辨識哪些新合併的修正觸及已部署 kernel 中存在的程式碼路徑，再對照所用發行版已公布的 stable advisories 追蹤 backport 決策。單憑穩定性理由——上游本身已標示出跨越多個 release 持續存在的缺陷——Linux 7.4 在正式發布時就值得評估。</p>
+<hr />
+<p><em>Source: <a href="https://www.phoronix.com/news/Linux-7.4-Core-MM-Nasty-Fixes">Phoronix</a>.</em></p>
+<p><a href="https://www.phoronix.com/news/Linux-7.4-Core-MM-Nasty-Fixes" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
