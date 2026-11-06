@@ -1,0 +1,46 @@
+Date: 2026-11-06 15:24:00
+Author: HKLUG Team
+Title: After Retiring i486 and AMD Elan, Linux Cleans Up the 32-Bit x86 Code They Left Behind
+Content:
+<p>The Linux kernel's tidy-up of its 32-bit x86 codebase has entered a second phase, according to Phoronix: with i486-era processor support, old AMD Elan SoC code, and other obsolete 32-bit x86 hardware support now removed, follow-up patches are streamlining what remains — including allowing the kernel to depend unconditionally on features that once needed conditional checks for the retired hardware.</p>
+<p>The deletions landed first. The kernel recently phased out i486 CPU support, dropped the ageing AMD Elan SoC code, and cleared out other stagnant 32-bit x86 hardware support. Only with those drivers and platform quirks gone could subsequent patches simplify the surrounding code.</p>
+<p>That sequencing is the point of the story. Removing dead-end hardware support was the precondition for the tidy-up, not a side effect of it. The result is a series of focused, reviewable changes rather than a one-off sweeping rewrite: reviewers assess the removal on maintenance grounds and the simplification on correctness grounds, each step on its own merits.</p>
+<h4>What the clean-up actually buys</h4>
+<p>The payoff is maintenance health rather than new functionality. Once support for vintage CPUs is no longer in play, code paths that branched on old hardware collapse into direct, unconditional dependencies. Fewer conditional branches mean less room for bugs to hide, a smaller review surface for maintainers, and lower configuration complexity — particularly for minimal or specialised kernel builds where every legacy option adds to the maintenance burden.</p>
+<p>For developers and integrators carrying downstream or out-of-tree kernel patches, that shrinking complexity can translate into less rebasing friction over time.</p>
+<h4>Who is — and isn't — affected</h4>
+<p>The scope is narrow but easy to misread. Contemporary 32-bit x86 users should see no behavioural change from this phase of the work; 32-bit x86 support itself remains in the kernel, and Pentium-era-and-later parts are unaffected. What loses current-kernel support are machines built around i486-class processors and AMD Elan-based designs. Those systems must fall back to long-term-support kernels or distribution-maintained kernel packages to keep receiving updates.</p>
+<p>This is a familiar pattern upstream: functionality is not being removed arbitrarily, but the window of what a given "current Linux" release will boot on continues to narrow as stagnant code is retired.</p>
+<h4>A practical audit checklist for legacy fleets</h4>
+<p>For legacy fleet operators — in Hong Kong and elsewhere — still running 32-bit x86 hardware in point-of-sale terminals, industrial controllers, or embedded and edge deployments, the trigger for action is any planned kernel or distribution upgrade, not this patch series in isolation. A reasonable pre-upgrade audit:</p>
+<ul>
+<li><strong>Inventory the CPU.</strong> Confirm whether machines are actually i486-class or Elan-based, versus later 32-bit x86 parts (Pentium and above) that remain supported. Most in-service 32-bit systems will fall outside the removed support.</li>
+<li><strong>Check your distribution's support horizon.</strong> Distributions routinely carry LTS or legacy kernel branches; verify which branch your hardware vendor or distro will continue to patch, and until when.</li>
+<li><strong>Test on a staging unit.</strong> Boot the target kernel on one representative machine before committing a fleet, watching specifically for hardware detection failures on the oldest units.</li>
+<li><strong>Document fallback options.</strong> Record the last known-good kernel and the process to restore it, so an upgrade that fails on legacy hardware does not become an outage.</li>
+<li><strong>Plan refresh cycles.</strong> Hardware that has fallen out of upstream support is a signal to schedule replacement rather than indefinite patch-tracking.</li>
+</ul>
+<p>The wider lesson for the open-source community is that this clean-up serves as an indicator of how the kernel project handles ageing code: support ends deliberately and in a reviewable order, and the maintenance benefits accrue to everyone still building modern kernels — even as a shrinking set of vintage machines is left behind.</p>
+<p>According to Phoronix, the clean-up patches continue to land as the post-i486 and post-Elan work proceeds.</p>
+<hr>
+<p>據 Phoronix 報導，Linux kernel 對其 32-bit x86 程式碼庫的整理工作已進入第二階段：隨著 i486 時代處理器支援、舊 AMD Elan SoC 程式碼及其他過時 32-bit x86 硬件支援相繼移除，後續 patch 正在精簡餘下部分——包括讓 kernel 無條件依賴某些功能，而這些功能以往需為已退役硬件進行條件檢查。</p>
+<p>刪除工作先行落地。kernel 最近逐步淘汰 i486 CPU 支援、棄用老化的 AMD Elan SoC 程式碼，並清除了其他停滯的 32-bit x86 硬件支援。只有在這些 driver 及平台特例被移除後，後續 patch 才能簡化周邊程式碼。</p>
+<p>這種先後次序正是報導重點。移除毫無出路的硬件支援是整頓工作的前提，而非其副產品。結果是一系列聚焦、便於審核的改動，而非一次性大規模重寫：審核者從維護角度評估移除，從正確性角度評估簡化，每一步各自按本身優劣判斷。</p>
+<h4>這次清理實際帶來什麼</h4>
+<p>回報在於維護健康，而非新增功能。一旦古董 CPU 的支援不再考慮在內，針對舊硬件分支的程式碼路徑便收斂為直接、無條件的依賴。較少的條件分支意味著 bug 可藏身的地方更少、維護者面對較小的審核範圍，以及較低的配置複雜度——對 minimal 或 specialised kernel 編譯尤其如此，因為每一個 legacy 選項都會增加維護負擔。</p>
+<p>對攜帶 downstream 或 out-of-tree kernel patch 的開發者及整合者而言，這種複雜度的收窄可逐步轉化為較少的 rebase 摩擦。</p>
+<h4>誰受影響——以及誰不受影響</h4>
+<p>範圍狹窄，但容易誤讀。現行 32-bit x86 用戶在這一階段工作後不應看到行為變化；32-bit x86 支援本身仍保留在 kernel 之中，Pentium 時代及以後的處理器不受影響。失去現行 kernel 支援的是以 i486 級處理器及 AMD Elan 設計為基礎的機器。這些系統必須轉用 long-term-support kernel 或發行版維護的 kernel 套件，才能繼續接收更新。</p>
+<p>這是上游常見的模式：功能並非任意移除，但某個「現行 Linux」版本能夠啟動的硬件範圍，隨著停滯程式碼退役而不斷收窄。</p>
+<h4>舊硬件機隊實用審計清單</h4>
+<p>對仍在銷售終端機、工業控制器或 embedded 及 edge 部署中運行 32-bit x86 硬件的舊機隊營運者——無論在香港或其他地區——觸發行動的時機是任何已計劃的 kernel 或發行版升級，而非單獨就這一系列 patch 作出反應。以下是一份合理的升級前審計：</p>
+<ul>
+<li><strong>盤點 CPU。</strong> 確認機器實際上屬 i486 級或基於 Elan，而非仍獲支援的較新 32-bit x86 處理器（Pentium 及以上）。大多數在用 32-bit 系統不屬於被移除的範圍。</li>
+<li><strong>查看所用發行版的支援期限。</strong> 發行版通常會提供 LTS 或 legacy kernel 分支；核實硬件供應商或發行版將繼續修補哪個分支，以及為期多久。</li>
+<li><strong>先在 staging 機器測試。</strong> 在部署整個機隊之前，先在一台具代表性的機器上啟動目標 kernel，特別留意最舊機器的硬件偵測是否失敗。</li>
+<li><strong>記錄 fallback 方案。</strong> 記下最後已知良好的 kernel 及還原流程，令在舊硬件上失敗的升級不致演變成停機事故。</li>
+<li><strong>規劃更新周期。</strong> 已脫離上游支援的硬件，是安排更換而非無限期追蹤 patch 的訊號。</li>
+</ul>
+<p>對開源社群更廣泛的啟示是，這次清理可作為 kernel 專案如何處理老舊程式碼的指標：支援終止是有意為之且按可審核的次序進行，而維護收益則歸於所有仍編譯現代 kernel 的人——即使一批數量漸減的古董機器就此被拋在後面。</p>
+<p>據 Phoronix 指出，隨著 post-i486 及 post-Elan 工作持續推進，清理 patch 將繼續陸續落地。</p>
+<p><a href="https://www.phoronix.com/news/Linux-2026-x86-32-bit-Cleanup" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
