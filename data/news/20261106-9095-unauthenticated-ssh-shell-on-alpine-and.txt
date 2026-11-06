@@ -1,0 +1,56 @@
+Date: 2026-11-06 05:26:00
+Author: HKLUG Team
+Title: Unauthenticated SSH shell on Alpine and beyond: how to check your fleet for the *sshole flaw
+Content:
+<p>If you run Alpine Linux — particularly in containers, network appliances, NAS boxes, or other edge devices — the first thing to do this morning is inspect your effective <code>sshd</code> configuration, not your distribution's version number: an attacker exploiting this flaw gains unauthenticated remote shell access to the affected host, logging in over SSH without a password.</p>
+<p>Ars Technica reported on 6 November 2026 on a vulnerability nicknamed *<strong>sshole</strong>, which allows attackers to do exactly that on certain Linux devices. The publication names Alpine Linux configurations as confirmed in scope, while cautioning that other distributions may be affected as well.</p>
+<p>Two facts shape the self-check:</p>
+<p><strong>1. This is a configuration problem, not a distro-branding problem.</strong> The flaw reaches devices whose running <code>sshd</code> configuration permits passwordless authentication paths it should not. Because OpenSSH deployments routinely pull in configuration fragments through <code>Include</code> directives, the effective configuration a daemon ends up using can differ substantially from what an administrator remembers editing. Alpine is confirmed affected; on Debian-, Ubuntu-, or RHEL-derived systems, the correct response is to verify rather than assume — and equally, to avoid assuming Alpine is automatically safe because it is "minimal."</p>
+<p><strong>2. No CVE identifier has been published in the source material as of filing, and no definitive cross-distribution affected list exists yet.</strong> We will update this article if a CVE is assigned or as vendors confirm scope.</p>
+<h5>Why it matters: propagation and a detection gap</h5>
+<p>Alpine's significance here extends well beyond machines that advertise themselves as Alpine. Alpine is one of the most widely used base images for containers and a common foundation for embedded and appliance firmware. A vulnerable <code>sshd</code> configuration baked into a base image can travel into derived artefacts — internal images, vendor firmware, third-party appliances — that never mention Alpine in their name, version output, or documentation. Security teams inventorying by distribution name will miss these.</p>
+<p>There is also a detection problem. A failed SSH brute-force attempt is loud: it fills authentication logs with failures that any monitoring pipeline can alert on. A successful passwordless login enabled by this flaw produces no failure event at all, so pipelines keyed to failure counts will not fire. If your detection strategy is built around spotting failed logins, a working bypass leaves you with nothing to see.</p>
+<h5>What to do: a five-point check</h5>
+<ol>
+<li><strong>Dump the effective configuration.</strong> Run <code>sshd -T</code> on each host or container and inspect the authentication directives actually in force, rather than relying on the main <code>sshd_config</code> file alone.</li>
+<li><strong>Trace include chains.</strong> Review every <code>Include</code> directive and the fragments it pulls in — vendor defaults and drop-in directories are where surprising settings hide.</li>
+<li><strong>Confirm Alpine's presence in your supply chain.</strong> Check base images, appliance firmware, and rebuilt artefacts, not just your OS package manifest.</li>
+<li><strong>Verify that passwordless login paths are closed</strong> wherever they were not explicitly intended, and restrict SSH exposure with network-level controls in the meantime.</li>
+<li><strong>Audit existing sessions.</strong> Since a successful bypass produces only ordinary-looking success entries in auth logs, review active and recent sessions for unexpected users, sources, or timings.</li>
+</ol>
+<p>Generic SSH hygiene — key-only authentication, disabling password and root login, key rotation — remains worthwhile background practice, but it is secondary here: the point of this advisory is that you cannot know your posture until you have read the configuration your daemon is actually using.</p>
+<h5>Glossary (Traditional Chinese)</h5>
+<ul>
+<li><strong>SSH（Secure Shell）</strong>：加密的遠端連線協定</li>
+<li><strong>憑證 / 金鑰（key pair）</strong>：取代密碼的身份驗證方式</li>
+<li><strong>設定檔（configuration）</strong>：<code>sshd</code> 實際套用的指令與選項</li>
+<li><strong>容器基礎映像（base image）</strong>：建置容器映像的起始層</li>
+</ul>
+<h4><em>This story is broadly relevant to IT professionals maintaining appliance or container fleets. If a CVE identifier or an authoritative affected-distribution list is published, we will revise accordingly.</em></h4>
+<hr>
+<p>如果你運行 Alpine Linux —— 特別是在容器、網絡裝置、NAS 或其他 edge device 上 —— 今早第一件要做的事是檢查實際生效的 <code>sshd</code> 設定，而非發行版的版本號：攻擊者利用此漏洞可取得受影響主機的無需認證遠端 shell 權限，透過 SSH 直接登入，毋須密碼。</p>
+<p>Ars Technica 於 2026 年 11 月 6 日報導了一個綽號為 *<strong>sshole</strong> 的漏洞，該漏洞容許攻擊者在特定 Linux 裝置上作出上述行為。該媒體確認 Alpine Linux 設定在受影響範圍之內，同時提醒其他發行版亦可能受到影響。</p>
+<p>有兩項事實影響自查方式：</p>
+<p><strong>1. 這是設定問題，而非發行版品牌問題。</strong> 漏洞影響的裝置，其運行中的 <code>sshd</code> 設定容許了不應存在的免密碼認證路徑。由於 OpenSSH 部署通常透過 <code>Include</code> 指令引入設定片段，daemon 最終採用的實際設定，可能與管理員記得自己編輯過的內容大有出入。Alpine 已確認受影響；在 Debian、Ubuntu 或 RHEL 衍生系統上，正確做法是查證而非假定 —— 同樣地，亦不應因 Alpine「精簡」便假定它自動安全。</p>
+<p><strong>2. 截至發稿時，原始資料中尚未公布任何 CVE 編號，亦未有確定的跨發行版受影響清單。</strong> 如獲分配 CVE 或廠商確認影響範圍，我們會更新本文。</p>
+<h5>為何重要：擴散途徑與偵測盲點</h5>
+<p>Alpine 在此處的重要性，遠超乎那些自稱 Alpine 的機器。Alpine 是其中一個最廣泛使用的容器 base image，亦是嵌入式及裝置韌體的常見基礎。一個存在漏洞的 <code>sshd</code> 設定一旦內置於 base image，便可隨衍生產物流傳 —— 內部映像、廠商韌體、第三方裝置 —— 這些產物的名稱、版本輸出及文件從不提及 Alpine。單憑發行版名稱盤點的保安團隊將會漏掉它們。</p>
+<p>此外還有偵測問題。SSH 暴力破解失敗會很「大聲」：它令認證 log 滿是失敗紀錄，任何 monitoring pipeline 都能就此發出警報。而此漏洞促成的成功免密碼登入完全不會產生失敗事件，因此以失敗次數為觸發條件的 pipeline 不會啟動。如果你的偵測策略建基於辨識失敗登入，一個有效繞過手段將令你無跡可尋。</p>
+<h5>應如何做：五點檢查</h5>
+<ol>
+<li><strong>輸出實際生效的設定。</strong> 在每部主機或容器執行 <code>sshd -T</code>，檢視真正生效中的認證指令，而非僅依賴主 <code>sshd_config</code> 檔案。</li>
+<li><strong>追蹤 include 鏈。</strong> 檢視每條 <code>Include</code> 指令及其引入的片段 —— 廠商預設值與 drop-in 目錄，正是意外設定藏身之處。</li>
+<li><strong>確認 Alpine 是否存在於你的 supply chain。</strong> 檢查 base image、裝置韌體及重新建構的產物，而不只看你的 OS package manifest。</li>
+<li><strong>確認免密碼登入路徑已關閉</strong> —— 凡並非明確預留的路徑一律封閉，並與此同時以網絡層級控管限制 SSH 暴露範圍。</li>
+<li><strong>審核現有 session。</strong> 由於成功繞過只會在 auth log 留下看似普通的成功紀錄，須審查現行及近期 session，留意異常用戶、來源或時間。</li>
+</ol>
+<p>一般 SSH 衛生措施 —— 只用 key 認證、停用密碼及 root 登入、定期輪換 key —— 仍是值得維持的基本practice，但在此屬次要：本通告的重點在於，在你讀取 daemon 實際使用的設定之前，你無法知悉自己的防護狀態。</p>
+<h5>術語表（繁體中文）</h5>
+<ul>
+<li><strong>SSH（Secure Shell）</strong>：加密的遠端連線協定</li>
+<li><strong>憑證 / 金鑰（key pair）</strong>：取代密碼的身份驗證方式</li>
+<li><strong>設定檔（configuration）</strong>：<code>sshd</code> 實際套用的指令與選項</li>
+<li><strong>容器基礎映像（base image）</strong>：建置容器映像的起始層</li>
+</ul>
+<h4><em>本文與維護 appliance 或 container fleet 的 IT 專業人士大致相關。如日後公布 CVE 編號或權威的受影響發行版清單，我們會相應修訂。</em></h4>
+<p><a href="https://arstechnica.com/security/2026/11/vulnerability-allows-attackers-to-log-into-some-linux-devices-sans-password/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
