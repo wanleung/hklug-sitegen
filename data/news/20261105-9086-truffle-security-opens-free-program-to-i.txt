@@ -1,0 +1,42 @@
+Date: 2026-11-05 22:32:00
+Author: HKLUG Team
+Title: Truffle Security opens free program to invalidate 1.4 million live leaked secrets
+Content:
+<h3>Truffle Security opens free program to invalidate 1.4 million live leaked secrets</h3>
+<p>Security firm Truffle Security has launched the Secrets Revocation Program, a free initiative aimed at helping API key issuers revoke roughly 1.4 million publicly exposed credentials that, according to the company, remain valid today. The announcement was reported by BleepingComputer.</p>
+<p>The headline number is the hook, but the more useful story for anyone who maintains code is the gap it exposes: finding a leaked secret and actually killing it are two different problems, and only one of them is usually automated.</p>
+<h4>Detection is not remediation</h4>
+<p>Secret scanners such as TruffleHog routinely surface API keys, tokens and passwords sitting in public repositories, commit histories and CI logs. What most of this tooling cannot do is revoke the credential. Only the service that issued a key can invalidate it — and typically that service has no idea the key was leaked. Meanwhile, the developer or organisation that accidentally committed it rarely holds the authority to disable it at the issuer, particularly when the account belongs to a departed employee, a contractor or a third-party vendor.</p>
+<p>The result is a stalemate in which the credential stays live indefinitely while the exposure is "known" only to whoever ran the scanner. Truffle Security's program is structured to connect those two sides: teams that discover leaked keys can submit them, and issuers who can act on them get a free route to revocation.</p>
+<p>Equally important is what revocation actually requires. Deleting a secret from your current source tree accomplishes almost nothing — the value persists in every prior commit, fork, mirror, cached build artefact and log line. The correct order of operations is revoke at the issuer first, then rotate to a new credential, then scrub history if policy demands it. Scanning before revoking is the common inversion, and it leaves the original key working the whole time.</p>
+<h4>If you're affected</h4>
+<p>A practical sequence for checking your own estate:</p>
+<ol>
+<li><strong>Scan broadly</strong> — private repos, archived branches, forks, plus CI/CD logs and configuration stores — with a secrets scanner such as TruffleHog or an equivalent tool.</li>
+<li><strong>Treat every hit as live</strong> until proven otherwise; do not assume an old key has expired.</li>
+<li><strong>Revoke first</strong> at the issuing service — the console or admin API of the provider that minted the key — then <strong>rotate</strong> to a replacement and update your deployment, secrets manager and team in one pass.</li>
+<li><strong>Lock down the path that leaked it</strong>: tighten pre-commit hooks, restrict log verbosity for environment variables, and review who holds standing access to the issuer account.</li>
+</ol>
+<p>The revocation step is the one most often skipped, precisely because it sits outside the developer's toolchain. Truffle Security's premise is that closing that loop — rather than shipping yet another detector — is where the remaining risk actually lives.</p>
+<p>For open-source maintainers and small teams in particular, the appeal of a free program is straightforward: the hard part of a leaked credential is rarely the identification, and the part that costs money or influence is getting the issuing party to act. Any initiative that shortens that path is worth watching as credential exposures continue to scale.</p>
+<p><em>Source: <a href="https://www.bleepingcomputer.com/news/security/truffle-security-launches-program-to-revoke-14-million-live-secrets/">BleepingComputer</a>.</em></p>
+<hr>
+<h3>Truffle Security 推出免費計劃 撤銷140萬組仍然有效的洩露機密憑證</h3>
+<p>保安公司 Truffle Security 推出「Secrets Revocation Program」，這項免費計劃旨在協助 API key 發行方撤銷約140萬組公開外洩的憑證；據該公司表示，這些憑證至今仍然有效。相關消息由 BleepingComputer 報道。</p>
+<p>標題數字固然吸引眼球，但對所有維護代碼的人員而言，更有參考價值的是其揭示的落差：找出洩露的 secret 與真正將其作廢，是兩個不同的問題，而通常只有其中一個環節實現了自動化。</p>
+<h4>偵測不等於補救</h4>
+<p>TruffleHog 等 secret 掃描工具經常會在公開 repositories、commit 歷史及 CI logs 中找出 API keys、tokens 及密碼。但這類工具大多無法做到的，是撤銷該憑證。只有簽發該 key 的服務才能將其作廢——而該服務通常對 key 已遭洩露一事毫不知情。與此同時，意外將其 commit 進倉庫的開發人員或機構，往往並無權限在發行方停用該憑證，尤其是當相關帳戶屬於離職員工、外判商或第三方供應商時。</p>
+<p>結果形成僵局：憑證持續有效，而外洩一事「已知」的範圍僅限於執行過掃描的人員。Truffle Security 的計劃正是要連接這兩方：發現洩露 key 的團隊可以提交，而有能力採取行動的發行方則獲得免費的撤銷途徑。</p>
+<p>同樣重要的是，撤銷實際上需要什麼步驟。從目前的 source tree 刪除一個 secret 幾乎毫無作用——該數值仍然存在於每一個先前的 commit、fork、mirror、已快取的 build artefact 及 log line 之中。正確的先後次序是：先在發行方撤銷，然後輪換至新憑證，最後如政策要求才清理歷史記錄。先掃描後撤銷是常見的次序顛倒，而在這段期間原有一個 key 始終持續運作。</p>
+<h4>如果你受影響</h4>
+<p>以下是檢查自身資產的實用步驟：</p>
+<ol>
+<li><strong>全面掃描</strong>——包括 private repos、已封存的分支、forks，以及 CI/CD logs 及 configuration stores——可使用 TruffleHog 或同類的 secrets 掃描工具。</li>
+<li><strong>在有反證之前，將每一項命中視為仍然有效</strong>；切勿假設舊的 key 已經過期。</li>
+<li><strong>先撤銷</strong>——在簽發相關服務的 console 或 provider 的 admin API 進行——然後<strong>輪換</strong>至替代憑證，並一次性更新部署、secrets manager 及團隊成員。</li>
+<li><strong>封堵洩露途徑</strong>：加強 pre-commit hooks、限制環境變數的 log verbosity，並檢視哪些人持有發行方帳戶的長期存取權限。</li>
+</ol>
+<p>撤銷這一步最常被略過，正正是因為它位於開發人員工具鏈之外。Truffle Security 的核心理念是：閉合這個環節——而非再推出另一個偵測器——才是真正消除剩餘風險的關鍵。</p>
+<p>對開放源碼維護者及小型團隊而言，免費計劃的吸引力顯而易見：洩露憑證最難處理的從來不是識別，而是要付出金錢或人脈才能促使發行方採取行動。隨著憑證外洩事件持續增加，任何能縮短這條路徑的計劃都值得留意。</p>
+<p><em>來源：<a href="https://www.bleepingcomputer.com/news/security/truffle-security-launches-program-to-revoke-14-million-live-secrets/">BleepingComputer</a></em></p>
+<p><a href="https://www.bleepingcomputer.com/news/security/truffle-security-launches-program-to-revoke-14-million-live-secrets/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
