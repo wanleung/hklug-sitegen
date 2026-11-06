@@ -1,0 +1,32 @@
+Date: 2026-11-06 23:06:00
+Author: HKLUG Team
+Title: AMD's Zen 6 Appears to Move Its Trusted Execution Environment From ARM to RISC-V
+Content:
+<h3>AMD's Zen 6 Appears to Move Its Trusted Execution Environment From ARM to RISC-V</h3>
+<p>AMD's upcoming Zen 6 processors appear to be replacing the ARM-based core that has historically handled their on-die Trusted Execution Environment with a RISC-V implementation, according to a code-level observation surfaced from AMD's latest upstream Linux kernel activity and reported by Phoronix.</p>
+<p>The deeper story here is that a root of trust for measured boot and remote attestation is being re-architected in public — in kernel code, before any marketing cycle. And the provenance matters: this is not an AMD announcement, a specification, or any formal disclosure. It rests on what reviewers spotted in AMD's Linux patches. The change is inferred from kernel code, and the details visible there — the core itself, the firmware around it, and how duties are divided — remain incomplete.</p>
+<h4>Why the architecture choice matters</h4>
+<p>AMD has not stated a rationale for the shift, so any explanation at this stage is contextual rather than confirmed. What makes the direction notable is that RISC-V's open, fixed-length instruction set is broadly easier to audit than a licensed proprietary ISA, and it carries no per-chip licensing terms. Both properties matter for a component whose entire purpose is to be trusted: measured boot chains and remote attestation depend on being able to inspect, reproduce, and vouch for what runs beneath the operating system. A root of trust built on an open ISA is, in principle, easier for third parties to scrutinise than one closed behind a licence.</p>
+<p>AMD has not commented on the reasoning; the analysis above is inference from the properties of the architecture, not a stated motive.</p>
+<h4>What this means for Linux attestation tooling</h4>
+<p>The practical consequence lands on anyone running attestation or measured-boot workflows. Remote attestation verifies that a platform booted and is running a known-good measurement — and that verification is anchored in the specific TEE implementation underneath. If the execution environment hosting the TEE changes ISA, existing assumptions cannot simply be carried forward.</p>
+<p>Platform teams running measured-boot and attestation workflows should expect to revalidate their tooling. Tooling validated against an ARM-hosted TEE will need checking against the new environment: the measurements, the trust anchors, and the expected firmware behaviour may all differ. For platform-review and security-assessment workflows, that is rework, not a drop-in upgrade. Confidential-computing deployments — where tenants rely on attestation to trust that workloads are isolated on hardware they do not control — are squarely in scope, because their guarantee is only as strong as the attestation chain beneath it.</p>
+<h4>What remains unknown</h4>
+<p>Several questions are unanswered pending either maturing patches or an official AMD statement. We do not know the exact core implementation, how duties are split between a RISC-V TEE and any residual ARM-based management firmware, or how much of the change is user-visible versus opaque vendor firmware. Until that documentation exists, the observation should be treated as an early signal from patch review rather than a settled specification.</p>
+<p>Wherever server fleets must be able to prove what is running on them, that is a change platform teams will eventually need to verify for themselves.</p>
+<p><em>Source: Phoronix, "A RISC-V Based TEE With AMD Zen 6 CPUs."</em></p>
+<hr>
+<h3>AMD Zen 6 據悉將可信執行環境由 ARM 轉移至 RISC-V</h3>
+<p>據 Phoronix 報導，從 AMD 最新 upstream Linux kernel 動態中浮現的一項代碼層面觀察顯示，AMD 即將推出的 Zen 6 處理器，似乎正以 RISC-V 實現取代歷來負責片上 Trusted Execution Environment（TEE）的 ARM 架構核心。</p>
+<p>事件的深層意義在於：用於 measured boot 及 remote attestation 的 root of trust 正在公開環境下重新架構——先於任何市場推廣週期，直接反映於 kernel 代碼之中。而資訊來源亦至關重要：這並非 AMD 的公告、規格書或任何正式披露，而是基於審閱者在 AMD Linux patch 中察覺的跡象。該變動乃從 kernel 代碼推斷而來，當中可見的細節——核心本身、周邊 firmware，以及職責如何劃分——仍然不完整。</p>
+<h4>為何架構選擇具重要性</h4>
+<p>AMD 並未說明轉變的理由，故此階段任何解釋均屬背景推測，並非已獲確認。此方向值得注意之處在於，RISC-V 的開放式固定長度 instruction set 普遍較獲授權的專有 ISA 更易稽核，且不附帶逐顆晶片的授權條款。這兩項特質對於一個整體目的就是「值得信任」的組件而言十分關鍵：measured boot chain 與 remote attestation 均取決於能否檢視、重現及為作業系統底層運作的內容作出擔保。建立於開放 ISA 之上的 root of trust，原則上較之封閉於授權條款之後者，更易接受第三方審查。</p>
+<p>AMD 並未就其理據作出評論；上述分析是從架構特質作出的推斷，並非官方聲明的動機。</p>
+<h4>這對 Linux attestation 工具有何影響</h4>
+<p>實際影響落在所有執行 attestation 或 measured-boot 工作流程的人士身上。Remote attestation 驗證平台已正確啟動並運行已知良好的 measurement——而該驗證正錨定於底層特定的 TEE 實現。若承載 TEE 的執行環境更換 ISA，現有假設便無法直接沿用。</p>
+<p>執行 measured-boot 及 attestation 工作流程的 platform 團隊，應預期需重新驗證其工具。曾針對 ARM 承載 TEE 而驗證的工具，須就新環境重新檢查：measurements、trust anchors 及預期的 firmware 行為均可能有所不同。對於 platform review 及 security assessment 工作流程而言，這是重工，而非即插即用的升級。機密運算（confidential computing）部署——租戶依賴 attestation 來相信工作負載已在他們無法控制的硬件上完成隔離——亦完全在影響範圍之內，因為其保證的強度不會超越底層 attestation chain。</p>
+<h4>仍有未知之數</h4>
+<p>若干問題在 patch 趨於成熟或 AMD 正式表態之前仍未有答案。我們不知道核心的確切實現方式、RISC-V TEE 與任何殘留 ARM 管理 firmware 之間的職責劃分，亦不知道變動中有多少是用戶可見、多少則隱藏於不透明的供應商 firmware 之內。在相關文件出台之前，上述觀察應視為來自 patch review 的早期信號，而非已確定的規格。</p>
+<p>凡伺服器叢集須能證明其上運行何種內容之處，platform 團隊最終都需要親自驗證這項變動。</p>
+<p><em>資料來源：Phoronix，〈A RISC-V Based TEE With AMD Zen 6 CPUs〉</em></p>
+<p><a href="https://www.phoronix.com/news/AMD-Zen-6-TEE-RISC-V-Based" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
