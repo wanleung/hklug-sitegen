@@ -1,0 +1,35 @@
+Date: 2026-11-06 05:33:00
+Author: HKLUG Team
+Title: Incremental Kernel Builds Sharpen in Linux 7.4 RC1 Despite Tree Growth
+Content:
+<hr />
+<p>Linux 7.4's first release candidate compiles faster than Linux 7.3 in the scenarios the new build-system work targets — but the tree it is compiling has swollen enough to swallow part of that advantage.</p>
+<p>That is the picture drawn by Phoronix's head-to-head build-time comparison of 7.3 versus 7.4-rc1, run on a Framework Laptop 13 Pro with an Intel Panther Lake processor. The optimisation patches scheduled for this merge window have started landing, and their effects are now visible in real compile runs.</p>
+<p><strong>Smarter tooling against a fatter tree</strong></p>
+<p>This cycle is effectively a tug-of-war. On one side, a patch series aimed squarely at the kernel build system has begun to land, promising much faster incremental rebuilds and near-instant "noop" builds — runs in which nothing has changed and the toolchain should ideally do almost no work. On the other side, the kernel source tree keeps expanding release after release, adding files and objects that every full compile must chew through.</p>
+<p>The specific wall-clock results from the Framework 13 Pro / Panther Lake testing — full builds, incremental rebuilds and noop runs — are laid out in Phoronix's own testing and worth reading directly.</p>
+<p>Because of that push-and-pull, the headline outcome is nuanced rather than sweeping. The gains are sharpest on the incremental and noop paths, where the new tooling can skip work it used to repeat. Clean, from-scratch builds absorb more of the codebase-growth penalty, which softens the overall delta between 7.3 and 7.4-rc1.</p>
+<p><strong>A ten-second projection, not a benchmark</strong></p>
+<p>The most attention-grabbing figure circulating with this work is the suggestion that kernel builds could approach roughly ten seconds — but that number is a projection, not a measured result. It describes what the complete patch series is expected to enable on systems with a large number of CPU cores, and it is not a wall-clock time that Phoronix's laptop produced.</p>
+<p>In practice, developers should expect directional gains rather than a specific target. Wall-clock build times scale heavily with core count, memory bandwidth, storage speed and compiler version, so a desktop workstation or a beefy build server will land somewhere quite different from a Panther Lake laptop.</p>
+<p><strong>Caveats worth carrying</strong></p>
+<p>Two limitations frame the findings. First, the benchmarks cover one machine and one CPU architecture; the optimisations are broadly architecture-agnostic, but the exact seconds saved will vary. Second, RC1 is an early verdict. Build-system patches of this kind have historically trickled in across the merge window rather than arriving all at once, so the measured gap could widen before 7.4 ships.</p>
+<p>For the wider open-source community, the story matters well beyond raw seconds. Kernel compile time is a tax paid daily by distribution packagers, CI farms and hobbyists bisecting bugs alike. Faster incremental and noop builds shorten feedback loops directly — and they arrive just as the tree's growth has made naive full rebuilds steadily more expensive.</p>
+<p>The optimisation-versus-growth dynamic is not going away. But if the series lands as intended, Linux 7.4 could mark the point where build-system improvements begin to offset the cost of a growing tree.</p>
+<p><em>Source: Phoronix, "Linux 7.4's Build Time Performance From Optimizations But Also Larger Codebase."</em></p>
+<hr>
+<p>Linux 7.4 的首個 release candidate 在新 build system 工作所針對的場景下，編譯速度較 Linux 7.3 更快——然而其所編譯的原始碼樹膨脹程度已足以吞噬部分優勢。</p>
+<p>這正是 Phoronix 對 7.3 與 7.4-rc1 進行編譯時間一對一比較所描繪的情況。測試在配備 Intel Panther Lake 處理器的 Framework Laptop 13 Pro 上進行。為是次 merge window 安排的優化 patch 已開始 landing，其實際效果如今已在真實編譯執行中顯現。</p>
+<p><strong>更智能的工具對抗更臃腫的原始碼樹</strong></p>
+<p>本輪開發實質上是一場拉鋸戰。一方面，直接針對核心 build system 的 patch 系列開始 landing，承諾大幅加快增量重新編譯，並使「noop」編譯——即沒有任何改動、toolchain 理想上幾乎無需工作的執行——近乎即時完成。另一方面，核心原始碼樹持續逐個 release 擴張，不斷加入檔案與 object，每次完整編譯都必須逐一處理。</p>
+<p>Framework 13 Pro / Panther Lake 測試的具體實際時間結果——包括完整編譯、增量重新編譯及 noop 執行——已詳列於 Phoronix 自身的測試報告中，值得直接閱讀。</p>
+<p>正因這股推拉之力，整體結果並非一面倒，而是較為細緻。增益在增量及 noop 路徑上最為顯著，新工具可跳過以往重複執行的工作。乾淨的從頭編譯則需承受更多代碼庫增長帶來的懲罰，從而縮窄 7.3 與 7.4-rc1 之間的整體差距。</p>
+<p><strong>十秒乃推算之數，非基準測試結果</strong></p>
+<p>隨是次工作流傳、最受矚目的數字，是核心編譯可望逼近約十秒的說法——但該數字是推算，並非實測結果。它描述的是完整 patch 系列預計在擁有大量 CPU core 的系統上所能達到的效果，並非 Phoronix 手提電腦所測得的實際時間。</p>
+<p>實際而言，開發者預期的應是方向性增益，而非特定目標。實際編譯時間受 core 數量、記憶體頻寬、儲存速度及編譯器版本影響極大，因此桌面工作站或強勁的 build server 所得結果，會與 Panther Lake 手提電腦相去甚遠。</p>
+<p><strong>值得留意的注意事項</strong></p>
+<p>兩項限制框定了是次發現。其一，基準測試僅涵蓋一部機器及一種 CPU 架構；優化措施大致與架構無關，但實際節省的秒數會有所差異。其二，RC1 只是早期判斷。此類 build system patch 歷來都是在整個 merge window 期間逐步 landing，而非一併到齊，因此在 7.4 正式推出前，實測差距可能進一步擴大。</p>
+<p>對更廣泛的開源社群而言，此事的意義遠超單純的秒數。核心編譯時間是發行版打包者、CI farm 以及以二分法排查 bug 的業餘愛好者每日都要付出的成本。更快的增量及 noop 編譯直接縮短了反饋迴路——而它們登場之時，恰好是原始碼樹的增長令天真的完整重新編譯日趨高昂之際。</p>
+<p>優化與增長之間的動態不會消失。但若該 patch 系列如預期般 landed，Linux 7.4 或可標誌一個轉折點：build system 的改進開始抵銷原始碼樹膨脹所帶來的成本。</p>
+<p><em>資料來源：Phoronix，《Linux 7.4's Build Time Performance From Optimizations But Also Larger Codebase》</em></p>
+<p><a href="https://www.phoronix.com/news/Linux-7.4-rc1-Build-Times" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
