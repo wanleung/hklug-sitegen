@@ -1,0 +1,40 @@
+Date: 2026-11-06 14:06:00
+Author: HKLUG Team
+Title: Paint RCE Patch Arrives Only via Microsoft Store, Leaving Windows Update Blind Spots
+Content:
+<p>```</p>
+<p>A remote code execution vulnerability in Microsoft Paint, tracked as CVE-2026-83844, has been fixed — but the remedy is being distributed through the Microsoft Store rather than Windows Update, a delivery quirk that could leave managed fleets believing they are protected when they are not.</p>
+<p>According to The Hacker News, which reported the story on 6 November, the patched version of Paint is build <strong>11.2609.401.0</strong>, and it was the newest build available across all ten countries the publication checked. The fix addresses an out-of-bounds read in the image editor that could, in theory, enable an attacker to execute code over a network. Microsoft has assigned the flaw a severity rating; administrators should confirm the score against the company's advisory before setting patch priority.</p>
+<h4>Why the delivery channel matters</h4>
+<p>Paint is one of the inbox applications that ship by default with Windows, and its updates are handled on a Store cadence that runs independently of the familiar Patch Tuesday cycle. That distinction has a practical consequence: an endpoint can report full compliance through Windows Update, WSUS, Intune, or Configuration Manager while still running a vulnerable Paint build, because those channels are simply not carrying this fix.</p>
+<p>In effect, "the fleet is patched" is no longer a single-state claim. Green dashboards confirm that the operating system received its monthly updates. They say nothing about the version of an inbox app installed from the Store.</p>
+<p>The exposure is default-on: every machine with Paint present — which, for a standard Windows installation, is essentially every machine — is potentially running the unfixed build until the Store delivers the update. Environments that deliberately block or restrict Store access to harden their images are doubly exposed, since the very controls intended to reduce attack surface also prevent the patch from arriving.</p>
+<h4>A verification checklist for administrators</h4>
+<p>For teams running managed Windows estates, the story translates into a concrete set of checks:</p>
+<ol>
+<li><strong>Verify the installed build.</strong> Compare the Paint version on endpoints against 11.2609.401.0. The installed build can be checked through the Microsoft Store library view or by running <code>winget list Paint</code> on the endpoint. Anything older remains unpatched regardless of Windows Update status.</li>
+<li><strong>Confirm Store update access.</strong> Check whether endpoint policies — Store restrictions, sideloading settings, or network filtering — allow Store app updates to reach the device. <code>winget upgrade</code> or the Microsoft Store client can be used to query and, where permitted, trigger updates.</li>
+<li><strong>Fold Store-managed apps into patch inventory.</strong> If vulnerability dashboards only ingest Windows Update and third-party agent data, inbox apps are invisible to them. Store apps should be first-class entries in the patch inventory.</li>
+<li><strong>Decide explicitly where Store is blocked.</strong> In hardened images, choose a deliberate path: allow Store updates for inbox apps only, deploy the Paint package through existing tooling such as Intune or Configuration Manager, or apply compensating controls until a delivery route is agreed.</li>
+</ol>
+<p>The broader lesson extends beyond this single CVE. As Microsoft increasingly updates built-in components outside the monthly operating-system release, patch-management programmes that equate "Windows Update reports compliant" with "fully patched" will keep encountering gaps of this kind. Mapping which installed applications are Store-managed is a prerequisite for accurate exposure reporting.</p>
+<p>This is a general observation relevant to any organisation operating a managed Windows fleet: the update-delivery question deserves attention before the next inbox-app CVE arrives, not after.</p>
+<hr>
+<p>```</p>
+<p>Microsoft Paint 存在的遠端執行代碼（remote code execution）漏洞，編號 CVE-2026-83844，已獲修補 —— 但補救措施是透過 Microsoft Store 而非 Windows Update 分發，這一發佈方式的特性，可能令受管理的裝置群組誤以為已受保護，實際上卻並非如此。</p>
+<p>據 The Hacker News 於 11 月 6 日報道，修補後的 Paint 版本為 build <strong>11.2609.401.0</strong>，亦是該媒體檢視的十個國家中均可用的最新 build。此修補解決了圖像編輯器中的一項越界讀取（out-of-bounds read）問題，理論上可令攻擊者透過網絡執行代碼。Microsoft 已為該漏洞訂定嚴重程度評級；管理員應先對照公司安全公告確認分數，再設定修補優先次序。</p>
+<h4>發佈渠道為何重要</h4>
+<p>Paint 是 Windows 出廠時預裝的 inbox application 之一，其更新依循 Store 的節奏處理，與眾所熟悉的 Patch Tuesday 週期各自獨立運作。這一區別帶來一個實際後果：終端裝置可透過 Windows Update、WSUS、Intune 或 Configuration Manager 回報完全合規，但同時仍在執行脆弱的 Paint build，原因是這些渠道根本沒有承載此項修補。</p>
+<p>實際上，「整個裝置群組已修補」已不再是一個單一狀態的聲明。儀表板上的綠色只確認了操作系統已接收每月更新，對經 Store 安裝的 inbox app 版本則隻字不提。</p>
+<p>風險是預設存在的：每一台裝有 Paint 的電腦 —— 對標準 Windows 安裝而言，即基本上每一台 —— 在 Store 推送更新之前，都有可能正在執行未修補的 build。刻意封鎖或限制 Store 存取以強化映像（image）的環境，風險更為加倍，因為原本用以縮小攻擊面（attack surface）的控制措施，同時也阻擋了修補程式送達。</p>
+<h4>管理員核實清單</h4>
+<p>對營運受管理 Windows 資產的團隊而言，這則報道可轉化為一系列具體檢查：</p>
+<ol>
+<li><strong>核實已安裝的 build。</strong> 將終端裝置上的 Paint 版本與 11.2609.401.0 比對。已安裝的 build 可透過 Microsoft Store 庫視圖查看，或在終端裝置執行 <code>winget list Paint</code> 查詢。版本較舊者，無論 Windows Update 狀態如何，均屬未修補。</li>
+<li><strong>確認 Store 更新存取權限。</strong> 檢查終端策略 —— Store 限制、sideloading 設定或網絡過濾 —— 是否允許 Store app 更新送達裝置。可用 <code>winget upgrade</code> 或 Microsoft Store 用戶端查詢，並在獲准情況下觸發更新。</li>
+<li><strong>將 Store 管理的應用納入修補清單。</strong> 若漏洞儀表板只接收 Windows Update 及第三方 agent 數據，inbox app 對其而言是不可見的。Store app 應成為修補清單中的一級條目。</li>
+<li><strong>明確決定封鎖 Store 的情況。</strong> 在強化映像中，須選擇有意為之的路徑：只允許 inbox app 的 Store 更新、透過現有工具（如 Intune 或 Configuration Manager）部署 Paint 套件，或在各方達成共識的發佈渠道出台之前，套用補償性控制措施（compensating controls）。</li>
+</ol>
+<p>更廣泛的啟示不限於此單一 CVE。隨着 Microsoft 日益在每月操作系統版本之外更新內置元件，將「Windows Update 回報合規」等同於「完全修補」的 patch-management 計劃，將不斷遇到此類缺口。掌握哪些已安裝應用由 Store 管理，是準確報告風險暴露情況的先決條件。</p>
+<p>這是對任何營運受管理 Windows 裝置群組的機構都具參考價值的觀察：更新發佈問題值得在下一個 inbox app CVE 出現之前關注，而非事後補救。</p>
+<p><a href="https://thehackernews.com/2026/11/microsoft-paint-rce-fix-now-available.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
