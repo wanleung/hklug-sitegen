@@ -1,0 +1,46 @@
+Date: 2026-11-06 17:22:00
+Author: HKLUG Team
+Title: OpenSSH 'SSHole' Flaw Drawn Into Root-Level Attacks Within Hours of Disclosure
+Content:
+<p>```</p>
+<p>Attackers began hitting a freshly disclosed OpenSSH weakness within hours of the details going public, and at least one intrusion managed to reach root on a honeypot system, according to research from Previdian reported by The Hacker News.</p>
+<p>The flaw, CVE-2026-123158, carries a CVSS score of 8.1 and is also referred to by the codename SSHole — written in lowercase as <code>sshole</code> in some advisories. It affects Linux machines running OpenSSH compiled against the musl C library with Pluggable Authentication Modules (PAM) switched off. In that combination, SSH logins to accounts with no password set can succeed where an administrator would reasonably expect them to be refused.</p>
+<h4>What makes this one urgent</h4>
+<p>The speed of the follow-on activity is the story. This is not a case of a newly documented flaw sitting quietly while defenders work through their backlog: reconnaissance and exploitation attempts showed up within hours of disclosure, and the honeypot root access confirms that at least some of those attempts landed rather than merely probed. For defenders, that timeline collapses the usual evaluate-and-schedule cycle into work that has to happen today.</p>
+<p>Equally important is what the bug is <em>not</em>. Exposure requires three conditions to hold at the same time: a musl-based system, PAM disabled in the SSH stack, and at least one account carrying an empty password. A standard glibc distribution with PAM enabled — the default across most mainstream Linux distributions — satisfies none of them. That scoping cuts both ways: administrators running conventional PAM-enabled estates have no reason to panic, while those running stripped-down musl images, common in containers and minimal appliance builds, should treat the finding as directly relevant until each condition has been checked off.</p>
+<p>The story lands squarely with Linux system administrators and container-focused teams, especially those maintaining minimal rootfs images where musl is the default and PAM is routinely dropped to trim the image.</p>
+<h4>Are we exposed? A quick checklist</h4>
+<ul>
+<li><strong>Confirm the C library.</strong> Run <code>ldd --version</code>, or look for <code>/lib/ld-musl-*</code>. If the system reports glibc, this particular bug does not apply to that system's SSH stack.</li>
+<li><strong>Check PAM status.</strong> Inspect <code>sshd_config</code> for <code>UsePAM</code>. If PAM is disabled, or left out of the build entirely, the second condition is met.</li>
+<li><strong>Audit passwordless accounts.</strong> Check for entries with empty password hashes (<code>passwd -S &lt;user&gt;</code>, or review <code>/etc/shadow</code> for blank fields alongside <code>!</code> or <code>*</code>). Any account that can authenticate with an empty password satisfies the third condition.</li>
+<li><strong>Set <code>PermitEmptyPasswords no</code> explicitly.</strong> This is the single highest-value interim mitigation: even where the other conditions are already true, an explicit denial closes off the authentication path the bug depends on, and it takes effect immediately.</li>
+<li><strong>Patch OpenSSH</strong> from your distribution vendor as fixes land, and in the meantime restrict SSH to known source addresses or key-only authentication.</li>
+<li><strong>Review detection.</strong> A successful exploit looks like an ordinary passwordless SSH login, so scan auth logs for sign-ins to accounts that should never authenticate interactively, and for unusual privilege activity after login on affected hosts.</li>
+</ul>
+<h4>Why it matters beyond the immediate fix</h4>
+<p>Bugs that hinge on unusual build configurations tend to be under-triaged — written off as exotic until they suddenly are not. Minimal musl-based containers and appliances are common enough that "we don't run PAM" is a deliberate design decision rather than an oddity, which makes the affected population larger than a casual reading of the advisory suggests.</p>
+<p>Organisations carrying incident-reporting or breach-disclosure obligations in their contracts or regulatory regimes should also confirm, now rather than after the fact, that their response playbooks cover unauthorised access obtained through authentication bypass. The classification questions that follow an incident are far easier to answer when the runbook already exists.</p>
+<p>Administrators waiting on a vendor package should assume the window between disclosure and patch availability is already being exploited, and treat the configuration checks above as the work that cannot wait.</p>
+<hr>
+<p>```</p>
+<p>據 Previdian 的研究報告（由 The Hacker News 報導），攻擊者在 OpenSSH 的新披露弱點詳情公開後數小時內即展開攻擊，其中至少一次入侵成功在 honeypot 系統上取得 root 權限。</p>
+<p>該漏洞編號為 CVE-2026-123158，CVSS 評分為 8.1，代號 SSHole —— 部分安全通告中以全小寫 <code>sshole</code> 寫作。此漏洞影響以 musl C 函式庫編譯、並關閉 Pluggable Authentication Modules（PAM）的 OpenSSH Linux 機器。在該組合下，以 SSH 登入沒有設定密碼的帳戶可能成功，而管理員本應合理地預期此類登入會被拒絕。</p>
+<h4>為何此漏洞須即時處理</h4>
+<p>後續攻擊活動的速度才是焦點所在。這並非一個新近記錄的漏洞靜待防禦者逐件處理積壓事項：偵察和利用嘗試在披露後數小時內即已出現，而 honeypot 的 root 存取權限證實至少部分嘗試確實得手，而非僅止於探測。對防禦者而言，此時間軸把常規的「評估及排期」流程壓縮成必須今日完成的工作。</p>
+<p>同樣重要的是此漏洞<strong>不</strong>影響甚麼。遭受風險須同時符合三個條件：採用 musl 的系統、SSH stack 中 PAM 已停用、以及至少一個帳戶設有空白密碼。標準的 glibc 發行版並啟用 PAM —— 即大多數主流 Linux 發行版的預設配置 —— 三個條件均不成立。此範圍界定有雙面影響：採用傳統 PAM 啟用環境的管理員無須恐慌，而使用精簡 musl image（常見於 container 及最小型 appliance 建置）者，則應將此發現視為與己直接相關，直至逐一核查所有條件為止。</p>
+<p>此報導尤其切合 Linux 系統管理員及以 container 為核心的團隊，特別是維護最小型 rootfs image 的人員 —— 該類 image 以 musl 為預設，並經常移除 PAM 以縮減 image 體積。</p>
+<h4>我們是否受影響？快速核查清單</h4>
+<ul>
+<li><strong>確認 C 函式庫。</strong> 執行 <code>ldd --version</code>，或搜尋 <code>/lib/ld-musl-*</code>。若系統顯示 glibc，則此漏洞不影響該系統的 SSH stack。</li>
+<li><strong>檢查 PAM 狀態。</strong> 檢視 <code>sshd_config</code> 中的 <code>UsePAM</code>。若 PAM 已停用，或編譯時完全未納入，即符合第二個條件。</li>
+<li><strong>審核無密碼帳戶。</strong> 檢查密碼雜湊為空白的帳戶（<code>passwd -S &lt;user&gt;</code>，或檢視 <code>/etc/shadow</code> 中與 <code>!</code> 或 <code>*</code> 並列的空白欄位）。任何可透過空白密碼通過驗證的帳戶即符合第三個條件。</li>
+<li><strong>明確設定 <code>PermitEmptyPasswords no</code>。</strong> 這是價值最高的臨時緩解措施：即使其他條件已成立，明確拒絕亦可封鎖漏洞所依賴的驗證路徑，且即時生效。</li>
+<li><strong>從發行版供應商更新 OpenSSH</strong> 補丁，與此同時將 SSH 限制於已知來源 IP 或只限 key 認證。</li>
+<li><strong>檢視偵測機制。</strong> 成功的 exploit 看起來與一般無密碼 SSH 登入無異，因此應掃描 auth log，搜尋不應進行互動式驗證的帳戶登入紀錄，以及受影響主機在登入後的異常權限活動。</li>
+</ul>
+<h4>為何超越即時修補仍然重要</h4>
+<p>取決於非常規編譯配置的漏洞往往被低估 —— 被視為罕見而擱置，直至突然不再罕見。以 musl 為基礎的最小型 container 及 appliance 相當普遍，「我們不運行 PAM」是刻意的設計決定而並非異常情況，這使得受影響群體比粗略閱讀安全通告所暗示的更廣。</p>
+<p>合約或法規制度中負有事故報告或資料外洩披露義務的機構，亦應趁現在 —— 而非事後 —— 確認其事故應對 playbooks 已涵蓋透過 authentication bypass 取得的未授權存取。事故發生後的分類問題，若 runbook 早已存在，回答起來會容易得多。</p>
+<p>等待供應商套件的管理員應假設披露至補丁可用之間的窗口已遭利用，並將上述配置核查視為不能等待的工作。</p>
+<p><a href="https://thehackernews.com/2026/11/hackers-exploited-openssh-sshole-flaw.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
