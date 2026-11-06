@@ -1,0 +1,58 @@
+Date: 2026-11-06 12:24:00
+Author: HKLUG Team
+Title: Kernel Maintainers Move to Retire a Real-Time Scheduling Option They Call Unfixable
+Content:
+<p>If you build custom kernels, maintain a downstream tree, or run real-time workloads, a configuration option you may have long taken for granted could be on its way out. Kernel developers are discussing the removal of <code>CONFIG_RT_GROUP_SCHED</code>, the feature that lets the kernel apply CPU scheduling limits to real-time tasks on a per-cgroup basis.</p>
+<p>The discussion has reached the point where developers involved describe the feature as "broken beyond repair," and the conversation is no longer about patching it once again — it is about switching it off for good. No patch has been merged and no removal date has been set; this remains a mailing-list discussion rather than a committed change.</p>
+<p>More broadly, anyone running latency-sensitive workloads — audio production, virtualisation hosts, low-latency services — has a general interest in how real-time bandwidth accounting evolves, even if the option itself never appeared in their config.</p>
+<h4>What's being proposed</h4>
+<p>The current state of play, as outlined by Phoronix in its report, is that no patch has been merged and no removal has been scheduled. What makes the story newsworthy is the direction of travel: rather than another round of fixes, the sentiment is to retire the option outright.</p>
+<p>When a change like this does land, it will likely take one of three forms:</p>
+<ol>
+<li><strong>A clean removal</strong> — the config symbol disappears, and any kernel tree or build script referencing it will produce warnings or errors until it is cleaned up.</li>
+<li><strong>A replacement accounting path</strong> — real-time bandwidth enforcement for groups could be reimplemented in a different way that doesn't depend on the current mechanism.</li>
+<li><strong>A deprecation period</strong> — the option sticks around for a cycle or two, marked as doomed, giving downstream projects time to adapt before it vanishes.</li>
+</ol>
+<p>Which of these happens, and when, is not yet decided.</p>
+<h4>The plain-language version</h4>
+<p>Real-time tasks are processes that need guaranteed, prompt access to the CPU — control loops, audio pipelines, broadcast and telecom systems. <code>RT_GROUP_SCHED</code> was meant to let administrators carve up that guaranteed access <em>between groups</em> of tasks, so one real-time container or cgroup couldn't starve another. The problem, in short, is that the enforcement has never behaved reliably: in practice the group-level throttling interacts poorly with how real-time scheduling actually works, leaving the feature inconsistent enough that developers are ready to stop maintaining it.</p>
+<h4>Who needs to care</h4>
+<p>For mainstream desktop and server users, the practical impact is likely to be minimal — group-level real-time throttling is a mechanism that only matters to systems where it is deliberately turned on. Kernel documentation separately describes a system-wide real-time runtime throttle that applies regardless of any cgroup configuration. The people who should be paying attention are operators who do enable it: industrial control, media and broadcast, automotive, telecom, and embedded builders who ship custom defconfigs or carry downstream scheduler patches.</p>
+<h4>Preparation checklist</h4>
+<ul>
+<li><strong>Audit your configs:</strong> grep your defconfigs, <code>Kconfig</code> fragments, and CI build scripts for <code>CONFIG_RT_GROUP_SCHED</code> and note whether it is set to <code>y</code>, <code>m</code>, or absent.</li>
+<li><strong>Inventory downstream patches:</strong> check for local patches that assume group-based real-time bandwidth accounting exists.</li>
+<li><strong>Test your real-time workloads</strong> with the option disabled now, before it is forced on you, to see whether behaviour or latency profiles change.</li>
+<li><strong>Watch the mailing lists</strong> for an actual patch or a decision on which of the three outcomes above is chosen.</li>
+</ul>
+<h4>Timeline</h4>
+<p>There is no confirmed removal date. The feature is under discussion as a candidate for dropping; a patch has not been merged. Treat this as an early warning: the config flag's days may be numbered, and downstream builders are best served by checking their configurations now rather than when the change lands in a release cycle.</p>
+<p><em>Source: Phoronix, "Linux Developers Look To Drop RT_GROUP_SCHED As It's 'Broken Beyond Repair'."</em></p>
+<hr>
+<p>如果你會自行編譯 kernel、維護 downstream tree，或執行 real-time workload，某個你一直視為理所當然的 configuration option 可能即將被移除。Kernel 開發者正在討論移除 <code>CONFIG_RT_GROUP_SCHED</code> —— 這項功能讓 kernel 可以按 cgroup 為單位，對 real-time task 施加 CPU 排程限制。</p>
+<p>討論已發展至參與其中的開發者形容該功能「broken beyond repair（壞得無法修復）」，對話焦點亦不再是再一次打補丁，而是如何將它永久關閉。目前尚無 patch 被 merge，亦未設定移除日期；這仍然只是 mailing list 上的討論，並非已確定的變更。</p>
+<p>更廣泛而言，任何執行 latency-sensitive workload 的人 —— 包括音訊製作、virtualisation 主機、low-latency 服務 —— 對 real-time bandwidth accounting 的演變都有切身關注，即使該選項從未出現在他們的 config 之中。</p>
+<h4>提議內容</h4>
+<p>據 Phoronix 報導所述，目前情況是尚無 patch 被 merge，亦未安排移除時間。令此事值得報道的是發展方向：與其再修補一次，業內傾向是直接將該選項退役。</p>
+<p>當此類變更最終落實，可能會以三種形式之一出現：</p>
+<ol>
+<li><strong>徹底移除</strong> —— config symbol 消失，任何引用它的 kernel tree 或 build script 都會產生 warnings 或 errors，直至相關引用被清理。</li>
+<li><strong>替代的 accounting path</strong> —— 以另一種不依賴現行機制的方式，重新實現對群組的 real-time bandwidth 執行。</li>
+<li><strong>棄用期</strong> —— 該選項保留一至兩個 release cycle，標記為注定移除，讓 downstream 項目有時間適應，然後才正式消失。</li>
+</ol>
+<p>最終採用哪種方式及何時執行，目前尚未決定。</p>
+<h4>白話解說</h4>
+<p>Real-time task 是需要有保障、即時存取 CPU 的程序 —— 例如控制迴圈、音訊 pipeline、廣播及電訊系統。<code>RT_GROUP_SCHED</code> 的原意是讓管理員在<em>不同 task 群組之間</em>分配這種有保障的存取權限，令某個 real-time container 或 cgroup 不致令其他群組陷入 starved 狀態。簡而言之，問題在於執行機制從未可靠運作：實際上，群組層面的 throttling 與 real-time 排程的實際運作方式互相衝突，導致該功能表現不一致，開發者已決定停止維護。</p>
+<h4>誰需要留意</h4>
+<p>對主流桌面及伺服器用戶而言，實際影響很可能極為有限 —— 群組層面的 real-time throttling 只對刻意啟用該功能的系統才有意義。Kernel 文件另有描述一套無論 cgroup 設定為何都會生效的全系統 real-time runtime throttle。應該留意的是那些確實啟用了此選項的營運者：工業控制、媒體及廣播、汽車、電訊，以及出貨自訂 defconfig 或攜帶 downstream scheduler patch 的 embedded 開發者。</p>
+<h4>準備清單</h4>
+<ul>
+<li><strong>審視你的 config：</strong> 以 grep 檢查你的 defconfigs、<code>Kconfig</code> fragments 及 CI build script 中的 <code>CONFIG_RT_GROUP_SCHED</code>，並記錄其設定為 <code>y</code>、<code>m</code> 還是完全不存在。</li>
+<li><strong>盤點 downstream patch：</strong> 檢查是否有本地 patch 假定群組制 real-time bandwidth accounting 功能存在。</li>
+<li><strong>即時測試你的 real-time workload：</strong> 在選項被強制移除之前，先自行將其停用，觀察行為或 latency profile 是否出現變化。</li>
+<li><strong>留意 mailing list：</strong> 關注是否出現實際 patch，或就上述三種結果中選取哪一種作出決定。</li>
+</ul>
+<h4>時間表</h4>
+<p>目前沒有確認的移除日期。該功能正被討論為移除候選項目；尚未有 patch 被 merge。宜將此視為早期警告：該 config flag 的壽命可能已屈指可數，downstream 開發者最好現在便檢查配置，而非等到變更隨某個 release cycle 正式落實才行動。</p>
+<p><em>來源：Phoronix，"Linux Developers Look To Drop RT_GROUP_SCHED As It's 'Broken Beyond Repair'."</em></p>
+<p><a href="https://www.phoronix.com/news/Linux-Drop-RT_GROUP_SCHED" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
