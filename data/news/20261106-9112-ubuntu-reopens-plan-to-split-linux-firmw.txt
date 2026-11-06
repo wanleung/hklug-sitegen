@@ -1,0 +1,34 @@
+Date: 2026-11-06 12:33:00
+Author: HKLUG Team
+Title: Ubuntu Reopens Plan to Split linux-firmware and Add a Firmware HWE Track
+Content:
+<p>Ubuntu is reviving plans to break up its monolithic <code>linux-firmware</code> package and to introduce a dedicated hardware enablement (HWE) track for firmware blobs — a change that, if it lands, would give administrators finer-grained control over when and how driver firmware is updated across their fleets.</p>
+<p>Phoronix reported that discussions about a firmware HWE package first surfaced a few months ago, alongside proposals to split the single <code>linux-firmware</code> archive so individual firmware components could be updated independently. Those efforts did not make it into the official Ubuntu 26.10 release, but the work is now being pursued for Ubuntu 27.04, with the possibility that the restructured packages could later be backported through the Stable Release Update (SRU) process into Ubuntu 26.10 and, potentially, into the Ubuntu 26.04 LTS release.</p>
+<h4>Why the current package shape is a problem</h4>
+<p>Today, <code>linux-firmware</code> ships as one large archive containing blobs for a wide range of network adapters, GPUs, storage controllers, and other peripherals. When a single firmware vulnerability or hardware compatibility fix is published upstream, the entire package is replaced — regardless of which components a given machine actually uses. For administrators running scheduled patch windows, that all-or-nothing model makes change control awkward: a routine firmware fix arrives bundled with dozens of unrelated updates, expanding the surface of any given maintenance cycle.</p>
+<p>Splitting the package would let operators approve, stage, and deploy firmware updates per component rather than as a single bulk change. In practice, that means narrower patch windows, smaller diffs to review before rollout, and a clearer audit trail of what changed on which systems.</p>
+<h4>The HWE track: lifecycle alignment for firmware</h4>
+<p>The proposed HWE option addresses a second, structural mismatch. Ubuntu's hardware enablement mechanism already exists to carry newer kernels into long-term support releases, but firmware has no equivalent path — vendor firmware release cycles rarely line up with Ubuntu's own release schedule. The result is that operators running LTS releases often find firmware fixes available upstream but not delivered through official channels, pushing some toward manually replacing blobs or using third-party repositories — both of which fall outside vendor support.</p>
+<p>A firmware HWE track would formalise an upgrade path for LTS users, giving them a supported route to current firmware without leaving the distribution's update infrastructure.</p>
+<h4>The high-stakes question: a 26.04 LTS backport</h4>
+<p>The most consequential piece of the plan is the possible SRU into Ubuntu 26.04 LTS. Enterprise fleets that adopt the LTS release on a multi-year cycle would gain a sanctioned refresh mechanism for firmware — but a package split rewrites dependency relationships across the archive, making it an unusually large structural change for a process normally reserved for targeted fixes. Whether the Ubuntu maintainers judge that risk acceptable will likely depend on how long the restructured packages soak in the development release before a backport decision is taken.</p>
+<p>Exact package boundaries and HWE component naming have not been settled and will only firm up as Ubuntu 27.04 development progresses.</p>
+<h4>Tracking the decision</h4>
+<p>Administrators who want to follow this ahead of 27.04 have two practical checkpoints: the Ubuntu SRU queue, where any backport proposal to 26.10 or 26.04 LTS would appear, and the <code>linux-firmware</code> changelog, which will reflect the split once packaging work begins in earnest. Because the plans remain unfinalised, both are worth monitoring before treating the restructure as a certainty in patch-policy planning.</p>
+<p><strong>Perspective:</strong> For Hong Kong IT teams standardising on Ubuntu LTS, the outcome of the SRU question matters more than the packaging mechanics. A supported firmware refresh path would close a real gap between vendor cadence and distribution cadence; a rejected or delayed backport would leave the status quo intact, with manual workarounds remaining the only option for keeping firmware current on long-cycle systems.</p>
+<hr>
+<p>Ubuntu 正重新推動拆分其一體化的 <code>linux-firmware</code> 套件，並為 firmware blob 引入專用的硬件啟用（HWE）軌道——此項變更一旦落實，將令管理員對機群中驅動 firmware 的更新時間及方式擁有更精細的控制。</p>
+<p>Phoronix 報導，關於 firmware HWE 套件的討論數月前首次浮現，當時同時有提議將單一的 <code>linux-firmware</code> 存檔拆開，令個別 firmware 組件可以獨立更新。相關工作未能趕及納入正式的 Ubuntu 26.10 版本，但現正為 Ubuntu 27.04 繼續推進，日後有機會透過 Stable Release Update（SRU）流程回移植至 Ubuntu 26.10，甚至 Ubuntu 26.04 LTS 版本。</p>
+<h4>為何現有套件結構構成問題</h4>
+<p>目前，<code>linux-firmware</code> 以單一大型存檔形式發佈，內含適用於大量網絡適配器、GPU、儲存控制器及其他外圍設備的 blob。當上游發布任何一個 firmware 漏洞修補或硬件兼容性修正時，整個套件都會被更換——無論該部機器實際使用哪些組件。對於按計劃維護時段進行 patch 的管理員而言，這種「全有或全無」的模式令變更管理相當不便：一個例行 firmware 修正會連同數十項無關更新一併到來，擴大了每個維護週期的變更範圍。</p>
+<p>拆分套件後，營運者可以按組件逐一核准、分階段及部署 firmware 更新，而非作為單一批量變更處理。實際而言，這意味著更窄的 patch 窗口、部署前需審閱的 diff 更小，以及哪個系統發生了哪些變更的審計軌跡更為清晰。</p>
+<h4>HWE 軌道：firmware 的生命週期對接</h4>
+<p>建議中的 HWE 選項解決了第二項結構性錯配。Ubuntu 的硬件啟用機制本已用於將較新 kernel 帶入長期支援版本，但 firmware 卻沒有相應的途徑——廠商的 firmware 發佈週期極少與 Ubuntu 自身的發佈時間表吻合。結果是，運行 LTS 版本的營運者經常遇到上游已有 firmware 修正、卻無法透過官方渠道取得的情況，迫使部分人轉而手動替換 blob 或使用第三方儲存庫——兩者均不在廠商支援範圍之內。</p>
+<p>firmware HWE 軌道將為 LTS 用戶確立一條正規的升級途徑，讓他們在不脫離發行版更新基建的前提下，取得受支援的最新 firmware。</p>
+<h4>關鍵問題：回移植至 26.04 LTS</h4>
+<p>整個計劃中影響最深遠的一環，是可能透過 SRU 回移植至 Ubuntu 26.04 LTS。以多年為週期採用 LTS 版本的企業機群將獲得官方認可的 firmware 刷新機制——但套件拆分會改寫整個存檔的依賴關係，對於通常只用於針對性修補的流程而言，這是一項規模異常龐大的結構性變更。Ubuntu 維護者會否認為風險可接受，很可能取決於重組後的套件在開發版本中經歷多長時間的測試，才作出回移植決定。</p>
+<p>套件的確切邊界及 HWE 組件命名尚未確定，只會隨 Ubuntu 27.04 的開發進程逐步明朗。</p>
+<h4>追蹤決定進展</h4>
+<p>希望在 27.04 之前留意此事的管理員有兩個實用的檢查點：其一是 Ubuntu SRU 佇列，任何回移植至 26.10 或 26.04 LTS 的建議都會在此出現；其二是 <code>linux-firmware</code> 的 changelog，一旦打包工作正式展開便會反映拆分情況。由於相關計劃尚未最終確定，在將此次重組視為 patch 政策規劃中的既定事實之前，兩個檢查點都值得密切留意。</p>
+<p><strong>觀點：</strong> 對於以 Ubuntu LTS 為標準的香港 IT 團隊而言，SRU 問題的結果比打包機制本身更為重要。一條受支援的 firmware 刷新途徑將彌合廠商節奏與發行版節奏之間的實際落差；若回移植被拒絕或延遲，現狀將維持不變，手動變通方案仍是長週期系統保持 firmware 更新的唯一選擇。</p>
+<p><a href="https://www.phoronix.com/news/Ubuntu-Going-With-Firmware-HWE" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
