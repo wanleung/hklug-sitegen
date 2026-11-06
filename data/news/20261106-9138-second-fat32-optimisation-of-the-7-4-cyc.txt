@@ -1,0 +1,59 @@
+Date: 2026-11-06 17:28:00
+Author: HKLUG Team
+Title: Second FAT32 Optimisation Of The 7.4 Cycle Lands With Up To 162x Gains
+Content:
+<p>A second FAT32 performance patch in the Linux 7.4 cycle has landed, promising as much as a 162x speedup in targeted workloads — but the figures are best-case results drawn from release candidate testing and may still change before the final kernel ships.</p>
+<p>The change was merged this week as part of the non-memory-management fixes pull for Linux 7.4-rc2, per Phoronix. Because it arrived through a fixes pull rather than the main merge window, it reached the tree after that window had already closed. Phoronix makes no claim that the routing reflects any deliberate process decision; it is simply how the patch reached the tree.</p>
+<h4>Not the same patch as the earlier 265x work</h4>
+<p>The 162x figure belongs to a distinct optimisation, separate from the FAT32 improvement merged earlier in the 7.4 cycle that produced as much as a 265x speedup. It is a new patch rather than a revision of that earlier work, and the two results are not reported as compounding into a larger combined multiplier.</p>
+<p>A third, unrelated FAT32 performance improvement is also expected in the Linux 7.5 cycle, but that change is not part of 7.4 and its effects are not covered by the current numbers.</p>
+<h4>Preliminary, best-case numbers at RC stage</h4>
+<p>The caveats matter as much as the headline figure. The results come from the release candidate stage of 7.4, and the reported gains are best-case figures from particular benchmark scenarios — not a blanket guarantee that every FAT32 workload will see comparable acceleration. Real-world outcomes will vary by hardware, access patterns, and workload mix, and since the kernel is still in RC, the numbers could shift before 7.4 finalises. A follow-up check against later 7.4 release candidates would help confirm whether the 162x figure holds through to the final release.</p>
+<h4>Why a "legacy" filesystem still matters</h4>
+<p>FAT32 is often dismissed as a legacy format, but it remains ubiquitous precisely because it is simple, universally readable, and the default for many small removable media. That makes this story relevant well beyond desktop Linux users.</p>
+<p>For embedded and appliance deployments, FAT32 frequently appears as the filesystem on SD cards in CCTV and surveillance equipment, on boot and recovery USB media, and on firmware or configuration partitions. Faster reads and writes on those devices translate directly into quicker boot times, shorter ingest time windows for recorded footage, and snappier recovery operations — especially on the low-power hardware that typically serves in these roles.</p>
+<p>The filesystem also continues to serve as the common denominator for interop with Windows environments, where exFAT and NTFS are not always an option and compatibility with older tooling is a practical requirement.</p>
+<h4>Mature code, unexploited headroom</h4>
+<p>Perhaps the broader takeaway for the open-source community is what this story says about the state of mature kernel subsystems. FAT32 is not a fashionable or heavily resourced area of development — it is old, stable code — yet two separate optimisation efforts within a single merge cycle have turned up best-case gains of 265x and 162x respectively, with a third change queued for the following cycle. That performance headroom existed in code that has been shipping for years, which suggests other long-lived parts of the kernel may hold similar untapped potential for developers willing to look.</p>
+<p>It is also a useful reminder of how kernel delivery works: changes merged during the main merge window carry a different maturity profile from fixes pulled in at later RC stages, and reviewers and downstream packagers should weigh that distinction when deciding how quickly to adopt new kernels.</p>
+<p>The optimisation is expected to be part of the Linux 7.4 release once the RC cycle completes. Developers working with FAT32-heavy deployments may want to track subsequent release candidates to see how the benchmark results evolve before the final kernel ships.</p>
+<hr />
+<hr />
+<p>title: "Linux 7.4 第二項 FAT32 效能補丁登場　特定負載提升最高達 162 倍"
+date: 2026-11-06T17:28:00
+author: HKLUG Team
+source_url: https://www.phoronix.com/news/Linux-7.4-rc2-FAT32
+tags: [linux, kernel, fat32, filesystems, performance, open-source]</p>
+<hr />
+<p>Linux 7.4 週期的第二項 FAT32 效能補丁已經登場，在特定負載下最高可達 162 倍的速度提升 —— 但這些數字來自 release candidate 階段的最佳情況測試結果，在最終核心出爐前仍可能變動。</p>
+<p>據 Phoronix 報導，該變更於本週透過 Linux 7.4-rc2 的非記憶體管理（non-MM）修復 pull 合併入樹。由於它走的是修復 pull 而非主合併視窗，抵達程式樹的時間已在該視窗關閉之後。Phoronix 並未指這種安排反映任何刻意的流程決定；這只是該補丁到達程式樹的途徑。</p>
+<h4>並非先前 265 倍優化的同一補丁</h4>
+<p>162 倍這個數字屬於一項獨立的優化，與 7.4 週期稍早合併、帶來最高 265 倍加速的 FAT32 改善並非同一回事。這是新的補丁，而非對先前工作的修訂，兩者的結果也未被報導為會相乘成一個更大的合併倍數。</p>
+<p>另一項無關的 FAT32 效能改善預計會在 Linux 7.5 週期出現，但該變更不屬於 7.4，其效果也不在目前數字的涵蓋範圍內。</p>
+<h4>RC 階段的初步最佳情況數字</h4>
+<p>這些注意事項與標題數字同樣重要。結果取自 7.4 的 release candidate 階段，所報告的提升是特定基準測試場景下的最佳情況數據 —— 並非保證每個 FAT32 負載都能獲得同等的加速。實際結果會因硬件、存取模式與負載組合而異，而且核心仍處於 RC 階段，數字在 7.4 定案前可能改變。稍後比對 7.4 的後續 release candidate，有助於確認 162 倍的數字是否一路保持到最終發布。</p>
+<h4>為何一個「傳統」檔案系統仍然重要</h4>
+<p>FAT32 常被視為過時格式，但它之所以無處不在，正是因為它簡單、普遍可讀，而且是許多小型可移除媒體的預設格式。這使得這篇報導的關聯性遠不止於桌面 Linux 使用者。</p>
+<p>在嵌入式與 appliance 部署中，FAT32 常見於 CCTV 及監控設備的 SD 卡、開機與復原 USB 媒體，以及韌體或設定分割區。這些裝置上的讀寫加速，會直接轉化為更快的開機時間、更短的錄影 ingest 時段，以及更迅速的復原操作 —— 尤其是在這類用途常見的低功耗硬件上。</p>
+<p>這個檔案系統同時仍是與 Windows 環境互通的共通基準，在 exFAT 與 NTFS 未必可用、且相容舊有工具屬實際需求的場合尤其如此。</p>
+<h4>成熟程式碼中未開發的效能空間</h4>
+<p>對開源社群而言，這則報導更廣泛的啟示，或許在於它揭示了核心中成熟子系統的現狀。FAT32 並非時尚或資源充裕的開發領域 —— 它是老舊而穩定的程式碼 —— 然而單一合併週期內的兩項獨立優化工作，分別帶來 265 倍與 162 倍的最佳情況提升，另有第三項變更排在下一個週期。這樣的效能空間存在於已出貨多年的程式碼之中，暗示核心其他長久運行的部分也可能藏有類似、尚未開發的潛力，等待願意一探的開發者。</p>
+<p>這也提醒我們核心的交付方式：在主合併視窗期間合併的變更，其成熟度與稍後 RC 階段拉入的修復並不相同，審閱者與下游打包者在決定多快採用新核心時，應將此區別納入考量。</p>
+<p>RC 週期完成後，這項優化預計會隨 Linux 7.4 正式發布。重度使用 FAT32 的部署的開發者，或可追蹤後續 release candidate，觀察基準測試結果如何演變，再迎接最終核心。</p>
+<hr>
+<p>Linux 7.4 週期的第二項 FAT32 效能補丁已經登場，在特定負載下最高可達 162 倍的速度提升——但這些數字來自 release candidate 階段的最佳情況測試結果，在最終內核出爐前仍可能變動。</p>
+<p>據 Phoronix 報導，該變更於本週透過 Linux 7.4-rc2 的非記憶體管理（non-MM）修復 pull 合併入樹。由於它走的是修復 pull 而非主合併視窗，抵達程式碼樹的時間已在該視窗關閉之後。Phoronix 並未指這種安排反映任何刻意的流程決定；這只是該補丁到達程式碼樹的途徑。</p>
+<h4>並非先前 265 倍優化的同一補丁</h4>
+<p>162 倍這個數字屬於一項獨立的優化，與 7.4 週期稍早合併、帶來最高 265 倍加速的 FAT32 改善並非同一回事。這是新的補丁，而非對先前工作的修訂，兩者的結果也未被報導為會相乘成一個更大的合併倍數。</p>
+<p>另一項無關的 FAT32 效能改善預計會在 Linux 7.5 週期出現，但該變更不屬於 7.4，其效果也不在目前數字的涵蓋範圍內。</p>
+<h4>RC 階段的初步最佳情況數字</h4>
+<p>這些注意事項與標題數字同樣重要。結果取自 7.4 的 release candidate 階段，所報告的提升是特定基準測試場景下的最佳情況數據——並非保證每個 FAT32 負載都能獲得同等的加速。實際結果會因硬件、存取模式與負載組合而異，而且內核仍處於 RC 階段，數字在 7.4 定案前可能改變。稍後比對 7.4 的後續 release candidate，有助於確認 162 倍的數字是否一路保持到最終發布。</p>
+<h4>為何一個「傳統」檔案系統仍然重要</h4>
+<p>FAT32 常被視為過時格式，但它之所以無處不在，正是因為它簡單、普遍可讀，而且是許多小型可移除媒體的預設格式。這使得這篇報導的關聯性遠不止於桌面 Linux 使用者。</p>
+<p>在嵌入式與專用設備部署中，FAT32 常見於 CCTV 及監控設備的 SD 卡、開機與復原 USB 媒體，以及韌體或設定分割區。這些裝置上的讀寫加速，會直接轉化為更快的開機時間、更短的錄影 ingest 時段，以及更迅速的復原操作——尤其是在這類用途常見的低功耗硬件上。</p>
+<p>這個檔案系統同時仍是與 Windows 環境互通的共通基準，在 exFAT 與 NTFS 未必可用、且相容舊有工具屬實際需求的場合尤其如此。</p>
+<h4>成熟程式碼中未開發的效能空間</h4>
+<p>對開源社群而言，這則報導更廣泛的啟示，或許在於它揭示了內核中成熟子系統的現狀。FAT32 並非時尚或資源充裕的開發領域——它是老舊而穩定的程式碼——然而單一合併週期內的兩項獨立優化工作，分別帶來 265 倍與 162 倍的最佳情況提升，另有第三項變更排在下一個週期。這樣的效能空間存在於已出貨多年的程式碼之中，暗示內核其他長久運行的部分也可能藏有類似、尚未開發的潛力，等待願意一探的開發者。</p>
+<p>這也提醒我們內核的交付方式：在主合併視窗期間合併的變更，其成熟度與稍後 RC 階段拉入的修復並不相同，審閱者與下游打包者在決定多快採用新內核時，應將此區別納入考量。</p>
+<p>RC 週期完成後，這項優化預計會隨 Linux 7.4 正式發布。針對重度依賴 FAT32 部署的開發者，或可追蹤後續 release candidate，觀察基準測試結果如何演變，再迎接最終內核。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.4-rc2-FAT32" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
