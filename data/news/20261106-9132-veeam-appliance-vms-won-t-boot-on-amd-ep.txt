@@ -1,0 +1,66 @@
+Date: 2026-11-06 19:03:00
+Author: HKLUG Team
+Title: Veeam Appliance VMs Won't Boot on AMD EPYC Hosts: An Ops Checklist
+Content:
+<p>Veeam has warned customers that virtual machines running its Software Appliance can fail to boot when the underlying host uses AMD EPYC processors, according to BleepingComputer. The advisory describes a boot failure, not a compromise; nothing in it suggests data was accessed or stolen.</p>
+<p>That distinction matters: the source sits under a security umbrella, which risks sending operators down an incident-response path when the correct response is a compatibility and inventory check.</p>
+<p><strong>What is confirmed</strong></p>
+<ul>
+<li>Veeam has issued an advisory covering Software Appliance VMs that fail to start on EPYC-based hosts.</li>
+<li>The fault is specific to hosts with AMD EPYC processors.</li>
+<li>The failure occurs at boot — the appliance VM does not come up.</li>
+</ul>
+<p><strong>What the source does not state</strong></p>
+<p>Operational decisions should not be built on assumptions, so the decision-relevant gaps are worth listing explicitly:</p>
+<ul>
+<li>The exact Software Appliance versions/builds affected.</li>
+<li>Whether a fix, patch, or official workaround has been published.</li>
+<li>Whether existing backup jobs or stored recovery points are affected.</li>
+</ul>
+<p>The source is also silent on which EPYC generations are implicated, which hypervisor is in play, and what symptom manifests beyond the appliance failing to start. Until Veeam clarifies the recovery-point question in particular, treat it as open.</p>
+<p><strong>Why this has asymmetric blast radius</strong></p>
+<p>A backup appliance that does not boot fails quietly. No new recovery points are produced, while existing restore points typically remain intact on storage. The result is a creeping recovery-point-objective gap: nothing appears lost today, but each hour of downtime widens the window of unprotected change. For enterprises running Veeam appliances as their primary backup layer, that silence is more dangerous than a loud failure.</p>
+<p><strong>Verification and response sequence</strong></p>
+<ol>
+<li><strong>Inventory first.</strong> Identify every VM running the Veeam Software Appliance and check its host processor. Flag all EPYC-hosted instances.</li>
+<li><strong>Check state, don't touch it.</strong> For any appliance already non-bootable, capture logs and a support bundle <em>before</em> any power-cycle. Boot failures are most diagnosable in their first observed state.</li>
+<li><strong>No casual reboot.</strong> Do not restart or power-cycle a currently running appliance just to "test" it. If it is up and protecting workloads, taking it down voluntarily converts a potential exposure into a confirmed one — and may itself trigger the boot failure.</li>
+<li><strong>Read the advisory directly.</strong> Confirm affected versions and any workaround from Veeam's own notice rather than forum posts. Workarounds will circulate quickly for a story like this; unvalidated steps on a backup system carry their own risk.</li>
+<li><strong>Escalate with facts.</strong> If an affected, non-booting appliance is confirmed, open a vendor support case with the captured logs, host CPU model, appliance build, and hypervisor version.</li>
+<li><strong>Bridge the RPO gap.</strong> While an appliance is down, consider a temporary secondary target or manual job path so protected change does not accumulate indefinitely.</li>
+</ol>
+<p><strong>The bottom line</strong></p>
+<p>EPYC's prevalence in data centres makes it tempting to assume a broad impact, but the source does not confirm how many deployments are affected. The disciplined posture is: inventory, verify, capture evidence, then escalate — and wait for Veeam's own guidance before acting on anything else. This is an availability problem, and it should be handled as one.</p>
+<p><em>Source: BleepingComputer.</em></p>
+<hr>
+<p>據 BleepingComputer 報道，Veeam 已向客戶發出警告，指執行其 Software Appliance 的虛擬機器（VM）在底層主機採用 AMD EPYC 處理器時，可能無法開機。該通告描述的是開機失敗，而非系統被入侵；內容並無任何跡象顯示資料曾被存取或竊取。</p>
+<p>此區別至關重要：該消息來源歸入安全類別之下，有機會誤導系統管理員走上事件回應的路線，而正確的應對其實是相容性及清單核查。</p>
+<p><strong>已確認的事項</strong></p>
+<ul>
+<li>Veeam 已發布通告，涉及 Software Appliance VM 在基於 EPYC 的主機上無法啟動的問題。</li>
+<li>故障僅限於配備 AMD EPYC 處理器的主機。</li>
+<li>故障發生於開機階段——appliance VM 無法啟動。</li>
+</ul>
+<p><strong>消息來源未有交代的事項</strong></p>
+<p>運作決策不應建立於假設之上，因此以下與決策相關的缺口值得明確列出：</p>
+<ul>
+<li>受影響的 Software Appliance 確切版本／build。</li>
+<li>是否已發布修復程式、patch 或官方 workaround。</li>
+<li>現有 backup jobs 或已儲存的 recovery points 是否受影響。</li>
+</ul>
+<p>消息來源亦未交代牽涉哪些 EPYC 世代、使用哪款 hypervisor，以及除了 appliance 無法啟動之外還有哪些症狀。在 Veeam 澄清 recovery point 問題（尤其是此項）之前，應視之為未有定論。</p>
+<p><strong>為何影響範圍不對稱</strong></p>
+<p>備份 appliance 無法開機時屬靜默失敗。不會產生新的 recovery points，而現存 restore points 通常仍完好存放於 storage。結果是 recovery point objective（RPO）差距逐步擴大：今天看似毫無損失，但每停機一小時，不受保護的變更窗口便再擴闊一分。對以 Veeam appliance 作為主要備份層的企業而言，這種無聲的失效比高調的故障更為危險。</p>
+<p><strong>核查及應對步驟</strong></p>
+<ol>
+<li><strong>先做清單盤點。</strong> 找出所有執行 Veeam Software Appliance 的 VM，檢查其主機處理器，標記所有由 EPYC 主機承載的個體。</li>
+<li><strong>查看狀態，切勿動它。</strong> 對任何已無法開機的 appliance，須在任何 power-cycle <em>之前</em>擷取 logs 及 support bundle。開機失敗在首次觀察到的狀態下最為易於診斷。</li>
+<li><strong>切勿隨意重啟。</strong> 不要僅為了「測試」而重啟或 power-cycle 一台現正運行的 appliance。若它正在運行並保護著工作負載，主動將其下線會把潛在風險轉化為已確認的風險——而且本身亦可能觸發開機失敗。</li>
+<li><strong>直接閱讀通告原文。</strong> 受影響版本及任何 workaround，應向 Veeam 官方通告核實，而非依賴論壇帖文。此類事件的 workaround 會迅速流傳；在備份系統上執行未經驗證的步驟，本身已帶有風險。</li>
+<li><strong>帶同事實向上通報。</strong> 若確認有受影響且無法開機的 appliance，應帶著已擷取的 logs、主機 CPU 型號、appliance build 及 hypervisor 版本，向廠商開立 support case。</li>
+<li><strong>填補 RPO 缺口。</strong> appliance 停機期間，可考慮臨時改用次級 target 或手動 job 路徑，以免受保護的變更無限累積。</li>
+</ol>
+<p><strong>總結</strong></p>
+<p>EPYC 在 data centre 的普及令人容易假設影響範圍廣泛，但消息來源並未確認實際受影響的部署數量。有紀律的做法是：盤點、核實、擷取證據，然後向上通報——在採取其他行動之前，先等待 Veeam 官方指引。這是一個可用性（availability）問題，應以處理可用性問題的方式處理。</p>
+<p><em>來源：BleepingComputer。</em></p>
+<p><a href="https://www.bleepingcomputer.com/news/security/veeam-software-appliance-vms-fail-to-boot-on-amd-epyc-hosts/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
