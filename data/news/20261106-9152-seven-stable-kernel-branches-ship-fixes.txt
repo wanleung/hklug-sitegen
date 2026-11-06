@@ -1,0 +1,38 @@
+Date: 2026-11-06 19:23:00
+Author: HKLUG Team
+Title: Seven stable kernel branches ship fixes for three Xen flaws
+Content:
+<p>Linux stable-kernel maintainer Greg Kroah-Hartman has announced seven stable releases in quick succession, each carrying fixes for three vulnerabilities in the kernel's Xen support code.</p>
+<p>The batch arrives hot on the heels of a pair of stable updates published shortly beforehand and reaches from the newest stable line down to long-term branches still carrying production workloads. The seven versions are 7.3.3, 6.18.62, 6.12.116, 6.6.162, 6.1.192, 5.15.225 and 5.10.274.</p>
+<h4>What was fixed</h4>
+<p>All seven releases address the same three flaws, identified as CVE-2026-100080, CVE-2026-100081 and CVE-2026-100082. Two of the three permit denial of service and, in some scenarios, information leakage; CVE-2026-100081 additionally allows a local attacker to escalate privileges. The announcement advises administrators running Xen to apply the updates.</p>
+<p>The report does not spell out how each distribution has handled the fixes. In practice, the major distributions maintain their own stable backports and generally ship security fixes on their own cadence rather than tracking upstream point releases verbatim, so the appropriate source of truth for any given deployment is the distribution's own advisory channel rather than the upstream version number alone. Administrators needing CVE-level detail for a ticket or compliance record can cross-check the stable-kernel mailing list archive, the kernel.org stable queue entries for each release, and the national vulnerability database.</p>
+<h4>Who should update, and when</h4>
+<p>Three long-term-support branches in this batch are the ones most likely to matter to operators of long-lived fleets:</p>
+<ul>
+<li><strong>6.6</strong> (now at 6.6.162) — a common target for current enterprise rollouts.</li>
+<li><strong>6.1</strong> (now at 6.1.192) — still common on systems installed over the past couple of years.</li>
+<li><strong>5.15</strong> (now at 5.15.225) — the oldest of the three in this set, alongside 5.10.274 for fleets that have not yet moved off that line.</li>
+</ul>
+<p>The practical guidance follows from where the affected code executes. Systems that run a Xen host or guest should treat these updates as a priority, in line with the upstream advice to upgrade. Systems that never touch Xen are exposed only indirectly — the fixed flaws sit in Xen-specific code paths — so those deployments can fold the updates into their normal patch cycle rather than breaking emergency change windows. Confirm the specifics against your distribution's advisories before setting change-window priorities.</p>
+<p>For operators managing many kernel branches at once, a seven-release drop like this one is a useful reminder of the volume of security maintenance flowing through the stable project. Tracking a single branch is manageable; tracking a heterogeneous estate across three or more LTS lines means your update tooling, not your alertness, is the thing that determines whether a fix lands in time.</p>
+<h4>Why it matters</h4>
+<p>Individual stable point releases rarely make headlines. The more informative signal here is the shape of the batch: seven branches updated together for issues in a subsystem that many installations never enable shows how broadly the stable project backports security fixes regardless of how widely the affected code path is used. For anyone responsible for patch SLAs, that breadth is the argument for automated, per-branch update tracking rather than ad-hoc review.</p>
+<hr>
+<p>Linux stable kernel 維護者 Greg Kroah-Hartman 宣布接連推出七個 stable release，每個均包含針對 kernel Xen 支援代碼中三個漏洞的修復。</p>
+<p>這批 release 緊接此前剛發布的兩個 stable update，涵蓋範圍由最新的 stable line 一直延伸至仍承載生產工作負載的長期分支。七個版本分別為 7.3.3、6.18.62、6.12.116、6.6.162、6.1.192、5.15.225 及 5.10.274。</p>
+<h4>修復內容</h4>
+<p>七個 release 修復的均為同一批三個漏洞，分別識別為 CVE-2026-100080、CVE-2026-100081 及 CVE-2026-100082。其中兩個可造成拒絕服務（denial of service），在部分情況下亦可導致資料洩露；CVE-2026-100081 更可讓本地攻擊者提升權限（privilege escalation）。公告建議正在運行 Xen 的管理員套用相關 update。</p>
+<p>報道並未逐一說明各發行版如何處理這些修復。實際上，主要發行版均自行維護 stable backport，一般會按自身節奏發布 security fix，而非逐字追蹤上游的 point release，因此任何特定部署的權威依據，應為該發行版本身的 advisory 通訊渠道，而非單純以上游版本號為準。需要 CVE 層面資料用於工單或合規記錄的管理員，可交叉核對 stable-kernel 郵件列表存檔、kernel.org 中各 release 的 stable queue 條目，以及國家漏洞資料庫。</p>
+<h4>誰應該更新，以及何時更新</h4>
+<p>本批中的三個長期支援（LTS）分支，最可能對長久運行的系統群組管理者有直接關係：</p>
+<ul>
+<li><strong>6.6</strong>（現為 6.6.162）——當前企業部署的常見目標。</li>
+<li><strong>6.1</strong>（現為 6.1.192）——過去數年安裝的系統上仍然普遍。</li>
+<li><strong>5.15</strong>（現為 5.15.225）——本批三者中最舊者，另有 5.10.274，適用於尚未離開該分支的系統群。</li>
+</ul>
+<p>實務建議源於受影響代碼的執行位置。運行 Xen host 或 guest 的系統，應將這些 update 列為優先，與上游建議升級的方向一致。從未接觸 Xen 的系統則僅屬間接受影響——受修復的漏洞位於 Xen 專用的代碼路徑——因此這些部署可將 update 納入正常 patch cycle，毋須打斷緊急變更窗口。在設定變更窗口優先次序前，請先對照所用發行版的 advisory 確認具體情況。</p>
+<p>對於同時管理多個 kernel 分支的營運者而言，這次一次性發布七個 release，正好提醒大家 stable 項目背後流動的安全維護工作量。追蹤單一分支尚可應付；追蹤橫跨三個或以上 LTS line 的異構系統群，決定修復能否按時落地的，是你的更新工具，而非你的警覺性。</p>
+<h4>為何重要</h4>
+<p>個別 stable point release 很少成為頭條新聞。此處較具參考價值的訊號，是這一批更新的形態：七個分支同時更新，涉及的子系統有許多安裝戶從未啟用，正好顯示 stable 項目在 backport security fix 時覆蓋面有多廣，不論受影響的代碼路徑使用得有多廣泛。對於任何肩負 patch SLA 責任的人來說，這種覆蓋面正是採用自動化、按分支更新追蹤機制，而非零散人工檢視的理據。</p>
+<p><a href="https://lwn.net/Articles/1105902/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
