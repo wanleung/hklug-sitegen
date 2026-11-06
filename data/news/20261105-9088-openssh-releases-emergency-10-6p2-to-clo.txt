@@ -1,0 +1,65 @@
+Date: 2026-11-05 22:30:00
+Author: HKLUG Team
+Title: OpenSSH Releases Emergency 10.6p2 to Close Alpine Password-Handling Flaw
+Content:
+<p>An emergency OpenSSH release patches a critical authentication bypass that lets remote attackers sign into accounts configured to have no password at all — provided the attacker supplies a password between 257 and 1,024 bytes long.</p>
+<p>According to The Hacker News, which covered the release on 5 November, the flaw affects servers running the standard <code>openssh-server</code> package on Alpine Linux. An attacker needs only network reachability to the SSH port and a valid account name; the unusually long password string is enough to satisfy the login path on accounts that were deliberately configured to accept only SSH keys or no credentials whatsoever. OpenSSH rates the flaw critical and shipped version 10.6p2 to close it, and Alpine has published fixed packages across its supported branches.</p>
+<h5>The control you relied on is the one that failed</h5>
+<p>The inversion here is what makes the bug notable. Hardening guides for years have pushed administrators toward disabling password authentication entirely and relying on key-only access — treating passwordless, key-only accounts as the strongest posture available. This bypass defeats exactly that configuration. On an affected host, an account with an empty password field and no meaningful credential check becomes reachable to anyone who can guess the username and send a long enough string.</p>
+<p>Scope is narrower than a first reading might suggest: the exposure is tied to Alpine's packaged <code>openssh-server</code>, not to every OpenSSH deployment. But Alpine's footprint in the environments where this matters most is considerable. It is the default base image for a large share of container workloads, it underpins many CI runners and build agents, and it turns up frequently in bastion hosts and embedded appliances — systems that are disproportionately likely to be internet-reachable or to sit at the edge of a trusted network.</p>
+<h5>Patch now</h5>
+<p>For administrators running Alpine hosts or container images, the immediate steps are:</p>
+<pre><code>apk update &amp;&amp; apk upgrade openssh
+apk info -v openssh        # confirm the installed version
+rc-service sshd restart    # reload the patched daemon
+</code></pre>
+<p>One warning before you run the last command: <code>rc-service sshd restart</code> drops every active session. Schedule the restart rather than firing it blindly during business hours.</p>
+<p>Hosts that are patched in place are only part of the job. Container fleets require rebuilding base images against the patched repository — an in-place upgrade on a running container leaves the vulnerable layer baked into the image, so every CI runner and orchestrator scheduling from that image inherits the flaw until the image is rebuilt.</p>
+<h5>If you cannot patch immediately</h5>
+<p>Interim mitigations include restricting port 22 by firewall rules or bind interface, explicitly setting <code>PasswordAuthentication no</code>, and auditing accounts for empty password states and unexpected <code>authorized_keys</code> entries.</p>
+<p>One caution applies regardless: successful logins made through this bug are, by design, log-indistinguishable from legitimate ones. Any affected host exposed during the vulnerability window should be treated as potentially compromised, not merely patched.</p>
+<h5>Why it matters</h5>
+<p>OpenSSH almost never issues critical emergency releases; a same-day fix signals how seriously the maintainers view the issue. The nature of the flaw — password-handling code paths executing even where password authentication is nominally disabled — points to input-validation and buffer-boundary logic inside the authentication stack rather than a weakness in the SSH protocol itself. For the container and infrastructure community, it is a reminder that "disabled" and "never executed" are not the same guarantee, and that base-image hygiene is a security control in its own right.</p>
+<p><em>Source: <a href="https://thehackernews.com/2026/11/openssh-issues-emergency-fix-for-flaw.html">The Hacker News</a>. Readers should confirm CVE identifiers and exact affected package versions against the upstream OpenSSH and Alpine advisories.</em></p>
+<hr />
+<h4>繁體中文版本</h4>
+<p>一次緊急的 OpenSSH 發布，修補了一個嚴重的驗證繞過漏洞：遠端攻擊者可登入被設定為根本沒有密碼的帳戶——前提是攻擊者提供一段介乎 257 至 1,024 位元組的密碼。</p>
+<p>據 The Hacker News 於 11 月 5 日的報導，受影響的是採用 Alpine Linux 標準 <code>openssh-server</code> 套件的伺服器。攻擊者只需能連線到 SSH 連埠，再加上一個有效的帳戶名稱；那段異常冗長的密碼字串，已足以通過那些刻意設定為只接受 SSH 金鑰、甚至完全不接受任何憑證之帳戶的登入流程。OpenSSH 將此漏洞評定為嚴重（critical），並發布 10.6p2 版本加以修補；Alpine 亦已在所有受支援分支提供已修復的套件。</p>
+<h5>你一直依賴的防護，正是失守的那一道</h5>
+<p>此漏洞最值得注意之處，在於其顛覆性。多年來，保安強化指南一直建議管理員完全停用密碼驗證，改以金鑰登入為唯一途徑——把沒有密碼、只用金鑰的帳戶視為最穩固的防護姿態。而這個繞過漏洞，恰恰擊破了這一配置。在受影響的主機上，密碼欄位為空、且沒有任何實質憑證檢查的帳戶，對任何猜中使用者名稱並發出足夠長字串的人都變得可達。</p>
+<p>影響範圍比初讀之下要窄：風險繫於 Alpine 自行打包的 <code>openssh-server</code>，而非所有 OpenSSH 部署。但 Alpine 在最關鍵的環境中佔有相當比重——它是大量容器工作負載的預設基底映像，支撐著許多 CI runner 與 build agent，也經常出現在跳主機（bastion host）與嵌入式裝置中，而這些系統恰恰最可能暴露於互聯網，或位於受信任網路的邊緣。</p>
+<h5>立即修補</h5>
+<p>對於執行 Alpine 主機或容器映像的管理員，即時步驟如下：</p>
+<pre><code>apk update &amp;&amp; apk upgrade openssh
+apk info -v openssh        # 確認已安裝的版本
+rc-service sshd restart    # 重新載入已修補的守護程式
+</code></pre>
+<p>執行最後一條指令前請留意：<code>rc-service sshd restart</code> 會中斷所有現有的連線。請預先安排重啟時間，不要在辦公時段貿然執行。</p>
+<p>就地修補主機只是工作的一半。容器叢集需要對照已修補的儲存庫重新建立基底映像——在執行中的容器內就地升級，只會把仍有漏洞的層級保留在映像之中，因此在映像重建之前，所有由此映像排程的 CI runner 與 orchestrator 都會承襲同一漏洞。</p>
+<h5>未能即時修補時</h5>
+<p>過渡性的緩解措施包括：以防火牆規則或綁定介面限制連埠 22、明確設定 <code>PasswordAuthentication no</code>，以及審核帳戶的空白密碼狀態與異常的 <code>authorized_keys</code> 條目。</p>
+<p>但有一點不論如何都要留意：透過此漏洞成功的登入，在設計上與合法登入在日誌中無法分辨。任何在漏洞影響期間曾暴露於風險的受影響主機，都應視為可能已被入侵，而不只是完成修補便可了事。</p>
+<h5>為何重要</h5>
+<p>OpenSSH 幾乎從不發布嚴重級別的緊急版本；同日推出修補，反映維護者對此事的重視程度。漏洞的性質——即使密碼驗證在名義上已停用，密碼處理的程式碼路徑仍會執行——指向驗證堆疊內部的輸入驗證與緩衝區邊界邏輯，而非 SSH 協定本身的弱點。對容器與基礎設施社群而言，這是一個提醒：「已停用」與「從不執行」並不是同一種保證，而基底映像的保安衛生本身就是一項安全控制。</p>
+<p><em>資料來源：<a href="https://thehackernews.com/2026/11/openssh-issues-emergency-fix-for-flaw.html">The Hacker News</a>。讀者應對照上游 OpenSSH 與 Alpine 的官方通告，確認 CVE 編號及確實受影響的套件版本。</em></p>
+<hr>
+<p>一次緊急的 OpenSSH 發布，修補了一個嚴重的驗證繞過漏洞：遠端攻擊者可登入被設定為根本沒有密碼的帳戶——前提是攻擊者提供一段介乎 257 至 1,024 位元組的密碼。</p>
+<p>據 The Hacker News 於 11 月 5 日的報導，受影響的是採用 Alpine Linux 標準 <code>openssh-server</code> 套件的伺服器。攻擊者只需能連線到 SSH 連埠，再加上一個有效的帳戶名稱；那段異常冗長的密碼字串，已足以通過那些刻意設定為只接受 SSH 金鑰、甚至完全不接受任何憑證之帳戶的登入流程。OpenSSH 將此漏洞評定為嚴重（critical），並發布 10.6p2 版本加以修補；Alpine 亦已在所有受支援分支提供已修復的套件。</p>
+<h5>你一直依賴的防護，正是失守的那一道</h5>
+<p>此漏洞最值得注意之處，在於其顛覆性。多年來，保安強化指南一直建議管理員完全停用密碼驗證，改以金鑰登入為唯一途徑——把沒有密碼、只用金鑰的帳戶視為最穩固的防護姿態。而這個繞過漏洞，恰恰擊破了這一配置。在受影響的主機上，密碼欄位為空、且沒有任何實質憑證檢查的帳戶，對任何猜中使用者名稱並發出足夠長字串的人都變得可達。</p>
+<p>影響範圍比初讀之下要窄：風險繫於 Alpine 自行打包的 <code>openssh-server</code>，而非所有 OpenSSH 部署。但 Alpine 在最關鍵的環境中佔有相當比重——它是大量容器工作負載的預設基底映像，支撐著許多 CI runner 與 build agent，也經常出現在跳主機（bastion host）與嵌入式裝置中，而這些系統恰恰最可能暴露於互聯網，或位於受信任網絡的邊緣。</p>
+<h5>立即修補</h5>
+<p>對於執行 Alpine 主機或容器映像的管理員，即時步驟如下：</p>
+<pre><code>apk update &amp;&amp; apk upgrade openssh
+apk info -v openssh        # 確認已安裝的版本
+rc-service sshd restart    # 重新載入已修補的守護程式
+</code></pre>
+<p>執行最後一條指令前請留意：<code>rc-service sshd restart</code> 會中斷所有現有的連線。請預先安排重啟時間，不要在辦公時段貿然執行。</p>
+<p>就地修補主機只是工作的一半。容器叢集需要對照已修補的儲存庫重新建立基底映像——在執行中的容器內就地升級，只會把仍有漏洞的層級保留在映像之中，因此在映像重建之前，所有由此映像排程的 CI runner 與 orchestrator 都會承襲同一漏洞。</p>
+<h5>未能即時修補時</h5>
+<p>過渡性的緩解措施包括：以防火牆規則或綁定介面限制連埠 22、明確設定 <code>PasswordAuthentication no</code>，以及審核帳戶的空白密碼狀態與異常的 <code>authorized_keys</code> 條目。</p>
+<p>但有一點不論如何都要留意：透過此漏洞成功的登入，在設計上與合法登入在日誌中無法分辨。任何在漏洞影響期間曾暴露於風險的受影響主機，都應視為可能已被入侵，而不只是需要修補便可了事。</p>
+<h5>為何重要</h5>
+<p>OpenSSH 幾乎從不發布嚴重級別的緊急版本；同日推出修補，反映維護者對此事的重視程度。漏洞的性質——即使密碼驗證在名義上已停用，密碼處理的程式碼路徑仍會執行——指向驗證堆疊內部的輸入驗證與緩衝區邊界邏輯，而非 SSH 協定本身的弱點。對容器與基礎設施社群而言，這是一個提醒：「已停用」與「從不執行」並不是同一種保證，而基底映像的保安衞生本身就是一項安全控制。</p>
+<p><em>資料來源：<a href="https://thehackernews.com/2026/11/openssh-issues-emergency-fix-for-flaw.html">The Hacker News</a>。讀者應對照上游 OpenSSH 與 Alpine 的官方通告，確認 CVE 編號及確實受影響的套件版本。</em></p>
+<p><a href="https://thehackernews.com/2026/11/openssh-issues-emergency-fix-for-flaw.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
