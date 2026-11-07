@@ -1,0 +1,28 @@
+Date: 2026-11-06 23:22:00
+Author: HKLUG Team
+Title: ReactOS Merges an Initial USB 3.0 Driver Stack, Closing a Long-Standing Hardware Gap
+Content:
+<h3>ReactOS Merges an Initial USB 3.0 Driver Stack, Closing a Long-Standing Hardware Gap</h3>
+<p>ReactOS, the open-source operating system that aims for drop-in compatibility with Windows programs and drivers, has landed an initial USB 3.0 driver stack in its mainline source tree, according to Phoronix. The merge caps years of development work on a subsystem that has become quietly essential to the project's core promise: keeping Windows software running on hardware that no longer ships with the interfaces it was written for. It also lands well after USB 3.0 (xHCI) controllers became standard fare on consumer and server motherboards — a gap that has kept ReactOS off a large share of modern machines.</p>
+<p>USB support is not a niche concern for ReactOS. The project's entire value proposition rests on binary compatibility with the Windows ecosystem — legacy line-of-business applications, industrial control software, and older utilities that assume a familiar driver model and a predictable set of system interfaces. As physical machines are replaced with newer hardware, the practical bottleneck for preserving those application estates is rarely the application itself. It is whether the underlying platform still exposes the buses, dongles, and peripherals those applications depend on, including USB licence dongles, scanners, and legacy peripherals that were never reissued for modern connectors.</p>
+<p><strong>Why a driver stack, not just a driver</strong></p>
+<p>It is worth being precise about what "USB 3.0 stack" means here. A working host controller driver — the layer that lets the machine's xHCI hardware accept and complete transfers — is only the bottom rung. Above it sit the hub driver, the device enumeration path, and the interface layer that hands devices to class drivers such as HID, mass storage, and communications. If any of those layers behaves unpredictably, a keyboard may enumerate erratically, a storage device may drop mid-transfer, or an application may never see the device it expects. Landing the stack as a whole, rather than a lone controller driver, is what gives higher layers something stable to build on.</p>
+<p><strong>Initial support, with caveats</strong></p>
+<p>ReactOS's own framing describes this as initial support, and that qualifier should be taken seriously. Expect rough edges in power management, hot-plug handling, and isochronous transfer paths, and note that xHCI implementations vary between chipsets and firmware. Parity with what a contemporary Windows install offers today is not the claim being made. The significance of this merge is structural: the code now sits in the mainline tree, where contributors can test it against real hardware, report controller-specific compatibility issues, and extend it — rather than living in a branch that only its authors can exercise.</p>
+<p>That distinction matters for anyone maintaining a Windows-compatible open-source stack long term. Driver work that stays out of tree tends to atrophy; driver work in mainline attracts the bug reports and porting effort it needs to mature.</p>
+<p><strong>Relevance beyond the desktop</strong></p>
+<p>For organisations in Hong Kong and elsewhere that still run specialised Windows software in back-office or SMB environments — where a replacement application was never budgeted or written — a Windows-compatible open-source OS with working USB 3.0 support is a meaningful option for extending the life of that software onto newer hardware. That is the practical story behind what otherwise reads as a low-level driver commit.</p>
+<p>Phoronix reported the merge; the change is reviewable in the ReactOS project's mainline repository at <a href="https://github.com/reactos/reactos">github.com/reactos/reactos</a>.</p>
+<hr>
+<h3>ReactOS 合併首個 USB 3.0 驅動堆疊，填補長期硬件兼容缺口</h3>
+<p>據 Phoronix 報道，以實現與 Windows 程序及驅動程序直接替換兼容為目標的開源操作系統 ReactOS，已在其主線源碼樹中合併了首個 USB 3.0 驅動堆疊。此項合併標誌著該子系統多年開發工作的成果，而該子系統已悄然成為項目核心承諾的關鍵：讓 Windows 軟件繼續運行於那些已不再配備其原生接口的硬件之上。是次合併亦遠晚於 USB 3.0（xHCI）控制器成為消費級及伺服器主機板標準配置之後——這一缺口一直令 ReactOS 無法在大量現代電腦上運行。</p>
+<p>USB 支援對 ReactOS 而言絕非次要問題。整個項目的價值主張建立於與 Windows 生態系統的二進制兼容之上——包括傳統企業內部應用、工業控制軟件，以及依賴熟悉的驅動模型和可預測系統接口組合的舊版工具程序。隨著實體機器被更新的硬件取代，要保留這些應用資產，實際上的瓶頸很少在應用本身，而在於底層平台是否仍然提供這些應用所依賴的總線、加密鎖及外圍裝置，當中包括 USB 授權加密鎖、掃描器，以及從未為現代接口重新推出的舊版外圍裝置。</p>
+<p><strong>為何是驅動堆疊，而非單一驅動程序</strong></p>
+<p>此處有必要準確說明「USB 3.0 堆疊」的含義。一個可運作的主機控制器驅動——即令機器的 xHCI 硬件能夠接收並完成傳輸的層次——僅是最底層的一級。其上還有 hub 驅動、設備枚舉路徑，以及將設備交予 HID、大容量儲存及通訊等類別驅動的接口層。只要其中任何一層表現不穩定，鍵盤可能出現枚舉異常、儲存裝置可能在傳輸中途斷開，或應用程序可能永遠看不到它所預期的設備。將整個堆疊（而非單獨的控制器驅動）一併合併，才能為上層提供穩定的基礎。</p>
+<p><strong>初步支援，附帶注意事項</strong></p>
+<p>ReactOS 官方將此描述為初步支援，此限定語應予以認真看待。預期在電源管理、熱插拔處理及等時傳輸路徑方面仍有粗糙之處，同時需注意 xHCI 實作因晶片組及韌體而異。此項合併並非宣稱與當今 Windows 安裝版本的支援水平看齊。其意義在於結構性：相關代碼現已納入主線樹中，貢獻者可測試其實際硬件表現、回報特定控制器的相容性問題並加以擴展——而非局限於只有作者才能運行的分支之內。</p>
+<p>對於任何長期維護 Windows 兼容開源堆疊的人來說，這一區別至關重要。留在樹外的驅動工作往往會逐漸萎縮；納入主線的驅動工作則會吸引其成熟所需的錯誤回報及移植投入。</p>
+<p><strong>超越桌面應用的意義</strong></p>
+<p>對於香港及其他地區仍在後台系統或中小企業環境中運行專用 Windows 軟件的機構——那些場景從未獲撥備預算或開發替代應用——一個具備可用 USB 3.0 支援的 Windows 兼容開源操作系統，是將該等軟件延續至更新硬件的實質選項。這正是這宗表面上僅屬底層驅動提交背後的現實意義。</p>
+<p>Phoronix 報道了此次合併；相關變更可在 ReactOS 項目主線儲存庫 <a href="https://github.com/reactos/reactos">github.com/reactos/reactos</a> 中查閱審核。</p>
+<p><a href="https://www.phoronix.com/news/ReactOS-Initial-USB-3.0" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
