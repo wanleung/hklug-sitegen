@@ -1,0 +1,40 @@
+Date: 2026-11-07 19:24:00
+Author: HKLUG Team
+Title: GNU Automake 1.20 Ships With Jobserver Support and a Move to GPLv3+
+Content:
+<p>GNU Automake 1.20 has been released, introducing an opt-in <code>--enable-jobserver</code> option that lets builds coordinate parallelism with a shared jobserver, alongside a relicense of the tool itself to GPLv3-or-later terms. Phoronix, which covered the release on 7 November, also frames the version as part of an effort by the GNU project to re-establish its tooling among the leading build systems.</p>
+<h4>What the jobserver option changes</h4>
+<p>The headline feature for anyone running heavily parallel CI or package builds is the jobserver support. Automake-generated Makefiles can, when the option is enabled, participate in a shared job pool rather than each <code>make</code> process independently spawning workers. The practical effect is tighter control over CPU contention during recursive builds — the kind of workload typical of distribution packaging pipelines and monorepo-style CI runs.</p>
+<p>Because <code>--enable-jobserver</code> is opt-in, upgrading to 1.20 on its own should not alter existing build behaviour. The risk sits on the other side of the flag: turning it on can push builds to concurrency levels that were never exercised before, and build-system practitioners will recognise the hazard of latent races in <code>Makefile.am</code> rules that happened to work at lower parallelism. Projects adopting it should therefore run targeted tests on their heaviest targets before switching globally, and audit their <code>Makefile.am</code> rules for correct <code>$(MAKE)</code> usage so sub-makes propagate the jobserver correctly.</p>
+<h4>Licence change: scoped to Automake itself</h4>
+<p>The relicense to GPLv3+ applies to the Automake distribution, not to the projects that use it. Maintainers should not read the change as an instruction — or a permission — to relicense their own code. The "+" notation allows redistribution under GPLv3 or any later published version of the GPL, but it does not permit a return to GPLv2-only terms for the tool.</p>
+<p>The change is most material for redistributors: organisations shipping patched copies of Automake, bundling it into internal toolchains, or operating formal open-source compliance processes will need to update their licence records and review how Automake is described in their bill-of-materials and attribution documentation. GPLv2-only compliance policies may need an explicit carve-out. Teams with questions about their own distribution posture should confirm their position against Automake's upstream <code>COPYING</code> and <code>NEWS</code> files rather than relying on secondary summaries.</p>
+<h4>Why it matters beyond the changelog</h4>
+<p>The more interesting story behind 1.20 is competitive rather than technical. Automake has long been regarded as legacy infrastructure — dependable, ubiquitous in GNU and distribution builds, but increasingly bypassed by greenfield projects choosing newer build systems. Phoronix frames the release as part of the GNU project's effort to re-establish its tooling among the leading build systems, and the combination of a genuinely new concurrency feature with active release cadence supports that reading.</p>
+<p>For build-system watchers, the signal is that Automake is not in maintenance mode. That matters for planning decisions: projects weighing a migration away from Autotools, and organisations standardising on a build tool for the next several years, now have a data point that the incumbent is still evolving. Migration trends toward newer build systems remain real, but they are not one-directional by default.</p>
+<h4>Practical takeaways</h4>
+<ul>
+<li><strong>CI and packaging teams:</strong> treat 1.20 as a routine upgrade first, then evaluate <code>--enable-jobserver</code> as a separate change with its own test cycle.</li>
+<li><strong>Rule authors:</strong> check <code>Makefile.am</code> files for correct <code>$(MAKE)</code> invocation before enabling jobserver coordination.</li>
+<li><strong>Compliance teams:</strong> update licence metadata for Automake itself, and verify details against upstream sources.</li>
+</ul>
+<p>Automake 1.20 is available now from the GNU project.</p>
+<hr>
+<p>GNU Automake 1.20 已正式發布，引入了可自行選擇啟用的 <code>--enable-jobserver</code> 選項，讓建置過程透過共用 jobserver 協調平行運算，同時該工具本身的授權亦改為 GPLv3-or-later 條款。Phoronix 於 11 月 7 日報導此版本時，亦將其定性為 GNU 計劃重新確立其工具在主流建置系統中地位的一環。</p>
+<h4>jobserver 選項帶來什麼改變</h4>
+<p>對於正在執行高度平行 CI 或套件建置的使用者而言，最重要的一項功能就是 jobserver 支援。當此選項啟用後，由 Automake 產生的 Makefile 可以加入共用的工作池（job pool），而非每個 <code>make</code> 各自獨立衍生 worker。實際效果是在遞歸建置期間能更緊密地控制 CPU 競爭——這正是發行版打包 pipeline 及 monorepo 式 CI 運行的典型工作負載。</p>
+<p>由於 <code>--enable-jobserver</code> 屬於可選擇啟用的選項，單純升級至 1.20 應不會改變現有建置行為。風險在於旗標的另一面：啟用後可能令建置達到前所未試過的並發程度，而建置系統從業者都會意識到 <code>Makefile.am</code> 規則中潛藏的競態條件（race）風險——這些規則在較低並發度下碰巧運作正常。因此，採用此功能的項目應先針對最繁重的 target 進行針對性測試，才全面啟用，並審核其 <code>Makefile.am</code> 規則是否正確使用 <code>$(MAKE)</code>，以確保 sub-make 正確傳承 jobserver。</p>
+<h4>授權變更：僅適用於 Automake 本身</h4>
+<p>改為 GPLv3+ 的授權變更只適用於 Automake 發行版，而非使用它的項目。維護者不應將此變更理解為重新授權其自身代碼的指示或許可。「+」符號表示可按 GPLv3 或任何其後發布的 GPL 版本再分發，但並不表示此工具可以回退至僅限 GPLv2 的條款。</p>
+<p>此變更對再分發者影響最大：發布經修補 Automake 版本、將其整合至內部 toolchain，或執行正式開源合規流程的機構，需要更新其授權記錄，並檢視物料清單（bill-of-materials）及署名（attribution）文件中對 Automake 的描述方式。僅限 GPLv2 的合規政策可能需要明確設立例外條款。對自身分發立場有疑問的團隊，應以 Automake 上游的 <code>COPYING</code> 及 <code>NEWS</code> 檔案為準確認立場，而非依賴二手摘要。</p>
+<h4>為何此事不限於 changelog 層面</h4>
+<p>1.20 背後更值得關注的是競爭層面，而非技術層面。Automake 長期被視為舊有基礎設施——可靠、在 GNU 及發行版建置中無處不在，但新起步的項目越來越多選擇較新的建置系統而繞過它。Phoronix 將此版本描述為 GNU 計劃重新確立其工具在主流建置系統中地位的一環，而一項真正全新的並發功能配合活躍的發布節奏，確實支持此解讀。</p>
+<p>對建置系統觀察者而言，訊號是 Automake 並未進入純維護模式。這對規劃決策有實際意義：正在評估遷離 Autotools 的項目，以及未來數年將統一選定建置工具的機構，如今多了一個數據點，顯示現行方案仍在演進。遷往較新建置系統的趨勢依然存在，但並非預設單向發展。</p>
+<h4>實務建議</h4>
+<ul>
+<li><strong>CI 及打包團隊：</strong> 先將 1.20 視為一般升級處理，再把 <code>--enable-jobserver</code> 作為獨立變更，安排自己的測試周期進行評估。</li>
+<li><strong>規則編寫者：</strong> 在啟用 jobserver 協調之前，檢查 <code>Makefile.am</code> 檔案是否正確呼叫 <code>$(MAKE)</code>。</li>
+<li><strong>合規團隊：</strong> 更新 Automake 本身的授權中繼資料，並以上游來源核實細節。</li>
+</ul>
+<p>Automake 1.20 現已可從 GNU 計劃取得。</p>
+<p><a href="https://www.phoronix.com/news/GNU-Automake-1.20" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
