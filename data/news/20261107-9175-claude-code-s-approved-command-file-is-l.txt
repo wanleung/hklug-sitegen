@@ -1,0 +1,36 @@
+Date: 2026-11-07 11:30:00
+Author: HKLUG Team
+Title: Claude Code's Approved-Command File Is Leaking Secrets Across 1,122 Public GitHub Repos
+Content:
+<p>Passwords and API keys that developers typed into commands they approved inside Claude Code are sitting in public GitHub repositories, readable by anyone. Software security firm Apiiro disclosed the finding on 6 November, and The Hacker News reported on 7 November that 1,122 public repositories contain a copy of the file in question.</p>
+<p>The exposure originates not from a memory-corruption bug or an injection flaw, but from a convenience feature. When a user approves a suggested command and selects "Yes, and don't ask again," Anthropic's AI coding assistant persists that command word-for-word into a project settings file — capturing whatever secrets happened to be embedded in it, such as passwords, API tokens, or cloud credentials. Because the approval path is designed to suppress future prompts, the file is written at precisely the moment a developer is least likely to inspect what lands on disk.</p>
+<p>That is where the risk compounds. The file carries three properties at once: it is invisible by design, it sits in a location developers are already conditioned to commit, and it holds a literal, unabridged copy of the command. The combination means there is no safe partial remediation. If the file has reached a remote, the credential must be treated as burned and rotated.</p>
+<p><strong>The count is a floor, not a total.</strong> Apiiro's 1,122 figure covers public GitHub repositories only. Private repos, internal mirrors, other hosting providers, fork history, and copy-pasted snippets all sit outside that tally, so the true surface is larger than the number suggests.</p>
+<p>For teams running AI coding assistants — in Hong Kong or anywhere else — the pattern suggests a short audit-and-remediation runbook:</p>
+<ol>
+<li><strong>Locate the file.</strong> Search repositories for Claude Code project settings and agent-state files that store approved commands — and search commit history, not just the working tree, since the file may have been removed locally long after it was pushed.</li>
+<li><strong>Treat every match as a live credential.</strong> Do not attempt to edit the file in place and call it resolved; a history rewrite does not un-share a public clone, and forks may already carry their own copies.</li>
+<li><strong>Rotate first, investigate second.</strong> Any password, token, or key appearing in a recovered command should be revoked and reissued immediately, before anyone spends time reconstructing how the file got there.</li>
+<li><strong>Add the file to <code>.gitignore</code> and remove it from tracked paths</strong> so future approvals do not re-enter version control.</li>
+<li><strong>Enable secret scanning and push protections</strong> on the repository — and audit pre-existing alerts that may have been dismissed.</li>
+<li><strong>Brief the team on the approval prompt itself.</strong> The decision to auto-approve is now a credential-handling decision, not just a workflow preference.</li>
+</ol>
+<p>The broader lesson extends past a single vendor. Any agent, CI job, or tooling layer that caches approved commands, tool invocations, or shell history inherits the same exposure class: a machine-readable record of what a human typed, stored where humans habitually commit. The problem is not that an AI assistant wrote a file, but that agent-state artefacts now routinely encode secrets and land in paths version control treats as ordinary source. The 1,122-repository count is best read as the first audit of this pattern rather than the last; future disclosures are likely to name a different artefact class — approval logs, tool-call transcripts — rather than a different kind of bug.</p>
+<p>As of this writing, The Hacker News report does not include a statement from Anthropic or a remediation timeline, and teams should treat remediation as their own responsibility until an official fix ships. For organisations standardising on agentic development tools, the incident is a useful reminder that the artefacts an assistant writes to disk deserve the same scrutiny as the code it generates.</p>
+<hr>
+<p>開發者在 Claude Code 中核准指令時輸入的密碼及 API keys，正存放於公開 GitHub repository 內，任何人皆可讀取。軟件安全公司 Apiiro 於 11 月 6 日披露有關發現，《The Hacker News》於 11 月 7 日報道，共有 1,122 個公開 repository 含有該檔案的副本。</p>
+<p>此次外洩並非源於記憶體損毀漏洞或注入缺陷，而是來自一項便利功能。當用戶核准系統建議的指令並選擇「是，不再詢問」時，Anthropic 的 AI 編碼助手會將該指令逐字保存至專案設定檔案中——當中包括剛好嵌入指令的各種機密，例如密碼、API tokens 或雲端憑證。由於該核准路徑的設計用意是日後不再彈出提示，該檔案恰好在開發者最不可能檢查磁碟上寫入了什麼的時候寫入。</p>
+<p>風險正是在這裏疊加。該檔案同時具備三項特性：它在設計上是隱藏的、它位於開發者已習慣執行 commit 的位置，而且它保存著指令的完整逐字副本。種種因素意味著不存在安全的部分補救方案。如果該檔案已推送至遠端（remote），有關憑證就必須視作已洩露並即時更換（rotate）。</p>
+<p><strong>上述數字是下限，並非總數。</strong> Apiiro 的 1,122 個數字僅涵蓋公開 GitHub repository。私有 repo、內部鏡像、其他託管服務供應商、fork 歷史以及複製貼上的程式碼片段皆不在統計之列，因此實際影響面遠比該數字所顯示的更大。</p>
+<p>對於在香港或全球任何地方使用 AI 編碼助手的團隊，此模式提示了一套簡短的審計及補救流程：</p>
+<ol>
+<li><strong>尋找該檔案。</strong> 在 repo 中搜尋儲存已核准指令的 Claude Code 專案設定檔案及 agent-state 檔案——同時要搜尋 commit 歷史，而非僅限工作樹（working tree），因為該檔案可能在推送很久之後才在本地被刪除。</li>
+<li><strong>把每一項搜尋結果視為仍然有效的憑證。</strong> 不要試圖原地修改檔案便當作解決問題；重寫歷史無法撤銷已被公開 clone 的版本，而 fork 可能已經各自持有副本。</li>
+<li><strong>先更換憑證，後調查成因。</strong> 任何在已還原指令中出現的密碼、token 或 key，應立即撤銷並重新簽發，然後才花時間重建該檔案是如何出現的。</li>
+<li><strong>將該檔案加入 <code>.gitignore</code>，並從追蹤路徑中移除</strong>，以免日後的核准再次進入版本控制。</li>
+<li><strong>在 repo 啟用 secret scanning 及 push protections</strong>——同時審核先前可能已被忽略的警報。</li>
+<li><strong>向團隊重新講解核准提示本身的意義。</strong> 是否自動核准，如今是一個憑證處理決策，而不只是工作流程偏好。</li>
+</ol>
+<p>更廣泛的教訓不限於單一供應商。任何會快取已核准指令、工具調用（tool invocation）或 shell 歷史的 agent、CI job 或工具層級，都會繼承同類風險：一份由人類輸入內容的機器可讀記錄，卻存放在人類習慣執行 commit 的位置。問題不在於 AI 助手寫入了一個檔案，而在於 agent-state artefacts 如今已常態性地編碼機密，並落入版本控制視為普通原始碼的路徑之中。1,122 個 repository 的數字最好理解為此模式的首次審計，而非最後一次；日後的披露很可能指向另一類 artefact——核准日誌（approval logs）、工具調用記錄（tool-call transcripts）——而非另一種漏洞。</p>
+<p>截至本文撰寫時，《The Hacker News》的報道未有包含 Anthropic 的聲明或補救時間表，在官方修復推出之前，各團隊應將補救視為自身的責任。對於正將 agentic 開發工具標準化的機構而言，此次事件是一個有用的提醒：助手寫入磁碟的 artefacts，值得與它生成的程式碼同等程度的審視。</p>
+<p><a href="https://thehackernews.com/2026/11/claude-codes-dont-ask-again-file.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
