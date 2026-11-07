@@ -1,0 +1,38 @@
+Date: 2026-11-06 17:44:00
+Author: HKLUG Team
+Title: Browser Extensions Could Quietly Turn Claude Desktop Into a Local Code Runner
+Content:
+<p>A convenience feature in Anthropic's Claude Desktop could be converted into a remote code execution channel by a malicious browser extension, according to researchers at endpoint security firm Forever Security, whose proof of concept was reported by The Hacker News on 6 November.</p>
+<p>The chain works like this: an extension with script access to claude.ai injects content into the chat interface; that content triggers Dispatch, a Claude feature designed to let people hand tasks from their phone to Claude Desktop; and Claude Desktop then executes code on the user's machine. Nothing in the flow requires a memory-corruption bug or a compromised binary. The flaw, the researchers said, is an assumption baked into Dispatch: that anything arriving through it originated with the user. Once a browser extension can originate those requests instead, the trust boundary between the browser and local execution dissolves.</p>
+<p>Forever Security demonstrated the sequence as a proof of concept rather than documenting wild exploitation, and said the underlying flaw remains exploitable. No fix was disclosed as of publication, and no detailed reproduction steps had been published at that time — a gap that should be treated as an open risk rather than a closed incident.</p>
+<h4>Why extension review is now an AI problem</h4>
+<p>The story matters less for the specific product involved than for what it reveals about a new class of agentic-AI risk. Extension store reviewers evaluate requests for cookies, browsing history, and tab access. They do not evaluate whether an extension can steer an AI agent that has hands on the machine — because, until recently, that combination did not meaningfully exist. The implication that any extension holding script permissions on an AI chat domain now carries potential downstream execution reach is an inference for the category, not a claim the researchers have made; either way, that reach is invisible to the review process that was supposed to be the gatekeeper.</p>
+<p>Equally, no single component owner — browser, extension store, or AI vendor — is solely positioned to secure this. The browser cannot see what Dispatch does downstream; the extension store cannot see what an AI agent will do with injected text; the AI vendor cannot see what prompted the request. The gap sits precisely in the seams between them, which is why it survived scrutiny from each party individually.</p>
+<h4>What users and administrators can do</h4>
+<p>The following is editorial guidance from this publication, not instruction from the vendor or the researchers:</p>
+<ul>
+<li><strong>Treat Dispatch as a privileged channel.</strong> If the phone-to-desktop handoff is not required for daily work, disable it.</li>
+<li><strong>Audit extension host permissions on AI domains.</strong> Extensions with script access to claude.ai and comparable chat interfaces deserve the same scrutiny as anything with enterprise data access.</li>
+<li><strong>Enforce extension allowlists</strong> rather than relying on store reputation, and review permissions on a schedule rather than at installation only.</li>
+<li><strong>Apply least-privilege controls to Claude Desktop</strong>, including restrictions on what it may execute.</li>
+<li><strong>Monitor dispatch activity</strong> — it is the visible indicator that this path is being exercised.</li>
+</ul>
+<p>For IT teams evaluating agentic AI tooling, the takeaway is structural: features that bridge a user's devices are also features that bridge trust boundaries, and that bridging needs to be an explicit part of the security review.</p>
+<hr>
+<p>終端安全公司 Forever Security 的研究人員指出，Anthropic 旗下 Claude Desktop 的一項便利功能，可能被惡意瀏覽器擴充功能轉化為遠端代碼執行渠道；他們的概念驗證（proof of concept）已於 11 月 6 日獲 The Hacker News 報導。</p>
+<p>攻擊鏈運作方式如下：一個對 claude.ai 擁有 script 存取權限的擴充功能，向聊天介面注入內容；該內容觸發 Dispatch——Claude 一項旨在讓使用者將手機上的任務移交至 Claude Desktop 的功能；隨後 Claude Desktop 便會在使用者的機器上執行代碼。整個流程無需任何記憶體損毀漏洞（memory-corruption bug）或遭入侵的二進制文件。研究人員表示，漏洞根源在於 Dispatch 內建的一項假設：凡透過該功能傳入的內容，均源自使用者本人。一旦瀏覽器擴充功能能夠代為發出這些請求，瀏覽器與本地執行之間的信任邊界便告瓦解。</p>
+<p>Forever Security 是以概念驗證方式演示該攻擊序列，並非記錄野外實際利用（wild exploitation），同時表示底層漏洞仍可被利用。截至發稿時尚未公布修補方案，當時亦未有公開詳細重現步驟——此空缺應視為未解決風險，而非已結案事件。</p>
+<h4>擴充功能審核為何已成 AI 問題</h4>
+<p>這則新聞的意義，與其說在於涉事的特定產品，不如說在於它揭示了一類新型 agentic AI 風險。擴充功能商店的審核員會評估應用程式對 cookies、瀏覽歷史及分頁存取的請求，卻不會評估擴充功能能否操控一個已實際接觸使用者機器的 AI agent——因為直至不久前，這種組合根本不存在。任何對 AI 聊天域名擁有 script 權限的擴充功能，如今都可能具備下游執行能力，這是對整類風險的推論，而非研究人員已作出的指稱；無論如何，該執行能力對本應把關的審核流程而言是不可見的。</p>
+<p>同樣地，沒有任何單一組件的負責方——瀏覽器、擴充功能商店或 AI 供應商——具備獨立確保安全的條件。瀏覽器無法看見 Dispatch 在下游的所作所為；擴充功能商店無法看見 AI agent 會如何處理注入的文本；AI 供應商則無法看見究竟是甚麼觸發了該請求。漏洞恰恰存在於三方之間的接縫，正因如此，它得以避過各方單獨的審視。</p>
+<h4>使用者與管理員可以做甚麼</h4>
+<p>以下為本刊的編輯建議，並非廠商或研究人員的指引：</p>
+<ul>
+<li><strong>將 Dispatch 視為特權渠道。</strong> 若日常工作並不需要手機至桌面的移交功能，應將其停用。</li>
+<li><strong>審核擴充功能對 AI 域名的 host 權限。</strong> 對 claude.ai 及同類聊天介面擁有 script 存取權限的擴充功能，應獲同等嚴格的審查，與任何可存取企業數據的擴充功能一視同仁。</li>
+<li><strong>強制執行擴充功能 allowlist</strong>，而非依賴商店信譽；權限應按定期安排複審，而非僅在安裝時檢查。</li>
+<li><strong>對 Claude Desktop 實施最小權限（least-privilege）控制</strong>，包括限制其可執行的操作。</li>
+<li><strong>監察 dispatch 活動</strong>——這是該路徑正被使用的可見指標。</li>
+</ul>
+<p>對於正評估 agentic AI 工具的 IT 團隊，結論是結構性的：連接使用者各項裝置的功能，同時也是連接信任邊界的功能，而此種跨越必須成為安全審核中明確的一環。</p>
+<p><a href="https://thehackernews.com/2026/11/malicious-browser-extensions-could-use.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
