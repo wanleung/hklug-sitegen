@@ -1,0 +1,34 @@
+Date: 2026-11-07 13:23:00
+Author: HKLUG Team
+Title: Kmorph Targets Sub-Two-Second Recovery From Linux Kernel Crashes Without a Reboot
+Content:
+<p>A Linux project called Kmorph is aiming to cut recovery from a kernel crash to roughly two seconds — without rebooting the machine.</p>
+<p>According to the Phoronix report on the project, Kmorph is designed to restore services such as the Nginx web server after a kernel crash with roughly two seconds of downtime, sidestepping the full restart cycle that normally follows a fatal kernel fault.</p>
+<h4>Why two seconds matters more than the mechanism</h4>
+<p>For uptime-focused operators, the headline figure is the story. Two seconds sits comfortably below many of the failure-detection windows used by load balancers and health-check systems, which often range from several seconds upward. In principle, a recovery fast enough to fall inside those windows could mean a crash registers as a transient blip rather than a visible outage — at least for suitably stateless services. In practice, detection windows vary widely by deployment, and the figure is a described capability of the project rather than an independently verified benchmark.</p>
+<p>The distinction matters for anyone doing SLA arithmetic. Traditional recovery paths — a crash dump, a machine reboot, a failover to another node — are typically measured in tens of seconds or minutes. If rebootless recovery can be made reliable, it would compress the downtime budget for kernel-level failures to something closer to that of a process restart.</p>
+<h4>Where Kmorph sits alongside kdump, kexec and livepatch</h4>
+<p>It is worth being precise about what Kmorph is not displacing. <code>kdump</code> and <code>kexec</code> — the standard Linux tooling for capturing crash state and booting a fresh kernel without going through firmware — are diagnostic tools first. Their job is to hand operators a core dump and a clean kernel image; speed of return to service has always been secondary to the quality of the forensics. Kmorph's framing is the inverse: availability first, forensics second. Read that way, it is better understood as a potential complement to <code>kdump</code> than a replacement for it.</p>
+<p>Livepatch occupies a different niche again — preventing some crashes by hot-patching code — and closing the gap where patches are not yet available. Kmorph, if it delivers, addresses the moment after a crash has already happened. Real-world resilience typically needs all three layers, plus clustering for capacity failover.</p>
+<h4>Caveats worth keeping in view</h4>
+<p>Kmorph is an early-stage project, and several hard questions remain unanswered. Which class of crashes it can recover from — a null-pointer fault, versus deeper corruption of kernel data structures — is not yet established. How much state survives recovery, and whether the recovered kernel can be trusted to behave correctly afterwards, are open issues with real security implications: a recovery path that skips parts of the normal boot sequence may also skip firmware or boot attestation steps that hardened environments depend on.</p>
+<p>Perhaps most importantly, recovering a stateless front end like Nginx is a very different proposition from recovering a stateful workload mid-transaction. Data-consistency guarantees for databases and other stateful services are the questions that will determine whether this becomes an operational category or remains a compelling demonstration.</p>
+<h4>What to watch</h4>
+<p>For now, Kmorph is a project to track rather than adopt. The signal worth waiting for is a credible, independent comparison of Kmorph against <code>kexec</code>-based recovery running under real workloads — that would show whether rebootless recovery is a genuine new category or a new demo. Early figures aside, any organisation with contractual uptime commitments will want that evidence before factoring sub-two-second kernel recovery into its availability planning.</p>
+<p>Source: Phoronix, "Kmorph Aims To Provide Rebootless Linux Kernel Crash Recovery."</p>
+<hr>
+<p>名為 Kmorph 的 Linux 項目，目標是將 kernel 崩潰後的復原時間縮短至約兩秒 —— 且毋須重新啟動電腦。</p>
+<p>根據 Phoronix 對該項目的報導，Kmorph 的設計目的是在 kernel 崩潰後，以約兩秒的停機時間恢復 Nginx web server 等服務，避開致命 kernel 故障後通常須經歷的完整重新啟動流程。</p>
+<h4>為何兩秒比機制本身更重要</h4>
+<p>對於重視系統正常運行時間的管理人員而言，這個數字本身就是焦點所在。兩秒遠低於 load balancer 及健康檢查系統常用的故障偵測窗口，後者往往由數秒起計。原則上，復原速度快到足以落在這些窗口之內，意味著一次崩潰可能只被記錄為瞬時抖動，而非可見的服務中斷 —— 至少對合適的無狀態服務而言是如此。然而在實踐中，偵測窗口因部署而異，而上述數字只是該項目所聲稱的能力，並非經獨立驗證的基準測試結果。</p>
+<p>這個分別對任何要計算 SLA（服務水平協議）的人士都相當重要。傳統復原路徑 —— 崩潰轉儲（crash dump）、電腦重新啟動、切換至另一節點（failover）—— 通常以數十秒乃至數分鐘計。若無需重啟的復原方式能夠做到可靠，kernel 層級故障的停機時間預算將可壓縮至接近一次程序重新啟動的水平。</p>
+<h4>Kmorph 與 kdump、kexec 及 livepatch 的定位</h4>
+<p>有必要準確釐清 Kmorph 並沒有取代甚麼。<code>kdump</code> 與 <code>kexec</code> —— Linux 標準的崩潰狀態擷取工具，以及毋須經過韌體（firmware）便啟動全新 kernel 的機制 —— 本質上首先是診斷工具。它們的職責是把 core dump 及一份乾淨的 kernel 映像交到管理人員手上；回到服務的速度，從來都次於取證的質素（quality）。Kmorph 的定位恰恰相反：可用性優先，取證其次。從這個角度理解，與其說它是 <code>kdump</code> 的替代品，不如說是 <code>kdump</code> 的潛在補充。</p>
+<p>Livepatch 則佔據另一個定位 —— 透過熱修補（hot-patching）代碼來預防某些崩潰 —— 並在補丁尚未推出時填補空檔。Kmorph 若能兌現承諾，針對的則是崩潰已經發生之後的時刻。現實世界中的系統韌性通常三層皆須具備，此外還需以叢集（cluster）實現容量故障轉移。</p>
+<h4>值得留意的注意事項</h4>
+<p>Kmorph 仍處於早期階段，若干棘手問題尚待解答。它能復原哪一類崩潰 —— 是空指標故障，還是更深層的 kernel 資料結構損毀 —— 仍未確定。復原後有多少狀態得以保留，以及復原後的 kernel 是否可信並正確運作，都是懸而未決的議題，且帶有實際的安全影響：一條跳過部分正常啟動流程的復原路徑，亦可能跳過加固環境所依賴的韌體或啟動證明（boot attestation）步驟。</p>
+<p>或許最重要的是，復原 Nginx 這類無狀態前端，與在交易中途復原有狀態工作負載，是截然不同的命題。資料庫及其他有狀態服務的資料一致性保證，才是決定這會否成為一個營運類別，抑或僅止於一場令人印象深刻的示範的關鍵所在。</p>
+<h4>值得關注的方向</h4>
+<p>目前而言，Kmorph 是一個值得追蹤而非採用的項目。值得等待的訊號，是一份可信、獨立的對比報告，將 Kmorph 與在真實工作負載下運行的 <code>kexec</code> 復原方式作比較 —— 那才能顯示無需重啟的復原究竟是真正的新範疇，還是一場新示範。撇開早期數字不談，任何有合約化正常運行時間承諾的機構，在把亞兩秒 kernel 復原納入其可用性規劃之前，都會希望先取得這方面的證據。</p>
+<p>資料來源：Phoronix，《Kmorph Aims To Provide Rebootless Linux Kernel Crash Recovery》</p>
+<p><a href="https://www.phoronix.com/news/Kmorph-Linux-Crash-Recovery" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
