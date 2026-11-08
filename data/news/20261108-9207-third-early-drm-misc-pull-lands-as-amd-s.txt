@@ -1,0 +1,40 @@
+Date: 2026-11-08 14:03:00
+Author: HKLUG Team
+Title: Third Early drm-misc Pull Lands as AMD's Ryzen AI NPU Work Builds Toward Linux 7.5
+Content:
+<p>Upstream kernel developers are steadily piling more AMD Ryzen AI NPU enablement into the queue for what will eventually ship as Linux 7.5 — but for anyone in Hong Kong running a Ryzen AI laptop, the practical takeaway is that usable NPU support on their distro is still months away.</p>
+<p>Phoronix reports that three separate pull requests of drm-misc-next material have already been submitted targeting Linux 7.5, with the third landing this week. The notable point is timing: two of those pulls arrived before the 7.4 merge window had even closed, and the third followed close behind. That pattern suggests sustained, ongoing work on AMD's AIE4 NPU support rather than a one-off drop of patches — a meaningful momentum signal, though not one that changes what users can do today. (The pulls also carry unrelated feature work, including Rockchip RK3568 material, so not every patch in them is AMD-specific.)</p>
+<p>An important caveat first: Linux 7.5 does not exist yet. These are pull requests queued for a future merge window, not code that has been merged into the mainline tree. Nothing has shipped to end users, and the schedule could still shift.</p>
+<p>Even when the work does land, a kernel driver is only one layer of the stack. Actual NPU acceleration requires a userspace runtime, tooling, and framework integration before applications can tap the hardware at all. The driver work upstream is a prerequisite, not the finish line.</p>
+<p><strong>What it means for Ryzen AI owners</strong></p>
+<p>The AIE4 support in question targets the NPU silicon that AMD and its partners market as the enabler of Copilot+ features on Windows. On Linux today, that hardware typically sits idle: the discrete GPU path works fine through the standard amdgpu stack, but the dedicated neural processing unit remains largely unusable without upstream driver support and a matching runtime.</p>
+<p>For Hong Kong readers, Ryzen AI laptops are broadly available through local retailers — the hardware side is a non-issue; the gap is entirely software, and it is closing in stages rather than all at once.</p>
+<p><strong>When will your distro get it?</strong></p>
+<p>This is the timeline that actually matters to users:</p>
+<ul>
+<li><strong>Rolling releases</strong> (Arch, Fedora Rawhide, and similar) will likely pick up AIE4 support within weeks of a 7.5 release, assuming the merges proceed as queued.</li>
+<li><strong>Fedora and Ubuntu interim releases</strong> cycle fast enough to include it relatively quickly, depending on freeze timing.</li>
+<li><strong>Debian stable and Ubuntu LTS</strong> users face the long wait — months, plausibly a year or more, before the feature reaches them through a normal release. In practice, these users will depend on hardware-enablement kernels or backports, and even those may only include part of the stack if the userspace runtime is not yet packaged.</li>
+</ul>
+<p>That split is the story's spine: the same hardware will be supported at markedly different speeds depending on which distribution a user runs.</p>
+<p><strong>Bottom line</strong></p>
+<p>Three pull requests arriving ahead of schedule is a positive indicator that AMD's NPU work has sustained upstream attention, but it is not yet a reason to buy hardware for Linux NPU acceleration. The realistic expectation is a working driver in 7.5, followed by a slower rollout through runtimes and distro packaging — with rolling-release users benefiting first and LTS holdouts waiting longest.</p>
+<hr>
+<p>上游 kernel 開發者正持續將更多 AMD Ryzen AI NPU 的支援工作加入佇列，最終將隨 Linux 7.5 發佈——但對香港使用 Ryzen AI 手提電腦的用戶而言，實際情況是：其發行版要取得可用的 NPU 支援，仍需等待數月。</p>
+<p>Phoronix 報導，已有三批 drm-misc-next 內容的 pull request 提交至 Linux 7.5，其中第三批於本週到達。值得注意的是時間點：其中兩批在 7.4 merge window 尚未關閉前已到達，第三批亦緊隨其後。這種模式表明 AMD 的 AIE4 NPU 支援工作持續進行中，而非一次性提交的 patch——這是正面的動力訊號，但並不會改變用戶今日所能使用的功能。（這些 pull request 亦包含與 AMD 無關的功能工作，包括 Rockchip RK3568 內容，因此並非每一個 patch 都與 AMD 有關。）</p>
+<p>先說明一個重要前提：Linux 7.5 目前尚不存在。這些是排入未來 merge window 的 pull request，並非已合併至 mainline tree 的代碼。目前並無任何內容交付予最終用戶，時間表亦仍可能變動。</p>
+<p>即使相關工作最終到達，kernel driver 也只是整個技術堆疊中的一層。實際的 NPU 加速還需要用戶空間的 runtime、工具及框架整合，應用程式才能真正調用該硬件。上游的 driver 工作只是先決條件，並非終點。</p>
+<p><strong>對 Ryzen AI 用戶的意義</strong></p>
+<p>有關的 AIE4 支援，針對的是 AMD 及其合作夥伴以「Copilot+ 功能啟動器」為賣點推廣的 NPU 芯片。在目前的 Linux 上，該硬件通常處於閒置狀態：獨立 GPU 路徑透過標準 amdgpu 堆疊運作正常，但專用的 neural processing unit（神經處理單元）在缺乏上游 driver 支援及配套 runtime 的情況下，基本上無法使用。</p>
+<p>對香港讀者而言，Ryzen AI 手提電腦在本地零售商處廣泛有售——硬件方面並非問題；差距完全在軟件，而且正分階段收窄，而非一蹴而就。</p>
+<p><strong>你的發行版何時才能用上？</strong></p>
+<p>以下才是真正與用戶相關的時間表：</p>
+<ul>
+<li><strong>Rolling releases</strong>（Arch、Fedora Rawhide 及類似發行版）若合併如期進行，很可能在 7.5 發佈後數週內即加入 AIE4 支援。</li>
+<li><strong>Fedora 及 Ubuntu 的 interim releases</strong> 更新週期較快，視乎凍結時間點，可相對迅速地納入該功能。</li>
+<li><strong>Debian stable 及 Ubuntu LTS</strong> 用戶則需長期等待——數月，甚至可能一年或更久，該功能才會透過一般發佈到達他們手中。實際上，這些用戶將依賴 hardware-enablement kernel 或 backport，而即使如此，若用戶空間 runtime 尚未打包，這些版本可能僅包含部分堆疊。</li>
+</ul>
+<p>這種分化正是本報道的核心：同一硬件，用戶所採用的發行版不同，獲得支援的速度亦截然不同。</p>
+<p><strong>總結</strong></p>
+<p>三次 pull request 提前到達，是 AMD NPU 工作持續獲得上游關注的正面指標，但這尚不足以為 Linux NPU 加速而購買硬件。務實的預期是：7.5 將帶來可用的 driver，隨後透過 runtime 及發行版打包逐步推展——rolling-release 用戶最早受惠，LTS 用戶則等待最久。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.5-RK3568-AMD-AIE4" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
