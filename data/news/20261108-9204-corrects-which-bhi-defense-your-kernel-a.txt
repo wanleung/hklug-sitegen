@@ -1,0 +1,32 @@
+Date: 2026-11-08 12:30:00
+Author: HKLUG Team
+Title: Corrects Which BHI Defense Your Kernel Actually Picks
+Content:
+<h4>A mitigation-selection fault means the status a machine reports may not be the protection it is actually running</h4>
+<p>x86 administrators auditing Branch History Injection (BHI) defenses should treat a host's reported mitigation status as unconfirmed until they can verify the fix is present on it. This week's batch of x86 corrections, sent out ahead of the Linux 7.4-rc2 release candidate, includes a fix for faulty selection of the BHI countermeasure, Phoronix reports.</p>
+<p>The important part is what kind of defect this is. The patch changes <em>which</em> mitigation the kernel selects rather than adding a new one — so a machine can display a normal-looking protection status while running a different code path than the one an operator believes is in effect.</p>
+<h5>Why a selection bug is harder to spot than a missing patch</h5>
+<p>The distinction matters for anyone auditing their estate. A missing patch surfaces in a version comparison or a CVE inventory; a mitigation-selection bug does neither. Because nothing new is being introduced, unpatched hosts emit no outward signal: there is no fresh vulnerability identifier to search for, and no row in a standard vulnerability table that flags the affected machines. The status string written to <code>sysfs</code> can look entirely healthy on a host that is running the wrong path. In practice, output under <code>/sys/devices/system/cpu/vulnerabilities/</code> is a statement of intent, not verification of runtime behaviour — a gap that affects anything reading it as evidence of what the machine is doing.</p>
+<h5>What the report establishes, and where it stops</h5>
+<p>Phoronix's report establishes the headline fact: a selection fault was corrected in the x86 pull. The affected mitigation paths and the CPU and configuration conditions under which the fault triggers are detailed in the upstream submission itself, not in secondhand write-ups. Anyone deciding whether a particular host is exposed should read that submission directly.</p>
+<h5>Remediation: a kernel update, not a configuration change</h5>
+<p>There is no kernel configuration or boot parameter to adjust. The corrected selection logic has to be present in the running kernel, which means taking a kernel update that carries the fix and rebooting. The verification that matters is the build, not the status string: confirm the running kernel includes the corrected selection logic — via the distribution's changelog or the referenced commit in the kernel tree — rather than trusting what <code>sysfs</code> reports.</p>
+<p>The fix landed in the run-up to the 7.4-rc2 candidate. Whether a given production host runs it depends on when a kernel containing the commit reaches that host and is rebooted in, which is a separate question from the upstream merge.</p>
+<h5>Why it matters</h5>
+<p>Disclosure is not deployment. For teams that file a mitigation status as proof of a hardened posture — in internal review, in inventory records, or in tooling that scrapes the same <code>sysfs</code> files — a reassuring string that does not reflect runtime reality records a claim as if it were a fact. The durable lesson is to treat reported mitigations as claims to be verified rather than facts to be recorded.</p>
+<p><em>Source: Phoronix, "Linux Fixes Faulty Mitigation Selection For BHI Vulnerability."</em></p>
+<hr>
+<h4>防禦機制選取出錯，意味著機器所回報的狀態未必等同實際運行的保護措施</h4>
+<p>審核 Branch History Injection（BHI）防禦的 x86 管理員，在確認修復已部署之前，應將主機回報的 mitigation 狀態視為未經證實。據 Phoronix 報道，本周在 Linux 7.4-rc2 release candidate 發出前送出的一批 x86 修正中，包含修復 BHI 對策選取有誤的補丁。</p>
+<p>關鍵在於這屬於何種性質的缺陷。該補丁修正的是核心<em>選取</em>哪一種 mitigation，而非加入新的 mitigation —— 因此，機器可能顯示看似正常的保護狀態，但實際運行的 code path 並非操作員所認為的那一條。</p>
+<h5>為何選取錯誤比漏裝補丁更難察覺</h5>
+<p>這項區別對任何審核自身系統的人員都很重要。漏裝的補丁會在版本比對或 CVE 清單中現形；mitigation 選取錯誤則兩者皆不會。由於並未引入任何新項目，未修復的主機不會發出任何外部訊號：沒有新的漏洞識別碼可供搜尋，標準漏洞表格中亦沒有任何一列會標示受影響的機器。寫入 <code>sysfs</code> 的狀態字串，在運行錯誤 code path 的主機上可能看起來完全健康。實際上，<code>/sys/devices/system/cpu/vulnerabilities/</code> 下的輸出是一份意向聲明，而非運行時行為的驗證 —— 任何將其當作機器實際行為證據來讀取的用途，都會受到此落差影響。</p>
+<h5>報道確立了甚麼，又止步於何處</h5>
+<p>Phoronix 的報導確立了一項核心事實：x86 pull 中已修正一項選取錯誤。受影響的 mitigation 路徑，以及故障觸發所涉的 CPU 及配置條件，則詳載於上游提交本身，而非二手轉述文章。任何人若要判斷某台主機是否受影響，應直接閱讀該份提交。</p>
+<h5>修復方法：更新核心，而非調整配置</h5>
+<p>沒有任何核心配置或開機參數可以調整。修正後的選取邏輯必須存在於正在運行的核心之中，這意味著必須套用載有該修復的核心更新並重新啟動。真正重要的驗證是 build，而非狀態字串：應透過發行版的 changelog 或核心樹中所引用的 commit，確認運行中的核心包含修正後的選取邏輯 —— 而非盲目相信 <code>sysfs</code> 的回報。</p>
+<p>該修復在 7.4-rc2 候選版本前夕合入。某台生產主機是否已運行該修復，取決於載有相關 commit 的核心何時到達該主機並重新啟動套用，這與上游合併本身是另一回事。</p>
+<h5>重要性</h5>
+<p>披露不等同部署。對於將 mitigation 狀態存檔作為加固證明的團隊 —— 無論是在內部審查、庫存記錄，或是在擷取相同 <code>sysfs</code> 檔案的工具中 —— 一個看似令人安心、卻與運行時現實不符的狀態字串，會把一項聲明當作事實記錄下來。長遠的教訓是：應將回報的 mitigation 視為有待驗證的聲明，而非無需查核的事實。</p>
+<p><em>來源：Phoronix，〈Linux Fixes Faulty Mitigation Selection For BHI Vulnerability〉</em></p>
+<p><a href="https://www.phoronix.com/news/Linux-Fix-BHI-Mitigation-Build" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
