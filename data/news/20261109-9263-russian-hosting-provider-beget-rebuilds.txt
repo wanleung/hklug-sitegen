@@ -1,0 +1,46 @@
+Date: 2026-11-09 19:37:00
+Author: HKLUG Team
+Title: Russian hosting provider Beget rebuilds cloud platform from zero after wiper malware strike
+Content:
+<h3>Russian hosting provider Beget rebuilds cloud platform from zero after wiper malware strike</h3>
+<p>Russian cloud and hosting services provider Beget is rebuilding its cloud infrastructure from scratch after a data-wiping malware attack, rather than attempting to restore from backups, according to a report by BleepingComputer.</p>
+<p>The company's public disclosure is notable less for its technical detail than for the decision it reveals: when faced with a wiper malware incident, a professional infrastructure operator concluded that restoring from backup was not a credible path back to a trustworthy state. BleepingComputer's report does not name an attacker, a group, or an attributed campaign, and offers no attribution of its own.</p>
+<h4>A provider, not just an end-user organisation</h4>
+<p>The blast radius of an incident like this extends well beyond the victim itself. When a hosting or cloud provider is the primary target, every organisation renting compute, storage, or virtual machines on that platform is affected — making the story directly relevant to infrastructure and DevOps teams, not only to security specialists.</p>
+<p>Several key details remain undisclosed in the available reporting: the initial access vector, the attacker's dwell time before detonation, the proportion of customer data that survived, and the expected timeline for the rebuild. Nor does the source reporting resolve whether Beget's backups were compromised, incomplete, or simply too slow to restore at the scale required. These are open questions rather than settled facts, and readers should treat any claims elsewhere about them with caution.</p>
+<h4>Why "backups exist" is not the same as "we can recover"</h4>
+<p>The operational lesson for infrastructure teams is the one that wiper malware is designed to attack: the assumption that a clean restore point survives.</p>
+<p>Conventional disaster-recovery plans assume that files on disk are corruptible but backups are not. Wiper malware — a category with well-documented precedent, including destructive campaigns such as HermeticWiper and NotPetya — is built to undermine exactly that assumption, whether by targeting backup repositories directly, corrupting restoration tooling, or simply destroying data faster than it can be recovered.</p>
+<p>A second, subtler consideration is forensic uncertainty. Even where backups appear intact, there is no guarantee they are clean: persistence mechanisms or tampering can ride along into a restored environment. For an operator accountable to thousands of customers, a full rebuild is the only response that establishes a baseline the provider can actually vouch for. Beget appears to have reached that conclusion and accepted the cost.</p>
+<h4>Questions infrastructure operators should ask now</h4>
+<p>For teams running production infrastructure, the story supports a straightforward self-audit:</p>
+<ul>
+<li><strong>Are backups immutable and credential-isolated?</strong> Can an attacker with domain or console access delete or encrypt them?</li>
+<li><strong>Do offline or logically isolated copies exist</strong>, outside the reach of the primary environment's credentials?</li>
+<li><strong>Has a full rebuild — not a file-level restore — ever been rehearsed and timed?</strong> A DR plan that has only been tested for selective file recovery says nothing about recovery from total loss.</li>
+<li><strong>Is monitoring and logging held outside the environment it observes?</strong> Detection that dies with the compromised host produces no post-incident evidence.</li>
+</ul>
+<p>The distinction that matters is between <em>backups</em> and <em>tested recoverability</em>. A provider with mature backup tooling still chose to rebuild from scratch. Organisations that have never rehearsed that scenario should consider whether their own recovery plan would survive contact with the incident it was written for.</p>
+<p>Beget has not yet published a completion date for the rebuild, according to BleepingComputer's reporting.</p>
+<hr>
+<h3>俄羅斯托管服務商 Beget 遭 wiper 惡意軟件襲擊後，從零重建雲平台</h3>
+<p>據 BleepingComputer 報道，俄羅斯雲端及托管服務商 Beget 在遭受數據清除惡意軟件（wiper malware）攻擊後，正從零開始重建其雲基礎架構，而非嘗試從備份復原。</p>
+<p>該公司的公開披露，與其技術細節相比，更值得注意的是其中所揭示的決定：當面對 wiper 惡意軟件事件時，一家專業的基礎架構營運商判定，從備份復原並非一條通往可信狀態的可靠途徑。BleepingComputer 的報道沒有提及攻擊者、黑客組織或可歸屬的攻擊行動，亦沒有提出任何歸因分析。</p>
+<h4>營運商，而非僅是最終用戶機構</h4>
+<p>此類事件的影響範圍遠超受害機構本身。當托管或雲端服務營運商成為主要攻擊目標時，在該平台上租用運算資源、儲存空間或虛擬機的每一個機構都會受影響——這使得該事件與基礎架構及 DevOps 團隊直接相關，而不單是安全專家的議題。</p>
+<p>在現有報道中，若干關鍵細節仍未披露：初始入侵途徑、攻擊者在引爆前的潛伏時間、得以倖存的客戶數據比例，以及重建工程的預計時間表。來源報道亦未能釐清 Beget 的備份究竟是被破壞、不完整，還是僅因規模過大而無法及時復原。這些仍是未有定論的問題，而非既成事實，讀者對其他地方流傳的相關說法應審慎看待。</p>
+<h4>為何「有備份」不等於「能夠復原」</h4>
+<p>對基礎架構團隊而言，營運上的教訓正是 wiper 惡意軟件所針對的核心：假設一個乾淨的復原點得以存活。</p>
+<p>傳統災難復原（disaster recovery）計劃假設磁碟上的檔案可能被損壞，但備份不會。Wiper 惡意軟件——一個有充分記載先例的類別，包括 HermeticWiper 和 NotPetya 等破壞性攻擊行動——正是為了動搖這一假設而設計，無論是直接攻擊備份儲存庫、破壞復原工具，抑或單純以快於復原的速度銷毀數據。</p>
+<p>第二個較為細微的考量是取證上的不確定性。即使備份看似完好，亦無法保證其乾淨：持久化機制（persistence mechanism）或篡改內容可能隨之進入復原後的環境。對於須向數千名客戶問責的營運商而言，全面重建是唯一能夠建立營運商本人確實可為之擔保的基準線的應對方式。Beget 似乎已得出這一結論，並接受了相關成本。</p>
+<h4>基礎架構營運商現應提出的問題</h4>
+<p>對於營運生產環境基礎架構的團隊，該事件支持一項直接的自我審視：</p>
+<ul>
+<li><strong>備份是否不可變（immutable）且與憑證隔離？</strong> 擁有 domain 或 console 權限的攻擊者能否刪除或加密這些備份？</li>
+<li><strong>是否存在離線或邏輯隔離的副本</strong>，位於主環境憑證所能觸及的範圍之外？</li>
+<li><strong>是否曾經演練並計時過完整重建——而非檔案層級的復原？</strong> 只測試過選擇性檔案復原的 DR 計劃，對於完全丟失後的復原毫無說明。</li>
+<li><strong>監控與日誌是否保存於其所監察的環境之外？</strong> 隨被入侵主機一同失效的檢測機制，不會留下事後取證證據。</li>
+</ul>
+<p>關鍵的區別在於<em>備份</em>與<em>經過測試的可復原性</em>之間。一家擁有成熟備份工具的服務商，最終仍選擇從零重建。從未演練過此情景的機構，應審視自身的復原計劃能否經受住其所針對事件的實際考驗。</p>
+<p>據 BleepingComputer 報道，Beget 尚未公布重建工程的完成日期。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/russian-cloud-firm-beget-rebuilds-from-scratch-after-data-wiper-attack/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
