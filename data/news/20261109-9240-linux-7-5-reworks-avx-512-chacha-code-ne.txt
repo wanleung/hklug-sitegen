@@ -1,0 +1,42 @@
+Date: 2026-11-09 13:24:00
+Author: HKLUG Team
+Title: Linux 7.5 Reworks AVX-512 ChaCha Code, Nearly Doubling Cipher Speed On Zen 5
+Content:
+<h4>What it takes to claim the gain: AVX-512 silicon, Linux 7.5, and a ChaCha-heavy workload</h4>
+<p>The Linux kernel's ChaCha20 stream cipher is in line for a significant AVX-512 overhaul in Linux 7.5, with Phoronix reporting that the retuned code delivers up to 99% faster ChaCha performance on current-generation AMD Zen 5 processors. The catch: that figure is a microbenchmark ceiling, not a promise that production systems will suddenly double in speed.</p>
+<p>The reason the speedup exists at all is historical. The kernel's AVX-512 optimized ChaCha path was written with early AVX-512 Intel chips — Skylake-era parts — in mind. Those processors had a well-known quirk: running AVX-512 heavy code pulled their clocks down, so the kernel's crypto routines were tuned conservatively to avoid trading vector throughput for lost frequency. The tuning was sound for its time, but it baked in an assumption that no longer holds. Modern AVX-512 implementations, including AMD's Zen 5 and recent Intel parts, do not suffer the same down-clocking penalty, which means the old conservative choices are now leaving performance on the table. The Linux 7.5 changes retire that legacy compromise and retune the ChaCha code for the hardware that actually exists today, according to Phoronix.</p>
+<p>Why ChaCha20 matters to infrastructure teams: it is one of the workhorses of modern Linux cryptography. WireGuard VPNs lean on ChaCha20 for packet encryption, TLS 1.3 handshakes and record protection frequently use it, and full-disk encryption setups can route through it as well. In all three cases, ChaCha20 shows up precisely where AVX-512 acceleration pays off — bulk encryption of traffic and data that runs continuously rather than in short bursts.</p>
+<h5>The three-part checklist</h5>
+<p>For anyone weighing an upgrade, the benefit only materialises when three conditions line up:</p>
+<ol>
+<li><strong>Hardware with AVX-512 that doesn't throttle.</strong> A modern AVX-512 processor — Zen 5 or recent Intel — that holds its clock speeds under vector load. Skylake-era parts, the very chips the old tuning targeted, are not the intended beneficiaries.</li>
+<li><strong>Linux 7.5, or a distro backport.</strong> The changes are slated for the 7.5 merge window. Distributions that backport kernel crypto improvements may pick them up earlier; those on long-term kernels will need to check their vendor's patch status.</li>
+<li><strong>A workload that actually exercises ChaCha.</strong> A WireGuard tunnel carrying steady traffic, a TLS-heavy service, or disk encryption under load will see the gains. A server that rarely touches ChaCha20 will see effectively nothing.</li>
+</ol>
+<p>If any one of the three is missing, expect no measurable change.</p>
+<h5>Reading the 99% figure correctly</h5>
+<p>It is worth repeating: the headline number comes from microbenchmarks, which isolate the cipher and run it in a tight loop under ideal conditions. Real-world throughput — a VPN link shared across dozens of peers, a web service negotiating thousands of TLS sessions amid unrelated work — will improve by less. Microbenchmark results are useful for confirming that a code path works as intended, but they are a ceiling, not a typical outcome. Teams should validate the changes against their own traffic profiles before citing the figure in capacity plans.</p>
+<p>Practically, that validation starts with a baseline. Check <code>grep -o 'avx512[a-z0-9_]*' /proc/cpuinfo</code> (or your hypervisor's CPU flag report) to confirm the machine actually exposes AVX-512 and identify which generation it belongs to, then benchmark the workload under identical conditions before and after the kernel change — same traffic shape, same concurrency, same duration. Without a before-and-after run on the same box, there is no way to separate the kernel's contribution from noise, cache warmth, or an unrelated configuration change that landed in the same maintenance window.</p>
+<p>The change also illustrates how crypto code drifts as hardware architectures evolve: optimizations written to compensate for one generation's weaknesses can quietly underperform on the next, and revisiting those assumptions is routine maintenance as silicon changes.</p>
+<p>For Hong Kong's Linux and cloud practitioners, the practical takeaway is simple: the ChaCha20 acceleration already in the kernel was calibrated for a hardware constraint that modern processors no longer impose. Linux 7.5 removes that legacy compromise — but only hardware, kernel, and workload alignment will turn the benchmark into real-world speed.</p>
+<p><em>Source: Phoronix, "ChaCha AVX-512 Optimization For Linux 7.5 Yields Up To 99% Improvement On AMD Zen 5."</em></p>
+<hr>
+<h4>要取得這項收益所需的條件：AVX-512 硬件、Linux 7.5，以及大量依賴 ChaCha 的工作負載</h4>
+<p>Linux kernel 的 ChaCha20 流加密密碼即將在 Linux 7.5 接受大規模 AVX-512 改寫，Phoronix 報導指重新調校後的代碼在現行 AMD Zen 5 處理器上，可令 ChaCha 效能最高提升達 99%。但要留意：此數字只是 microbenchmark 的上限，並不保證生產系統的運算速度會即時倍增。</p>
+<p>這項加速之所以存在，源於歷史原因。kernel 中經 AVX-512 優化的 ChaCha 路徑，當初是按照早期 AVX-512 Intel 晶片——即 Skylake 一代——來編寫。這批處理器有一個眾所周知的特性：執行重度 AVX-512 代碼時會降低時脈頻率，因此 kernel 的加密例程被保守地調校，以免以向量輸出量換取頻率損失。這種調校在當時並無不妥，但當中固化的假設如今已不再成立。現代 AVX-512 實作，包括 AMD Zen 5 及近期 Intel 產品，並不會出現同樣的降頻懲罰，意味著舊有的保守選擇正在白白犧牲效能。Phoronix 指出，Linux 7.5 的改動廢除了這項歷史遺留的折衷方案，按照現今實際存在的硬件重新調校 ChaCha 代碼。</p>
+<p>ChaCha20 對基礎設施團隊為何重要：它是現代 Linux 密碼學的主力之一。WireGuard VPN 依賴 ChaCha20 進行封包加密，TLS 1.3 握手及記錄保護經常採用它，全磁碟加密配置亦可能經由它運作。在以上三種情況中，ChaCha20 恰好出現在 AVX-512 加速能發揮作用之處——即持續不斷而非短暫突發的大量流量及數據加密。</p>
+<h5>三項條件清單</h5>
+<p>對於考慮升級的人士而言，收益只會在三項條件同時成立時才會實現：</p>
+<ol>
+<li><strong>配備不會降頻的 AVX-512 硬件。</strong>一台現代 AVX-512 處理器——Zen 5 或近期 Intel——在向量負載下維持時脈頻率。Skylake 一代產品，即舊調校原本針對的晶片，並非預期受益者。</li>
+<li><strong>Linux 7.5，或發行版的 backport。</strong>相關改動已排定納入 7.5 merge window。回移（backport）kernel 密碼學改進的發行版可能更早採用；使用長期維護 kernel 的用戶則需查閱其供應商的補丁狀態。</li>
+<li><strong>真正會使用 ChaCha 的工作負載。</strong>承載穩定流量的 WireGuard 隧道、重度 TLS 的服務，或高負載下的磁碟加密，均可見到提升。很少接觸 ChaCha20 的伺服器則幾乎不會有任何變化。</li>
+</ol>
+<p>三者缺一，預期不會有可量度的改變。</p>
+<h5>正確解讀 99% 這個數字</h5>
+<p>有必要重申：這個標題數字來自 microbenchmark，其做法是將密碼算法獨立出來，在理想條件下以緊密循環運行。實際環境的輸出量——例如由數十個對端共享的 VPN 連線、在處理其他工作的同時進行數千次 TLS session 協商的網頁服務——提升幅度會較小。Microbenchmark 結果有助確認代碼路徑是否按預期運作，但它代表上限，而非典型結果。團隊在於容量規劃中引用該數字前，應先以自身的流量特徵進行驗證。</p>
+<p>實際操作上，驗證應由基準線開始。執行 <code>grep -o 'avx512[a-z0-9_]*' /proc/cpuinfo</code>（或查閱虛擬化平台的 CPU 旗標報告），確認機器確實提供 AVX-512，並辨識其屬哪一代，然後在 kernel 改動前後，以完全相同的條件對工作負載進行基準測試——相同的流量形態、相同的並發程度、相同的持續時間。若沒有在同一部機器上進行前後對比測試，便無法將 kernel 的貢獻與雜訊、快取預熱，或同一維護時段內引入的無關配置改動區分開來。</p>
+<p>這項改動亦說明了密碼代碼如何隨硬件架構演變而出現偏離：為補償某一代硬件弱點而編寫的優化，可能在下一代硬件上悄然表現欠佳，而隨著矽片（silicon）轉變，重新檢視這些假設乃屬例行維護工作。</p>
+<p>對香港 Linux 及雲端從業者而言，實務上的啟示很簡單：kernel 中現有的 ChaCha20 加速，是按照現代處理器已不再施加的硬件限制來校準的。Linux 7.5 移除了這項歷史遺留的折衷方案——但只有硬件、kernel 與工作負載三者配合，才能將基準測試數字轉化為實際速度。</p>
+<p><em>資料來源：Phoronix，"ChaCha AVX-512 Optimization For Linux 7.5 Yields Up To 99% Improvement On AMD Zen 5."</em></p>
+<p><a href="https://www.phoronix.com/news/ChaCha-AVX-512-Linux-7.5" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
