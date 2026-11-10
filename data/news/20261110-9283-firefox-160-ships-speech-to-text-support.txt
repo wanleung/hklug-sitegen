@@ -1,0 +1,36 @@
+Date: 2026-11-10 06:08:00
+Author: HKLUG Team
+Title: Firefox 160 Ships Speech-to-Text Support and Broader MKV Audio Codec Coverage
+Content:
+<p>Mozilla has made Firefox 160.0 available as the latest bi-weekly stable update to its web browser, with the release headlined by Web Speech API speech-to-text capabilities and expanded audio codec support inside MKV containers, according to Phoronix.</p>
+<h4>What's new</h4>
+<p>The headline feature is speech-to-text through the Web Speech API, allowing web applications to transcribe microphone input directly in the browser. This brings Firefox closer to parity with competing engines that have offered similar functionality, and opens the door for browser-based transcription, dictation, and accessibility tooling without requiring users to install separate extensions or desktop software.</p>
+<p>The second headline change concerns media playback: Firefox 160 adds the ability to play MKV (Matroska) files carrying FLAC, MP3, or PCM audio. MKV is a widely used container in archival and remuxed media collections, and prior versions of Firefox could reject such files outright depending on the audio track in question.</p>
+<p>It is worth separating container support from codec support here. A browser may accept the MKV container and decode the audio track successfully while still failing to render video encoded in a format it does not handle. Users testing the new support should not assume that every MKV file will now play end to end — the video codec still has to be one Firefox supports, and that edge case is worth checking before setting expectations with end users.</p>
+<h4>Availability caveats worth checking</h4>
+<p>Two questions remain open for anyone evaluating the speech-to-text feature in deployment. First, language and locale coverage: administrators should verify which languages the speech recognition actually accepts in this release, and whether that support depends on system-level speech services rather than Firefox itself. Second, privacy: recognition may process audio on-device or route it to a cloud service depending on platform and configuration, and Mozilla has not publicly spelled out which model applies where. Teams handling sensitive audio should confirm the data path before permitting the feature in managed environments.</p>
+<p>Microphone permission handling is another area worth confirming rather than assuming — how Firefox prompts for or gates microphone access in this release should be validated in testing before expectations are set for end users.</p>
+<h4>ESR versus rapid release: know your channel</h4>
+<p>Firefox 160 is part of Mozilla's rapid-release line, which delivers stable builds to the general channel on a rolling cadence. Organisations that manage browser fleets often pin deployments to the Extended Support Release (ESR) line instead, which receives security fixes on a slower, more predictable schedule without the churn of full feature updates. Administrators should confirm which channel their systems actually track before assuming these features — or the security patches bundled with this release — will appear automatically. A rapid-release build landing does not imply an immediate ESR backport, and patch triage should treat feature availability and security fixes as separate questions.</p>
+<h4>Why it matters</h4>
+<p>For the wider IT and open-source community, Firefox 160 represents continued narrowing of the gap between Chromium-based browsers and Firefox in areas like speech APIs and media format coverage — areas where Mozilla has historically lagged. Speech-to-text in particular has implications for accessibility workflows and for web applications that previously needed native or third-party components to capture transcribed input.</p>
+<p>The release also underscores the value of testing against real-world media: codec support is rarely all-or-nothing, and container-level success can mask codec-level failures.</p>
+<p>Firefox 160.0 builds are available now from Mozilla's release channels and via the project's official download page.</p>
+<p><em>Source: Phoronix — <a href="https://www.phoronix.com/news/Firefox-160-Released">Firefox 160 Available With Speech-To-Text, MKV Files With FLAC / MP3 / PCM Audio</a></em></p>
+<hr>
+<p>據 Phoronix 報導，Mozilla 已發佈 Firefox 160.0，作為其網頁瀏覽器最新的雙週穩定版本更新，本次發佈的主要亮點為 Web Speech API 語音轉文字功能，以及擴展 MKV 容器內的音頻 codec 支援。</p>
+<h4>新功能一覽</h4>
+<p>最重要的一項功能是透過 Web Speech API 實現語音轉文字，讓網絡應用程式可直接在瀏覽器內轉錄麥克風輸入。此舉使 Firefox 更貼近其他競爭引擎的同類功能水平，並為基於瀏覽器的轉錄、語音輸入及無障礙工具打開大門，用戶毋須另行安裝獨立擴充功能或桌面軟件。</p>
+<p>第二項主要變更涉及媒體播放：Firefox 160 新增播放載有 FLAC、MP3 或 PCM 音頻的 MKV（Matroska）檔案的能力。MKV 是存檔及重混媒體收藏中廣泛使用的容器格式，此前的 Firefox 版本可能會因所涉音軌而直接拒絕此類檔案。</p>
+<p>此處有必要區分容器支援與 codec 支援。瀏覽器可能接受 MKV 容器並成功解碼音軌，但仍然無法渲染以該瀏覽器不支援的格式編碼的影片。測試新支援的用戶不應假設所有 MKV 檔案現已可完整播放——影片 codec 仍須為 Firefox 所支援，此邊界情況值得在向最終用戶設定預期前先行查證。</p>
+<h4>部署前值得查證的注意事項</h4>
+<p>對於任何在部署環境中評估語音轉文字功能的人士，仍有兩個問題懸而未決。其一是語言及地區覆蓋：管理員應確認本版本的語音識別實際接受哪些語言，以及該支援是否依賴系統層面的語音服務而非 Firefox 本身。其二是私隱：識別可能在裝置本機處理音頻，或根據平台及配置將其傳送至雲端服務，Mozilla 並未公開說明哪種模式適用於哪種情況。處理敏感音頻的團隊應在受管環境中啟用該功能前，先確認數據傳輸路徑。</p>
+<p>麥克風權限處理是另一個應予確認而非假設的範疇——本版本中 Firefox 如何提示或把關麥克風存取權限，應在測試中加以驗證，然後才對最終用戶設定預期。</p>
+<h4>ESR 與快速發佈版本：了解你所使用的 channel</h4>
+<p>Firefox 160 屬於 Mozilla 快速發佈線（rapid-release line）的一部分，會以滾動節奏向 general channel 推送穩定版本。管理瀏覽器機隊的機構通常會將部署固定在 Extended Support Release（ESR）線，該線以較慢、更可預測的時間表接收安全修補程式，而不會隨完整功能更新而變動。管理員應先確認其系統實際追蹤哪一個 channel，然後才假設這些功能——或本次發佈所附的安全修補程式——會自動出現。快速發佈版本的推出並不意味著 ESR 會立即進行 backport，修補程式分類處理時應將功能可用性與安全修補視為兩個獨立問題。</p>
+<h4>為何重要</h4>
+<p>對更廣泛的 IT 及 open source 社群而言，Firefox 160 代表 Chromium 系瀏覽器與 Firefox 之間在 speech API 及媒體格式覆蓋等領域的差距持續收窄——這些領域一直是 Mozilla 過去落後之處。語音轉文字尤其對無障礙工作流程，以及過往需要 native 或第三方元件才能擷取轉錄輸入的網絡應用程式具有影響。</p>
+<p>是次發佈亦突顯了針對真實媒體進行測試的價值：codec 支援很少是非黑即白，容器層面的成功可能掩蓋 codec 層面的失敗。</p>
+<p>Firefox 160.0 版本現已可從 Mozilla 的發佈 channel 及項目官方下載頁面取得。</p>
+<p><em>來源：Phoronix — <a href="https://www.phoronix.com/news/Firefox-160-Released">Firefox 160 Available With Speech-To-Text, MKV Files With FLAC / MP3 / PCM Audio</a></em></p>
+<p><a href="https://www.phoronix.com/news/Firefox-160-Released" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
