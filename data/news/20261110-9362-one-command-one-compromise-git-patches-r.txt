@@ -1,0 +1,132 @@
+Date: 2026-11-10 20:32:00
+Author: HKLUG Team
+Title: One Command, One Compromise: Git Patches Recursive-Clone Code Execution Bug
+Content:
+<p>A single command — <code>git clone --recurse-submodules</code> — is enough to trigger a remote code execution flaw in Git, which shipped emergency patches this week for CVE-2026-111760. The vulnerability lets a malicious repository run attacker-controlled code on any machine that clones it together with its submodules, with no build step, package install, or code review required.</p>
+<p><strong>Upgrade now</strong></p>
+<p>The fix covers seven releases spanning six maintained series. Administrators should move to one of the following patched versions immediately:</p>
+<table>
+<thead>
+<tr>
+<th>Series</th>
+<th>Patched release</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Latest</td>
+<td>2.56.1</td>
+</tr>
+<tr>
+<td>2.55.x</td>
+<td>2.55.1</td>
+</tr>
+<tr>
+<td>2.54.x</td>
+<td>2.54.1</td>
+</tr>
+<tr>
+<td>2.53.x</td>
+<td>2.53.1</td>
+</tr>
+<tr>
+<td>2.52.x</td>
+<td>2.52.1</td>
+</tr>
+<tr>
+<td>2.51.x</td>
+<td>2.51.3</td>
+</tr>
+<tr>
+<td>2.50.x</td>
+<td>2.50.2</td>
+</tr>
+</tbody>
+</table>
+<p>A typical source build follows the usual pattern:</p>
+<pre><code class="language-bash">make configure
+./configure --prefix=/usr/local
+make -j&quot;$(nproc)&quot;
+sudo make install
+git --version
+</code></pre>
+<p>Distribution-packaged builds should be refreshed through the normal channel once the backported point release appears, and container base images, CI runners, and golden VM images rebuilt from them.</p>
+<p><strong>How the attack works</strong></p>
+<p>The root cause is an integer truncation in how Git handles its index — a size or offset value is narrowed to a smaller type, producing an incorrect in-memory state. The Git project addressed the issue in the releases listed above. Because the corruption occurs during the clone itself, an attacker who can persuade a target to clone a crafted repository with <code>--recurse-submodules</code> can trigger it before any of the code has been inspected or run. This makes the vulnerability a supply-chain concern rather than merely a local bug: a repository hosted anywhere a developer or automated job might pull from becomes the delivery vehicle.</p>
+<p><strong>Why it matters for build infrastructure</strong></p>
+<p>The breadth of the backport — six maintained series patched simultaneously alongside the latest release — signals that the affected code is deployed almost everywhere Git runs. The highest-value targets are therefore unattended systems: CI/CD runners that clone repositories automatically on every push, dependency-update bots, and container build jobs. Those machines typically run with broad network access and credentials for package registries, and a compromise there propagates to everything downstream.</p>
+<p>For any team running automated fetch pipelines against repositories it does not fully control, the exposure sits precisely at the point where an upstream repository change silently enters an internal build.</p>
+<p><strong>Mitigation checklist</strong></p>
+<ol>
+<li><strong>Patch every Git installation</strong>, prioritising build servers and CI runners over developer laptops.</li>
+<li><strong>Inventory the fleet</strong>: audit laptops, containers, CI images, and golden VMs for Git versions older than the patched releases listed above.</li>
+<li><strong>Audit pipeline clone flags</strong>: search CI/CD configuration for <code>--recurse-submodules</code> (and shorthand variants) and understand why each instance is needed.</li>
+<li><strong>Clone untrusted repositories without recursion</strong>, and inspect the <code>.gitmodules</code> file manually before enabling submodule checkout.</li>
+<li><strong>Pin submodules to explicit commit hashes</strong> rather than branch tracking, so a malicious upstream update cannot silently alter what gets checked out.</li>
+</ol>
+<p>Developers downloading unfamiliar code should treat <code>git clone --recurse-submodules</code> with the same caution as running an unfamiliar install script until their toolchain is confirmed patched.</p>
+<hr>
+<p>只需一條指令 —— <code>git clone --recurse-submodules</code> —— 就足以觸發 Git 的遠端程式碼執行漏洞，Git 本周已為 CVE-2026-111760 發布緊急修補。該漏洞容許惡意 repository 在任何連同 submodules 一併複製它的機器上執行攻擊者控制的程式碼，整個過程無需任何 build 步驟、套件安裝或程式碼審查。</p>
+<p><strong>立即升級</strong></p>
+<p>修補涵蓋橫跨六條維護系列的七個 release。系統管理員應立即升級至以下其中一個已修補版本：</p>
+<table>
+<thead>
+<tr>
+<th>版本系列</th>
+<th>已修補版本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>最新版</td>
+<td>2.56.1</td>
+</tr>
+<tr>
+<td>2.55.x</td>
+<td>2.55.1</td>
+</tr>
+<tr>
+<td>2.54.x</td>
+<td>2.54.1</td>
+</tr>
+<tr>
+<td>2.53.x</td>
+<td>2.53.1</td>
+</tr>
+<tr>
+<td>2.52.x</td>
+<td>2.52.1</td>
+</tr>
+<tr>
+<td>2.51.x</td>
+<td>2.51.3</td>
+</tr>
+<tr>
+<td>2.50.x</td>
+<td>2.50.2</td>
+</tr>
+</tbody>
+</table>
+<p>從源碼編譯一般沿用慣常方式：</p>
+<pre><code class="language-bash">make configure
+./configure --prefix=/usr/local
+make -j&quot;$(nproc)&quot;
+sudo make install
+git --version
+</code></pre>
+<p>各發行版的封裝版本應在 backport point release 推出後，透過正常渠道更新，並據此重新建構 container base image、CI runner 及 golden VM image。</p>
+<p><strong>攻擊如何運作</strong></p>
+<p>問題根源在於 Git 處理其 index 時出現 integer truncation —— 一個 size 或 offset 數值被縮窄至較小的資料類型，導致記憶體內狀態出錯。Git 專案已在上述版本中處理此問題。由於損壞發生在 clone 過程本身，攻擊者只要能說服目標以 <code>--recurse-submodules</code> 複製一個經精心構造的 repository，便可在任何程式碼被檢視或執行之前觸發漏洞。這使該漏洞成為供應鏈層面的問題，而不單純是本地缺陷：任何開發者或自動化工作可能下載程式碼的地方所託管的 repository，都會成為攻擊的投放載體。</p>
+<p><strong>為何對 build 基礎設施至關重要</strong></p>
+<p>此次 backport 涵蓋範圍之廣 —— 六條維護中的系列連同最新版本同時修補 —— 表明受影響的程式碼幾乎部署於 Git 運行的所有環境。因此最具價值的目標是無人值守系統：每次 push 都會自動複製 repository 的 CI/CD runner、依賴更新機械人（dependency-update bot），以及 container build 工作。這些機器通常擁有廣泛網絡存取權限及 package registry 憑證，一旦失陷，影響會傳播至所有下游環節。</p>
+<p>任何團隊若針對並非完全由自身控制的 repository 運行自動化 fetch pipeline，其風險正正處於上游 repository 變更悄然進入內部 build 的那一個環節。</p>
+<p><strong>緩解措施清單</strong></p>
+<ol>
+<li><strong>修補所有 Git 安裝</strong>，優先處理 build server 及 CI runner，其次才是開發者手提電腦。</li>
+<li><strong>盤點所有機器</strong>：審查手提電腦、container、CI image 及 golden VM，查找版本早於上述已修補版本的 Git。</li>
+<li><strong>審計 pipeline 的 clone flags</strong>：在 CI/CD 配置中搜尋 <code>--recurse-submodules</code>（及其簡寫變體），並了解每一處為何需要使用。</li>
+<li><strong>複製不受信任的 repository 時不使用遞歸選項</strong>，並在啟用 submodule checkout 之前人手檢視 <code>.gitmodules</code> 檔案。</li>
+<li><strong>將 submodule 固定至明確的 commit hash</strong>，而非追蹤 branch，令惡意上游更新無法悄然改變實際 checkout 的內容。</li>
+</ol>
+<p>開發者下載不熟悉的程式碼時，在確認工具鏈已修補之前，應以與執行不明安裝腳本同等的審慎態度對待 <code>git clone --recurse-submodules</code>。</p>
+<p><a href="https://thehackernews.com/2026/11/git-patches-flaw-that-lets-malicious.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
