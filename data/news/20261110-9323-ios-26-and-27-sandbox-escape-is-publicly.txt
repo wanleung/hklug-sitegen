@@ -1,0 +1,50 @@
+Date: 2026-11-10 13:22:00
+Author: HKLUG Team
+Title: iOS 26 and 27 Sandbox Escape Is Publicly Exploitable, and Apple Hasn't Confirmed a Fix
+Content:
+<p>A proof-of-concept sandbox escape published openly on GitHub allows one app on an iPhone to read files belonging to other installed apps, breaking a security boundary that iOS users and developers have long treated as near-absolute. Binance raised the alarm on 10 November, warning that the flaw could expose seed phrases, private keys and login credentials stored by mobile crypto wallets — but the escape's existence, rather than any single company's warning, is the story that matters.</p>
+<h4>The mechanism</h4>
+<p>The escape, named <code>worse_query</code>, was released on Sunday by a researcher operating under the handle forcequit, according to The Hacker News. Its effect is straightforward and severe: on devices running iOS 26 and 27, an application can traverse outside its own container and read files written by other applications. App sandboxing is what keeps a messaging app from seeing a banking app's local database; <code>worse_query</code> undermines exactly that guarantee.</p>
+<p>The consequence for anything that persists secrets on disk is immediate. A wallet that writes a seed phrase, an exported key file, session tokens or cached credentials into its own container has written them somewhere another process can reach.</p>
+<h4>The patch gap</h4>
+<p>Apple shipped updates for iOS 26 and 27 on 9 November — a day before Binance's warning. Those releases do not list a sandbox remediation in their published notes.</p>
+<p>That absence is not proof the flaw remains open; vendors routinely ship fixes without naming them. But it also means no verified mitigation currently exists in the public record. Until a changelog says otherwise, the defensible working assumption for defenders and fleet managers is that the escape functions on fully updated devices. Apple has not commented on whether the issue is tracked, patched under a different description, or under investigation.</p>
+<h4>Reading Binance's warning with its interests in view</h4>
+<p>Binance is not a neutral party here. The exchange has a direct commercial stake in how custody risk is framed: emphasising client-side and device-side danger supports the positioning of exchange custody and its own self-custody tooling, and custody standards are a marketing point as much as a regulatory one in jurisdictions licensing digital-asset firms.</p>
+<p>That caveat cuts both ways. Binance's framing should be neither dismissed nor taken on trust — but the underlying claim does not rest on Binance's word. The PoC is public and independently inspectable, which is precisely why the barrier to abuse has dropped from discovery to adoption. History suggests copycat implementations and commodity credential-stealing malware follow such releases quickly.</p>
+<h4>What users and developers should do</h4>
+<p>Three practical steps follow from the mechanism itself:</p>
+<ul>
+<li><strong>Treat installed apps as potentially hostile.</strong> Audit what is on the device and remove what is unused; every app is a potential reader.</li>
+<li><strong>Move long-term holdings off the phone.</strong> Hardware wallets or offline backups keep seed phrases outside any app container an attacker can reach.</li>
+<li><strong>Watch for new installs.</strong> An unexpected app appearing on a device that holds wallet software warrants immediate attention.</li>
+</ul>
+<p>For developers, the lesson is architectural: sandbox guarantees are implementation detail, not a security model. Any iOS application that persists sensitive material locally — messaging, VPN, banking, wallet — should audit its container contents and prefer Keychain or hardware-backed storage over plaintext files.</p>
+<h4>Relevance for Hong Kong's IT community</h4>
+<p>Hong Kong's IT teams and digital-asset businesses operate in an environment where users lean heavily on mobile wallet and exchange apps, and where custody standards are subject to scrutiny as well as customer expectation. The lesson generalises cleanly: if device-level isolation can fail silently, organisations should assume it can, and should not treat a phone's filesystem as a trustworthy store for secrets.</p>
+<h4>Verification commitment</h4>
+<p>The <code>worse_query</code> claims can be inspected directly at the source. On-device reproduction on physical iOS 26/27 hardware remains a separate, outstanding step outside Apple's supported channels, and has not been independently confirmed as of publication. This article will be updated if Apple comments, or if a subsequent release note acknowledges a sandbox fix.</p>
+<hr>
+<p>一份在 GitHub 公開發布的 proof-of-concept 沙盒逃逸程式，讓 iPhone 上的單一 app 得以讀取其他已安裝 app 所擁有的檔案，打破一道 iOS 用戶與開發者一直視為近乎絕對的安全邊界。Binance 於 11 月 10 日發出警告，指該漏洞可能洩露手機加密錢包所儲存的種子私鑰（seed phrase）、私鑰及登入憑證——然而，真正關鍵的新聞並非任何單一公司的警告，而是此逃逸漏洞確實存在。</p>
+<h4>漏洞機制</h4>
+<p>據 The Hacker News 報道，這個名為 <code>worse_query</code> 的逃逸漏洞，於星期日由一名以 forcequit 為代號的研究員發布。其效果直接而嚴重：在運行 iOS 26 和 27 的裝置上，應用程式可以越出自身 container，讀取其他應用程式寫入的檔案。App 沙盒機制正是令訊息應用程式無法看見銀行應用程式本地 database 的關鍵；<code>worse_query</code> 動搖的正是這項保障。</p>
+<p>任何將機密資料持久化於磁碟的系統都會即時受影響。錢包若將種子私鑰、匯出的金鑰檔案、session token 或已快取的憑證寫入自身 container，就等同將這些資料寫到了另一個 process 可以觸及的地方。</p>
+<h4>修補空窗</h4>
+<p>Apple 於 11 月 9 日發布了 iOS 26 和 27 的更新——比 Binance 的警告早一天。該等版本的公開發佈說明中，並無列明任何沙盒修復項目。</p>
+<p>這並不能證明漏洞仍然存在；供應商經常在未列明的情況下推出修復。但這同時意味著，目前公開記錄中並無經核實的緩解措施。在變更日誌另有說明之前，防禦方及裝置管理人員合理的工作假設是：該逃逸漏洞在完全更新的裝置上仍然有效。Apple 未有就該問題是否已被追蹤、是否以另一描述作修補，抑或仍在調查中作出回應。</p>
+<h4>配合利益來解讀 Binance 的警告</h4>
+<p>Binance 在此事上並非中立方。該交易所在托管風險的框架措辭上有直接商業利益：強調用戶端及裝置端的危險，有助其交易所托管服務及自家 self-custody 工具的市場定位，而托管標準在發牌予數碼資產公司的司法管轄區中，既是合規議題，也是營銷賣點。</p>
+<p>這一保留說明亦有兩面性。Binance 的框架既不應一概否定，亦不應照單全收——但底層的指控並不依賴 Binance 的一面之詞。該 PoC 是公開的，可獨立查閱，正因如此，濫用的門檻已由「發現」階段降至「採用」階段。歷史經驗顯示，仿效實現及商品化的憑證竊取 malware 往往在這類發布後很快跟進。</p>
+<h4>用戶與開發者應採取的措施</h4>
+<p>從漏洞機制本身，可以得出三項實際步驟：</p>
+<ul>
+<li><strong>視已安裝的 app 為潛在敵對程式。</strong> 審視裝置上有甚麼，移除不必要的程式；每一個 app 都是潛在的讀取者。</li>
+<li><strong>將長期持有的資產移離手機。</strong> 硬件錢包或離線備份可令種子私鑰置於攻擊者可觸及的任何 app container 之外。</li>
+<li><strong>留意新安裝的程式。</strong> 一部裝有錢包軟件的裝置上出現意料之外的 app，需即時關注。</li>
+</ul>
+<p>對開發者而言，教訓在於架構層面：sandbox 保證只是 implementation detail，並非安全模型。任何在本地持久化敏感資料的 iOS 應用程式——無論是訊息、VPN、銀行還是錢包——都應審視其 container 內容，並優先選用 Keychain 或 hardware-backed storage，而非明文檔案。</p>
+<h4>對香港 IT 社群的啟示</h4>
+<p>香港的 IT 團隊及數碼資產企業所處的環境，是用戶高度依賴手機錢包及交易所 app，同時托管標準既受監管審視，亦受客戶期望左右。其教訓相當清晰：既然裝置層級的隔離可能無聲失效，機構就應假設它確實會失效，不應將手機的 filesystem 視為可靠的機密資料儲存。</p>
+<h4>驗證承諾</h4>
+<p><code>worse_query</code> 的相關聲稱可直接在來源查閱。在實體 iOS 26/27 硬件上進行的裝置端重現，仍屬 Apple 支援渠道以外的另一項未完成步驟，截至本文刊出時尚未獲得獨立證實。若 Apple 作出回應，或其後的 release note 承認修復沙盒漏洞，本文將會更新。</p>
+<p><a href="https://thehackernews.com/2026/11/binance-warns-of-ios-sandbox-escape.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
