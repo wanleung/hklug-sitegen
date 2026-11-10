@@ -1,0 +1,112 @@
+Date: 2026-11-10 07:23:00
+Author: HKLUG Team
+Title: CISA Flags Four Infrastructure Flaws as Under Active Attack
+Content:
+<h3>CISA Flags Four Infrastructure Flaws as Under Active Attack</h3>
+<p>The U.S. Cybersecurity and Infrastructure Security Agency (CISA) added four vulnerabilities to its Known Exploited Vulnerabilities (KEV) catalog on Monday (10 November), citing evidence of active exploitation in the wild, according to The Hacker News, which reported the listings.</p>
+<p>The newly catalogued flaws affect four products that sit deep in enterprise and service-provider plumbing: GPUStack, SignalWire FreeSWITCH, OpenBSD OpenSSH, and IBM Aspera Faspex. One of the entries, <strong>CVE-2026-123218</strong>, is an incorrect-authorisation weakness carrying a CVSS base score of 9.8. Initial reporting did not disclose which of the four products it belongs to, nor the identifiers for the other three flaws; the authoritative mapping, the full CVE list, and the per-vulnerability remediation deadlines are held in CISA's <a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog">Known Exploited Vulnerabilities catalog</a>, which is the reference point for any patch queue built from this announcement.</p>
+<h4>Why the KEV listing matters more than the score</h4>
+<p>For defenders, the operative signal is not the severity rating — it is the <em>active exploitation</em> finding. CISA only places a vulnerability in the KEV catalog when it has evidence that the flaw is being used in real attacks. A high CVSS number tells you how bad an exploit would be; a KEV entry tells you the exploit is already happening. For patch-prioritisation queues, that is a materially different signal, and under CISA's Binding Operational Directive 22-01, federal civilian agencies are given a defined remediation deadline for KEV-listed flaws. Private-sector teams routinely treat that deadline as a benchmark for their own patching SLAs.</p>
+<p>Because all four products are infrastructure-layer components — telephony, GPU resource orchestration, remote shell access, and managed file transfer — successful exploitation tends to yield high-value footholds rather than low-impact web-app bugs.</p>
+<h4>🛠️ Remediation checklist (CVE-by-CVE rundown)</h4>
+<p>The table below orders the four product surfaces by suggested handling sequence. <strong>Confirm specific CVE identifiers against the <a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog">CISA KEV catalog</a> as it currently stands</strong>, and cross-check vendor advisories for the patched versions.</p>
+<table>
+<thead>
+<tr>
+<th>Surface</th>
+<th>Affected product</th>
+<th>Suggested owner</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ops / infrastructure</td>
+<td>OpenBSD OpenSSH</td>
+<td>Systems administration / SRE</td>
+<td>Inventory all internet-facing 22/tcp endpoints and upgrade to the vendor's latest stable release; tighten <code>sshd</code> configuration at the same time (disable password authentication, restrict source IPs)</td>
+</tr>
+<tr>
+<td>AI infrastructure</td>
+<td>GPUStack</td>
+<td>AI platform / MLOps</td>
+<td>Inventory cluster versions and exposure, apply the vendor's patched release; confirm the management interface is not directly exposed to the public internet</td>
+</tr>
+<tr>
+<td>VoIP / communications</td>
+<td>SignalWire FreeSWITCH</td>
+<td>VoIP / communications operations</td>
+<td>Review internet-facing SIP/FSAPI endpoints one by one, upgrade to a patched release and apply the vendor's recommended hardening settings</td>
+</tr>
+<tr>
+<td>File transfer</td>
+<td>IBM Aspera Faspex</td>
+<td>Data exchange / storage</td>
+<td>Check the Faspex instance version, upgrade to the fix published by IBM; narrow the access scope of the management interface</td>
+</tr>
+<tr>
+<td>General</td>
+<td>CVE-2026-123218 (CVSS 9.8, authorisation bypass class)</td>
+<td>Information security / incident response</td>
+<td>Verify the owning product and CISA's specified remediation deadline in the KEV catalog, and place it at the top of the priority queue</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Five-step process:</strong> ① Cross-check the KEV catalog to obtain the complete CVE list and deadlines → ② Inventory assets and versions across the four product families → ③ Prioritise by "known exploited" status, fixing internet-facing nodes first → ④ Apply vendor patched releases and record the changes → ⑤ Re-verify and retain evidence.</p>
+<h4>What it means for the open-source community</h4>
+<p>Notably, this batch of KEV additions spans telephony switching, AI GPU scheduling, SSH connectivity, and file transfer — infrastructure-layer open-source and open-ecosystem components that keep systems running, rather than ordinary web applications. It is a further reminder that supply-chain risk has shifted down the stack: how quickly open-source maintainers respond to vulnerabilities, and how disciplined a project's upgrade cadence is, directly determine the exposure window for the whole ecosystem. For patch details, see The Hacker News's reporting and CISA's official catalog.</p>
+<hr>
+<h3>CISA 標示四項基礎設施漏洞正遭活躍攻擊</h3>
+<p>據 The Hacker News 報道，美國網絡安全及基礎設施安全局（CISA）於周一（11 月 10 日）把四個漏洞加入其「已知被利用漏洞」（Known Exploited Vulnerabilities，KEV）目錄，理由是有證據顯示相關漏洞正於現實環境中遭活躍利用。</p>
+<p>新增入冊的漏洞影響四款深植於企業及服務供應商系統底層的產品：GPUStack、SignalWire FreeSWITCH、OpenBSD OpenSSH，以及 IBM Aspera Faspex。其中一條條目 <strong>CVE-2026-123218</strong> 屬授權驗證不當（incorrect authorisation）類別缺陷，CVSS 基準評分達 9.8。初步報道未有披露該 CVE 屬於四款產品中的哪一款，亦未提供其餘三個漏洞的編號；權威對應資料、完整 CVE 清單及各漏洞的修補期限，均載於 CISA 的 <a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog">Known Exploited Vulnerabilities 目錄</a>，該目錄是任何依此公告編排修補佇列時的參考依據。</p>
+<h4>為何入列 KEV 比評分更值得關注</h4>
+<p>對防禦者而言，關鍵訊號不在於嚴重性評級，而在於「活躍利用」這項結論。CISA 只會在有證據顯示漏洞已被實際攻擊利用時，才將其列入 KEV 目錄。CVSS 高分只告訴你一次漏洞利用可造成多大破壞；KEV 條目則告訴你漏洞利用已經發生。對於修補優先次序佇列而言，這是性質截然不同的訊號；根據 CISA 的《具有約束力的運作指令 22-01》（Binding Operational Directive 22-01），聯邦民事機構須在指定期限內修復列入 KEV 的漏洞。私營機構的團隊通常亦會以該期限作為自身修補 SLA 的參考基準。</p>
+<p>由於四款產品均屬基礎設施層元件——電話通訊、GPU 資源調度、遠端 shell 存取及託管檔案傳輸——一旦成功利用，往往可取得高價值立足點，而非影響有限的網頁應用程式漏洞。</p>
+<h4>🛠️ 修補清單（CVE-by-CVE Rundown）</h4>
+<p>下表依四項產品面向，按建議處理順序排列。<strong>具體 CVE 編號請以 <a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog">CISA KEV 目錄</a> 現行為準</strong>，並對照供應商安全公告確認已修復版本。</p>
+<table>
+<thead>
+<tr>
+<th>面向</th>
+<th>受影響產品</th>
+<th>建議負責人</th>
+<th>處理動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ops / 基礎設施</td>
+<td>OpenBSD OpenSSH</td>
+<td>系統管理 / SRE</td>
+<td>盤點所有對外 22/tcp 端點，升級至供應商最新穩定版；同時收緊 <code>sshd</code> 設定（停用密碼登入、限制來源 IP）</td>
+</tr>
+<tr>
+<td>AI 基礎設施</td>
+<td>GPUStack</td>
+<td>AI 平台 / MLOps</td>
+<td>盤點集群版本與暴露面，套用供應商修補版本；確認管理介面未直接暴露於公網</td>
+</tr>
+<tr>
+<td>VoIP / 通訊</td>
+<td>SignalWire FreeSWITCH</td>
+<td>VoIP / 通訊維運</td>
+<td>逐一檢視對外 SIP/FSAPI 端點，升級至已修復版本並套用廠商建議的強化設定</td>
+</tr>
+<tr>
+<td>檔案傳輸</td>
+<td>IBM Aspera Faspex</td>
+<td>資料交換 / 儲存</td>
+<td>檢查 Faspex 實例版本，升級至 IBM 公布的修復版本；收窄管理介面的存取範圍</td>
+</tr>
+<tr>
+<td>通用</td>
+<td>CVE-2026-123218（CVSS 9.8，授權繞過類）</td>
+<td>資訊安全 / 應變調查</td>
+<td>於 KEV 目錄核對所屬產品與 CISA 指定修補期限，列入最優先佇列</td>
+</tr>
+</tbody>
+</table>
+<p><strong>五步流程：</strong> ① 比對 KEV 目錄取得完整 CVE 清單及截止日期 → ② 盤點四類產品的資產及版本 → ③ 依「已知被利用」狀態排序優先次序，先修對外暴露節點 → ④ 套用供應商修復版本並記錄變更 → ⑤ 復核驗證並留存證據。</p>
+<h4>對開源社群的意義</h4>
+<p>值得注意的是，這批 KEV 新增條目橫跨電話交換、AI GPU 調度、SSH 連線及檔案傳輸——全是支撐系統運作的基礎設施層開源及開放生態元件，而非一般網頁應用程式。這再次說明供應鏈風險的重心已下移至技術堆疊底層：開源維護者回應漏洞的速度，以及專案升級節奏的紀律，直接決定了整個生態系的暴露窗口。相關修補細節，可參閱 The Hacker News 的報導及 CISA 官方目錄。</p>
+<p><a href="https://thehackernews.com/2026/11/cisa-warns-of-active-exploitation-of.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
