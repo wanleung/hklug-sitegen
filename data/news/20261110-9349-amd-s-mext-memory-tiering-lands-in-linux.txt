@@ -1,0 +1,28 @@
+Date: 2026-11-10 19:02:00
+Author: HKLUG Team
+Title: AMD's MEXT Memory Tiering Lands in Linux — Under an Unusually Closed Licence
+Content:
+<p>```</p>
+<p>AMD's newly acquired MEXT memory-tiering technology now includes a Linux driver — but the component is not distributed as open source, marking a rare closed licence in a vendor otherwise known for its open-source Linux engagement.</p>
+<p>According to Phoronix, which covered the rollout, AMD acquired MEXT earlier this summer for its AI-based predictive memory technology, which is designed to make flash storage such as NVMe SSDs behave more like DRAM. On EPYC servers, MEXT performs what Phoronix describes as flash-as-DRAM tiering, with a predictive AI engine directing how data is placed across tiers. The vendor is promoting the stack at a moment when Phoronix frames the rollout against a tightening DRAM supply picture — context, rather than a claim this report can independently verify.</p>
+<p>The commercial and performance story is, however, only half of what matters to the Linux community. The more consequential detail is the licensing posture: Phoronix notes that this is one of the few offerings in AMD's portfolio that is <em>not</em> open-source, departing from the company's typical open-ecosystem approach — an approach AMD has leaned on for years to win goodwill in kernel and distribution circles.</p>
+<p>That departure raises concrete operational questions for anyone running EPYC fleets on mainstream Linux distributions.</p>
+<p><strong>Kernel ABI tracking.</strong> A closed or non-redistributable module coupled to memory-management internals sits in one of the kernel's most volatile subsystems. Distribution packagers and enterprise maintainers will need to know which kernel versions it is built against, and how quickly AMD rebuilds it when upstream interfaces change — particularly around major releases where tiering and folio-related rework has been active.</p>
+<p><strong>Module signing and Secure Boot.</strong> If such a module does ship as a prebuilt binary, deploying it in a privileged kernel layer means signing policy, provenance, and trust-chain questions land squarely with the deploying organisation. Enterprises enforcing module signing will need assurance about AMD's key handling and release-signing process before the module can load at all.</p>
+<p><strong>Support cadence versus release cadence.</strong> RHEL, Ubuntu, and SLES move on fixed schedules; vendor modules often do not. Distro packagers will want to know whether MEXT ships as a DKMS-style out-of-tree module, a bundled vendor package, or something distribution-specific — and how long each kernel point release remains supported.</p>
+<p><strong>Auditability.</strong> This is the thorniest issue. Security teams routinely require the ability to review code that runs with kernel-level privilege. Should the driver arrive as a prebuilt, non-redistributable module, that review is foreclosed entirely, pushing organisations to rely on vendor attestations instead of independent inspection. For regulated or security-sensitive environments, that is a material difference from AMD's usual posture.</p>
+<p>Licensing specifics remain unanswered in the source material: what exactly ships as source versus binary — including whether the driver is distributed as a prebuilt module at all — the redistribution terms, the support lifecycle, and the release-signing process behind module signing are all open questions worth putting to AMD directly. Clarifying them would substantially strengthen the picture for packagers deciding whether to integrate MEXT into distribution repositories.</p>
+<p>AMD's open-source reputation is the narrative spine here. The company has repeatedly positioned itself as a collaborative Linux citizen — a reputation that makes MEXT a conspicuous island of secrecy within its own stack. Whether that stays closed, or partially opens as the technology matures, is worth watching: it will say as much about AMD's ecosystem philosophy as the tiering benchmarks themselves.</p>
+<hr>
+<p>```</p>
+<p>AMD 新收購的 MEXT 記憶體分層（memory tiering）技術現已包含 Linux 驅動程式 — 但該元件並非以開放原始碼形式散發，這在一向以積極參與開放原始碼 Linux 項目著稱的廠商身上，屬於罕見的封閉授權例外。</p>
+<p>據報導此事的 Phoronix 指出，AMD 於今年夏天早些時候收購了 MEXT，看中的是其基於 AI 的預測式記憶體技術，目標是令 NVMe SSD 等快閃儲存的運作更接近 DRAM。在 EPYC 伺服器上，MEXT 執行 Phoronix 所描述的「快閃記憶體充當 DRAM」分層架構，由預測式 AI 引擎主導資料在各層之間的放置方式。廠商選在 Phoronix 所形容的 DRAM 供應日趨緊張之際推廣這套堆疊 — 這只是背景脈絡，並非本文可以獨立核實的說法。</p>
+<p>然而，商業與效能層面的敘述只是故事的一半，對 Linux 社群而言更關鍵的是授權立場：Phoronix 指出，這是 AMD 產品組合中少數<strong>不</strong>屬開放原始碼的項目，偏離了公司一貫的開放生態系統做法 — 多年來 AMD 正是倚仗這套做法，贏得 kernel 與發行版圈子的信任。</p>
+<p>這項偏離為在主流 Linux 發行版上運行 EPYC 機群的用戶，帶來具體的營運維護問題。</p>
+<p><strong>Kernel ABI 追蹤。</strong> 一個封閉或不可再散發的模組，若耦合到記憶體管理的內部機制，便置身於 kernel 最不穩定的子系統之一。發行版打包者與企業維護人員需要知道它針對哪些 kernel 版本編譯，以及當上游介面變動時 AMD 重建它的速度有多快 — 尤其是在分層與 folio 相關重構持續活躍的大版本周邊。</p>
+<p><strong>模組簽章與 Secure Boot。</strong> 若此類模組確以預先編譯的二進位形式出貨，把它部署在 kernel 的高權限層級，意味著簽章政策、來源追溯與信任鏈問題全部落在部署該系統的機構身上。實施模組強制簽章的企業，需要就 AMD 的金鑰處理及發布簽章流程取得保證，模組才可能順利載入。</p>
+<p><strong>支援節奏對發布節奏。</strong> RHEL、Ubuntu 與 SLES 按固定時間表推進；廠商模組往往不然。發行版打包者會想釐清 MEXT 是以 DKMS 式的樹外模組、捆綁式廠商套件，還是發行版專屬形式出貨 — 以及每個 kernel point release 的支援期有多長。</p>
+<p><strong>可審計性。</strong> 這是其中最棘手的一環。安全團隊一向要求能夠審查以 kernel 級別權限運行的程式碼。若驅動程式最終以預先編譯、不可再散發的模組形式到來，該項審查便無從進行，迫使機構依賴廠商聲明而非獨立檢視。對受監管或安全敏感的環境而言，這與 AMD 一貫作風存在實質落差。</p>
+<p>來源材料未有交代的授權細節包括：哪些部分以原始碼交付、哪些以二進位交付 — 包括驅動程式是否根本以預編譯模組形式散發 — 再散發條款、支援生命週期，以及模組簽章背後的發布簽章流程，這些都是值得直接向 AMD 提出的公開問題。釐清這些事項，會大幅改善打包者評估是否把 MEXT 整合進發行版 repository 時的判斷依據。</p>
+<p>AMD 的開放原始碼聲譽正是本文的敘事主軸。公司一再把自己定位為樂於協作的 Linux 一份子 — 正因如此，MEXT 成了自家技術堆疊中一座顯眼的封閉孤島。它會否維持封閉，抑或隨著技術成熟而部分開放，值得持續觀察：這透露出的 AMD 生態系統理念，與分層效能基準本身同樣重要。</p>
+<p><a href="https://www.phoronix.com/news/AMD-MEXT" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
