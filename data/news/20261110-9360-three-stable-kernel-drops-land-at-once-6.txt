@@ -1,0 +1,124 @@
+Date: 2026-11-10 21:13:00
+Author: HKLUG Team
+Title: Three Stable Kernel Drops Land at Once: 6.12.117 Carries the Largest Batch
+Content:
+<h3>Three Stable Kernel Drops Land at Once: 6.12.117 Carries the Largest Batch</h3>
+<p>Greg Kroah-Hartman has released three stable kernels in a single batch: <strong>7.3.4</strong>, <strong>6.18.63</strong> and <strong>6.12.117</strong>. Users running any of those branches are encouraged to upgrade. The three releases arrive together, but they are not equal in size:</p>
+<table>
+<thead>
+<tr>
+<th>Release</th>
+<th>Patch count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7.3.4</td>
+<td>More than 1,250</td>
+</tr>
+<tr>
+<td>6.18.63</td>
+<td>More than 860</td>
+</tr>
+<tr>
+<td>6.12.117</td>
+<td>More than 1,530</td>
+</tr>
+</tbody>
+</table>
+<p>The 6.12.117 release is the largest of the three, carrying more than 1,530 patches — nearly double the 6.18.63 batch.</p>
+<h4>What is in the batches</h4>
+<p>The LWN report itself gives version numbers and patch counts only; the substance of each batch lives in the corresponding stable-branch release announcements for each version. Opening those announcements lets the changelog be read subsystem by subsystem.</p>
+<p>For teams deciding whether to move this week or next, that changelog is the right place to start: scan it for subsystems and drivers that intersect with your deployed hosts — storage stacks, network drivers, virtualisation components, filesystem code — and treat those entries as the review queue. At 860 to 1,530 patches per release, line-by-line review is not a practical gate; everything outside your intersection rides along as-tested.</p>
+<h4>Why the sizes differ</h4>
+<p>The source report does not explain the disparity, but the pattern is consistent with how stable branches accumulate: a longer-lived branch collects fixes across a wider range of hardware and subsystems, while a recent branch has had fewer cycles to gather regressions. The 6.12 series is maintained as a long-term-support branch — it appears on <a href="https://www.kernel.org/releases.html">kernel.org's published list of supported releases</a> — and appears to have been in stable maintenance the longest of the three, which would naturally leave it carrying the broadest batch.</p>
+<p>Long-term-support branches such as 6.12 are widely used to underpin enterprise and appliance deployments, which is one reason its batch tends to draw the most attention from operations teams — independent of where it sits in the release calendar.</p>
+<h4>Suggested sequencing</h4>
+<ol>
+<li><strong>6.12.117 first for teams on that branch.</strong> It is the largest batch, so deferring it compounds the backlog for the next cycle.</li>
+<li><strong>6.18.63 next.</strong> A smaller batch usually means lower integration friction and a faster validation pass.</li>
+<li><strong>7.3.4 where relevant.</strong> Useful for teams tracking newer hardware or following mainline closely.</li>
+</ol>
+<p>In each case, stage the upgrade — validate against a representative subset of hosts before broad rollout, and keep the previous kernel available for rollback.</p>
+<p>Source report: <a href="https://lwn.net/Articles/1106569/">LWN.net — Three new stable kernels for Tuesday</a></p>
+<hr />
+<h3>同日發布三個穩定版核心：6.12.117 規模最大</h3>
+<p>核心 stable 分支維護者 Greg Kroah-Hartman 一口氣發布三個穩定版本：<strong>7.3.4</strong>、<strong>6.18.63</strong> 及 <strong>6.12.117</strong>，各分支使用者均建議升級。三者雖然同期發布，規模並不相若：</p>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>修補數量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7.3.4</td>
+<td>超過 1,250</td>
+</tr>
+<tr>
+<td>6.18.63</td>
+<td>超過 860</td>
+</tr>
+<tr>
+<td>6.12.117</td>
+<td>超過 1,530</td>
+</tr>
+</tbody>
+</table>
+<p>其中 6.12.117 規模最大，收錄逾 1,530 個修補，接近 6.18.63 批次的兩倍。</p>
+<h4>這批修補實際包含什麼</h4>
+<p>LWN 報導本身只提供版本號與修補數量，各批次的具體內容須到各版本對應的 stable 分支發布公告查閱，可逐個子系統閱讀 changelog。</p>
+<p>對需要判斷應否即時升級的團隊而言，changelog 是正確起點：篩選與自身已部署主機相關的子系統與驅動（儲存、網絡、虛擬化、檔案系統），將其列為審核佇列。每次動輒 860 至 1,530 個修補，逐條審核並不現實；不在交集範圍內的項目，隨版本一併驗證上線即可。</p>
+<h4>為何規模有別</h4>
+<p>來源報導未有解釋差異，但此模式與 stable 分支的累積方式一致：存活時間越長的分支，涵蓋的硬件與子系統範圍越廣，累積的修正自然越多；較新的分支則回歸修補的週期較短。6.12 系列屬長期支援分支（列於 <a href="https://www.kernel.org/releases.html">kernel.org 已發布版本清單</a>），且看來是三者中維護時間最久的，批次最大並不意外。</p>
+<p>6.12 這類 LTS 分支廣泛用於支撐企業與裝置類部署，這也是其批次往往最受營運團隊關注的原因之一——與它在發布日曆上的位置無關。</p>
+<h4>建議次序</h4>
+<ol>
+<li><strong>用 6.12 分支的團隊優先升級 6.12.117</strong>——批次最大，延誤只會令下次累積更多。</li>
+<li><strong>其次 6.18.63</strong>——批次較小，整合摩擦通常較低，驗證較快。</li>
+<li><strong>7.3.4 按需要採用</strong>——適合追蹤新硬件或緊貼主線的團隊。</li>
+</ol>
+<p>三者均應分階段推行：先在具代表性的主機子集驗證，並保留舊核心以便回滾。</p>
+<p>來源：<a href="https://lwn.net/Articles/1106569/">LWN.net — 同日三個新穩定版核心</a></p>
+<hr>
+<h3>同日發布三個穩定版核心：6.12.117 規模最大</h3>
+<p>核心 stable 分支維護者 Greg Kroah-Hartman 一口氣發布三個穩定版本：<strong>7.3.4</strong>、<strong>6.18.63</strong> 及 <strong>6.12.117</strong>。使用上述任何分支的使用者均建議升級。三個版本雖同期發布，規模並不相若：</p>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>修補數量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7.3.4</td>
+<td>超過 1,250</td>
+</tr>
+<tr>
+<td>6.18.63</td>
+<td>超過 860</td>
+</tr>
+<tr>
+<td>6.12.117</td>
+<td>超過 1,530</td>
+</tr>
+</tbody>
+</table>
+<p>6.12.117 是三者中規模最大的一個版本，收錄逾 1,530 個修補，接近 6.18.63 批次的兩倍。</p>
+<h4>這批修補實際包含什麼</h4>
+<p>LWN 報導本身只提供版本號與修補數量；各批次的具體內容須查閱各版本對應的 stable 分支發布公告，開啟後即可逐個子系統閱讀 changelog。</p>
+<p>對需要判斷應否本週還是下週升級的團隊而言，changelog 是正確的起點：掃描其中與自身已部署主機有交集的子系統與驅動（儲存堆疊、網絡驅動、虛擬化元件、檔案系統代碼），將這些條目列為審核佇列。每次動輒 860 至 1,530 個修補，逐條審核並不現實；不在交集範圍內的項目，隨版本一併測試上線即可。</p>
+<h4>為何規模有別</h4>
+<p>來源報導並未解釋差異，但此模式與 stable 分支的累積方式一致：存活時間越長的分支，涵蓋的硬件與子系統範圍越廣，所收集的修正自然越多；較新的分支則經歷較少週期累積回歸。6.12 系列以長期支援分支的方式維護——可見於 <a href="https://www.kernel.org/releases.html">kernel.org 已發布版本清單</a>——且看來是三者中維護時間最久的，這自然會令它承載最大的一批。</p>
+<p>6.12 這類長期支援分支廣泛用於支撐企業及裝置類部署，這是其批次往往最受營運團隊關注的原因之一——與它在發布日曆上的位置無關。</p>
+<h4>建議次序</h4>
+<ol>
+<li><strong>使用 6.12 分支的團隊應優先升級 6.12.117。</strong> 這是最大的一批，延誤只會令欠帳在下一個週期進一步堆積。</li>
+<li><strong>其次 6.18.63。</strong> 批次較小，通常意味著整合摩擦較低、驗證過程更快。</li>
+<li><strong>7.3.4 按需要採用。</strong> 適合追蹤較新硬件或緊貼主線開發的團隊。</li>
+</ol>
+<p>無論採用哪一個，都應分階段推行升級——先在具代表性的主機子集上驗證，再全面鋪開，並保留舊核心以便回滾。</p>
+<p>報道來源：<a href="https://lwn.net/Articles/1106569/">LWN.net — 同日三個新穩定版核心</a></p>
+<p><a href="https://lwn.net/Articles/1106569/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
