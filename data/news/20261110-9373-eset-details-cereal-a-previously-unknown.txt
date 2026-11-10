@@ -1,0 +1,56 @@
+Date: 2026-11-10 23:27:00
+Author: HKLUG Team
+Title: ESET Details 'Cereal': A Previously Unknown Turla Toolset Built to Live Inside Exchange Servers
+Content:
+<p>Security researchers at ESET say a Russia-linked intrusion set tracked as Turla has been running a previously undocumented toolset, dubbed <strong>Cereal</strong>, directly on Microsoft Exchange servers used by government bodies in Kazakhstan and Romania. For Hong Kong administrators responsible for on-premises or hybrid Exchange estates, the practical response begins with a checklist rather than a CVE number.</p>
+<p><strong>What HK admins should do now</strong></p>
+<ol>
+<li><strong>Reclassify Exchange as tier-zero.</strong> Server-side persistence in Exchange runs under SYSTEM and reaches service accounts; it is domain-level access, not email-gateway access.</li>
+<li><strong>Turn on detection inside Exchange itself.</strong> Confirm IIS logs, message tracking and PowerShell auditing are retained, and add integrity checks on virtual directories, DLLs and Exchange binaries.</li>
+<li><strong>Verify EDR actually covers Exchange.</strong> A sensor configured to exclude Exchange installation directories is, in practice, absent — check exclusions before trusting coverage.</li>
+<li><strong>Harden the management surface.</strong> Restrict exposure of the Exchange admin interface and ECP behind VPN or conditional access, and review mailbox rules, delegation changes and newly granted permissions for persistence.</li>
+<li><strong>Patch known Exchange chains, but don't treat any single CVE as the fix.</strong> ESET has not confirmed an infection vector for Cereal; remediation should assume stolen credentials, exposed admin interfaces or chained vulnerabilities remain plausible. Earlier Exchange exploit chains were separately attributed by US and UK authorities.</li>
+<li><strong>Watch for the hybrid pivot.</strong> In a hybrid estate, a compromised on-premises Exchange host can be a stepping stone into Entra ID and Microsoft 365 — audit OAuth app grants, federation trusts, mail-recipient permissions and sign-in anomalies from on-prem source IPs.</li>
+</ol>
+<p><strong>What was found, and where</strong></p>
+<p>According to Security Affairs, ESET Research detailed the Cereal toolset, which is built to run on Microsoft Exchange servers. The researchers located it on 28 November 2025 at a government body in Kazakhstan, and later at a second victim. The targeting of two countries' government Exchange infrastructure is consistent with a deliberately selective, intelligence-oriented collection pattern, though ESET has not characterised the operator's selection criteria in those terms.</p>
+<p>No affected organisations in Hong Kong are identified in the disclosure. This is a threat-model and monitoring-priority input for local teams running on-premises or hybrid Exchange, not a live incident report.</p>
+<p><strong>Why Exchange, and why now</strong></p>
+<p>Exchange makes attractive ground precisely because it is trusted infrastructure: it holds credentials, mail flow and administrative context in one process, and much of the abuse it enables — mailbox rules, delegation, protocol handling — is quiet. That is why the checklist above puts detection inside Exchange before anything else: endpoint tooling that never looks at those directories will not see this class of activity.</p>
+<p>ESET has not disclosed whether indicators of compromise for Cereal have been released. Teams should monitor ESET's research publications (see <a href="https://www.eset.com/global/research/">eset.com/global/research</a>) and their EPP/EDR feeds for updates, particularly on the initial access vector, which remains unconfirmed.</p>
+<p><strong>繁體中文名詞對照 (Glossary)</strong></p>
+<ul>
+<li><strong>APT（進階持續性威脅）</strong>：具國家或組織背景、長期潛伏的攻擊者</li>
+<li><strong>C2 / 命令與控制（Command and Control）</strong>：攻擊者遙控受害主機的通訊機制；本案中 Exchange 伺服器本身被用作 C2</li>
+<li><strong>IOC（入侵指標）</strong>：可用於偵測入侵的線索，如雜湊、網域、IP</li>
+<li><strong>持久性植入程式（persistent implant）</strong>：重開機或帳號變更後仍能存活的惡意元件</li>
+<li><strong>虛擬目錄（virtual directory）</strong>：IIS/Exchange 中的路徑設定，常被用來藏匿惡意元件</li>
+</ul>
+<p>The broader lesson for the local community is architectural: treat email infrastructure as a security boundary worth monitoring in its own right, not merely as a mail relay.</p>
+<hr>
+<p>ESET 安全研究人員表示，一個與俄羅斯有關、代號 Turla 的入侵組織，一直在哈薩克斯坦及羅馬尼亞政府機構所使用的 Microsoft Exchange 伺服器上，直接運行一套此前從未被記錄的工具集，代號 <strong>Cereal</strong>。對於負責本地部署（on-premises）或混合式 Exchange 環境的香港管理員而言，實際應對措施並非追查某個 CVE 編號，而是從一份檢查清單開始。</p>
+<p><strong>香港管理員現階段應做的事</strong></p>
+<ol>
+<li><strong>將 Exchange 重新劃分為第零層（tier-zero）。</strong> Exchange 的伺服器端持久性機制以 SYSTEM 身分運行，並可接觸服務帳戶；這屬於網域層級的存取權限，而非單純的郵件閘道存取。</li>
+<li><strong>啟用 Exchange 內部偵測。</strong> 確認 IIS 日誌、郵件追蹤（message tracking）及 PowerShell 審核記錄已妥善保存，並對虛擬目錄（virtual directory）、DLL 及 Exchange 二進位檔案加入完整性檢查。</li>
+<li><strong>核實 EDR 是否真正覆蓋 Exchange。</strong> 若傳感器設定排除了 Exchange 安裝目錄，實際上等同於未受覆蓋 —— 在信任覆蓋率之前，先檢查各項排除設定。</li>
+<li><strong>強化管理介面。</strong> 將 Exchange 管理介面及 ECP 置於 VPN 或條件式存取（conditional access）之後，限制其暴露範圍，並審視信箱規則、委派變更及新授予的權限，以防有人藉此建立持久性。</li>
+<li><strong>修補已知的 Exchange 攻擊鏈，但不要把任何單一 CVE 視為終極解方。</strong> ESET 尚未確認 Cereal 的感染途徑；修補工作應假設被盜取的認證資料、暴露的管理介面或串連漏洞仍然可能成立。較早前的 Exploit 攻擊鏈已由美國及英國當局另行歸因。</li>
+<li><strong>留意混合式環境的橫向跳板。</strong> 在混合式環境中，一台被入侵的本地 Exchange 主機可能成為進入 Entra ID 及 Microsoft 365 的跳板 —— 應審計 OAuth 應用程式授權、federation trust、收件者權限，以及來自本地 IP 位址的登入異常。</li>
+</ol>
+<p><strong>發現了甚麼，在哪裡發現</strong></p>
+<p>據 Security Affairs 報道，ESET Research 詳述了專為在 Microsoft Exchange 伺服器上運行而設計的 Cereal 工具集。研究人員於 2025 年 11 月 28 日在哈薩克斯坦一政府機構首次發現該工具，其後在第二個受害目標亦有發現。針對兩個國家政府 Exchange 基礎設施的攻擊，與刻意挑選目標、以情報收集為導向的模式一致，儘管 ESET 並未以這些措辭描述操作者的選擇準則。</p>
+<p>披露內容並未提及香港有任何受影響機構。這是一項供本地團隊評估威脅模型及監控優先次序的輸入資料，並非實時事故報告。</p>
+<p><strong>為何是 Exchange，為何是現在</strong></p>
+<p>Exchange 之所以成為理想目標，正正因為它是受信任的基礎設施：憑證、郵件流程及管理上下文集中於同一個處理程序之內，而它所促成的大部分濫用行為 —— 信箱規則、委派、協議處理 —— 都極為安靜。正因如此，上述檢查清單把 Exchange 內部偵測放在首位：從不檢查那些目錄的端點工具，根本看不見這類活動。</p>
+<p>ESET 尚未披露 Cereal 的入侵指標（IOC）是否已發布。各團隊應持續監察 ESET 的研究發表（見 <a href="https://www.eset.com/global/research/">eset.com/global/research</a>）及其 EPP/EDR 訊息源以獲取更新，尤其是尚未確認的初始入侵途徑。</p>
+<p><strong>繁體中文名詞對照（Glossary）</strong></p>
+<ul>
+<li><strong>APT（進階持續性威脅）</strong>：具國家或組織背景、長期潛伏的攻擊者</li>
+<li><strong>C2 / 命令與控制（Command and Control）</strong>：攻擊者遙控受害主機的通訊機制；本案中 Exchange 伺服器本身被用作 C2</li>
+<li><strong>IOC（入侵指標）</strong>：可用於偵測入侵的線索，如雜湊、網域、IP</li>
+<li><strong>持久性植入程式（persistent implant）</strong>：重開機或帳號變更後仍能存活的惡意元件</li>
+<li><strong>虛擬目錄（virtual directory）</strong>：IIS/Exchange 中的路徑設定，常被用來藏匿惡意元件</li>
+</ul>
+<p>對本地社群而言，更深遠的啟示在於架構層面：應把郵件基礎設施視為值得獨立監控的安全邊界，而不僅僅是一個郵件轉發器。</p>
+<p><a href="https://securityaffairs.com/202800/apt/russia-linked-apt-turla-turned-exchange-servers-into-their-own-control-room.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
