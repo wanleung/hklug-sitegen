@@ -1,0 +1,34 @@
+Date: 2026-11-11 10:02:00
+Author: HKLUG Team
+Title: A Sub-10-Neuron Edit Is Enough to Turn an AI Agent Into an Attacker's Payload
+Content:
+<hr />
+<p>A hidden backdoor can be planted in an AI model by editing fewer than 10 of its rarely used neurons — with no retraining of the model whatsoever — according to Microsoft research covered by The Hacker News.</p>
+<p>When a chosen trigger appears, the backdoored model emits a command of the attacker's choosing. If that model is powering an autonomous AI agent, the agent will attempt to execute the command with its own permissions: file access, shell access, API credentials, whatever it has been granted.</p>
+<p>There is a critical precondition, and it belongs up front: the attacker must already be able to modify the model's weights. This is not a prompt-injection attack reachable from a chat window. It is a supply-chain attack — a tampered artefact delivered inside a model file that looks otherwise legitimate.</p>
+<h5>Why the scale of the edit matters</h5>
+<p>The number is the finding. The edit is confined to fewer than 10 neurons that fire rarely in normal operation, leaving the rest of the network untouched, and it is delivered without the retraining or fine-tuning pass that would normally alter weights across the board. Nothing about the change announces itself as a modification.</p>
+<p>That has a direct consequence for anyone who downloads or vendors third-party model weights. Verification practices in the model ecosystem are built largely around file integrity: a checksum or signature confirms that the artefact you received is byte-for-byte what the publisher shipped. It says nothing about whether a maliciously edited network was published in the first place, or whether a fine-tune performed downstream introduced a trigger. A sub-10-neuron edit sits comfortably inside that blind spot.</p>
+<p>The agent angle compounds the risk. A backdoor in a model used for text generation is a data-integrity problem. A backdoor in a model used as an agent's planner is a code-execution problem: the trigger converts a prediction into an action, and the action inherits the agent's privileges rather than the attacker's lack of them. The larger the blast radius of an agent's permissions, the more valuable the same ten neurons become.</p>
+<h5>What the threat model does and does not include</h5>
+<p>Stated plainly: this attack requires write access to model weights. An adversary who cannot alter the weights cannot use the technique. That narrows the population of realistic attackers to those positioned in the supply chain — a malicious or compromised model publisher, a tampered mirror or registry, an insider with checkpoint access, or an attacker who has already achieved write access through a separate compromise.</p>
+<p>It also means defences should be aimed at provenance and containment rather than at user input filtering. Prompt-injection hardening will not help here, because the malicious behaviour is baked into the weights, not injected into the conversation.</p>
+<h5>What teams should do about it</h5>
+<p>For organisations consuming third-party weights or deploying agents on top of them, the practical response runs to three moves. First, acquire models from publishers who sign artefacts and publish verifiable build provenance, so the identity of the builder — not just the integrity of the bytes — is attestable. Second, pin checkpoints by hash, record them, and audit every fine-tuning pipeline as a moment where a backdoor could be introduced; any unexplained hash mismatch is an incident, not a warning. Third, sandbox the agent itself: least privilege, network egress controls, human approval for destructive actions, and isolation for shell-capable agents, because the payload runs with whatever permissions the agent holds.</p>
+<p>The uncomfortable takeaway is that model integrity and model safety are not the same property. A model can behave correctly on every benchmark you throw at it and still carry a hidden instruction set that activates on one specific trigger — waiting for the agent that runs it to do the rest.</p>
+<hr>
+<hr />
+<p>只需編輯 AI 模型中少於 10 個罕用的神經元，就能植入隱藏後門，而且完全不需要重新訓練模型——這是微軟研究人員展示的結果，相關研究由 The Hacker News 報導。</p>
+<p>當特定觸發訊號出現時，被植入後門的模型會輸出攻擊者指定的指令。如果該模型驅動的是自主 AI Agent，Agent 便會嘗試以自身權限執行這條指令：檔案存取、Shell 存取、API 憑證，凡它被授予的都在其列。</p>
+<p>有一個關鍵前提必須放在最前面：攻擊者必須已經能夠修改模型權重。這不是從聊天視窗就能發動的提示注入攻擊，而是供應鏈攻擊——一個經過篡改的模型檔案，外表看起來完全正常。</p>
+<h5>編輯規模為何重要</h5>
+<p>真正的發現是那個數字。這次編輯只涉及少數在正常運作中極少啟動的神經元，網絡其餘部分原封不動，而且整個過程不涉及通常會全面改動權重的重新訓練或微調（fine-tuning）步驟。這項變更本身不會暴露自己是經過修改的。</p>
+<p>這對任何下載或引入第三方模型權重的單位都有直接影響。模型生態系的驗證實務大多建立在檔案完整性上：校驗碼或簽章只能證明你收到的檔案與發佈者送出的位元組完全一致，卻無法證明網絡本身是否在發佈前就遭惡意編輯，也無法攔阻下游微調引入觸發機制。少於 10 個神經元的編輯，正好舒舒服服地躲在這個盲區之內。</p>
+<p>Agent 這個角度更放大了風險。用於文字生成的模型若被植入後門，是資料完整性問題；作為 Agent 規劃器（planner）的模型若被植入後門，則是程式碼執行問題——觸發訊號把一次預測轉成一個動作，而該動作繼承的是 Agent 的權限，而非攻擊者本身所欠缺的權限。Agent 權限的影響範圍越大，同樣那十個神經元就越有價值。</p>
+<h5>威脅模型涵蓋與不涵蓋什麼</h5>
+<p>直白地說：這項攻擊需要模型權重的寫入權限。無法修改權重的攻擊者無法使用此技術。這就將現實攻擊者的範圍限縮在供應鏈中的人——惡意或已被入侵的模型發佈者、遭篡改的鏡像站或登錄庫（registry）、擁有 checkpoint 存取權的內部人員，或者已透過另一宗入侵取得寫入權限的攻擊者。</p>
+<p>這也意味著防禦應著眼於來源可追溯性（provenance）與隔離（containment），而非使用者輸入過濾。提示注入防護在這裡派不上用場，因為惡意行為已烙印在權重之中，而不是注入對話之內。</p>
+<h5>團隊該怎麼做</h5>
+<p>對於使用第三方權重、或在其上部署 Agent 的組織，實際應對可歸納為三步。第一，向會為模型檔簽章、並公佈可驗證建置來源（build provenance）的發佈者取得模型，讓建置者身分本身可被確證，而不只是檔案位元組的完整性。第二，以雜湊值釘住並記錄 checkpoint，把每條微調管線都視為後門可能被引入的環節加以稽核；任何無法解釋的雜湊值不符都應視為事件（incident），而非警告。第三，隔離 Agent 本身：最小權限、網絡出站控管（egress controls）、破壞性操作需人工核准，具 Shell 能力的 Agent 則需額外隔離——因為載荷運行時使用的就是 Agent 所持有的全部權限。</p>
+<p>最令人不安的結論是：模型完整性（model integrity）與模型安全性（model safety）並非同一屬性。一個模型可以在你丟給它的每一項基準測試上表現正常，同時藏著一套只在特定觸發訊號下才會啟動的隱藏指令——等待執行它的 Agent 替它完成剩下的事。</p>
+<p><a href="https://thehackernews.com/2026/11/microsoft-researchers-show-ai-agents.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
