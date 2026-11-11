@@ -1,0 +1,42 @@
+Date: 2026-11-11 13:26:00
+Author: HKLUG Team
+Title: A Script Flaw, Not Stolen Keys: eMudhra Revokes Eight CAs It Had Already Cleared
+Content:
+<p><strong>Indian certificate authority eMudhra has revoked eight more intermediate certificate authorities it had previously told the industry were unaffected by October's key compromise — and the reason is not stolen keys, but a defect in the in-house script used to run the incident triage.</strong></p>
+<p>The Hacker News reported the reversal on 11 November. The same internal Python tooling behind eMudhra's October disclosure has now forced the company to walk back its own all-clear: the eight intermediates were not victims of key theft, but casualties of a single faulty line in the triage script — which means the earlier assurance that they sat outside the blast radius no longer holds.</p>
+<h4>What changed since October</h4>
+<p>In October, eMudhra disclosed a key compromise affecting certificate authorities in its estate and published a list of intermediates it assessed as unaffected. That list has now shrunk by eight. Each intermediate CA holds its own private key, which the organisation uses to sign the certificates it issues downstream. The keys themselves were never weakened; the problem lies with how the triage script processed them. Certificates chaining through those eight intermediates can therefore no longer be assumed valid, and relying parties that relied on the October clearance need to re-evaluate their position.</p>
+<h4>Why a reversed clearance costs more than the revocation</h4>
+<p>Cryptographic impact may be narrow; procedural impact is not. Clearances issued during an active incident get consumed by downstream operators to make concrete decisions — monitoring carve-outs, deferred remediation, closed tickets, security-committee sign-offs. Every one of those decisions now rests on a statement the vendor has withdrawn.</p>
+<p>The scoping failure behind it is instructive. Had the original incident been scoped around "what else did the compromised code touch?" rather than "were the keys stolen?", these intermediates would plausibly have been caught in the first pass. The practical lesson for anyone maintaining PKI trust stores is that an "unaffected" designation during an active incident is a hypothesis, not a finding: response plans and trust-store processes should be built so that reversing a clearance costs hours, not weeks.</p>
+<h4>A trust-store audit checklist for PKI administrators</h4>
+<p>Administrators managing certificate trust stores — in Hong Kong or anywhere else, as this blast radius is global for anyone who chains to eMudhra-issued intermediates — can use the following sequence:</p>
+<ol>
+<li><strong>Inventory your chains.</strong> Identify every eMudhra intermediate in your trust stores, pin sets, and mTLS configurations, and record which application or service consumes it.</li>
+<li><strong>Re-read the primary disclosure.</strong> Track eMudhra's own disclosure and revocation notices directly rather than relying on secondary summaries; the affected list has already moved once.</li>
+<li><strong>Re-check revocation status.</strong> Validate current CRL and OCSP responses for each intermediate, and confirm your clients actually enforce revocation rather than failing open.</li>
+<li><strong>Audit your carve-outs.</strong> Look for any monitoring exemptions, deferred remediation items, or closed tickets justified by the October "unaffected" list, and reopen them.</li>
+<li><strong>Test failover and replacement.</strong> Verify you have a vetted replacement chain and that swapping it does not break pinned configurations or hard-coded trust anchors.</li>
+<li><strong>Document the reversal decision.</strong> Record the date, evidence, and approver for any decision to keep or drop an affected intermediate, so a future re-triage can be executed quickly.</li>
+</ol>
+<p>eMudhra has pointed to its own disclosure for the authoritative detail on the revoked authorities. With the October all-clear already amended once, the reasonable working assumption for downstream operators is that this list is provisional — and that any trust decision made on it should be treated as pending re-verification.</p>
+<hr>
+<p><strong>印度證書授權機構 eMudhra 已吊銷另外八個中間證書授權機構（intermediate CA），而該公司此前曾向業界保證這些機構並未受十月私鑰外洩事件影響——這次的原因並非私鑰被竊，而是用作執行事故分類（triage）的內部腳本存在缺陷。</strong></p>
+<p>The Hacker News 於 11 月 11 日報道了這次改口。eMudhra 十月披露事件時所依賴的同一套內部 Python 工具，如今迫使公司收回自身的「一切正常」保證：該八個中間 CA 並非私鑰被竊事件的受害者，而是 triage 腳本中一行錯誤程式碼的犧牲品——這意味著先前「它們不在爆炸半徑之內」的保證已不再成立。</p>
+<h4>十月以來出現了什麼變化</h4>
+<p>eMudhra 於十月披露其系統內有證書授權機構發生私鑰外洩，並公布了一份經評估為不受影響的中間 CA 名單。該名單如今縮減了八個。每個中間 CA 持有自己的私鑰，機構以該私鑰簽署其向下游發出的證書。私鑰本身從未被削弱；問題在於 triage 腳本處理這些私鑰的方式。因此，經由這八個中間 CA 串連（chain）的證書不能再被視為有效，依賴十月無恙保證的依賴方（relying party）需要重新評估自身處境。</p>
+<h4>為何撤回「不受影響」的結論比吊銷代價更大</h4>
+<p>加密層面的影響或許有限；程序層面的影響則不然。在事故進行期間發出的「不受影響」結論，會被下游營運商用來作出具體決定——監控豁免、延遲修復、關閉工單、安全委員會簽核。上述每一項決定，如今都建立在供應商已經收回的聲明之上。</p>
+<p>背後的範圍界定（scoping）失誤頗具啟發性。如果最初的事故範圍是圍繞「被入侵的程式碼還接觸了什麼？」而非「私鑰是否被竊？」來界定，這些中間 CA 很可能在第一輪便已被發現。對任何維護 PKI trust store 的人而言，實務教訓是：在事故進行期間標示為「不受影響」只是一項假設，而非結論——應變計劃與 trust store 流程應設計成撤回該結論只需數小時，而非數週。</p>
+<h4>PKI 管理員的 trust store 審計清單</h4>
+<p>管理證書 trust store 的管理員——無論身在香港還是其他地方，因為對於任何串連至 eMudhra 簽發中間 CA 的用戶而言，這次的爆炸半徑是全球性的——可按以下次序處理：</p>
+<ol>
+<li><strong>盤點你的證書串連。</strong> 找出 trust store、pin set 及 mTLS 設定中的每一個 eMudhra 中間 CA，並記錄哪個應用程式或服務正在使用它。</li>
+<li><strong>重讀原始披露。</strong> 直接追蹤 eMudhra 自身的披露與吊銷公告，而非依賴二手摘要；受影響名單已經變動過一次。</li>
+<li><strong>重新核查吊銷狀態。</strong> 驗證每個中間 CA 現行的 CRL 及 OCSP 回應，並確認你的用戶端確實強制執行吊銷檢查，而非失敗時放行（fail open）。</li>
+<li><strong>審計你的豁免項目。</strong> 檢查任何以十月「不受影響」名單為依據的監控豁免、延遲修復項目或已關閉的工單，並重新開啟處理。</li>
+<li><strong>測試故障轉移與替換。</strong> 確認你已備有經過審核的替代證書串連，且替換後不會破壞已 pin 的設定或硬編碼的信任錨點（trust anchor）。</li>
+<li><strong>記錄撤回決定。</strong> 就任何保留或剔除受影響中間 CA 的決定，記錄日期、證據及批准人，以便日後重新 triage 時能迅速執行。</li>
+</ol>
+<p>eMudhra 已指向其自身的披露文件，作為有關被吊銷授權機構的權威詳情來源。鑑於十月的「一切正常」保證已修正過一次，下游營運商合理的工作假設應是：這份名單屬於暫定性質——基於它所作出的任何信任決定，均應視為有待重新核實。</p>
+<p><a href="https://thehackernews.com/2026/11/emudhra-revokes-8-more-cas-it.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
