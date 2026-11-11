@@ -1,0 +1,38 @@
+Date: 2026-11-11 11:32:00
+Author: HKLUG Team
+Title: Ubuntu 26.10 Enables upki Revocation Checking in curl, With Wider Rollout Still to Come
+Content:
+<p>Ubuntu 26.10, released in October, carries upki-based certificate revocation checking in exactly one package: <code>curl</code>. The feature landed late enough in the development cycle that it could be wired into <code>curl</code> only for this release, with a wider rollout signalled for later. The source report offers no detail on what upki is or how its status lookups are performed, and it does not say whether revocation checks run unconditionally or only under certain conditions — administrators planning around the change will need to watch upstream channels for both answers.</p>
+<p><code>curl</code> is a small scope with a large blast radius. It sits beneath package managers, provisioning scripts, health checks, and a great deal of CI plumbing, which means a behaviour change there reaches unattended infrastructure before it reaches anything a human operates — and it arrives without a prompt or a visible warning.</p>
+<p><strong>Sequencing, not scale</strong></p>
+<p>The practical reading of this release is that it is a first step in a sequence, not a system-wide switch. A host running 26.10 could look like it has revocation checking enabled while most of its TLS traffic validates exactly as before, because the libraries and other TLS-speaking tools are untouched until they are independently updated. Mixed fleets will behave inconsistently throughout the transition: every package that gains upki enablement widens the gap between components that check revocations and components that do not.</p>
+<p>That is why the roadmap matters more than the first step. The consequential detail is not that <code>curl</code> now checks revocations, but that a rollout has begun — and the current release cannot answer the questions administrators actually need settled: which packages gain upki enablement next, on what timeline, and whether the wider enablement will ship default-on or as an opt-in. Until then, treat <code>curl</code> as a pilot whose new behaviour will propagate through automation first, and prepare trust-store audits, revocation hygiene, and CRL/OCSP availability on that assumption.</p>
+<p><strong>What to verify before upgrading</strong></p>
+<p>Three scenarios deserve explicit testing rather than assumption:</p>
+<ul>
+<li><strong>Internal and private CAs.</strong> If revocation lookups begin running for <code>curl</code>, revocations issued by internal CAs start to matter where they may previously have gone unconsulted. Certificates revoked but still widely deployed internally can begin failing automated jobs.</li>
+<li><strong>TLS inspection appliances.</strong> Environments where a proxy re-signs chains with its own CA should exercise <code>curl</code>-driven workflows against the appliance; re-signed chains that validated before may fail once revocation status is enforced.</li>
+<li><strong>Air-gapped and restricted environments.</strong> Revocation checking implies some form of status retrieval. Sites without outbound access need a defined offline or caching strategy, or automated jobs will stall or time out.</li>
+</ul>
+<p><strong>Confirming what a host actually runs</strong></p>
+<p>To check an individual machine, inspect the build details of its installed binary with <code>curl -V</code> and compare them against the package version on record, to establish whether the Ubuntu build carrying upki revocation support is present. This is our practical suggestion for verification — not a method recommended by the source report.</p>
+<p>Because <code>curl</code> underpins so much unattended machinery, testing revocation-sensitive workflows in staging before the change reaches production pipelines is the safest posture ahead of an upgrade.</p>
+<p><em>Source: Phoronix, "Ubuntu 26.10 Begins Rolling Out upki Support For Certificate Revocation."</em></p>
+<hr>
+<p>於十月發布的 Ubuntu 26.10，目前僅在一個套件：<code>curl</code> 中加入基於 upki 的憑證撤銷檢查功能。由於該功能在開發周期較後階段才落實，本版本只能整合到 <code>curl</code>，更大規模的 rollout 則已預告會在日後推行。原始報道未有說明 upki 究竟是什麼、其狀態查詢如何執行，亦沒有交代撤銷檢查是無條件運行抑或僅在特定情況下觸發——計劃就此變更作部署的系統管理員，需密切留意 upstream 渠道以獲取這兩個答案。</p>
+<p><code>curl</code> 影響範圍雖小，blast radius 卻極大。它運作於套件管理器、provisioning 腳本、health check 以及大量 CI 基礎設施之下，這意味著任何行為變更會先影響無需人手監督的基礎設施，然後才觸及由人操作的系統——而且變更到達時不會有任何提示或可見警告。</p>
+<p><strong>是次序，而非規模</strong></p>
+<p>對本版本的務實解讀是：這是序列中的第一步，而非全系統開關。一部運行 26.10 的主機看似已啟用撤銷檢查，但其大部分 TLS 流量的驗證方式跟從前完全一樣，因為相關函式庫及其他參與 TLS 的工具在各自獨立更新之前不會改變。混合版本的機隊在整個過渡期間行為將會不一致：每多一個套件獲得 upki 啟用，檢查撤銷與不檢查撤銷的元件之間的差距便會擴大。</p>
+<p>這就是為何路線圖比第一步更為關鍵。真正重要的細節不是 <code>curl</code> 現在會檢查撤銷，而是 rollout 已經開始——而目前這個版本無法回答系統管理員真正需要釐清的問題：哪些套件會下一個獲得 upki 啟用、時間表為何，以及更大範圍的啟用會以預設開啟方式推出抑或需要 opt-in。在此之前，應將 <code>curl</code> 視為一個 pilot，其新行為會率先透過自動化流程傳播，並據此準備 trust store 審計、撤銷狀態管理以及 CRL／OCSP 可用性。</p>
+<p><strong>升級前應驗證的事項</strong></p>
+<p>三個場景值得明確測試，而非假設無事：</p>
+<ul>
+<li><strong>內部及私有 CA。</strong> 如果 <code>curl</code> 開始執行撤銷查詢，內部 CA 所簽發的撤銷紀錄便會開始發揮作用，即使以往從未被查閱。已被撤銷但在內部仍廣泛部署的憑證，可能開始令自動化工作失敗。</li>
+<li><strong>TLS inspection 設備。</strong> 在代理伺服器以自有 CA 重新簽署憑證鏈的環境中，應以該設備實測由 <code>curl</code> 驅動的工作流程；此前驗證通過的重新簽署鏈，在撤銷狀態被強制執行後可能失效。</li>
+<li><strong>Air-gapped 及受限環境。</strong> 撤銷檢查意味著某種形式的狀態取回機制。沒有 outbound 存取權限的站點需要制定明確的離線或快取策略，否則自動化工作將會停滯或逾時。</li>
+</ul>
+<p><strong>確認主機實際運行的版本</strong></p>
+<p>如要檢查個別機器，可用 <code>curl -V</code> 查看已安裝 binary 的 build 詳情，並與記錄在案的套件版本對比，以確定該 Ubuntu build 是否包含 upki 撤銷支援。這是我們就驗證提出的務實建議——並非原始報道所推薦的方法。</p>
+<p>由於 <code>curl</code> 支撐著大量無需人手監督的機制，在變更到達 production pipeline 之前，先在 staging 環境測試對撤銷狀態敏感的工作流程，是升級前最穩妥的做法。</p>
+<p><em>來源：Phoronix，〈Ubuntu 26.10 Begins Rolling Out upki Support For Certificate Revocation〉</em></p>
+<p><a href="https://www.phoronix.com/news/Ubuntu-26.10-Does-upki" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
