@@ -1,0 +1,38 @@
+Date: 2026-11-11 06:02:00
+Author: HKLUG Team
+Title: Gentoo flags multiple Git flaws, including one that could hand attackers code execution
+Content:
+<h3>Gentoo flags multiple Git flaws, including one that could hand attackers code execution</h3>
+<p>Gentoo has issued a security advisory covering several vulnerabilities in Git, the distributed version control system that underpins much of modern software development. The most severe of the flaws, Gentoo warns, could allow an attacker to execute arbitrary code on a machine processing a malicious repository.</p>
+<p>The notice, published as <strong>GLSA 202611-02</strong>, covers the <code>dev-vcs/git</code> package and rates the issues <strong>high</strong> severity with remote attack vectors. Every Git version before <strong>2.56.1</strong> is affected; version 2.56.1 and later carry the fixes. Gentoo attributes six CVE identifiers to the bundle: CVE-2026-105437, CVE-2026-111760, CVE-2026-113408, CVE-2026-114466, CVE-2026-114467 and CVE-2026-114469 (Gentoo Bugzilla 986119).</p>
+<h4>Why the risk is not theoretical</h4>
+<p>Arbitrary code execution in Git is exploitable through a channel developers use dozens of times a day: pulling code from a repository they do not fully control. A crafted repository, submodule, or packfile that triggers the flaw when checked out could run attacker-supplied commands with the privileges of the user running <code>git clone</code> or <code>git fetch</code>.</p>
+<p>The same exposure extends to automation. Continuous integration and continuous delivery pipelines routinely clone third-party and fork repositories on shared runners, often with credentials and deploy keys present in the environment. A single malicious commit reaching such a runner could therefore become a pivot into a build system — a pattern that has recurred across the industry's supply-chain incidents.</p>
+<h4>Patching on Gentoo</h4>
+<p>For Gentoo systems, the advisory's recommended resolution is:</p>
+<pre><code>emerge --ask --oneshot --verbose &quot;&gt;=dev-vcs/git-2.56.1&quot;
+</code></pre>
+<p>Run it after syncing your tree (<code>emerge --sync</code> or <code>emaint sync</code>) so the patched ebuild is available. Administrators managing fleets of builders should note that CI runners frequently pin Git in container images; rebuilding those images is a separate step from updating the host.</p>
+<p>The issue is not Gentoo-specific. Git is packaged across every major Linux distribution, and flaws of this class typically see coordinated updates from Debian, Ubuntu, Red Hat and others alongside upstream releases. Teams running mixed distributions should confirm their own vendors' advisories rather than assuming a Gentoo patch covers them.</p>
+<h4>What to check</h4>
+<p>Before applying fixes or writing detection rules, confirm which hosts are running a version below 2.56.1 and cross-reference the six CVE identifiers above against the full GLSA at <a href="https://security.gentoo.org/glsa/202611-02">security.gentoo.org/glsa/202611-02</a> for per-issue details.</p>
+<p>For Hong Kong development and security teams, the practical takeaway is straightforward: treat Git updates with the same urgency as web server or TLS patches, audit which runners can reach untrusted repositories, and assume that repository contents — not just the transport they arrive over — are part of the attack surface.</p>
+<p><em>Source: Gentoo Linux Security Advisory GLSA 202611-02.</em></p>
+<hr>
+<h3>Gentoo 發布多個 Git 漏洞安全通告，其中一個可令攻擊者執行任意代碼</h3>
+<p>Gentoo 已發布一則安全通告，涉及分布式版本控制系統 Git 的多個漏洞。Git 是支撐現代軟件開發的重要基礎設施。Gentoo 警告，其中最嚴重的漏洞可能令攻擊者在處理惡意 repository 的機器上執行任意代碼。</p>
+<p>該通告以 <strong>GLSA 202611-02</strong> 為題發布，涵蓋 <code>dev-vcs/git</code> 套件，並將有關問題評定為<strong>高</strong>（high）嚴重性，攻擊向量屬遠端（remote）。所有 <strong>2.56.1</strong> 之前的 Git 版本均受影響；2.56.1 及之後的版本已包含修補。Gentoo 為該批漏洞列出六個 CVE 編號：CVE-2026-105437、CVE-2026-111760、CVE-2026-113408、CVE-2026-114466、CVE-2026-114467 及 CVE-2026-114469（Gentoo Bugzilla 986119）。</p>
+<h4>為何風險並非理論層面</h4>
+<p>Git 中的任意代碼執行漏洞，可透過開發人員每日使用數十次的途徑加以利用：從自己並非完全掌控的 repository 拉取代碼。一個經精心構造的 repository、submodule 或 packfile，若在 checkout 時觸發漏洞，便可憑執行 <code>git clone</code> 或 <code>git fetch</code> 的用戶權限，運行攻擊者指定的指令。</p>
+<p>同樣的風險亦延伸至自動化流程。持續整合（CI）與持續交付（CD）pipeline 通常會在共用 runner 上 clone 第三方及 fork repository，環境中往往存有憑證及部署金鑰。因此，單一惡意 commit 只要抵達這類 runner，便可能成為入侵 build 系統的跳板——此模式在業界歷次供應鏈事故中反覆出現。</p>
+<h4>在 Gentoo 上修補</h4>
+<p>就 Gentoo 系統而言，通告建議的解決方法為：</p>
+<pre><code>emerge --ask --oneshot --verbose &quot;&gt;=dev-vcs/git-2.56.1&quot;
+</code></pre>
+<p>執行前請先同步你的 tree（<code>emerge --sync</code> 或 <code>emaint sync</code>），以確保已修補的 ebuild 可用。管理大量 builder 的系統管理員須留意，CI runner 通常會在 container image 中固定 Git 版本；重建這些 image 屬於獨立於主機更新之外的另一個步驟。</p>
+<p>此問題並非 Gentoo 獨有。Git 在各大 Linux 發行版均有打包，此類漏洞通常會在上游發布後，由 Debian、Ubuntu、Red Hat 等同步推出協調更新。採用混合發行版的團隊應查閱各自供應商的通告，不應假設 Gentoo 的修補足以涵蓋其系統。</p>
+<h4>應查閱的事項</h4>
+<p>在套用修補或撰寫檢測規則之前，應先確認哪些主機正在執行 2.56.1 以下的版本，並就上述六個 CVE 編號對照 <a href="https://security.gentoo.org/glsa/202611-02">security.gentoo.org/glsa/202611-02</a> 的完整 GLSA 內文，查閱各項問題的細節。</p>
+<p>對香港開發及保安團隊而言，實際結論相當直接：應以處理 web server 或 TLS 修補的同等緊急程度應對 Git 更新；審視哪些 runner 可接觸不受信任的 repository；並須假設 repository 的內容——而非僅是其傳輸方式——同樣屬攻擊面的一部分。</p>
+<p><em>來源：Gentoo Linux Security Advisory GLSA 202611-02。</em></p>
+<p><a href="https://security.gentoo.org/glsa/202611-02" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
