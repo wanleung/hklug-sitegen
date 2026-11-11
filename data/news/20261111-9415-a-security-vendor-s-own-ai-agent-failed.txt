@@ -1,0 +1,72 @@
+Date: 2026-11-11 14:03:00
+Author: HKLUG Team
+Title: A Security Vendor's Own AI Agent Failed All Three of Its Rules — Here's What That Means for Yours
+Content:
+<p>```</p>
+<p>A security vendor that advises customers on securing AI agents says its own browser agent violated all three of its core recommendations by default, according to a first-person write-up covered by The Hacker News on 11 November.</p>
+<p>The company, Token, sells agent security tooling. It says it tells customers that AI agents need three things: their own identities, access scoped to the task they are assigned, and traceability independent of any human user. When the team built its own browser agent, all three failed out of the box. (Disclosure: Token is a commercial vendor in this space, and its account naturally supports the case for the products it sells. This is a first-person vendor account, not independently verified.)</p>
+<p>One caveat on sourcing: the write-up describes these failure modes at the design level, and this piece reflects that — it does not reproduce session-token handling, auth-flow diagrams, or logging specifics from the original.</p>
+<p><strong>The three rules, and how an agent breaks them</strong></p>
+<ul>
+<li>
+<p><strong>Agents need their own identities.</strong> A browser agent typically operates inside a user's authenticated session, inheriting that person's identity rather than holding one of its own. Every action the agent takes is attributed to the human — even when the human never clicked anything.</p>
+</li>
+<li>
+<p><strong>Access must fit the job.</strong> When an agent runs with a person's full session, its effective permissions are whatever that person can do, not what the task requires. Least privilege becomes theoretical: the constraint lives in the prompt, not in the enforcement layer.</p>
+</li>
+<li>
+<p><strong>Traceability must be separate from the human's.</strong> If the only audit trail is the user's session logs, "who did this?" collapses into one answer — the employee. That is a problem for any investigation, and a serious one when an auditor asks whether a specific action was taken by a person or by software acting on their behalf.</p>
+</li>
+</ul>
+<p><strong>Why browser agents are the hardest case</strong></p>
+<p>Browser agents compound these failures. Attribution disappears because the agent borrows a human's login. Least privilege is unenforceable because the agent's reach is defined by where the human can navigate. And revocation means disabling a person rather than revoking a piece of software — you cannot cut off the agent without cutting off the employee. For teams running browser automation or RPA pipelines, that entanglement is the most transferable lesson here.</p>
+<p>For teams deploying agents into production, the sequencing matters: identity, least privilege, and traceability are architectural decisions to make before an agent touches real systems, not retrofits afterwards.</p>
+<p><strong>A pre-launch checklist</strong></p>
+<p>These are standard zero-trust principles re-applied to agents — controls already published by bodies like NIST and OWASP, framed here for agent deployments:</p>
+<ol>
+<li>
+<p><strong>Separate agent identity from human SSO.</strong> Can you name the agent distinctly in your directory, independent of any employee account? If not, you cannot answer "who did this?"</p>
+</li>
+<li>
+<p><strong>Scope permissions to the job — and enforce them.</strong> Are the agent's permissions narrower than the human's, and enforced at the identity layer rather than merely instructed in a prompt? Job-scoped access must survive credential rotation and personnel changes.</p>
+</li>
+<li>
+<p><strong>Maintain an independent audit trail.</strong> Can an auditor reconstruct the agent's activity — every action, every resource touched — without interviewing the human it assists? Logs tied to a person's session fail this test once that person leaves the company.</p>
+</li>
+</ol>
+<p>The general lesson: organisations are shipping agentic workflows faster than the identity infrastructure beneath them. The questions worth asking before deployment are simple — who does the agent authenticate as, what happens when its permissions outgrow its task, and can an auditor reconstruct what happened without asking the human?</p>
+<hr>
+<p>```</p>
+<p>一間就 AI Agent 安全向客戶提供諮詢的安全廠商表示，其自家的 browser agent 出廠預設便全面違反其三項核心建議；這是 The Hacker News 於 11 月 11 日刊載的第一人稱文章所述。</p>
+<p>該公司 Token 出售 agent 安全工具。據其表示，它告訴客戶 AI agent 需要三項要素：自身的身份、按其所分配任務範圍限定的存取權限，以及獨立於任何人類用戶的可追溯性。當團隊自行開發 browser agent 時，三項要素開箱即告失效。（披露：Token 是此領域的商業廠商，其說辭自然有利於其出售的產品。本文屬廠商第一人稱陳述，未經獨立核實。）</p>
+<p>關於資料來源的一點說明：原文於設計層面描述這些失效模式，本文亦相應如此 — 並未重複原文中的 session token 處理、認證流程圖或記錄（logging）細節。</p>
+<p><strong>三條規則，以及 agent 如何違反它們</strong></p>
+<ul>
+<li>
+<p><strong>Agent 需要自身身份。</strong> Browser agent 通常在用戶已認證的 session 內運作，繼承該名用戶的身份而非持有自己的身份。Agent 的每項操作都被歸於該使用者 — 即使該使用者從未點擊任何東西。</p>
+</li>
+<li>
+<p><strong>存取權限必須與任務相符。</strong> 當 agent 以一個人的完整 session 運行時，其實際權限等於該人能做的一切，而非任務所需。最低權限（least privilege）形同虛設：限制存在於 prompt 之中，而非 enforcement layer。</p>
+</li>
+<li>
+<p><strong>可追溯性必須與人類的分開。</strong> 若唯一的 audit trail 是用戶的 session 記錄，「是誰做的？」便坍縮為單一答案 — 該名員工。這對任何調查都是問題，當審計員要查證某項操作是由人執行、還是由代表其行事的軟件執行時，問題更為嚴重。</p>
+</li>
+</ul>
+<p><strong>為何 browser agent 是最難處理的情況</strong></p>
+<p>Browser agent 將這些失效放大。Agent 借用人類的 login，歸屬（attribution）因而消失。Agent 的觸及範圍由人類可導航的位置決定，最低權限因而無法執行。而撤銷權限意味著停用一個人，而非撤銷一件軟件 — 不切斷員工就無法切斷 agent。對於運行 browser automation 或 RPA pipeline 的團隊而言，這種糾纏是本文最可移用的教訓。</p>
+<p>對於將 agent 部署至 production 的團隊，先後次序至關重要：身份、最低權限與可追溯性，是 agent 接觸真實系統之前便要作出的架構決定，而非事後補救。</p>
+<p><strong>啟動前檢查清單</strong></p>
+<p>以下是以 zero trust 原則重新套用於 agent 的標準做法 — 相關控制已由 NIST、OWASP 等機構發布，此處按 agent 部署重新框架：</p>
+<ol>
+<li>
+<p><strong>將 agent 身份與人類 SSO 分開。</strong> 你能否在 directory 中將 agent 以獨立名稱識別，與任何員工帳戶無關？若否，你便無法回答「是誰做的？」</p>
+</li>
+<li>
+<p><strong>將權限限於任務範圍 — 並切實執行。</strong> Agent 的權限是否窄於人類，且於 identity layer 強制執行，而不僅是在 prompt 中指示？按任務範圍設定的存取，必須經得起 credential rotation 與人事變動。</p>
+</li>
+<li>
+<p><strong>維持獨立的 audit trail。</strong> 審計員能否在不訪談該 agent 所協助的人類的情況下，重構 agent 的活動 — 每項操作、每個接觸過的資源？綁定於個人 session 的記錄，一旦該人離職便無法通過這項測試。</p>
+</li>
+</ol>
+<p>總結教訓：機構推出 agentic workflow 的速度，快於其底層的 identity infrastructure。部署前值得追問的問題很簡單 — agent 以誰的身份認證？當其權限超出任務範圍時會怎樣？審計員能否在不詢問該名用戶的情況下重構事情經過？</p>
+<p><a href="https://thehackernews.com/2026/11/we-built-agent-that-broke-all-of-our.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
