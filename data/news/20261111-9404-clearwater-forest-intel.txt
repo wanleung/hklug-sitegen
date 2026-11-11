@@ -1,0 +1,42 @@
+Date: 2026-11-11 11:22:00
+Author: HKLUG Team
+Title: Clearwater Forest 首度進入 Intel 微碼更新序列
+Content:
+<p>Intel 於週二發布了 <code>microcode-20261110</code> 微碼更新套件，涵蓋第 13 代 Core 起的客戶端處理器，以及 Sapphire Rapids 起的伺服器處理器。正如 Phoronix 指出，新聞重點不在發布本身，而在於內容：這是 Clearwater Forest 處理器首次出現在 Intel 的微碼更新序列中。</p>
+<p>這類帶日期編號的微碼套件發布節奏相當常規，單純一次發布通常不值得關注。這次值得注意的是有新平台首次進入更新序列——這代表處於生命週期早期的晶片已開始進行勘誤修訂，對於正在評估或已部署相關 Xeon 部件的人士而言是一項重要資訊。首次微碼發布也可說是該平台最早出現的可靠採購訊號。</p>
+<h5>更新涵蓋範圍</h5>
+<p>在客戶端方面，此次更新針對第 13 代「Raptor Lake」起的 Intel Core (Ultra) 處理器。伺服器方面，涵蓋範圍自 Sapphire Rapids 及更新的 Xeon 部件起，Clearwater Forest 則是首次加入。</p>
+<p>無論是 Intel 自身的套件摘要還是 Phoronix 的報導，都沒有逐一列出個別修復項目。需要逐項勘誤細節的讀者，請參閱隨 <code>microcode-20261110</code> tarball 一同發布的發行說明。在完整審閱這些說明之前，Clearwater Forest 相關修復的具體內容仍未確認——本文對此不作任何推測。</p>
+<h5>更新如何到達你的機器</h5>
+<p>管理員很少直接接觸這個 tarball。一般流程是：Intel 發布後進入 <code>linux-firmware</code> 原始碼樹，再進入發行版套件——Debian 和 Ubuntu 的 <code>intel-microcode</code>，Fedora 和 Red Hat 系的 <code>microcode_ctl</code>——最後寫入 initramfs，由載入器在開機早期、核心本身啟動之前套用更新。</p>
+<p>這裡有兩個注意事項。第一，發行版套件庫通常會落後數小時至數天（視分支而定），部署時請先確認自己套件庫中的可用性。第二，重新開機很重要：微碼是從 initramfs 載入的，套件更新後若沒有重新產生 initramfs 並重新開機，執行中的系統不會有任何變化。若發行版沒有透過套件的安裝後腳本自動重建 initramfs，請在重開機前手動執行。</p>
+<h5>為何不只是安全問題</h5>
+<p>微碼更新不只是一種安全機制。功能性勘誤可能影響運算準確度、虛擬化行為、處理器間通訊和穩定性——這些都不會出現在以 CVE 為主的報告中。一台機器可能在 CVE 層面已完全修補，卻仍運行著帶有已知正確性缺陷的韌體。</p>
+<p>在最關鍵的主機上，此風險會被放大：在雙插槽系統中，或在以錯開時間表更新的集群中，整個集群內混雜不同微碼版本的情況很容易被忽略，也是令人困惑、難以重現的故障的典型成因。</p>
+<h5>驗證</h5>
+<p>請將驗證視為部署流程的一環。下次重開機後，檢查核心日誌：</p>
+<pre><code>dmesg | grep -i microcode
+</code></pre>
+<p>確認微碼已在開機早期載入或更新，記錄每個插槽回報的版本號，並與 Intel 公布的 <code>microcode-20261110</code> 版本比對後，再視為部署完成。</p>
+<h5>可用性</h5>
+<p>發行版套件應會在 <code>linux-firmware</code> 整合後不久跟進；正如 Phoronix 在報導中指出，tarball 只是第一步，套件庫通常會落後一段時間。追蹤此次更新的管理員應在發布時確認自己套件庫中的可用性，並與上述驗證步驟一併執行。</p>
+<hr>
+<p>Intel 於週二發布了 <code>microcode-20261110</code> 微碼更新套件，涵蓋第 13 代 Core 起的客戶端處理器，以及 Sapphire Rapids 起的伺服器處理器。正如 Phoronix 指出，新聞重點不在發布本身，而在於內容：這是 Clearwater Forest 處理器首次出現在 Intel 的微碼更新序列中。</p>
+<p>這類帶日期編號的微碼套件發布節奏相當常規，單純一次發布通常不值得關注。這次值得注意的是有新平台首次進入更新序列——這代表處於生命週期早期的晶片已開始進行勘誤修訂，對於正在評估或已部署相關 Xeon 部件的人士而言是一項重要資訊。首次微碼發布也可說是該平台最早出現的可靠採購訊號。</p>
+<h5>更新涵蓋範圍</h5>
+<p>在客戶端方面，此次更新針對第 13 代「Raptor Lake」起的 Intel Core (Ultra) 處理器。伺服器方面，涵蓋範圍自 Sapphire Rapids 及更新的 Xeon 部件起，Clearwater Forest 則是首次加入。</p>
+<p>無論是 Intel 自身的套件摘要還是 Phoronix 的報導，都沒有逐一列出個別修復項目。需要逐項勘誤細節的讀者，請參閱隨 <code>microcode-20261110</code> tarball 一同發布的發行說明。在完整審閱這些說明之前，Clearwater Forest 相關修復的具體內容仍未確認——本文對此不作任何推測。</p>
+<h5>更新如何到達你的機器</h5>
+<p>管理員很少直接接觸這個 tarball。一般流程是：Intel 發布後進入 <code>linux-firmware</code> 原始碼樹，再進入發行版套件——Debian 和 Ubuntu 的 <code>intel-microcode</code>，Fedora 和 Red Hat 系的 <code>microcode_ctl</code>——最後寫入 initramfs，由載入器在開機早期、核心本身啟動之前套用更新。</p>
+<p>這裡有兩個注意事項。第一，發行版套件庫通常會落後數小時至數天（視分支而定），部署時請先確認自己套件庫中的可用性。第二，重新開機很重要：微碼是從 initramfs 載入的，套件更新後若沒有重新產生 initramfs 並重新開機，執行中的系統不會有任何變化。若發行版沒有透過套件的安裝後腳本自動重建 initramfs，請在重開機前手動執行。</p>
+<h5>為何不只是安全問題</h5>
+<p>微碼更新不只是一種安全機制。功能性勘誤可能影響運算準確度、虛擬化行為、處理器間通訊和穩定性——這些都不會出現在以 CVE 為主的報告中。一台機器可能在 CVE 層面已完全修補，卻仍運行著帶有已知正確性缺陷的韌體。</p>
+<p>在最關鍵的主機上，此風險會被放大：在雙插槽系統中，或在以錯開時間表更新的集群中，整個集群內混雜不同微碼版本的情況很容易被忽略，也是令人困惑、難以重現的故障的典型成因。</p>
+<h5>驗證</h5>
+<p>請將驗證視為部署流程的一環。下次重開機後，檢查核心日誌：</p>
+<pre><code>dmesg | grep -i microcode
+</code></pre>
+<p>確認微碼已在開機早期載入或更新，記錄每個插槽回報的版本號，並與 Intel 公布的 <code>microcode-20261110</code> 版本比對後，再視為部署完成。</p>
+<h5>可用性</h5>
+<p>發行版套件應會在 <code>linux-firmware</code> 整合後不久跟進；正如 Phoronix 在報導中指出，tarball 只是第一步，套件庫通常會落後一段時間。追蹤此次更新的管理員應在發布時確認自己套件庫中的可用性，並與上述驗證步驟一併執行。</p>
+<p><a href="https://www.phoronix.com/news/Intel-CPU-Microcode-20261110" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
