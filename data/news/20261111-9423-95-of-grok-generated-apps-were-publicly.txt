@@ -1,0 +1,48 @@
+Date: 2026-11-11 16:32:00
+Author: HKLUG Team
+Title: 95% of Grok-Generated Apps Were Publicly Open, Security Firm Finds
+Content:
+<p>Security company Claroc said it identified 37,571 applications built with the Grok AI assistant running on public infrastructure, and that 35,578 of them — roughly 95% — were reachable by anyone without a sign-in, The Hacker News reported on 11 November. The researchers disclosed the findings the previous day, on 10 November.</p>
+<p>Among the exposed apps, 24 were attributed to staff at the social network X and at the company behind the Grok assistant. The bulk of the open applications were benign by category: games, landing pages, and simple calculators. But about one in ten contained internal business material or credentials, according to Claroc's triage of the corpus.</p>
+<p><strong>A review gap, not a single vendor's bug</strong></p>
+<p>The headline figure is striking less for its scale than for how unremarkable it appears to be. Nearly all of the Grok-built applications the company surveyed were open by default — which suggests that leaving a freshly generated app publicly reachable is the normal outcome of an AI-assisted build-and-deploy loop, not a rare misconfiguration.</p>
+<p>That framing shifts the story away from anything specific to Grok or xAI. The pattern is structural: AI tooling has collapsed the cost of writing and shipping code far faster than it has lowered the cost of reviewing what gets written. Publication has outpaced audit. A developer prompting an app into existence and pushing it live in an afternoon is not performing a security review in parallel, and the tooling does not reliably perform one either.</p>
+<p>The exposure also does not appear to be confined to hobbyists. Engineers at X and at the Grok maker produced leaky apps too, which supports reading this as a blind spot common to AI-assisted workflows rather than a beginner's mistake. Any team adopting similar assistant-driven pipelines — regardless of vendor — is arguably running the same experiment.</p>
+<p><strong>What the checklist actually has to look like</strong></p>
+<p>Claroc's findings translate into a practical hygiene routine for developers shipping AI-generated code. The items are mutually reinforcing rather than sequential, and the order matters:</p>
+<ol>
+<li><strong>Inventory public apps.</strong> Most teams cannot audit what they have not catalogued. Start with a discovery pass across hosting, repos, and cloud accounts to find applications published without authentication.</li>
+<li><strong>Secrets-scan full repository history.</strong> A clean working tree proves nothing if a key was committed six months ago. Scan the entire history, not just the current state.</li>
+<li><strong>Treat committed credentials as compromised and rotate them.</strong> Scanning alone is insufficient — the assumption after a hit must be exposure, and rotation follows immediately.</li>
+<li><strong>Require authentication by default.</strong> Open-by-default is what produced 35,578 results; invert the default so new apps are closed until deliberately published.</li>
+<li><strong>Separate internal and public hosting.</strong> Physical and logical distance between the two reduces the chance that an internal artefact ships alongside a demo.</li>
+<li><strong>Review generated code like human code.</strong> AI output carries no implied sign-off; it needs the same review gate.</li>
+<li><strong>Re-scan on a schedule.</strong> One-time audits fail because new apps are generated faster than existing ones can be catalogued.</li>
+</ol>
+<p>The seventh point is the one teams most often skip, and the one the numbers argue hardest for: a single pass cannot keep up with an assembly line.</p>
+<p><strong>What the reporting does not establish</strong></p>
+<p>Two limits should travel with the story. Claroc did not report whether any exposed credentials were actively exploited, and the specific applications were not publicly named, so independent verification of individual cases is not currently possible. The findings describe exposure, not breach.</p>
+<p>The disclosure, as covered by The Hacker News, offers no indication that xAI has responded to the report; an official comment from the company would be a natural follow-up, as would a named-app list if Claroc releases one later. Until then, the practical takeaway for developers stands regardless of vendor: the cost of shipping has changed, and the review process has not.</p>
+<hr>
+<p>據 The Hacker News 於 11 月 11 日報道，安全公司 Claroc 表示，他們識別出 37,571 個由 Grok AI 助手生成並部署在公開基礎設施上的應用程式，其中 35,578 個——約佔 95%——任何人無需登入即可訪問。研究人員已於前一天，即 11 月 10 日披露上述發現。</p>
+<p>在遭曝光的應用程式中，有 24 個被歸因於社交網絡 X 及 Grok 助手開發商的員工。按類別劃分，大多數公開的應用程式本身並無惡意：包括遊戲、landing page 及簡單計算器。但根據 Claroc 對該批數據的分類篩查，約十分之一的應用程式包含內部商業資料或憑證。</p>
+<p><strong>審查流程存在缺口，而非單一廠商的漏洞</strong></p>
+<p>這宗新聞最引人注意的，與其說是涉及規模，不如說是其「平淡無奇」的程度。該公司調查的 Grok 生成應用幾乎全部預設為公開——這意味著，令一個剛生成的應用程式公開可訪問，是 AI 輔助開發與部署循環的正常結果，而非罕見的錯誤配置。</p>
+<p>這種詮釋將事件焦點從 Grok 或 xAI 的特定問題移開。這一模式屬結構性質：AI 工具令編寫和發佈代碼的成本下降速度，遠遠快於它降低審查已寫代碼的成本。發佈已跑在審計前面。開發者透過提示（prompt）令應用程式在一個下午誕生並將其上線時，並不會同步進行安全審查，而相關工具同樣未能可靠地執行審查。</p>
+<p>這種風險曝光似乎亦不限於業餘愛好者。X 及 Grok 開發商的工程師同樣產出了存在洩漏的應用程式，這支持將事件理解為 AI 輔助工作流程的共同盲點，而非初學者的低級錯誤。任何採用類似助手驅動 pipeline 的團隊——不論使用哪一家廠商的工具——可謂都在進行同一場實驗。</p>
+<p><strong>清單應有甚麼內容</strong></p>
+<p>Claroc 的發現可轉化為一套針對發佈 AI 生成代碼的開發者之實務衛生常規。各項措施彼此強化而非依次執行，惟先後次序仍有講究：</p>
+<ol>
+<li><strong>盤點公開應用程式。</strong> 大多數團隊無法審計未經編目的項目。先對託管平台、repo 及雲端帳戶進行一輪全面排查，找出未經身份驗證即被公開發布的應用程式。</li>
+<li><strong>對完整 repo 歷史進行機密掃描。</strong> 工作目錄乾淨並不能證明甚麼——如果六個月前曾提交金鑰（key），它依然存在。應掃描完整歷史，而非僅限當前狀態。</li>
+<li><strong>將已提交的憑證視為已外洩並即時輪替。</strong> 僅靠掃描並不足夠——一旦命中，事後假設必須是已遭曝光，隨即進行輪替（rotation）。</li>
+<li><strong>預設要求身份驗證。</strong> 「預設公開」正是產生 35,578 項結果的原因；應顛倒預設值，讓新應用程式在刻意發布前保持封閉。</li>
+<li><strong>分離內部與公開託管環境。</strong> 兩者在物理及邏輯上的距離，可降低內部產物隨演示版本一同發佈的風險。</li>
+<li><strong>以對待人手編寫代碼的標準審查生成代碼。</strong> AI 輸出不帶任何預設簽核（sign-off），須通過同樣的審查關卡。</li>
+<li><strong>定期重複掃描。</strong> 一次性審計注定失敗，因為新應用程式的生成速度，遠快於現有應用完成編目的速度。</li>
+</ol>
+<p>第七點是團隊最常忽略的一項，亦是數據最強力支持的一點：單次掃描無法追上流水線的節奏。</p>
+<p><strong>報道未能確立之事</strong></p>
+<p>有兩項限制須與本報道並列。Claroc 並未交代任何已曝光的憑證是否曾被主動利用，具體應用程式亦未公開點名，因此目前無法對個案進行獨立核實。上述發現描述的是風險曝光，而非入侵事件。</p>
+<p>就 The Hacker News 的報道而言，目前沒有跡象顯示 xAI 已對該報告作出回應；該公司的官方評論將是自然的後續跟進，若 Claroc 日後公布點名應用程式清單亦然。在此之前，不論開發者採用哪一家廠商，實質結論依然成立：發佈成本已經改變，審查流程卻未有改變。</p>
+<p><a href="https://thehackernews.com/2026/11/over-35000-grok-built-apps-exposed.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
