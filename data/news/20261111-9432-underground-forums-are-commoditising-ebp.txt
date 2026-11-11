@@ -1,0 +1,34 @@
+Date: 2026-11-11 17:02:00
+Author: HKLUG Team
+Title: Underground Forums Are Commoditising eBPF Rootkits for Linux
+Content:
+<p>Threat intelligence firm Flare has observed eBPF rootkit source code, tutorials, and exploits circulating on underground forums, according to a report covered by BleepingComputer — a sign that a once-specialist kernel-evasion technique is being commoditised for a broader audience of attackers.</p>
+<p>The finding matters less for the technique itself, which has been discussed publicly in research and conference settings for years, than for what its circulation implies: the barrier to deploying a Linux kernel-level implant that evades conventional detection has collapsed. Capabilities that previously required deep BPF and kernel expertise are now being handed out, packaged and explained, to anyone active on these channels.</p>
+<h4>Why attackers favour eBPF</h4>
+<p>eBPF — the Linux kernel's extended Berkeley Packet Filter — is a legitimate, widely used facility that allows sandboxed programs to run inside the kernel without modifying kernel source or loading additional modules. It powers observability, networking, and security tooling across modern Linux distributions and container platforms.</p>
+<p>That legitimate loading path is precisely what eBPF rootkits abuse. Rather than deploying a loadable kernel module (<code>.ko</code> file), an attacker loads a malicious BPF program through the standard interface, where the kernel's verifier is designed to guarantee program safety. Rootkit authors have found ways to stay within what the verifier accepts while still achieving their goals: hiding processes, masking network connections, altering file metadata, and intercepting system calls from inside the kernel.</p>
+<p>The critical consequence for defenders is what does <em>not</em> happen on disk. Traditional detection playbooks have long equated kernel-level persistence with a kernel module — and leaned on module-load alerting, file-integrity monitoring of module directories, and integrity checks on the kernel image itself. eBPF rootkits break that assumption entirely. There is no <code>.ko</code> to find, no module entry to alert on, and no out-of-tree artefact for integrity scanners to flag. The implant lives in kernel memory, delivered through a path that looks ordinary to most legacy tooling.</p>
+<h4>From conference talks to trading posts</h4>
+<p>Commoditisation is now outpacing defender familiarity. While eBPF's security implications have been the subject of research papers and conference talks, the practical knowledge needed to build and deploy a rootkit is increasingly being shared directly — with source code, step-by-step guidance, and ready-made exploits circulating where less specialised actors can pick them up.</p>
+<p>For organisations running Linux estates, this shifts the threat model. An attack class once associated with advanced, well-resourced groups becomes plausible for a wider range of adversaries, and the detection gap that makes eBPF rootkits attractive does not close simply because defenders are now aware of them. File-integrity monitoring and kernel-module auditing — still mainstays of many hardening baselines — do not see this class of implant at all.</p>
+<p>Any environment built heavily on Linux and containers should take note. Kubernetes clusters, container hosts, and the nodes beneath them all run on the Linux kernel and routinely permit BPF usage for legitimate observability and networking functions — which also means the loading path an attacker needs is often already enabled by design.</p>
+<h4>Closing the detection gap</h4>
+<p>Practical detection starts with purpose-built runtime security tooling. Falco, the CNCF-graduated runtime threat-detection project, and Tetragon, the eBPF-based observability and enforcement tool from Isovalent, are the baseline options: both can surface suspicious process, syscall, and network behaviour regardless of whether a kernel module was ever loaded.</p>
+<p>Beyond tooling, defenders should take inventory of what is running in the kernel with <code>bpftool</code>, enable auditing of module loads as a hygiene measure even though it will not catch eBPF implants, and check whether <code>kernel.unprivileged_bpf_disabled</code> is set on hosts where unprivileged BPF use is unnecessary. Where the kernel version and configuration support it, BPF lockdown and BPF LSM policies can further restrict which programs may be loaded and by whom.</p>
+<p>The underlying message from Flare's observation, as relayed by BleepingComputer, is straightforward: the offensive side of the eBPF equation has industrialised. Detection strategies that assume attackers will announce themselves with a kernel module need to be rethought before that assumption is tested in practice.</p>
+<hr>
+<p>威脅情報公司 Flare 觀察到，eBPF rootkit 的原始碼、教學與現成 exploit 正在地下論壇流通——BleepingComputer 的報導指出，這是一項一向只屬於少數專家的內核規避技術，正在被商品化，推廣給更廣泛的攻擊者群體。</p>
+<p>這項發現的意義，與技術本身關係不大——eBPF rootkit 早已在研究文獻與研討會上被討論多年——真正的意義在於其流通所代表的一切：部署一枚能規避傳統偵測的 Linux 內核層植入物，門檻已經崩塌。過去需要深厚 BPF 與內核專業知識才能掌握的能力，如今正被打包、附上解說，交到這些渠道上任何人的手上。</p>
+<h4>為何攻擊者偏愛 eBPF</h4>
+<p>eBPF——即 Linux 內核的 extended Berkeley Packet Filter——是一項合法且被廣泛使用的機制，允許經沙盒化的程式在內核中運行，無需修改內核原始碼或載入額外模組。它支撐著現代 Linux 發行版與容器平台上的可觀測性、網絡與安全工具。</p>
+<p>這條合法的載入途徑，正是 eBPF rootkit 所濫用的。攻擊者不必部署可載入內核模組（<code>.ko</code> 檔案），而是透過標準介面載入惡意 BPF 程式——內核的 verifier 本來是用來保證程式安全的。rootkit 作者已找到在 verifier 接受範圍內達成目的的辦法：隱藏進程、掩蓋網絡連線、篡改檔案中繼資料，以及從內核內部攔截系統調用。</p>
+<p>對防禦者而言，最關鍵的後果是磁碟上「什麼都沒有」。傳統偵測流程長期把內核層持久化等同於內核模組，並倚賴模組載入警報、模組目錄的檔案完整性監控，以及內核映像自身的完整性檢查。eBPF rootkit 完全打破了這個假設：沒有 <code>.ko</code> 可找，沒有模組條目可警報，也沒有 out-of-tree 產物可供完整性掃描器標記。植入物存在於內核記憶體之中，透過一條對多數傳統工具看來理所當然的路徑交付。</p>
+<h4>從研討會到交易貼文</h4>
+<p>商品化的速度已超越防禦者的熟悉程度。儘管 eBPF 的安全意涵早已出現在研究論文與研討會演講中，但建構與部署 rootkit 所需的實務知識，正越來越直接地被分享——原始碼、逐步指引與現成 exploit，正流通於較不專精的行動者也能取得的地方。</p>
+<p>對於大量採用 Linux 系統的機構，這改變了威脅模型。一個過去只與資源充足的先進攻擊組織掛鉤的攻擊類別，如今對更廣泛的對手都變得可行；而令 eBPF rootkit 具吸引力的偵測缺口，並不會因為防禦者已經知悉就自動收窄。檔案完整性監控與內核模組稽核——仍是許多強化基準的主力——完全看不到這類植入物。</p>
+<p>任何重度依賴 Linux 與容器的環境都應留意。Kubernetes 叢集、容器主機，以及其底層節點，全部運行於 Linux 內核之上，並為正當的可觀測性與網絡功能例行開放 BPF 使用——這也意味著攻擊者所需的載入途徑，往往本來就已按設計啟用。</p>
+<h4>補上偵測缺口</h4>
+<p>實務偵測應由專用的執行期安全工具開始。Falco（CNCF 畢業的執行期威脅偵測專案）與 Tetragon（Isovalent 出品、基於 eBPF 的可觀測性與強制工具）是基本選項：即使從未載入內核模組，兩者都能呈現可疑的進程、系統調用與網絡行為。</p>
+<p>工具之外，防禦者應用 <code>bpftool</code> 盤點內核中正在運行的內容、把模組載入稽核列為衞生措施（儘管它攔不住 eBPF 植入物），並在無需非特權 BPF 使用的主機上確認 <code>kernel.unprivileged_bpf_disabled</code> 已設定。若內核版本與配置支援，BPF lockdown 與 BPF LSM 策略可進一步限制哪些程式可被載入、由誰載入。</p>
+<p>Flare 的觀察經 BleepingComputer 轉述，訊息很直接：eBPF 方程式的攻擊端已經工業化。假設攻擊者會以內核模組現身的偵測策略，需要在這個假設受到實戰考驗之前重新檢視。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/ebpf-rootkits-why-underground-actors-are-taking-notice/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
