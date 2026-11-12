@@ -1,0 +1,24 @@
+Date: 2026-11-12 13:26:00
+Author: HKLUG Team
+Title: Three AMD Turin Side-Channel Bugs Leave GCP Tenants With a Guest-Side Patching Job
+Content:
+<p>Google Cloud has warned tenants running virtual machines on AMD Turin processors that three side-channel flaws require a two-step remediation: first patch the guest operating system, then stop and start the VM instance through the control plane — a cold restart of the instance, not a simple reboot — according to The Hacker News, which reported the advisory this week.</p>
+<p>The disclosure splits the risk cleanly in two. Google says it has already applied mitigations covering attacks that cross the virtualization boundary — that is, attempts to leak data between separate VMs, or from a VM up to the underlying host. Those exposures are the provider's problem, and Google says they are addressed.</p>
+<p>What remains sits squarely inside the guest. Within a single VM, the flaws may allow an attacker who has already executed code on the same processor core to infer data belonging to other processes running in that guest — or, in the worst case, the guest kernel itself. In other words, the residual exposure is an intra-VM, same-core data-leakage risk, and closing it depends on tenant action.</p>
+<p>That division of responsibility is the core of the story. The hypervisor boundary has been reinforced by the provider; the process boundary inside the guest remains the tenant's to protect. For operators, that means the remediation burden — and the downtime it entails — falls entirely on the customer side.</p>
+<p>The operational sequence matters, and the details are easy to get wrong. Patching the guest OS is necessary but not sufficient: the fixes only take effect once the VM instance is fully stopped and started again through the cloud control plane. A reboot of the guest operating system does not accomplish this. Operators who assume a standard patch-and-reboot cycle will likely believe they are protected when they are not.</p>
+<p>For teams running fleets of GCP instances on AMD Turin hardware, that requirement converts a security advisory into a scheduling problem. Every affected instance needs a maintenance window; instances can generally be drained and cycled individually, but fleets should be coordinated to avoid simultaneous capacity loss. Anyone working with strict downtime budgets should treat this as planned maintenance rather than an emergency patch, since Google's own mitigations already cover the cross-VM and VM-to-host scenarios that would otherwise justify rushing.</p>
+<p>The disclosure also underscores a recurring theme in cloud security: CPU side-channel vulnerabilities rarely land as a single-owner problem. The silicon flaw sits with the hardware vendor, the hypervisor-level exposure sits with the cloud provider, and the guest-level exposure sits with whoever operates the workload. Each layer requires a different party to act, on a different timeline.</p>
+<p>IT professionals tracking cloud and CPU security developments — including local teams running GCP environments — will find the practical takeaway is procedural rather than novel: verify which of your instances run on AMD Turin silicon, prioritise the guest OS patches, and plan stop-and-start cycles accordingly, rather than relying on reboots.</p>
+<p>The full advisory was covered by The Hacker News; operators should consult Google Cloud's own guidance for the specific affected machine types and patch availability per platform.</p>
+<hr>
+<p>Google Cloud 已通知在 AMD Turin 處理器上運行虛擬機的用戶：三個側信道（side-channel）漏洞需要兩步修補 —— 先為 guest 作業系統安裝修補，再透過 control plane 將虛擬機執行個體完整停止後重新啟動；這是一次冷重啟，並非一般重啟。The Hacker News 今週報導了是次通告。</p>
+<p>是次披露把風險清楚地一分為二。Google 表示已就跨越虛擬化邊界的攻擊 —— 即在不同虛擬機之間，或由虛擬機向底層主機洩漏資料 —— 套用緩解措施。這些暴露面屬供應商的責任範圍，Google 指出已獲處理。</p>
+<p>餘下的風險就留在 guest 裡面。在同一部虛擬機之內，漏洞可能讓已在同一顆處理器核心上執行代碼的攻擊者，推斷出同一 guest 內其他程序的資料 —— 最壞情況下，更可推斷 guest 核心本身的資料。換言之，殘餘風險是虛擬機內部、同核心的資料洩漏風險，能否消除取決於客戶自身的行動。</p>
+<p>這項責任劃分正是報導的核心。hypervisor 那一邊的邊界已由供應商加固；guest 內部的程序邊界，仍由用戶自己守護。對營運者而言，這代表修補工作的重擔 —— 以及伴隨而來的停機 —— 完全落在客戶一方。</p>
+<p>操作次序十分重要，而細節亦容易出錯。只安裝 guest 作業系統修補並不足夠：相關修正必須待虛擬機執行個體透過雲端 control plane 完整停止並重新啟動後才會生效。重啟 guest 作業系統並不能達到同樣效果。以為執行一般「安裝修補＋重啟」流程便已受保護的營運者，實際上可能仍在風險之中。</p>
+<p>對於在 AMD Turin 硬件上運行大量 GCP 執行個體的團隊來說，這項要求把一份保安通告轉化為排程問題。每個受影響的執行個體都需要預留維護時段；執行個體一般可以逐一排空及循環重啟，但整批機群應統籌安排，避免同時損失容量。對停機預算嚴格的環境而言，應把此事當作計劃內的維護，而非應急修補，因為 Google 自身的緩解措施已涵蓋跨虛擬機及虛擬機對主機的場景，未有緊急出擊的理由。</p>
+<p>是次披露亦突顯了雲端保安的一個反覆出現的課題：CPU 側信道漏洞很少是單一持份者的問題。晶片本身的缺陷由硬件供應商負責，hypervisor 層面的暴露由雲端供應商負責，guest 層面的暴露則由負責營運該工作負載的一方負責。每一層都需要不同持份者在不同時間表上採取行動。</p>
+<p>持續追蹤雲端與 CPU 安全動態的 IT 專業人士 —— 包括本地營運 GCP 環境的團隊 —— 會發現實務上的重點是流程性的，而非新穎：先核實哪些執行個體採用 AMD Turin 晶片，優先處理 guest 作業系統修補，再據此安排停止及重新啟動的週期，而不是依賴重啟。</p>
+<p>完整通告由 The Hacker News 報導；營運者應參閱 Google Cloud 自身的指引，以取得具體受影響機型及各平台修補可用性的資料。</p>
+<p><a href="https://thehackernews.com/2026/11/google-cloud-warns-three-amd-turin-cpu.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
