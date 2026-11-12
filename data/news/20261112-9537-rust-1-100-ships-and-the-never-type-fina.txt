@@ -1,0 +1,58 @@
+Date: 2026-11-12 19:25:00
+Author: HKLUG Team
+Title: Rust 1.100 Ships, and the Never Type Finally Leaves Nightly Behind
+Content:
+<pre><code>
+Rust 1.100 is out, and the headline has been a long time coming: the never type, `!`, is finally stable. Code that uses it no longer needs nightly or the `#![feature(never_type)]` attribute — the escape hatch that has shadowed the construct for the better part of a decade can now be retired. For a language that markets its stability guarantees as a feature, promoting `!` to the stable channel is less a syntax change than a statement of intent.
+
+## What `!` actually buys you
+
+The never type describes an expression that never produces a value: an infinite loop, a `panic!()`, a call to a diverging function. Because such an expression can stand in for any type, `!` coerces to everything — which lets it appear in `match` arms that are provably unreachable, in expression position where no value will ever materialise, and in return position, where a `-&gt; !` signature tells callers the function will not return normally.
+
+The most practically useful consequence is in error handling. APIs that genuinely cannot fail can encode that fact in their types rather than in prose:
+
+```rust
+// Before: an error slot that is never actually populated
+fn read_exact(buf: &amp;mut [u8]) -&gt; Result&lt;usize, std::io::Error&gt;;
+
+// After: an infallible operation whose error type is impossible
+fn copy_exact(src: &amp;[u8], dst: &amp;mut [u8]) -&gt; Result&lt;usize, !&gt;;
+</code></pre>
+<p>With <code>!</code> as the error type, callers can <code>unwrap()</code> or otherwise collapse the <code>Result</code> without inventing a dummy error variant or relying on a bespoke "infallible" marker type. Library authors finally gain a standard vocabulary for operations that, by construction, cannot fail.</p>
+<h4>Why it took so long</h4>
+<p>The delay was never about syntax. It was an inference problem. Because <code>!</code> coerces to every type, its interaction with the compiler's type-fallback rules meant that introducing or changing a <code>!</code> could silently shift the inferred types of surrounding, previously-compiling code. Stabilisation attempts kept colliding with the same risk: crates in the wild might break in subtle ways — the kind of regression that stable-channel users, who do not expect point releases to change semantics, are least equipped to absorb.</p>
+<p>That is where Rust's release philosophy enters the story. The language treats stable behaviour as a one-way door: feature gates can be reversed, but stable semantics cannot. Faced with a construct whose fallback behaviour was still capable of shifting, the project chose to wait rather than risk freezing something wrong. The result is a stabilisation that is asymmetric in the truest sense — once <code>!</code> behaviour is frozen on stable, it is frozen for good.</p>
+<h4>The rest of the release</h4>
+<p>Beyond the never type, 1.100 carries the usual batch of library stabilisations and compiler improvements. Readers after itemised detail should go straight to the <a href="https://blog.rust-lang.org/">official Rust 1.100 release announcement and changelog</a>, the authoritative record of what landed — this release is better read as a story about how Rust ships than as a checklist.</p>
+<p>The upgrade itself is a single command, <code>rustup update stable</code>, and, consistent with Rust's compatibility policy, the release is non-breaking for existing stable-channel code. Build artifacts are available through the usual rustup channels across all supported platforms.</p>
+<h4>Why it matters beyond the changelog</h4>
+<p>For the wider ecosystem, the significance is less the new syntax than the reduction in nightly dependence. Projects that adopted nightly solely to use <code>!</code> can now move to stable, and code written against stable semantics keeps those semantics permanently — no future compiler release can quietly reinterpret it.</p>
+<p>That predictability is what matters to teams evaluating Rust for long-lived production systems, including IT organisations in Hong Kong and elsewhere weighing the language for infrastructure and services work. Practical impact will vary with each team's existing use of the feature, but the general lesson travels: a language that makes you wait for correctness is a language whose guarantees are worth trusting when it finally ships.</p>
+<hr>
+<pre><code>
+Rust 1.100 正式發布，而這則頭條新聞確實醞釀已久：never type `!` 終於登上穩定版。使用 `!` 的程式碼不再需要 nightly，也不必再掛上 `#![feature(never_type)]` 屬性 —— 這個困擾了該結構近十年的逃生艙口，如今可以收起來了。對一門把穩定性保證當成賣點的語言來說，在 stable channel 上推出 `!`，與其說是一次語法更新，不如說是一種表態。
+
+## `!` 到底買到了什麼
+
+never type 描述的是永遠不會產生值的運算式：無窮迴圈、`panic!()`、呼叫一個 diverging 函式。由於這類運算式可以頂替任何型別，`!` 能 coerce 到所有型別 —— 因此它可以出現在可證明無法到達的 `match` 分支、永遠不會有值的運算式位置，以及回傳位置：`-&gt; !` 簽名直接告訴呼叫方，這個函式不會正常回傳。
+
+最實際的好處落在錯誤處理上。真正不可能失敗的 API，可以讓型別本身承載這件事，而不必靠文字說明：
+
+```rust
+// 之前：一個永遠不會被填入的錯誤欄位
+fn read_exact(buf: &amp;mut [u8]) -&gt; Result&lt;usize, std::io::Error&gt;;
+
+// 之後：不可能失敗的操作，錯誤型別本身就是不可能
+fn copy_exact(src: &amp;[u8], dst: &amp;mut [u8]) -&gt; Result&lt;usize, !&gt;;
+</code></pre>
+<p>以 <code>!</code> 作為錯誤型別後，呼叫方可以直接 <code>unwrap()</code> 或以其他方式收合 <code>Result</code>，不必發明一個 dummy 錯誤變體，也不必依賴自製的「infallible」標記型別。函式庫作者終於有了一套標準詞彙，用來描述那些按定義就不可能失敗的操作。</p>
+<h4>為什麼拖了這麼久</h4>
+<p>延遲的原因從來不是語法，而是型別推論。因為 <code>!</code> 可以 coerce 到每一個型別，它與編譯器型別 fallback 規則之間的互動，意味著引入或修改一個 <code>!</code>，可能會悄悄改變周圍原本可編譯程式碼的推論結果。歷次穩定化嘗試都不斷撞上同一道牆：野外的 crates 可能以難以察覺的方式壞掉 —— 而這類回歸，恰恰最不該由 stable channel 的使用者承擔，因為他們本來就不預期點版本會改變語義。</p>
+<p>這正是 Rust 發布哲學登場的地方。語言把穩定行為視為一道單向門：feature gate 可以撤回，穩定語義卻不能。面對 fallback 行為仍有變動空間的結構，專案選擇繼續等，而不是冒著把錯的東西永久凍結的風險。結果就是一次真正不對稱的穩定化 —— <code>!</code> 的行為一旦在 stable 上凍結，就是永久凍結。</p>
+<h4>本次發布的其他內容</h4>
+<p>除了 never type，1.100 還帶來了一批常規的函式庫穩定化與編譯器改進。需要逐項細節的讀者，請直接查閱<a href="https://blog.rust-lang.org/">官方 Rust 1.100 發布公告與 changelog</a>，那才是記錄本次變更的權威出處 —— 這則發布與其說是一份清單，不如當作一則關於 Rust 如何發布的故事來讀。</p>
+<p>升級本身只需一條指令：<code>rustup update stable</code>。依照 Rust 的相容性政策，本次發布對既有 stable channel 的程式碼不構成破壞性變更。build artifacts 可透過慣常的 rustup channel，在所有支援的平台上取得。</p>
+<h4>為什麼這不只是 changelog 上的一行</h4>
+<p>對整個生態系而言，意義不在新語法，而在 nightly 依賴的減少。當初為了使用 <code>!</code> 而轉投 nightly 的專案，如今可以遷回 stable；而依照穩定語義寫成的程式碼，其語義也將永久保持 —— 之後的編譯器版本無法悄悄重新解釋它。</p>
+<p>這種可預測性，正是評估 Rust 用於長期生產系統的團隊所看重的，包括香港及其他地區正在衡量是否以 Rust 承擔基建與服務工作的 IT 組織。實際影響會因各團隊現有的使用情況而異，但一般性的啟示放諸四海皆準：一門讓你為正確性而等待的語言，當它終於發布時，它的保證才真正值得信任。</p>
+<p><a href="https://www.phoronix.com/news/Rust-1.100-Released" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
