@@ -1,0 +1,28 @@
+Date: 2026-11-12 15:28:00
+Author: HKLUG Team
+Title: curl Turns 30: Stenberg Pegs libcurl's Footprint at 30 Billion Installs — and Admits It's a Guess
+Content:
+<p>An estimated thirty billion installations worldwide are running libcurl today — a figure project leader Daniel Stenberg describes as deliberately imprecise — as the curl project marks three decades of moving data across the internet.</p>
+<p>In a post marking the project's 30th anniversary, Stenberg offered the headline number with an explicit caveat, as quoted in LWN.net's coverage of the milestone: "It is a rough estimate since the majority of all libcurl users never tell us they use it, but we need to find it mentioned in their credit screens, open source license windows or their manuals. A super popular app might use libcurl today…"</p>
+<p>That qualification is arguably the more revealing part of the statement. Curl's reach is largely unmeasurable precisely because it is so deeply embedded — surfacing only when someone happens to open a license window or scroll a credits screen.</p>
+<h5>A dependency most teams never chose</h5>
+<p>Curl began in 1996 as a command-line tool for transferring data from a shell script; its libcurl library quickly became the part that mattered most. Today libcurl is compiled into an enormous range of software: mobile applications, desktop clients, embedded devices, command-line utilities, and the HTTP plumbing inside countless backend services and build systems. The library supports a wide range of transfer protocols beyond plain HTTP, a breadth that helps explain how it has spread across so many different kinds of software.</p>
+<p>For developers and DevOps engineers, the practical consequence is that libcurl tends to enter a stack quietly — pulled in as a transitive dependency, bundled into a base image, or linked at compile time — and then stays for years. Most teams never chose it directly; it arrives already present. It is the sort of component that rarely appears on a roadmap or in an architecture diagram, yet underpins health checks, API calls, package fetches, webhook deliveries, and CI/CD jobs.</p>
+<p>The same ubiquity makes it a genuine consideration for anyone reasoning about security blast radius. When a widely embedded transfer library has an issue, the vulnerable population is not a list of direct dependants but an unknown set of downstream products that never identified themselves as users at all. Stenberg's estimate — rough by his own admission — is a useful reminder that the true exposure surface of a foundational component is rarely knowable in advance.</p>
+<p>That has implications for dependency audits. Teams that track only direct dependencies, or that rely on software bills of materials generated from their own manifests, will systematically under-count libraries like libcurl when those libraries arrive via base images, vendored code, or system packages. A practical starting point is to inventory what is actually present in deployed artefacts and container images, not just what appears in a lockfile, and to treat long-lived, protocol-level libraries as in-scope for patching regardless of how they were acquired.</p>
+<p>None of this is specific to any one market: curl's anniversary and Stenberg's estimate concern a global open-source project. But the observation applies broadly to IT teams anywhere that a small number of invisible, high-leverage components carry a disproportionate share of everyday network traffic.</p>
+<p>Thirty years in, curl's story is less about a single tool than about a class of software that works best when nobody notices it. Stenberg's thirty-billion figure — caveated and approximate as it is — captures that character neatly: an estimate of a footprint that can only ever be guessed at, because the software's success is measured precisely by how little attention it attracts.</p>
+<p>Stenberg's full reflection was published to mark the anniversary, as covered by LWN.net.</p>
+<hr>
+<p>現時全球估計有三百億次安裝正在運行 libcurl — 這個數字由項目負責人 Daniel Stenberg 形容為刻意不作精確估算 — 與此同時，curl 項目正慶祝其在互聯網上傳輸數據的三十週年。</p>
+<p>在一則紀念項目 30 週年的文章中，Stenberg 提出這個標題數字時明確附帶保留，LWN.net 的里程碑報道引述道：「這只是一個粗略估算，因為大多數 libcurl 用戶從未告訴我們他們正在使用它，我們只能在其致謝畫面、開源授權視窗或手冊中找到相關提及。一個超人氣應用程式今天可能正在使用 libcurl……」</p>
+<p>這項保留條款，可說是整段話中更具啟示性的部分。curl 的覆蓋範圍之所以難以量度，正是因為它已深深嵌入各處 — 只有在有人偶然打開授權視窗或捲動致謝畫面時才會浮現。</p>
+<h5>一個大多數團隊從未主動選擇的 dependency</h5>
+<p>curl 於 1996 年以 shell script 中傳輸數據的指令列工具起家；其 libcurl 函式庫很快便成為最重要的部分。如今 libcurl 已被編譯進極其廣泛的軟件之中：流動應用程式、桌面客戶端、嵌入式裝置、指令列工具，以及無數後端服務和建置系統內部的 HTTP 基礎設施。該函式庫支援超越純 HTTP 的多種傳輸協議，這種廣泛的協議覆蓋，有助解釋它為何能普及至如此多不同種類的軟件。</p>
+<p>對開發人員和 DevOps 工程師而言，實際影響在於 libcurl 往往會悄然進入技術堆疊 — 作為 transitive dependency 被引入、捆綁進 base image，或在編譯階段連結 — 然後一留就是多年。大多數團隊從未直接選擇它；它到來時已存在。這是那種很少出現在 roadmap 或架構圖上的組件，卻支撐著 health check、API 呼叫、套件抓取、webhook 傳送以及 CI/CD 工作。</p>
+<p>同樣的無處不在，令它成為任何評估安全影響範圍（blast radius）人士的切實考量。當一個被廣泛嵌入的傳輸函式庫出現問題時，受影響的用戶群並非一份直接 dependant 的清單，而是一批從未表明自己是用戶的未知下游產品。Stenberg 的估算 — 他自己也承認是粗略的 — 可謂是有用的提醒：一個基礎組件的真實暴露面，鮮少可以事先知悉。</p>
+<p>這對 dependency 審計亦有影響。只追蹤直接 dependency、或依賴從自身 manifest 生成的軟件物料清單（software bill of materials）的團隊，當這些函式庫透過 base image、vendored code 或系統套件引入時，將會系統性地低估 libcurl 一類函式庫的數量。一個切實的起點是盤點實際存在於已部署 artefacts 和 container image 中的內容，而不只是 lockfile 中顯示的項目，並將長期存在、協議層面的函式庫一律視為修補範圍，不論其引入方式為何。</p>
+<p>以上種種並非某個特定市場所獨有：curl 的週年紀念和 Stenberg 的估算涉及一個全球 open source 項目。但這項觀察普遍適用於各地 IT 團隊 — 當少數隱形、高槓桿作用的組件承載了不成比例的日常網絡流量份額時。</p>
+<p>三十年過去，curl 的故事與其說是關於單一工具，不如說是關於一類在無人察覺時運作得最好的軟件。Stenberg 那個三百億的數字 — 儘管附帶保留且只是近似值 — 恰好捕捉了這種特質：這正是一個只能靠猜測的足跡估算，因為該軟件的成功，恰恰在於它有多不引起注意。</p>
+<p>Stenberg 的完整反思文章為紀念週年而發表，LWN.net 已作報道。</p>
+<p><a href="https://lwn.net/Articles/1107151/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
