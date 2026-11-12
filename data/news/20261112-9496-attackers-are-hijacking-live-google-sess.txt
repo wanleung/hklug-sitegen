@@ -1,0 +1,39 @@
+Date: 2026-11-12 14:22:00
+Author: HKLUG Team
+Title: Attackers Are Hijacking Live Google Sessions — and Every Link Check Comes Back Clean
+Content:
+<p>```</p>
+<p>A phishing campaign running since mid-August 2026 has been capturing live Google sessions from corporate users — and doing so in a way that defeats the verification habits security teams rely on most, according to research from Material Security's Threat Research team published via The Hacker News in November 2026.</p>
+<p>The operation's defining characteristic is that every standard link check comes back clean. Scanning engines, domain reputation services, and the manual hover-and-inspect habit all report the destination as legitimate. That result is not a gap in tooling; it is the design of the attack.</p>
+<p><strong>How the relay works</strong></p>
+<p>Rather than hosting a counterfeit sign-in page, the operator sits between the victim and Google. A victim who clicks a lure is routed through a live proxy that forwards them to Google's genuine sign-in infrastructure. Credentials are entered on the real Google page, over a real Google domain — but the proxy captures the session token issued after authentication succeeds.</p>
+<p>The deception therefore lives in the relay infrastructure, not in the URL. The destination checks out because the destination is actually Google. What defenders cannot see by inspecting a link is the operator-controlled hop sitting in the middle of the connection.</p>
+<p><strong>Why this isn't credential phishing</strong></p>
+<p>One point of background, and a general property of session-based authentication rather than a specific finding of this campaign: a replayed session token does not prompt a fresh login event, and resetting the victim's password does not neutralise it. In practical terms, the attacker inherits the victim's authenticated state rather than defeating an authentication challenge — a meaningful distinction from conventional credential-phishing and MFA-bypass narratives.</p>
+<p><strong>The delivery vector</strong></p>
+<p>Lures arrive as calendar invitations — a format corporate recipients habitually open without the scrutiny they would apply to an unexpected attachment or an unfamiliar link. The choice of vector matters: calendar invites are routine, expected, and frequently rendered with rich previews that can embed actionable links.</p>
+<p><strong>Operation CloudFire</strong></p>
+<p>Material Security's Threat Research team has since taken down hundreds of attacker domains in an effort the team calls Operation CloudFire. On our reading of those numbers, the volume of takedowns itself is informative — the operator appears to have been rotating hosts faster than reputation services could catalogue them. That churn suggests the technique is not reliably blockable through blocklists alone, and that each takedown sets back this particular campaign rather than eliminating the underlying approach.</p>
+<p><strong>What to tell your staff this week</strong></p>
+<p>The briefing point for security teams is uncomfortable: the "hover before you click" habit, central to most awareness training, is structurally blind to live-proxy interception. Training built around spotting fake login pages cannot catch a real one served through a malicious relay. Calendar invites deserve the same caution as unexpected attachments.</p>
+<p>Defensive weight should shift toward session-level controls, because the session token is the asset being taken. Practical measures include shorter session lifetimes, binding sessions to device or network characteristics, and alerting on anomalous session reuse — for example, a token appearing from an unexpected geography or device shortly after issue. Password hygiene remains necessary but is no longer sufficient on its own.</p>
+<p>Material Security's disclosure does not answer every question. How the captured sessions were subsequently used, how many organisations were affected, the full range of lure types beyond observed calendar invites, and whether a single actor or shared infrastructure is behind the operation remain unaddressed in the public reporting.</p>
+<p>For IT teams, the operational takeaway is that a clean link scan is not, on its own, an all-clear. The check verified the destination, not the path — and the path is where the compromise now sits.</p>
+<hr>
+<p>根據 Material Security 威脅研究團隊於 2026 年 11 月透過 The Hacker News 發布的研究報告，一場自 2026 年 8 月中旬起持續運作的釣魚攻擊行動，一直從企業用戶身上截取 Google 實時會話 —— 而其手法足以破解安全團隊最依賴的驗證習慣。</p>
+<p>該行動最顯著的特徵是：每一次標準連結檢查的結果均顯示正常。掃描引擎、domain 信譽服務，以及「將滑鼠懸停並檢查」的人手習慣，全都回報目的地為合法網站。這並非工具上的漏洞 —— 而是攻擊本身的設計。</p>
+<p><strong>relay 如何運作</strong></p>
+<p>攻擊者並非架設假冒登入頁面，而是置身於受害者與 Google 之間。受害者點擊誘餌後，會經由一個 live proxy 路由至 Google 真正的登入基礎設施。使用者在真實的 Google 頁面上、經由真實的 Google domain 輸入憑據 —— 但 proxy 會截獲認證成功後發出的 session token。</p>
+<p>因此，欺騙手法存在於 relay 基礎設施之中，而非 URL 之中。目的地檢查之所以通過，因為目的地確實是 Google。防禦者透過檢查連結無法看見的，是夾在連線中間、由攻擊者控制的跳板。</p>
+<p><strong>為何這不是憑據釣魚</strong></p>
+<p>先補充一點背景知識，這是 session-based 認證的一般特性，而非本次行動的特定發現：重播的 session token 不會觸發新的登入事件，而重設受害者的密碼亦無法使其失效。從實際角度而言，攻擊者是繼承了受害者的已認證狀態，而非繞過認證挑戰 —— 這與傳統憑據釣魚及 MFA bypass 的說法有著重要區別。</p>
+<p><strong>投遞渠道</strong></p>
+<p>誘餌以日曆邀請形式出現 —— 企業收件者往往會不加審視便打開這類邀請，不會像面對意外附件或陌生連結時那樣仔細檢查。選擇此渠道至關重要：日曆邀請屬於日常事務、在預期之內，而且經常以豐富預覽方式呈現，其中可嵌入可直接操作的連結。</p>
+<p><strong>Operation CloudFire</strong></p>
+<p>Material Security 威脅研究團隊此後已取締數百個攻擊者 domain，該團隊將此行動命名為 Operation CloudFire。從這些數字來看，取締數量本身就極具參考價值 —— 攻擊者似乎一直在更換主機，速度之快令信譽服務來不及將其收錄。這種頻繁更替顯示，單靠 blocklist 無法可靠地封鎖此手法，而每次取締只能挫敗這一次特定行動，並不能根除其背後的攻擊方法。</p>
+<p><strong>本週應向員工傳達的事項</strong></p>
+<p>給安全團隊的重點說明令人不安：「點擊前先懸停」這一習慣，雖然是大多數安全意識培訓的核心，但在結構上無法察覺 live-proxy 攔截。圍繞識別假登入頁面而設計的培訓，無法攔截透過惡意 relay 提供的真實登入頁面。日曆邀請應與意外附件一樣小心處理。</p>
+<p>防禦重心應轉向 session 層面的控制，因為 session token 正是被竊取的資產。實用措施包括縮短 session 有效期、將 session 綁定至裝置或網絡特徵，以及對異常 session 重用發出警報 —— 例如 token 在發出後不久即從意外地區或裝置出現。密碼衛生依然必要，但單靠這一點已不再足夠。</p>
+<p>Material Security 的披露並未回答所有問題。被截取的會話其後如何被使用、有多少機構受到影響、除已觀察到的日曆邀請外還有哪些誘餌類型，以及此次行動背後是單一行動者還是共用基礎設施，公開報告中均未有交代。</p>
+<p>對於 IT 團隊而言， operational 層面的啟示是：連結掃描結果正常，本身並不等於完全沒有問題。該檢查驗證的是目的地，而非路徑 —— 而入侵正是發生在路徑之上。</p>
+<p><a href="https://thehackernews.com/2026/11/calendar-invites-and-live-proxies.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
