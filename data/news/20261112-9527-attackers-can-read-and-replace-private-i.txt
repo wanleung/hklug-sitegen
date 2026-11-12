@@ -1,0 +1,48 @@
+Date: 2026-11-12 17:22:00
+Author: HKLUG Team
+Title: Attackers Can Read and Replace Private Images Across an Entire Red Hat Quay Registry, Red Hat Warns
+Content:
+<h3>Attackers Can Read and Replace Private Images Across an Entire Red Hat Quay Registry, Red Hat Warns</h3>
+<p>A critical vulnerability in Red Hat Quay has been shown to let an attacker reach across an entire registry deployment — reading <em>and</em> overwriting private container images in every repository, not just a single project or namespace. Red Hat disclosed the issue and released fixed builds covering eight Quay versions, according to The Hacker News, which reported the story on 12 November.</p>
+<p>The headline impact is the collapse of the boundary that container registries exist to enforce. On affected builds, repository-level isolation simply does not hold: the unit of compromise is the whole Quay deployment, and every private image it hosts is potentially in scope.</p>
+<h4>Two weak barriers, both bypassable</h4>
+<p>Exploitation conditions are unusually permissive. Quay enables anonymous access by default, and while that setting remains on, an attacker needs no account at all — any user who can reach the registry can trigger the flaw. When administrators disable anonymous access as a hardening measure, the barrier only narrows: Red Hat said anyone holding a valid account can still exploit it. In other words, on unpatched instances, authentication alone does not enforce per-repository boundaries.</p>
+<p>That combination makes the bug practical rather than theoretical. It does not depend on a chained privilege escalation or a compromised service token — only network reachability to the registry, and, at worst, a legitimate login that a routine onboarding process would hand out anyway.</p>
+<h4>Why write access is the sharper risk</h4>
+<p>Read access is a data breach: exposed base images, leaked build contexts, proprietary code embedded in layers. Write access is where the story turns into a supply-chain incident.</p>
+<p>Because container tags are mutable, an attacker with overwrite ability can swap a tampered image beneath a tag that CI pipelines and Kubernetes clusters already trust. Nothing in the delivery chain needs to change — no rogue registry, no altered pipeline configuration. The malicious image simply arrives the next time a workload pulls by tag, and detection may be deferred until the payload runs or an unrelated audit surfaces the discrepancy. For teams that treat "our registry is private" as an integrity guarantee, this is a direct attack on their core assumption: that the artifacts they build are what they think they are.</p>
+<h4>Remediation checklist</h4>
+<ol>
+<li><strong>Upgrade immediately</strong> to the patched build for your Quay version. Red Hat has shipped fixes across eight affected releases; this is the primary fix and closes the isolation gap at its source.</li>
+<li><strong>Disable anonymous access</strong> as an interim measure while patching. This removes the no-credentials path, but it does not eliminate exposure — any valid account remains sufficient on unpatched builds.</li>
+<li><strong>Audit registry logs</strong> for pulls and pushes originating from unfamiliar accounts or unexpected addresses, paying particular attention to multi-tenant instances where many teams share one deployment.</li>
+<li><strong>Compare image digests</strong> against known-good records. Rebuild and re-sign anything whose provenance cannot be verified.</li>
+<li><strong>Pin digests, not tags</strong>, in build and deploy pipelines until integrity across the estate has been re-established.</li>
+</ol>
+<h4>Ingress controls are not internal isolation</h4>
+<p>The wider lesson for operators is architectural. Registry security discussions tend to focus on who can get <em>in</em> — network exposure, SSO, firewall rules. This flaw is a reminder that ingress control and internal isolation are separate problems, and a product can have reasonable perimeter posture while its internal authorization is broken. Any organisation running a shared Quay instance — serving multiple teams, tenants, or environments from a single deployment — should treat every repository in it as potentially compromised until patched and verified.</p>
+<p>For DevOps and SRE teams responsible for registry hygiene, the window between disclosure and deployment is now the risk.</p>
+<p><em>Source: The Hacker News</em></p>
+<hr>
+<h3>Red Hat 警告：攻擊者可讀取及取代整個 Quay 註冊庫中的私人映像</h3>
+<p>Red Hat Quay 被發現存在一項嚴重漏洞，攻擊者可藉此橫跨整個 registry 部署——讀取<em>以及</em>覆寫每一個 repository 中的私人 container 映像，而不僅限於單一項目或 namespace。據 The Hacker News 於 11 月 12 日報道，Red Hat 已披露該問題，並發布涵蓋八個 Quay 版本的修復版本。</p>
+<p>最核心的影響在於：container registry 賴以存在的目的，正是要維護的邊界已然崩塌。在受影響的版本中，repository 層面的隔離形同虛設：被入侵的單位是整個 Quay 部署，其上託管的每一個私人映像都有可能受影響。</p>
+<h4>兩道薄弱屏障，皆可繞過</h4>
+<p>漏洞的利用條件異常寬鬆。Quay 預設啟用匿名訪問，只要此設定維持開啟，攻擊者根本不需要帳戶——任何能夠連接到 registry 的使用者均可觸發此漏洞。當管理員出於強化保安的目的關閉匿名訪問時，屏障只是收窄：Red Hat 表示，任何持有有效帳戶的人仍然可以利用此漏洞。換言之，在未修補的實例中，僅靠身份驗證並不能落實逐 repository 的邊界。</p>
+<p>這種組合使該漏洞成為實際威脅，而非純理論風險。它不依賴連鎖權限提升或被入侵的 service token——只需要網絡能夠連到 registry，最壞情況下，加上一個例行入職程序本來就會發出的合法登入帳戶。</p>
+<h4>為何寫入權限是更嚴峻的風險</h4>
+<p>讀取權限構成數據泄露：暴露的 base image、洩漏的 build context、嵌入在層中的專有程式碼。而寫入權限，則令事件升級為供應鏈事故。</p>
+<p>由於 container tag 是可變的，具備覆寫能力的攻擊者可以在 CI pipeline 及 Kubernetes 叢集已經信任的 tag 底下，偷換入經過篡改的映像。交付鏈無需任何改變——毋須 rogue registry，毋須修改 pipeline 配置。惡意映像只會在工作負載下一次按 tag 拉取時出現，而偵測可能被延遲至 payload 執行，或某一項無關的審計發現差異為止。對於視「我們的 registry 是私有的」為完整性保證的團隊而言，這是對其核心假設的直接攻擊：其構建產物確實如他們所想般可靠。</p>
+<h4>修復清單</h4>
+<ol>
+<li><strong>立即升級</strong>至適用於你 Quay 版本的修補版本。Red Hat 已在八個受影響的版本中發布修復；這是主要的解決方案，從根源上彌補隔離缺口。</li>
+<li><strong>停用匿名訪問</strong>作為補丁生效前的臨時措施。這可堵截免憑據的路徑，但並未消除暴露面——在未修補的版本上，任何有效帳戶仍然足夠觸發漏洞。</li>
+<li><strong>審計 registry 日誌</strong>，檢查來自不熟悉帳戶或意外地址的 pull 和 push 操作，尤其要留意多租戶實例，即多個團隊共用同一部署的情況。</li>
+<li><strong>比對 image digest</strong> 與已知良好記錄。任何無法驗證來源的映像，均須重建並重新簽署。</li>
+<li><strong>固定 digest，而非 tag</strong>，在 build 和 deploy pipeline 中如此操作，直至整個環境的完整性重新確立。</li>
+</ol>
+<h4>入口控制不等同內部隔離</h4>
+<p>營運者應汲取的更廣泛教訓屬架構層面。registry 安全討論往往聚焦於誰能<em>進來</em>——網絡暴露、SSO、防火牆規則。此漏洞提醒我們，入口控制與內部隔離是兩個獨立問題，一款產品完全可能在周邊防護合理的情況下，其內部授權機制卻是壞的。任何運行共享 Quay 實例的機構——由單一部署同時服務多個團隊、租戶或環境——在修補並驗證之前，都應將其中每一個 repository 視為可能已被入侵。</p>
+<p>對於負責 registry 衛生的 DevOps 和 SRE 團隊而言，從漏洞披露到完成部署之間的窗口，如今就是風險所在。</p>
+<p><em>來源：The Hacker News</em></p>
+<p><a href="https://thehackernews.com/2026/11/critical-red-hat-quay-flaw-lets.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
