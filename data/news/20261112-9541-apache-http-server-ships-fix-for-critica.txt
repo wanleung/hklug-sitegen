@@ -1,0 +1,52 @@
+Date: 2026-11-12 21:29:00
+Author: HKLUG Team
+Title: Apache HTTP Server ships fix for critical HTTP/2 flaw allowing unauthenticated code execution
+Content:
+<p>Apache HTTP Server has been patched against a critical flaw in its HTTP/2 module that could let an unauthenticated attacker achieve remote code execution, according to BleepingComputer, which reported the fix on 12 November.</p>
+<p>Servers running Apache with HTTP/2 enabled are exposed before any credentials are presented, making this a patch-now issue for operators of public-facing web infrastructure.</p>
+<p>The reporting available at the time of publication does not include a CVE identifier, the precise affected and fixed 2.4.x version range, or a CVSS base score. Administrators should treat all three as mandatory items to confirm directly from Apache's own advisory — or their distribution's bulletin — before opening a change window.</p>
+<p><strong>What to do now</strong></p>
+<ol>
+<li>
+<p><strong>Inventory.</strong> Identify every Apache HTTP Server instance that has HTTP/2 enabled, including reverse proxies, load-balancer-adjacent hosts and any appliance or container image shipping an embedded Apache build. Embedded and third-party-packaged builds are frequently missed in inventory sweeps, and they are typically the slowest to fix — bring them into scope from the start rather than discovering them mid-remediation.</p>
+</li>
+<li>
+<p><strong>Patch.</strong> Pull the fixed version from your distribution or from Apache's release channel and deploy it on public-facing systems first. Confirm the build you are running actually contains the fix rather than assuming your distro's <code>httpd</code> package has been rebuilt — a package manager reporting "up to date" is not the same as a restarted service running the new code.</p>
+</li>
+<li>
+<p><strong>Interim mitigation if you cannot patch immediately.</strong> Where HTTP/2 is not a hard requirement, disabling the protocol and falling back to HTTP/1.1 removes the attack surface in the interim. If you do take this route, be aware that some deployments negotiate HTTP/2 by default, so verify the effective configuration rather than only the file you edited — and test the change on staging before rolling it out. Expect to re-enable HTTP/2 once the fix is in place, since dropping to HTTP/1.1 carries performance and connection-reuse trade-offs.</p>
+</li>
+<li>
+<p><strong>Monitor and verify.</strong> Check whether CISA has added the flaw to its Known Exploited Vulnerabilities catalogue, and watch for guidance issued by national CERTs including HKCERT and the OGCIO. No KEV listing or local advisory has been confirmed as of publication, and readers should verify both independently rather than treat their absence as fact.</p>
+</li>
+</ol>
+<p><strong>Why this one matters more than HTTP/2's recent track record</strong></p>
+<p>HTTP/2 has had a rough few years on availability. The 2023 rapid reset bug (CVE-2023-44487) let attackers churn through request streams faster than servers could cancel them, triggering large-scale denial of service. The following year, the CONTINUATION flood issue (CVE-2024-27316) abused the protocol's header-frame handling to exhaust server resources with comparatively little traffic.</p>
+<p>Both of those were disruption attacks: they took services down, but they did not let anyone in. A code-execution flaw reachable without authentication is a different category of risk entirely. Where the earlier HTTP/2 bugs argued for rate limits and traffic filtering, this one argues for patching, because an attacker who reaches code execution on a web server generally has access to everything that server can see.</p>
+<p>Web servers remain one of the most attractive targets in any environment precisely because they sit at the perimeter. For teams in Hong Kong and elsewhere running Apache at scale, this disclosure is a reminder that HTTP/2's security history is not just a story about traffic spikes — the protocol's parsing and stream-handling code now has a memory-safety-class bug on its record, and that changes the calculus for anyone still running an unpatched build.</p>
+<p><em>Source: BleepingComputer, 12 November 2026.</em></p>
+<hr>
+<p>據 BleepingComputer 於 11 月 12 日報道，Apache HTTP Server 已針對其 HTTP/2 module 中一項嚴重漏洞推出修補，該漏洞可讓未經認證的攻擊者實現遠端代碼執行（remote code execution）。</p>
+<p>啟用了 HTTP/2 的 Apache 伺服器在任何認證資訊提交之前便已暴露於風險之中，因此對面向公眾的網絡基礎設施營運商而言，這是必須立即修補的問題。</p>
+<p>發佈時可獲得的報道並未提供 CVE 識別編號、精確的受影響及已修補 2.4.x 版本範圍，亦沒有 CVSS base score。管理員應將這三項視為必須親自向 Apache 官方 advisory — 或所屬 distribution 的公告 — 確認的事項，然後才展開變更時段（change window）。</p>
+<p><strong>現在該做甚麼</strong></p>
+<ol>
+<li>
+<p><strong>盤點（Inventory）。</strong>識別每一個啟用了 HTTP/2 的 Apache HTTP Server 實例，包括 reverse proxy、與 load balancer 相關的主機，以及任何內置 Apache build 的 appliance 或 container image。內置及第三方打包的 build 在盤點掃描中經常被遺漏，而且通常是最遲才修補的一類 — 應由一開始便把它們納入範圍，而不是在修補工作進行到一半時才發現。</p>
+</li>
+<li>
+<p><strong>修補（Patch）。</strong>從你的 distribution 或 Apache 的 release channel 取得已修補版本，並優先部署到面向公眾的系統上。確認你實際運行的 build 確實包含修補，而不是假設所屬 distribution 的 <code>httpd</code> package 已重新編譯 — package manager 顯示「已是最新版本」，並不等同於服務已經重啟並運行新代碼。</p>
+</li>
+<li>
+<p><strong>未能即時修補時的臨時緩解措施。</strong>在 HTTP/2 並非硬性要求的情況下，停用該協議並回退至 HTTP/1.1，可在過渡期內消除攻擊面。若採取此路徑，須留意部分部署會預設協商 HTTP/2，因此應查核實際生效的 configuration，而不只是你修改過的那個檔案 — 並先在 staging 環境測試變更才正式推出。修補到位後應重新啟用 HTTP/2，因為降至 HTTP/1.1 會在效能及連線重用（connection reuse）方面帶來取捨。</p>
+</li>
+<li>
+<p><strong>監察及驗證。</strong>查看 CISA 是否已將該漏洞列入其 Known Exploited Vulnerabilities 目錄，並留意包括 HKCERT 及資訊科技總監辦公室（OGCIO）在內的各國 CERT 發出的指引。截至發佈時並未確認有 KEV 列名或本地 advisory，讀者應自行獨立查證，不應將「沒有出現」視為既成事實。</p>
+</li>
+</ol>
+<p><strong>為何此漏洞比 HTTP/2 近年的紀錄更值得重視</strong></p>
+<p>HTTP/2 近年在可用性方面屢遭重挫。2023 年的 rapid reset 漏洞（CVE-2023-44487）讓攻擊者以快過伺服器取消的速度大量發出 request stream，觸發大規模拒絕服務。翌年的 CONTINUATION flood 問題（CVE-2024-27316）則濫用協議的 header frame 處理機制，以相對少量的流量耗盡伺服器資源。</p>
+<p>上述兩者皆屬破壞性攻擊（disruption attacks）：它們令服務中斷，但並未讓任何人入侵系統。一項無需認證即可觸發的代碼執行漏洞，則完全是另一層次的風險。早前的 HTTP/2 漏洞指向的是速率限制及流量過濾，而這一項指向的則是修補，因為攻擊者一旦能在 web server 上執行代碼，一般便能取得該伺服器可見的一切資料。</p>
+<p>Web server 在任何環境中仍然是最具吸引力的攻擊目標之一，正正是因為它們處於網絡邊界（perimeter）。對於香港及其他地區大規模運行 Apache 的團隊而言，這次披露提醒我們：HTTP/2 的安全歷史不單是流量高峰的故事 — 該協議的 parsing 及 stream 處理代碼如今在紀錄上多了一項 memory safety 類別的漏洞，這改變了任何仍在運行未修補 build 的人的風險計算。</p>
+<p><em>資料來源：BleepingComputer，2026 年 11 月 12 日。</em></p>
+<p><a href="https://www.bleepingcomputer.com/news/security/apache-http-server-patches-critical-http-2-remote-code-execution-flaw/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
