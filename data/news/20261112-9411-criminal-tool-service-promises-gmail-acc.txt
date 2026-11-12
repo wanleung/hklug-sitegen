@@ -1,0 +1,44 @@
+Date: 2026-11-12 02:04:00
+Author: HKLUG Team
+Title: Criminal Tool Service Promises Gmail Access That Outlasts a Password Reset
+Content:
+<p>A developer of criminal tooling is reportedly marketing a $1,000 feature that claims to keep reading a victim's Gmail inbox even after the password is changed — a pitch that, if it holds up, would make the standard first response to a mailbox compromise insufficient on its own.</p>
+<p>Security Affairs reported the listing, which was flagged by the cybersecurity firm Hudson Rock. As described in that reporting, the offering gives buyers continuous access to Gmail mailboxes — but the tool's effectiveness remains unverified, and the account rests on the vendor's marketing copy rather than any public demonstration or independent test.</p>
+<p>That unverified status does not make the story academic. The persistence mechanisms such a tool would have to lean on — long-lived sessions, refresh tokens, OAuth application grants, configured mail-client credentials, and account-recovery paths — are well understood, routinely abused, and already a blind spot in many organisations' incident-response playbooks. Whether or not this particular $1,000 offering works as advertised, the class of access it targets is real.</p>
+<p><strong>Why a password reset is not the finish line</strong></p>
+<p>Changing a password is a credential action. It invalidates the secret used to log in, but it does not automatically terminate everything that was authenticated <em>with</em> that credential. Browser and mobile sessions established before the compromise can persist until they expire or are explicitly revoked. Third-party applications granted mailbox access through OAuth keep their delegated tokens until those grants are removed. Mail clients and forwarding rules configured during an intrusion survive a credential rotation untouched. In short: resetting the password addresses how an attacker got in, not what they may already hold.</p>
+<p>An incident-response runbook that treats "password reset completed" as containment is, in this framing, only half done.</p>
+<p><strong>What defenders should do</strong></p>
+<p>For administrators running Google Workspace or Gmail estates, the immediate checklist after any suspected account takeover looks like this:</p>
+<ul>
+<li><strong>Revoke sessions and tokens, not just the password.</strong> Force sign-out across devices and invalidate active sessions as a distinct step from credential rotation.</li>
+<li><strong>Audit and revoke OAuth third-party grants with mailbox scope.</strong> Review which connected applications can read mail and remove anything unrecognised or no longer needed. Google's own Workspace documentation covers how administrators can manage these connections.</li>
+<li><strong>Check connected devices and inbound forwarding rules.</strong> Look for unfamiliar mail-forwarding or filter rules that exfiltrate copies of messages, and for devices or app passwords the legitimate user never configured.</li>
+<li><strong>Deploy phishing-resistant authentication.</strong> Roll out passkeys or FIDO2-based security keys, and enforce multi-factor authentication wherever it is not already mandatory — the aim is to remove the reusable secret an attacker can phish in the first place.</li>
+<li><strong>Treat the password reset as the start of containment, not the end.</strong> Recovery is complete only when sessions, tokens, grants, and rules have each been checked off.</li>
+</ul>
+<p><strong>A broader trend</strong></p>
+<p>The listing also fits a pattern security researchers have been tracking for some time: access-persistence tooling is being commoditised. Capabilities once embedded in bespoke malware kits are increasingly packaged as commercial products with pricing, support, and marketing — in this case, reportedly offered at $1,000. For defenders, the practical consequence is that persistence-after-reset can be bought rather than engineered, which argues for assuming it as a possibility in every mailbox-compromise investigation.</p>
+<p>None of this has been verified, and defenders should treat the vendor's claims with appropriate scepticism. But the mitigation steps above cost little, close a documented gap, and remain sound practice regardless of whether the tool works as sold.</p>
+<p><em>Source: Security Affairs, reporting on findings from Hudson Rock. The claims above reflect the source's account and remain independently unverified.</em></p>
+<hr>
+<p>據報一名犯罪工具開發者正推銷一項售價1,000美元的功能，聲稱即使受害者更改密碼後仍可繼續讀取其 Gmail 收件匣——此說法一旦屬實，將令電郵帳號入侵事件的標準初步應對措施不足以單獨應付。</p>
+<p>Security Affairs 報道了該項產品資訊，此事由網絡保安公司 Hudson Rock 發現。根據該報道的描述，該產品可讓買家持續存取 Gmail 郵箱——但該工具的成效仍未經證實，有關說法僅建基於廠商的宣傳文案，而非任何公開演示或獨立測試。</p>
+<p>未經證實並不意味著此事只屬學術討論。此類工具所依賴的持久化機制——長期 session、refresh token、OAuth 應用授權、已設定的電郵客戶端憑證，以及帳號復原途徑——均為業界所熟知、屢遭濫用，而且早已是許多機構事故應對手冊中的盲點。不論這項1,000美元的產品是否如宣傳般有效，它所針對的存取類別確實存在。</p>
+<p><strong>為何重設密碼並非終點</strong></p>
+<p>更改密碼是一項憑證操作。它會令用於登入的秘密失效，但並不會自動終止一切由該憑證<em>認證</em>的項目。入侵前建立的瀏覽器及流動裝置 session 會一直維持，直至過期或被明確撤銷。透過 OAuth 授予郵箱存取權的第三方應用程式，其委派 token 會保留至該等授權被移除為止。入侵期間設定的電郵客戶端及轉發規則，則完全不受憑證更換影響。簡言之：重設密碼處理的是攻擊者如何進入，而非他們可能已經掌握甚麼。</p>
+<p>一份將「密碼重設完成」視為已完成遏制的事故應對手冊，在此框架下其實只完成了一半。</p>
+<p><strong>防禦者應採取的措施</strong></p>
+<p>對於管理 Google Workspace 或 Gmail 環境的管理員而言，任何懷疑帳號被接管事件發生後，即時的檢查清單如下：</p>
+<ul>
+<li><strong>撤銷 session 及 token，而不只是密碼。</strong> 強制所有裝置登出，並將使現有 session 失效作為獨立於憑證更換的另一個步驟。</li>
+<li><strong>審計並撤銷具有郵箱權限的 OAuth 第三方授權。</strong> 檢視哪些已連接應用程式可以讀取郵件，移除所有無法辨識或不再需要的項目。Google 自身的 Workspace 文件涵蓋了管理員如何管理這些連接的方法。</li>
+<li><strong>檢查已連接裝置及入站轉發規則。</strong> 尋找不熟悉的郵件轉發或過濾規則（可能將郵件副本外洩），以及合法用戶從未設定的裝置或 app password。</li>
+<li><strong>部署具抗釣魚能力的認證方式。</strong> 推出 passkey 或基於 FIDO2 的 security key，並在所有尚未強制的範圍內實施 multi-factor authentication——目標是根除攻擊者可透過釣魚取得的可重用秘密。</li>
+<li><strong>將密碼重設視為遏制工作的開始，而非結束。</strong> 只有當 session、token、授權及規則逐一確認處理完畢，復原才算完成。</li>
+</ul>
+<p><strong>更廣泛的趨勢</strong></p>
+<p>該項產品資訊亦符合保安研究人員追蹤已久的一個模式：存取持久化工具正被商品化。以往嵌入在度身訂造的惡意軟件套件中的功能，正越來越多以附有定價、支援及市場推廣的商業產品形式包裝出售——本案據報售價1,000美元。對防禦者而言，實際影響是「密碼重設後的持久化」可以購買而非自行打造，因此每宗郵箱入侵調查都應假設此情況有可能發生。</p>
+<p>以上內容均未經證實，防禦者應對廠商的聲稱保持適當懷疑。不過，上述緩解步驟成本低廉、填補了有記錄在案的缺口，不論該工具是否如所售般有效，均屬穩妥的保安實踐。</p>
+<p><em>資料來源：Security Affairs，報道 Hudson Rock 的調查發現。以上聲稱反映來源的說法，仍未經獨立證實。</em></p>
+<p><a href="https://securityaffairs.com/202853/malware/hackers-advertise-a-1000-gmail-tool-that-allegedly-survives-password-resets.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
