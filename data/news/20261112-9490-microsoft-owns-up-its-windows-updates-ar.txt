@@ -1,0 +1,92 @@
+Date: 2026-11-12 13:27:00
+Author: HKLUG Team
+Title: Microsoft Owns Up: Its Windows Updates Are Behind the SQL Server Slowdowns
+Content:
+<p>Microsoft has confirmed that Windows updates shipped since the October 2026 Patch Tuesday cycle are behind performance and stability problems in SQL Server, according to BleepingComputer. What had been a diffuse, host-by-host debugging exercise is now one documented defect — and an awkward one: a Microsoft-supplied cumulative update is degrading a Microsoft-supplied database engine.</p>
+<p>The patch-hygiene irony is the part worth sitting with. Because the offending updates arrived on the regular Patch Tuesday cadence, the estates most likely to be hit are the ones with the best patch compliance — the machines that were first in line precisely because they were kept current.</p>
+<h4>What admins should check now</h4>
+<p>The reporting describes performance and stability degradation in affected environments; this article does not extend beyond that with symptom detail that cannot be traced to the source. For administrators triaging this week, the checklist is generic but concrete:</p>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>What to do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Inventory</td>
+<td>Identify which hosts took the October 2026 cumulative updates <em>and</em> host SQL Server instances</td>
+</tr>
+<tr>
+<td>Pause</td>
+<td>Hold further patching on SQL Server hosts pending a fix, using your WUfB/WSUS/Intune rings; keep security-critical endpoints under separate policy</td>
+</tr>
+<tr>
+<td>Baseline</td>
+<td>Compare CPU, wait statistics and job durations against unpatched peers to quantify the impact on your own workloads</td>
+</tr>
+<tr>
+<td>Rollback</td>
+<td>Confirm a supported rollback path exists <em>before</em> you need one</td>
+</tr>
+<tr>
+<td>Reference</td>
+<td>Take update identifiers and the recommended mitigation from Microsoft's support documentation directly — not from forum threads or unsourced social-media advice</td>
+</tr>
+</tbody>
+</table>
+<p>Exact KB numbers are deliberately not reproduced here. Publishing an identifier that turns out to be wrong would send administrators to the wrong patch, so Microsoft's own advisory remains the only authoritative source for which updates are implicated and what to do about them.</p>
+<h4>The Hong Kong compliance question</h4>
+<p>A patch pause is never purely a technical decision. Hong Kong administrators running SQL Server in regulated or client-contracted environments have to reconcile "hold the update" with their own documented obligations — whether that is an internal change-management standard, a contractual service-level commitment, or sector guidance they are subject to. The source for this story does not address regulatory timelines, and teams should not assume either that a pause is automatically compliant or that it is automatically a breach. The defensible move is the same in every case: document the defect, record the vendor advisory, capture the risk decision and its owner, and revisit it when Microsoft issues the fix. That audit trail is worth more than a checkbox.</p>
+<h4>The wider lesson</h4>
+<p>Patch compliance and workload stability do not always move together, and this incident is a reminder that "fully patched" and "running correctly" are separate monitoring questions. On the architectural side — this is our reading, not a point raised in the source — SQL Server deployments on Linux sit outside this Windows-update failure mode entirely, which makes platform decoupling an option worth considering for teams that can tolerate the shift.</p>
+<h4>What remains unknown</h4>
+<p>The reporting does not pin down the full affected surface: which Windows Server releases are implicated, which SQL Server versions are affected, and whether cloud-hosted and on-premise installations are exposed alike. Administrators should treat Microsoft's documentation as the place those gaps get filled, not speculation.</p>
+<p>No remediation timetable has been stated. Track Microsoft's advisory as it develops, and resist applying unsourced workarounds in the meantime.</p>
+<p><em>Source: BleepingComputer.</em></p>
+<hr>
+<p>根據 BleepingComputer 報導，微軟已確認，自 2026 年 10 月 Patch Tuesday 更新周期以來推出的 Windows 更新，正是 SQL Server 效能及穩定性問題的根源。原本逐台主機零散進行的除錯工作，如今已聚焦為一項有文件記載的缺陷——而且頗為尷尬：由微軟提供的累積更新，正在拖垮由微軟提供的資料庫引擎。</p>
+<p>補丁管理上的諷刺意味，正是值得細味之處。由於問題更新是隨慣常的 Patch Tuesday 節奏發佈，最受影響的偏偏是補丁合規表現最好的環境——那些機器正是因為一直維持最新狀態，才最先排隊收到更新。</p>
+<h4>系統管理員現在應檢查什麼</h4>
+<p>相關報導描述了受影響環境中的效能及穩定性下降；本文不會延伸至無法追溯至消息來源的症狀細節。對於本週需要分類處理問題的管理員，以下是通用但具體的檢查清單：</p>
+<table>
+<thead>
+<tr>
+<th>檢查項目</th>
+<th>應採取的行動</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>盤點</td>
+<td>確認哪些主機已安裝 2026 年 10 月累積更新，<em>以及</em>哪些主機運行 SQL Server 實例</td>
+</tr>
+<tr>
+<td>暫停</td>
+<td>在修復方案出台前，透過 WUfB／WSUS／Intune 的更新環（ring）暫停 SQL Server 主機的後續補丁；將關鍵安全端點維持在獨立政策之下</td>
+</tr>
+<tr>
+<td>基準比對</td>
+<td>將 CPU、等待統計（wait statistics）及任務執行時長與未安裝更新的同類機器對比，量化對自身工作負載的影響</td>
+</tr>
+<tr>
+<td>回滾</td>
+<td><em>在需要之前</em>先確認存在受支持的回滾路徑</td>
+</tr>
+<tr>
+<td>參考</td>
+<td>更新識別編號及微軟建議的緩解措施，應直接取自微軟支援文件——而非論壇帖文或來源不明的社交媒體建議</td>
+</tr>
+</tbody>
+</table>
+<p>本文刻意不列出確切的 KB 編號。若發佈了事後證實錯誤的識別編號，只會令管理員安裝錯誤的補丁，因此微軟本身的通告仍是判斷哪些更新受牽連及應如何處理的唯一權威來源。</p>
+<h4>香港的合規問題</h4>
+<p>暫停補丁從來不只是技術決定。在香港，於受規管或與客戶簽有合約的環境中運行 SQL Server 的管理員，必須在「暫停更新」與自身的書面責任之間取得平衡——無論那是內部的變更管理標準、合約中的服務水平承諾，還是其須遵守的行業指引。本則報導的消息來源並未涉及監管時間表，團隊既不應假設暫停更新自動合規，也不應假設它自動構成違規。無論情況如何，站得住腳的做法都一樣：記錄該缺陷、保存廠商通告、記下風險決定及其負責人，並在微軟發出修復方案時重新檢視。這條審計軌跡，比任何一個核取方格更有價值。</p>
+<h4>更廣泛的啟示</h4>
+<p>補丁合規與工作負載穩定未必同步，這次事件提醒我們，「已完全更新」與「運行正常」是兩個獨立的監控問題。在架構層面——以下是本文的解讀，並非來源提出的觀點——Linux 上的 SQL Server 部署完全不受這次 Windows 更新故障模式影響，因此對於能夠承受轉換成本的團隊而言，平台解耦是值得考慮的選項。</p>
+<h4>仍未知的事</h4>
+<p>相關報導並未確定完整的受影響範圍：哪些 Windows Server 版本受牽連、哪些 SQL Server 版本受影響，以及雲端託管與本地部署的安裝是否同樣暴露於風險之中。管理員應把微軟文件視為填補這些空白的地方，而非倚賴猜測。</p>
+<p>目前尚未公布補救時間表。應持續追蹤微軟通告的最新進展，期間切勿套用來源不明的變通方法。</p>
+<p><em>來源：BleepingComputer。</em></p>
+<p><a href="https://www.bleepingcomputer.com/news/microsoft/microsoft-recent-windows-updates-cause-sql-server-performance-issues/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
