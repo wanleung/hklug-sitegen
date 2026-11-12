@@ -1,0 +1,38 @@
+Date: 2026-11-12 11:26:00
+Author: HKLUG Team
+Title: 4,837 Stolen GitHub Accounts Ran a Secret Stealer in 1,800+ Repositories — What to Check Now
+Content:
+<p>4,837 compromised GitHub accounts were used to plant a secret-stealing CI workflow in at least 1,806 repositories, according to Aikido Security.</p>
+<p>The campaign, which began 10 November, used working logins rather than an exploit of GitHub itself — though the source material does not address how those logins were obtained. A tampered workflow supplied the exfiltration: injected code designed to reach the secrets and cloud credentials a repository's CI workflows can read, the very material those pipelines are trusted to handle. The reported repository count is understood to be a floor rather than a final tally. The material reviewed does not state how many secrets were ultimately taken, nor how the credentials were obtained in the first place; infostealer malware, phishing and credential stuffing all remain plausible and unconfirmed.</p>
+<p>That ambiguity matters less than the structure of the attack. Identity, not pipeline configuration, was the weak link — a recurring pattern in modern supply-chain security, where a legitimate account with legitimate permissions can quietly alter the automation everyone else inherits. CI secrets are frequently reused across projects, and CI runners are trusted by design, so a single exposed cloud key or long-lived token can propagate well beyond any one repository.</p>
+<h5>Removing the workflow is not enough</h5>
+<p>Patching repositories is only half the fix. Deleting the malicious workflow from an affected repository does not close the incident. Until the compromised accounts themselves are secured and their sessions, PATs and deploy tokens invalidated, an intruder with surviving write access can simply re-add the same workflow on the next push. Remediation is incomplete at the account layer, not the file layer.</p>
+<p>Should GitHub publish a token-invalidation advisory or postmortem, remediation steps may change; readers should watch for one.</p>
+<h5>CI/CD Secret Hygiene Checklist: Guidance for Local Development Teams</h5>
+<ul>
+<li><strong>Audit <code>.github/workflows/</code></strong>: review each recently modified workflow file, watching in particular for newly added <code>on: schedule</code> triggers, <code>pull_request_target</code>, or outbound curl/wget calls.</li>
+<li><strong>Inspect Actions run history</strong>: cross-check run times and triggers to surface unexpected runs, unfamiliar branches, or runner origins you don't recognise.</li>
+<li><strong>Rotate every secret a workflow can reach</strong>: prioritise cloud credentials, long-lived tokens, and deployment keys; make sure copies in your password manager and CI variables are replaced too.</li>
+<li><strong>Enforce hardware-backed 2FA</strong>: prefer security keys over SMS or authenticator-app-only setups, and disable legacy basic authentication.</li>
+<li><strong>Restrict workflow modification rights at the organisation level</strong>: use CODEOWNERS and branch protection so automation scripts can only change after review.</li>
+</ul>
+<p>Where secrets reachable by a workflow touch systems that process personal data, rotation and access audits should also fold into routine privacy risk management — a conditional reminder, not a sign that any regulator has acted on this incident.</p>
+<p>Downstream consumers of an affected project inherit this risk with no visible signal when a workflow is silently altered by a compromised contributor account: a green build says nothing about whether the steps inside it were rewritten yesterday. Credential-based attacks against developer platforms remain cheap to run and broad in reach, which is why password hygiene and phishing-resistant MFA stay foundational rather than optional. Aikido's figures may be revised as the investigation continues.</p>
+<hr>
+<p>據 Aikido Security 稱，4,837 個被入侵的 GitHub 帳戶被用來在至少 1,806 個 repository 中植入竊取機密的 CI workflow。</p>
+<p>這場於 11 月 10 日開始的攻擊行動，使用的是有效的登入憑證，而非利用 GitHub 本身的漏洞 —— 不過原始資料並未交代這些登入憑證如何取得。資料外洩則由被篡改的 workflow 達成：注入的程式碼旨在接觸 repository 的 CI workflow 能夠讀取的 secrets 及雲端憑證 —— 正是這些 pipeline 獲信任處理的資料。據了解，已報告的 repository 數量只是下限，而非最終總數。所審閱的資料並未說明最終有多少 secrets 被盜取，也未交代憑證最初如何取得；infostealer 惡意軟件、網絡釣魚及 credential stuffing 均屬合理推測，但未獲證實。</p>
+<p>這一點的模糊性，不如攻擊結構本身來得重要。身份而非 pipeline 配置，才是最薄弱的一環 —— 這是現代供應鏈保安中反覆出現的模式：一個擁有合法權限的正當帳戶，可以悄然改寫其他人沿用的自動化流程。CI secrets 常在不同專案之間重用，而 CI runner 在設計上即受信任，因此單一個外洩的雲端金鑰或長期有效的 token，其影響可以遠遠超出任何單一 repository。</p>
+<h5>僅移除 workflow 並不足夠</h5>
+<p>修補 repository 只是解決了一半的問題。從受影響的 repository 刪除惡意 workflow，並不代表事件已經了結。在被入侵的帳戶本身獲得保護、其 session、PAT 及 deploy token 被作廢之前，擁有寫入權限的入侵者只需在下一次 push 時重新加入同一個 workflow。補救措施必須在帳戶層面完成，而非檔案層面。</p>
+<p>若 GitHub 日後發布 token 作廢通告或事後檢討報告，補救步驟可能有所改變；讀者應密切留意。</p>
+<h5>CI/CD 機密衛生檢查清單：給本地開發團隊的指引</h5>
+<ul>
+<li><strong>審核 <code>.github/workflows/</code></strong>：逐檔檢查最近被修改的 workflow 檔案，特別留意新增的 <code>on: schedule</code> 觸發條件、<code>pull_request_target</code>，或向外連接的 curl/wget 呼叫。</li>
+<li><strong>檢查 Actions 執行紀錄</strong>：對照執行時間與觸發來源，找出非預期的 run、陌生分支，或你不熟悉的 runner 來源。</li>
+<li><strong>輪換所有可被 workflow 觸及的 secrets</strong>：優先處理雲端憑證、長期有效的 token 與部署金鑰；確保密碼管理器與 CI 變數中的副本一併更換。</li>
+<li><strong>強制硬件支援的 2FA</strong>：以 security key 取代簡訊或僅認證器 App 的做法，並停用舊式基本驗證。</li>
+<li><strong>在組織層級限制 workflow 修改權限</strong>：使用 CODEOWNERS 與分支保護，確保自動化腳本須經審核才能變更。</li>
+</ul>
+<p>若 workflow 可達的 secrets 涉及處理個人資料的系統，輪換與存取稽核也應納入日常的私隱風險管理範圍——這是條件性的提醒，而非監管機構已就此事件採取任何行動。</p>
+<p>當 workflow 被受入侵的 contributor 帳戶悄然改寫時，受影響專案的下游使用者會無聲地承接這項風險：綠色的 build 狀態完全不能反映其中的步驟是否昨日才被改寫。針對開發者平台的憑證攻擊執行成本低、影響範圍廣，這正是為何密碼衛生及抗釣魚 MFA 仍屬基礎措施而非可選項目。隨著調查持續進行，Aikido 的數字或會作出修訂。</p>
+<p><a href="https://thehackernews.com/2026/11/4837-hijacked-github-accounts-ran-ci.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
