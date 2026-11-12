@@ -1,0 +1,44 @@
+Date: 2026-11-12 15:32:00
+Author: HKLUG Team
+Title: Zoom Patches Critical Windows Flaw That Let Unauthenticated Attackers Escalate Privileges
+Content:
+<h3>Zoom Patches Critical Windows Flaw That Let Unauthenticated Attackers Escalate Privilege</h3>
+<p>Zoom has released security updates addressing two vulnerabilities in Zoom Workplace for Windows, including a critical issue that let a remote attacker with no valid credentials climb to higher privileges on the affected machine.</p>
+<p>Security Affairs first reported the fixes. In that coverage, successful exploitation of either flaw could grant an attacker elevated privileges on impacted systems — with the critical bug distinguished by how little it needed from the defender's side: no valid account, no interaction with the user, and a network path to the client.</p>
+<p>That is precisely what lifts this out of the "next maintenance window" queue. Privilege-escalation bugs are routinely deprioritised because the class traditionally assumes the attacker is already inside. Strip away the authentication requirement and the calculus changes: an attacker who can reach the Zoom client's network surface no longer needs a phished credential or a prior compromise to take the next rung up the access ladder. On a Windows endpoint, that next rung is where persistence, lateral movement, and payload delivery tend to start.</p>
+<p>At the time of writing, the publicly available summary does not carry CVE identifiers, per-version affected or fixed build numbers, or CVSS scores. Those details belong to Zoom's own security bulletin, and administrators should treat that bulletin — not secondary coverage — as the authoritative reference for exact build numbers and for whether CVE identifiers have been assigned. Nothing in this article should substitute for checking it.</p>
+<h4>What to do this week</h4>
+<p>For Windows IT teams running Zoom Workplace, the working checklist is straightforward:</p>
+<ol>
+<li><strong>Inventory endpoints.</strong> Identify every Windows machine with the Zoom client installed — not just staff laptops. Conference-room systems, shared kiosks, virtual desktop infrastructure, and thin clients frequently run Zoom and are frequently missed in rollouts.</li>
+<li><strong>Check versions against Zoom's bulletin.</strong> Compare installed builds against the fixed versions listed in Zoom's official advisory, which is where exact build numbers and any CVE assignments will appear.</li>
+<li><strong>Push the fixed build.</strong> Treat this as a this-cycle deployment, not a deferred one. Prioritise unattended or shared systems where physical patching is slower.</li>
+<li><strong>Verify after deployment.</strong> Confirm the installed version post-update rather than assuming the push succeeded — auto-update and managed-deployment paths don't always land.</li>
+<li><strong>Review auto-update settings.</strong> Zoom's client update behaviour is configurable. Confirm that the settings in your environment actually allow security updates to install without user action.</li>
+<li><strong>Flag unsupported branches.</strong> Any deployment still running an out-of-support Zoom branch needs an upgrade path, not just a patch.</li>
+</ol>
+<p>Both flaws were addressed in the same release cycle, so a single upgrade to the current build should close them together.</p>
+<h4>Why it matters</h4>
+<p>Collaboration clients have quietly joined the patch-priority tier once reserved for browsers and operating systems. They run on nearly every endpoint, they expose network-facing surfaces, and — as this disclosure makes plain — their bugs can carry severity ratings usually associated with system-level software. Any organisation that patches browsers weekly but treats Zoom as a quarterly housekeeping task has the priority order backwards.</p>
+<p>Before updating your records, confirm the CVE identifiers and fixed build numbers against Zoom's official bulletin; those details were not verified at the time of publication.</p>
+<hr>
+<h3>Zoom 修補 Windows 嚴重漏洞　未經認證攻擊者可提升權限</h3>
+<p>Zoom 已發布安全更新，修補 Zoom Workplace for Windows 的兩個漏洞，其中包括一項嚴重問題：遠端攻擊者即使沒有任何有效憑證，亦可在受影響的電腦上提升至更高權限。</p>
+<p>Security Affairs 最先報道此次修補。據該報道，兩個漏洞一旦被成功利用，攻擊者均可在受影響系統上取得提升的權限；其中嚴重漏洞的特點在於，它對防守方的要求極低：不需要有效帳戶、不需與用戶互動，只需具備連接至客戶端的網絡途徑。</p>
+<p>正因如此，此漏洞不能列入「等下一個維護時段處理」的清單。權限提升漏洞一向被排在較低優先次序，因為此類漏洞一般假設攻擊者已經身處系統之內。一旦移除認證要求，形勢便截然不同：能接觸 Zoom client 網絡介面的攻擊者，不再需要釣魚取得的憑證或先前的入侵，便可以攀上存取權限階梯的下一級。而在 Windows 終端上，這一級往往是持久化（persistence）、橫向移動（lateral movement）及惡意負載投放的起點。</p>
+<p>撰稿時，現有公開摘要並未列出 CVE 編號、各版本受影響或已修復的 build 編號，亦未有 CVSS 評分。這些詳情載於 Zoom 自身的安全公報，管理員應以該公報——而非二手報道——作為確認準確 build 編號及是否已分配 CVE 編號的權威參考。本文任何內容均不能取代查閱該公報。</p>
+<h4>本週應做的事</h4>
+<p>對於運行 Zoom Workplace 的 Windows IT 團隊，工作清單相當直接：</p>
+<ol>
+<li><strong>盤點終端設備。</strong> 找出所有已安裝 Zoom client 的 Windows 電腦——不限於員工手提電腦。會議室系統、共享 kiosk、虛擬桌面基礎架構（VDI）及 thin client 亦經常運行 Zoom，且在部署推廣中最容易被遺漏。</li>
+<li><strong>對照 Zoom 公報檢查版本。</strong> 將已安裝的 build 與 Zoom 官方安全通告所列的已修復版本逐一比對，準確 build 編號及任何 CVE 編號均載於該通告。</li>
+<li><strong>推送已修復版本。</strong> 應視為本周期內必須完成的部署，而非可以延後處理。優先處理無人看管或共享的系統，因其實體補丁更新較為緩慢。</li>
+<li><strong>部署後核實。</strong> 更新後確認實際安裝的版本，切勿假設推送已成功——自動更新及集中部署途徑未必每次都能生效。</li>
+<li><strong>檢視自動更新設定。</strong> Zoom client 的更新行為可作設定。確認環境中的相關設定確實允許安全更新在無需用戶操作的情況下安裝。</li>
+<li><strong>標記不再支援的版本分支。</strong> 任何仍在運行已停止支援的 Zoom 版本分支的部署，需要的是升級路徑，而不只是一個補丁。</li>
+</ol>
+<p>兩個漏洞在同一發布周期內修補，因此一次升級至最新 build 即可一併解決。</p>
+<h4>為何重要</h4>
+<p>協作軟件客戶端已悄然加入原本只屬於瀏覽器及作業系統的補丁優先級別。它們幾乎存在於每一台終端設備上，暴露面向網絡的介面，而且——正如本次披露所清楚顯示——其漏洞的嚴重程度評級可達至通常只與系統級軟件相提並論的水平。任何每週為瀏覽器打補丁、卻把 Zoom 當作每季例行整理工作的機構，都把優先次序顛倒了。</p>
+<p>在更新紀錄之前，請先對照 Zoom 官方公報核實 CVE 編號及已修復的 build 編號；本文刊出時並未核實上述詳情。</p>
+<p><a href="https://securityaffairs.com/202911/security/zoom-fixes-critical-windows-vulnerability-allowing-privilege-escalation.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
