@@ -1,0 +1,42 @@
+Date: 2026-11-12
+Author: HKLUG Team
+Title: Apache Patches Pre-Auth Remote Code Execution Bug in mod_http2
+Content:
+<p>The Apache HTTP Server project has released version 2.4.71, fixing a critical flaw in its HTTP/2 module that could let an unauthenticated remote attacker execute code on the server. The vulnerability, listed as CVE-2026-119618 in the advisory, affects versions 2.4.55 through 2.4.70, according to The Hacker News, which reported the issue on 11 November.</p>
+<p>What makes this a patch-now item is the bar an attacker has to clear: none. No credentials, no user interaction, and no privileged network position are required — simple network reachability to the server is sufficient. In practice, that means any internet-facing Apache instance in the affected range is a candidate target until it is upgraded or mitigated.</p>
+<h4>Quick self-triage</h4>
+<p>Operators can narrow the exposure quickly with three questions:</p>
+<ol>
+<li><strong>Which version am I running?</strong>
+   <code>bash
+   httpd -v   # or: apache2 -v</code>
+   Anything between 2.4.55 and 2.4.70 inclusive is affected. 2.4.71 contains the fix; releases before 2.4.55 are not in scope for this advisory.</li>
+<li><strong>Is HTTP/2 enabled?</strong> According to Red Hat, only servers with HTTP/2 turned on are at risk, since the flaw lives in <code>mod_http2</code>. That caveat should be checked rather than assumed — verify how the module is configured on your own build rather than inferring it from a default you remember.</li>
+<li><strong>How will I patch?</strong> Most operators should track their distributor's <code>httpd</code> or <code>apache2</code> package advisory for a backported fix rather than compiling 2.4.71 from source. Debian, Ubuntu, Alpine, and FreeBSD users should check their own distribution's tracker for the relevant package update.</li>
+</ol>
+<h4>If you cannot patch immediately</h4>
+<p>Interim mitigation is available: disabling HTTP/2 leaves HTTP/1.1 functioning normally while removing the attack surface. This is a stopgap, not a substitute for the upgrade, but it is a reasonable holding position for a system that cannot be restarted on short notice. Any host that remains unpatched and HTTP/2-enabled should be treated as urgent, given the pre-authentication nature of the flaw.</p>
+<h4>Why this one matters</h4>
+<p>Apache HTTP Server remains one of the most widely deployed web servers on the internet, and <code>mod_http2</code> is not an optional add-on — HTTP/2 support is a core, commonly enabled part of modern installations. A remotely exploitable, pre-authentication code execution bug in that code path therefore has a large potential blast radius, even though the actual number of exposed servers depends on the HTTP/2 configuration caveat above.</p>
+<p>The sequence of events is also worth noting: the fix shipped in 2.4.71 shortly before the public disclosure, giving a narrow window in which the patch existed but details were not yet widely circulated. For operators running affected versions, the message is straightforward — confirm your version, check whether HTTP/2 is in use, and apply the available fix or disable HTTP/2 as an interim measure.</p>
+<p>For organisations in Hong Kong running self-managed or on-premises Apache deployments, the same checklist applies: version first, HTTP/2 configuration second, patch via the distribution package third.</p>
+<hr>
+<p>Apache HTTP Server 項目已發布 2.4.71 版本，修補其 HTTP/2 模組中的一項嚴重漏洞。該漏洞可讓未經身份驗證的遠端攻擊者在伺服器上執行代碼。據 The Hacker News 於 11 月 11 日報道，該漏洞在安全公告中編號為 CVE-2026-119618，影響 2.4.55 至 2.4.70 版本。</p>
+<p>此漏洞之所以列為即時修補事項，在於攻擊者所需跨越的門檻：等於零。毋需任何憑據、毋需用戶互動，亦毋需特權網絡位置——只要能從網絡連線到伺服器便已足夠。實際而言，這意味著在受影響範圍內任何對外開放的 Apache 實例，在完成升級或緩解措施之前，均屬潛在攻擊目標。</p>
+<h4>快速自我分類</h4>
+<p>管理員可透過三個問題迅速釐清風險範圍：</p>
+<ol>
+<li><strong>我正在運行哪個版本？</strong>
+   <code>bash
+   httpd -v   # 或：apache2 -v</code>
+   介乎 2.4.55 至 2.4.70（包括首尾兩個版本）之間的任何版本均受影響。2.4.71 已包含修復；2.4.55 之前的版本則不在此公告範圍之內。</li>
+<li><strong>是否已啟用 HTTP/2？</strong> 據 Red Hat 表示，只有已開啟 HTTP/2 的伺服器才有風險，因為漏洞位於 <code>mod_http2</code> 之中。此項限制條件應加以查證而非逕行假定——請自行確認自己建置版本中該模組的實際設定，而非憑記憶中的預設值加以推斷。</li>
+<li><strong>如何進行修補？</strong> 大多數管理員應追蹤所用發行版的 <code>httpd</code> 或 <code>apache2</code> 軟件包公告，取得已回移（backport）的修復方案，而非自行從原始碼編譯 2.4.71。Debian、Ubuntu、Alpine 及 FreeBSD 用戶應查閱所屬發行版的追蹤頁面，以取得相關軟件包更新。</li>
+</ol>
+<h4>如無法即時修補</h4>
+<p>過渡性緩解措施仍然可行：停用 HTTP/2 後，HTTP/1.1 仍可正常運作，同時消除相關攻擊面。這只是權宜之計，並不能取代正式升級，但對於無法在短時間內重新啟動的系統而言，作為過渡安排尚屬合理。任何仍未修補且啟用 HTTP/2 的主機，鑑於漏洞屬認證前（pre-authentication）性質，均應視為緊急處理。</p>
+<h4>為何此事至關重要</h4>
+<p>Apache HTTP Server 仍是互聯網上部署最廣泛的網絡伺服器之一，而 <code>mod_http2</code> 並非可選附加組件——HTTP/2 支援是現代安裝方案中的核心部分，且通常預設啟用。因此，在此代碼路徑中出現可遠端利用的認證前代碼執行漏洞，其潛在影響範圍相當廣闊，即使實際暴露的伺服器數量仍取決於上文所述的 HTTP/2 設定條件。</p>
+<p>事件發生的時間次序亦值得注意：修復方案隨 2.4.71 在公開披露前不久發布，形成了一個短暫的時間窗口——修補程式雖已存在，但詳情尚未廣為流傳。對於運行受影響版本的管理員而言，信息十分明確：確認自身版本、檢查是否正在使用 HTTP/2，並套用現有修復方案，或以停用 HTTP/2 作為過渡措施。</p>
+<p>對於在香港運行自行管理或本地部署（on-premises）Apache 環境的機構，同一份檢查清單同樣適用：第一步確認版本，第二步檢查 HTTP/2 設定，第三步透過發行版軟件包進行修補。</p>
+<p><a href="https://thehackernews.com/2026/11/critical-apache-http2-flaw-could-let.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
