@@ -1,0 +1,40 @@
+Date: 2026-11-12 11:23:00
+Author: HKLUG Team
+Title: Node.js Ships 16 Security Fixes as HTTP/2 Bugs Expose Crash and Data-Leak Risks
+Content:
+<p>```</p>
+<p>Node.js has shipped fixes for 16 vulnerabilities across all three supported release lines, with two HTTP/2 flaws carrying the most operational weight: one that lets unauthenticated clients crash servers running the runtime's built-in HTTP/2 support, and another that can cause a server to hand a client fragments of its own memory — including responses intended for other connections. Patched builds are available as 22.23.5, 24.22.3, and 26.13.1.</p>
+<p><strong>Why the leak matters more than the crash</strong></p>
+<p>The memory-disclosure flaw deserves first attention because its consequences reach beyond availability. A server hit by the vulnerability can send an attacker pieces of memory that include response data belonging to separate connections — turning one attacker-controlled session into a potential data-exposure event. Whatever the process happened to be holding in the affected buffers could land in the wrong hands, and there is no reliable record of which responses leaked to whom.</p>
+<p>That shapes incident-response planning. Because no log reliably captures cross-connection leakage, the practical review is time-bounded and post-patch: pin down the exposure window, establish which services ran vulnerable versions during it, and judge whether sensitive material — session tokens, API responses, personal data — plausibly traversed those connections. Holding memory dumps as a standing mitigation is not a viable control; the durable fix is upgrading promptly. As a precaution for services that were publicly reachable on vulnerable versions, rotating credentials and session material that flowed through affected endpoints is a sensible defensive step.</p>
+<p><strong>Who is actually in the blast radius</strong></p>
+<p>The triage question is not "do we run Node.js?" but "do we terminate HTTP/2 in-process?" Node.js bundles the <code>http2</code> module, but a process only negotiates HTTP/2 when it is explicitly configured to do so. Services that expose HTTP/2 directly — for example, servers built on the HTTP/2 APIs rather than plain <code>http.createServer()</code> — sit inside the attack surface. Services fronted by a reverse proxy or load balancer that handles ALPN negotiation and forwards HTTP/1.1 to the Node process are largely insulated from the in-process flaw, even when the public endpoint advertises HTTP/2.</p>
+<p><strong>Five-step upgrade checklist</strong></p>
+<ol>
+<li>Inventory Node.js versions in production and identify any publicly reachable process that terminates HTTP/2 itself.</li>
+<li>Upgrade to 22.23.5, 24.22.3, or 26.13.1 as appropriate for your branch.</li>
+<li>If an immediate upgrade is not feasible, front the service with an upstream reverse proxy that terminates HTTP/2 as an interim mitigation.</li>
+<li>Review the full changelog and CVE list on the <a href="https://nodejs.org/en/security">Node.js security releases page</a> — this release covers 16 flaws, and teams should confirm which apply to their specific branch rather than assuming uniform exposure across lines.</li>
+<li>For services exposed during the vulnerable window, review logs and consider rotating credentials passed through affected endpoints.</li>
+</ol>
+<p>Timing splits by deployment model. In Hong Kong, teams on self-managed deployments control their own patch cadence and should treat this as a task for this week; those on managed platforms should verify with providers that the underlying runtime has been refreshed, since patch lag on shared infrastructure is not always visible from the tenant side.</p>
+<p>The denial-of-service (DoS) flaw is attributed to the 24.x and 26.x lines, where the HTTP/2 fixes landed, with 22.23.5 released alongside them — operators on any branch should confirm their exposure against the upstream security advisory. More broadly, HTTP/2 has accumulated a steady stream of implementation-level vulnerabilities across server projects in recent years, and this round underlines that adopting the protocol in-process means inheriting its attack surface directly.</p>
+<hr>
+<p>```</p>
+<p>Node.js 已在三條受支援的版本分支中修補16項漏洞，其中兩個 HTTP/2 缺陷影響最為嚴重：其一容許未經驗證的用戶端令執行 runtime 內建 HTTP/2 支援的伺服器崩潰，其二則可能令伺服器把自身記憶體的片段交予用戶端——當中包括預定發予其他連線的回應。已修補的版本為 22.23.5、24.22.3 及 26.13.1。</p>
+<p><strong>為何資料外洩比崩潰更值得關注</strong></p>
+<p>記憶體洩露漏洞應優先處理，因其後果不限於服務可用性。受此漏洞影響的伺服器可能向攻擊者發送記憶體片段，當中包含屬於其他獨立連線的回應資料——令一次由攻擊者控制的工作階段變成潛在的資料外洩事件。受影響緩衝區內當時持有的任何內容都可能落入他人之手，而且並無可靠紀錄顯示哪些回應洩露予何人。</p>
+<p>這直接影響事故應變計劃。由於沒有日誌能可靠捕捉跨連線洩露，實際的檢視須以時間為界並在修補後進行：確定外洩時間窗口、查明期間哪些服務執行有漏洞的版本，並評估敏感資料——session tokens、API 回應、個人資料——是否可能經這些連線傳輸。長期保存 memory dump 並非可行的控制措施；長久之計是盡快升級。對於曾在有漏洞版本下公開對外的服務，作為預防措施，輪換曾流經受影響 endpoints 的憑證及工作階段資料是合理的防禦步驟。</p>
+<p><strong>實際受影響範圍</strong></p>
+<p>分類問題並非「我們有沒有用 Node.js？」，而是「我們有沒有在 in-process 終結 HTTP/2？」Node.js 內置 <code>http2</code> module，但只有在明確設定下，process 才會協商 HTTP/2。直接暴露 HTTP/2 的服務——例如建基於 HTTP/2 API 而非一般 <code>http.createServer()</code> 的伺服器——處於 attack surface 之內。由 reverse proxy 或 load balancer 前置處理 ALPN 協商並以 HTTP/1.1 轉送至 Node process 的服務，即使公開 endpoint 宣告支援 HTTP/2，大體上亦不受此 in-process 漏洞影響。</p>
+<p><strong>五步升級清單</strong></p>
+<ol>
+<li>盤點生產環境的 Node.js 版本，識別任何自行終結 HTTP/2 且公開對外的 process。</li>
+<li>按所屬分支適當升級至 22.23.5、24.22.3 或 26.13.1。</li>
+<li>如無法即時升級，可先以前置 reverse proxy 終結 HTTP/2，作為臨時緩解措施。</li>
+<li>閱覽 <a href="https://nodejs.org/en/security">Node.js security releases page</a> 上的完整 changelog 及 CVE 清單——本次 release 涉及16項漏洞，團隊應確認哪些適用於自身分支，而非假設各條版本分支的受影響情況一致。</li>
+<li>對於在受影響期間暴露的服務，檢視日誌並考慮輪換經受影響 endpoints 傳輸的憑證。</li>
+</ol>
+<p>升級時機須按部署模式區分。在香港，採用自行管理部署的團隊可掌控自身修補節奏，應視此為本週內完成的任務；使用 managed platform 的團隊則應向服務供應商確認底層 runtime 已更新，因為共享基礎設施上的修補延遲未必從用戶端可見。</p>
+<p>拒絕服務（DoS）漏洞歸於 24.x 及 26.x 兩條版本分支，HTTP/2 修補亦落在其中，22.23.5 則同期發布——任何分支的營運人員均應按上游安全公告確認自身受影響情況。整體而言，近年來 HTTP/2 在各伺服器項目中持續累積實作層面的漏洞，本輪事件凸顯一點：在 in-process 採用該協議，意味著直接承繼其 attack surface。</p>
+<p><a href="https://thehackernews.com/2026/11/nodejs-fixes-16-flaws-including-http2.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
