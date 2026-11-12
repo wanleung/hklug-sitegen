@@ -1,0 +1,42 @@
+Date: 2026-11-12 12:29:00
+Author: HKLUG Team
+Title: Windows 11 machines with the October preview can't install November's security update, Microsoft confirms
+Content:
+<p>Microsoft has confirmed that the November 2026 security updates are failing to install on Windows 11 systems that already carry the October preview update, according to BleepingComputer. The failures have surfaced under three distinct error codes: <strong>0x80070306</strong>, <strong>0x800f0989</strong>, and <strong>0x800f0993</strong>, all linked to the installation of KB5132061.</p>
+<p>The most actionable takeaway for administrators is scope: this is not a blanket Windows 11 problem. The failures are tied specifically to endpoints carrying the October preview (or "C") update. Machines that skipped the preview appear largely unaffected — though it is worth stressing that the source documents failures in the preview-installed group and does not publish a formal control-group result. The practical implication still holds: identifying which endpoints have the October preview installed is, right now, the top of the patch remediation queue.</p>
+<p><strong>Three codes, likely one problem</strong></p>
+<p>The temptation on the helpdesk will be to treat 0x80070306, 0x800f0989 and 0x800f0993 as three separate defects requiring three separate tickets. That may be a mistake. The codes are drawn from different parts of the Windows servicing stack, which means users can see different numbers even when the underlying failure is the same. Administrators should record the exact code reported on each machine for escalation purposes, but avoid assuming distinct root causes per code until Microsoft publishes guidance. Whether 0x80070306 and the 0x800F09xx family ultimately require different fixes remains an open question, and we will update this article if Microsoft's release health and known-issues record for KB5132061 says otherwise.</p>
+<p><strong>A verification problem, not just an install problem</strong></p>
+<p>One detail that matters for large fleets: some affected machines reportedly show a green or successful-looking sync status even when the update has not applied. This means administrators should not trust the management console alone. Confirm the absence of KB5132061 directly on the endpoint — via update history and installed-KB checks — rather than relying on dashboard state.</p>
+<p><strong>What admins can do now</strong></p>
+<p>There is no Microsoft workaround or fix as of publication; the company's acknowledgement is not a remedy, and this article will not imply otherwise. In the absence of a patch, the sensible sequence for Windows teams is:</p>
+<ol>
+<li>Inventory endpoints and flag those with the October preview installed.</li>
+<li>Verify KB5132061 status per machine through update history, not console summaries.</li>
+<li>Log the precise error code reported on each failing host to support escalation.</li>
+<li>Track Microsoft's Windows release health and known-issues channels for KB5132061 for official guidance.</li>
+<li>Defer further preview opt-ins on pilot fleets until the servicing path is confirmed stable.</li>
+</ol>
+<p>Point five deserves emphasis. Preview updates shift the servicing baseline, and the machines taking previews first — typically pilot and canary fleets — are precisely the ones failing here. That is a real trade-off of the preview programme to weigh when deciding who enrols.</p>
+<p>For Hong Kong IT teams running mixed Windows 11 estates, the story's value is that exposure can be scoped cleanly and quickly. This report will be updated when Microsoft issues official guidance or a fix for KB5132061.</p>
+<p><em>Source: BleepingComputer.</em></p>
+<hr>
+<p>據 BleepingComputer 報導，微軟已確認，2026 年十一月的安全更新在已安裝十月預覽版更新的 Windows 11 系統上安裝失敗。失敗情況分別以三組錯誤代碼呈現：<strong>0x80070306</strong>、<strong>0x800f0989</strong> 及 <strong>0x800f0993</strong>，全部均與 KB5132061 的安裝有關。</p>
+<p>管理員最應注意的是影響範圍：這並非全面性的 Windows 11 問題。失敗個案專門集中在已安裝十月預覽（或稱「C」）更新的 endpoint 上。略過預覽更新的電腦似乎基本上未受影響——但必須強調，來源僅記錄已安裝預覽版一組的失敗情況，並未公布正式的對照組結果。實際含意依然成立：目前而言，識別哪些 endpoint 已安裝十月預覽版，是修補程式補救工作的首要任務。</p>
+<p><strong>三組代碼，很可能同一問題</strong></p>
+<p>服務台人員傾向把 0x80070306、0x800f0989 和 0x800f0993 視作三個獨立缺陷，分別開立三張工單。這可能是一個錯誤。這些代碼取自 Windows servicing stack 的不同部分，即使底層故障相同，用戶也可能看到不同數字。管理員應記錄每部電腦回報的確切代碼以供升級處理，但在微軟公布指引之前，不應假設每個代碼各有不同根因。0x80070306 與 0x800F09xx 系列最終是否需要不同修復方案，仍有待觀察；若微軟就 KB5132061 的發布健康狀況及已知問題記錄有新說法，本文將會更新。</p>
+<p><strong>不只是安裝問題，更是驗證問題</strong></p>
+<p>對大型電腦隊伍而言，有一點相當關鍵：據報部分受影響電腦即使更新並未套用，同步狀態仍顯示綠色或看似成功。這意味著管理員不應只倚賴管理主控台。應直接在 endpoint 上確認 KB5132061 是否存在——透過更新記錄及已安裝 KB 檢查——而非依賴儀表板狀態。</p>
+<p><strong>管理員目前可以做的事</strong></p>
+<p>截至本文刊發，微軟仍未提供因應措施或修正方案；公司確認問題存在並不等同於補救措施，本文亦不會作出任何暗示。在修補程式推出之前，Windows 團隊應採取的合理步驟如下：</p>
+<ol>
+<li>盤點 endpoint，標記已安裝十月預覽版的電腦。</li>
+<li>透過更新記錄逐部核實 KB5132061 狀態，而非依賴主控台摘要。</li>
+<li>記錄每部故障主機回報的確切錯誤代碼，以支援升級處理。</li>
+<li>追蹤微軟 Windows 發布健康狀況及已知問題渠道，留意 KB5132061 的官方指引。</li>
+<li>在 servicing path 確認穩定之前，暫停試點隊伍的進一步預覽版 opt-in。</li>
+</ol>
+<p>第五點尤須強調。預覽更新會轉移 servicing baseline，而最早接收預覽版的電腦——通常是試點及 canary 隊伍——正是今次出現故障的一群。這正是預覽計劃的實際取捨，在決定哪些人參與 enrolment 時必須衡量。</p>
+<p>對於運行混合 Windows 11 環境的香港 IT 團隊而言，本報道的價值在於風險範圍可以迅速而清晰地劃定。當微軟就 KB5132061 發布官方指引或修正方案時，本文將會更新。</p>
+<p><em>來源：BleepingComputer。</em></p>
+<p><a href="https://www.bleepingcomputer.com/news/microsoft/microsoft-confirms-kb5132061-installation-issues-0x80070306-0x800f0989-0x800f0993-errors/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
