@@ -1,0 +1,33 @@
+Date: 2026-11-12 21:30:00
+Author: HKLUG Team
+Title: Rust 1.100.0 Moves a Large Batch of Features From Nightly to Stable
+Content:
+<p>Rust 1.100.0 has been released, and while the round figure is coincidental, the milestone itself is notable for what it moves out of nightly rather than for any single headline addition. According to LWN.net's coverage of the release, the update ships a large batch of stabilized features — most prominently the long-awaited never type, the <code>DropGuard</code> type in the standard library, and the <code>Allocator</code> API.</p>
+<h4>A release defined by stabilization volume</h4>
+<p>The news value of 1.100.0 lies less in novelty than in breadth. The never type (<code>!</code>) has been one of the most discussed items on Rust's stabilization roadmap for years; its arrival on stable closes a long-standing gap in the language's type system, giving stable users access to a construct that previously required opting into nightly builds. <code>DropGuard</code> provides a standard-library pattern for guaranteed cleanup logic, while the <code>Allocator</code> API is arguably the most structurally significant of the three: making allocation a pluggable interface opens the door to arena and pool allocators, NUMA-aware memory placement, and custom embedded heaps that would otherwise have to route through a global allocator path.</p>
+<p>Cargo changes are part of the release as well. Cargo can now set a minimum age for dependencies, a measure aimed at blunting supply-chain attacks, and it reports unused dependencies more reliably.</p>
+<h4>Why the nightly-to-stable gap matters to adopters</h4>
+<p>This is a global upstream release with no region-specific dimension — but as an editorial matter, it is broadly relevant to IT teams in Hong Kong adopting Rust, for the same reason it is relevant to adopters everywhere: the update narrows the distance between nightly and stable compilers.</p>
+<p>Many corporate CI pipelines and toolchain policies restrict builds to stable Rust, on the reasonable grounds that nightly compilers change without notice and can break builds unpredictably. Until now, teams that wanted features like the never type had to seek exceptions to those policies, pin a specific nightly toolchain, or forgo the functionality entirely. A stabilization batch of this size removes the need for those workarounds: the features become available under the same support guarantees as the rest of the stable toolchain.</p>
+<p>That shifts the usual upgrade calculus. Releases dominated by experimental additions tend to invite a wait-and-see approach; releases that consolidate previously nightly-only functionality tend to reward upgrading promptly, because the alternative is maintaining bespoke toolchain exceptions.</p>
+<h4>The structural addition</h4>
+<p>Among the stabilized items, the <code>Allocator</code> API deserves particular attention from a design standpoint. Rust's allocation model has long centered on a global allocator, which is convenient for most applications but awkward for workloads that want per-structure or per-region allocation strategies. By making allocation an explicit, pluggable interface, the API opens the door to arena-based, pooled, and NUMA-aware allocation schemes — potentially treating them as first-class citizens rather than as workarounds layered over the global path.</p>
+<p>For anyone writing performance-sensitive or resource-constrained Rust, this is the item most likely to reshape how code is structured over the next few release cycles. That is our reading of what a pluggable allocation interface implies, however, not something the release notes themselves explicitly promise.</p>
+<h4>What teams should do now</h4>
+<p>Organizations running Rust in production should treat 1.100.0 as a standard point release but review it deliberately: the stabilization batch may let them delete nightly toolchain pins, drop policy exceptions, or simplify CI configuration. Projects that have been waiting for the never type, or for the <code>Allocator</code> API, to land on stable now have their answer.</p>
+<p>Teams planning an upgrade should consult the official Rust 1.100.0 release notes for the complete list of stabilized features and any further Cargo behavior changes before scheduling the bump, since secondary coverage does not enumerate every detail.</p>
+<hr>
+<p>Rust 1.100.0 已正式發布，雖然版本號的整數是巧合，但此里程碑之所以值得注意，在於它將大量功能由 nightly 移出，而非任何單一重點新增。根據 LWN.net 對此次發布的報道，這次更新帶來一大批已穩定化（stabilized）的功能，當中最矚目的是期待已久的 never type、標準庫中的 <code>DropGuard</code> 類型，以及 <code>Allocator</code> API。</p>
+<h4>以穩定化數量定義的一次發布</h4>
+<p>1.100.0 的新聞價值不在新穎，而在涵蓋面之廣。never type（<code>!</code>）多年來一直是 Rust 穩定化路線圖上討論最多的項目之一；它登上 stable，填補了語言類型系統長期存在的空缺，令 stable 用戶無需改用 nightly build 也能使用此構造。<code>DropGuard</code> 提供標準庫層面的確保清理邏輯（cleanup）模式，而 <code>Allocator</code> API 則是三者中在架構上最重要的一項：將分配變成一個可插拔的介面，為 arena 及 pool allocator、NUMA-aware 記憶體配置，以及自訂嵌入式 heap 打開了大門——否則這些都只能繞經全域 allocator 路徑。</p>
+<p>Cargo 的改動亦屬此次發布的一部分。Cargo 現可為 dependencies 設定最低存在時間（minimum age），此舉旨在削弱供應鏈攻擊的威脅；同時亦能更可靠地報告未有使用的 dependencies。</p>
+<h4>Nightly 與 stable 之間的差距為何對採用者重要</h4>
+<p>這是一次全球性的上游發布，並無地域層面的特殊之處——但以編輯角度而言，它對香港採用 Rust 的 IT 團隊同樣有廣泛參考價值，理由與全球採用者無異：是次更新縮窄了 nightly 與 stable 編譯器之間的距離。</p>
+<p>不少企業的 CI pipeline 及工具鏈政策只允許使用 stable Rust 進行建置，理由相當充分——nightly 編譯器會在毫無預警下變動，隨時可能令建置意外失效。在此之前，團隊若要使用 never type 等功能，只能申請政策豁免、鎖定特定 nightly toolchain，或索性放棄該功能。規模如此龐大的一批穩定化，令這些變通手法不再需要：相關功能在與 stable 其餘工具鏈相同的支援保證下提供。</p>
+<p>這改變了團隊慣常的升級考量。以實驗性新增為主的發布，往往令人傾向採取觀望態度；反之，整合原本僅限 nightly 功能的發布，通常值得儘早升級，因為否則便要長期維護專屬的工具鏈豁免安排。</p>
+<h4>架構上的重要新增</h4>
+<p>在各項穩定化項目中，<code>Allocator</code> API 從設計角度而言尤其值得關注。Rust 的分配模型一直以全域 allocator 為核心，對大多數應用程式固然方便，但對希望按結構（per-structure）或按區域（per-region）制定分配策略的工作負載則顯得笨拙。透過將分配變為一個明確、可插拔的介面，該 API 為 arena-based、pool 及 NUMA-aware 的分配方案打開了大門——有機會令它們成為一等公民，而非疊加在全域路徑之上的變通做法。</p>
+<p>對於任何編寫效能敏感或資源受限 Rust 程式的開發者而言，這是最可能在未來數個 release cycle 中重塑代碼結構的一項。不過，這是我們對可插拔分配介面所隱含意義的解讀，並非 release notes 本身明確承諾的功能。</p>
+<h4>團隊現階段應採取的行動</h4>
+<p>在生產環境運行 Rust 的機構，應把 1.100.0 視為一次常規的 point release，但同時要有系統地審視內容：這批穩定化可能令他們可以移除 nightly toolchain 鎖定、取消政策豁免，或簡化 CI 配置。一直等候 never type 或 <code>Allocator</code> API 登上 stable 的項目，如今已有明確答案。</p>
+<p>計劃升級的團隊，應先查閱官方 Rust 1.100.0 release notes，掌握完整的穩定化功能清單及任何其他 Cargo 行為變動，然後才安排升級時間表，因為二手報道所提供的摘要並未逐一列明所有細節。</p>
