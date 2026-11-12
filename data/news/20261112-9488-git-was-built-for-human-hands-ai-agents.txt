@@ -1,0 +1,44 @@
+Date: 2026-11-12 12:22:00
+Author: HKLUG Team
+Title: Git Was Built for Human Hands. AI Agents Are Rewriting the Rules.
+Content:
+<h3>Git Was Built for Human Hands. AI Agents Are Rewriting the Rules.</h3>
+<p>For twenty years, Git has been the definitive answer to a deceptively simple question: who changed what? That answer is now destabilised — not because Git is aging, but because the author is no longer reliably human. As autonomous coding agents move from autocomplete to full task execution, an O'Reilly Radar analysis argues, source control faces a problem it was never designed to hold: capturing not just what changed, but why the changes belong together.</p>
+<h4>The 2005 bargain</h4>
+<p>When Linus Torvalds designed Git in 2005, he solved a specific problem for a specific species: letting distributed developers collaborate over terminal windows, with line-by-line diffs as the common currency. The compromise worked because of a symmetry nobody had to name at the time — how a human reasoned about a change and how the diff rendered that change were effectively the same shape. A few lines here, a tweak there; the patch and the thought matched.</p>
+<p>Agents break that symmetry structurally rather than incrementally. They don't work in flat text files or line breaks. They reason across syntax trees, execution traces, call graphs, and type constraints — and flatten the result to text only at the very end, when the commit is written. The diff that lands in front of a reviewer is a lossy projection of a process that happened in a representation Git never sees.</p>
+<h4>Code review: where the fracture shows first</h4>
+<p>The earliest and most visible pain is not storage, not performance — it is code review. A human pull request mirrors human reasoning: a handful of hunks, each traceable to a deliberate edit. An agent that rewrites a subsystem across a dozen files in one run delivers a wall of hunks instead, and the reviewer is left reverse-engineering why the edits cluster together from raw text alone. Line diffs were always weakest at that task; agent scale is turning it from an edge case into the routine.</p>
+<p>Volume compounds the problem. Teams already running assistants through GitHub Copilot, Cursor, or GitLab Duo know the effect: machine-authored changes arrive faster than line-by-line scrutiny was ever meant to consume. Let an agent hold a task open for minutes or hours, and the commit history degrades from a record of decisions into a log of byte mutations.</p>
+<h4>Accountability moves from inferred to attached</h4>
+<p>That degradation is the stakes the debate too often skips. Historically, auditability in Git has been <em>inferred</em> — reviewers and responders squint at hunks, lean on <code>git blame</code>, and reconstruct intent from the shape of the patch. It was an imperfect practice, but the bytes on screen were at least a human's approximation of a human's reasoning.</p>
+<p>When the author is a machine, inference stops working. Nobody watched the agent decide. The only way to preserve accountability is to make it <em>attached</em>: task intent recorded alongside the run, verification results stored with the edits, explicit links among related changes scattered across files. Auditability stops being something you read out of history and becomes something that must be carried into it.</p>
+<p>This is where the real argument lives. If the evidence that explains a change exists only in a layer above the repository, then the repository alone can no longer answer "why" — and incident reconstruction, compliance review, and post-mortems all lose their footing.</p>
+<h4>Why Git survives anyway</h4>
+<p>Git's dominance was never architectural brilliance. It was network effects: earlier semantic and patch-oriented alternatives stayed niche because humans never felt enough pain to justify switching. That constraint weakens when the primary author is a machine, but it does not vanish. Nobody abandons the system their CI pipelines, hooks, and muscle memory are built around.</p>
+<p>So the likely near-term answer is not a Git killer but a translation layer sitting above the repo — tooling that captures provenance, test evidence, invariants, and structural context during an agent run, then compresses all of it into Git's file-level record. The engineering disputes will happen inside that compression: what must survive it, and which structural details are irrecoverable once flattened. Nobody has agreed on the answer yet, which is precisely why it should be argued over now.</p>
+<h4>Two futures, and the more dangerous one</h4>
+<p>Git faces a fork of its own. In one future it grows to carry richer semantics natively — intent, verification, relationships between edits — and remains the whole conversation. In the other, it becomes a dumb archival substrate beneath smarter layers that do the reasoning.</p>
+<p>The second future is the more likely, and the more dangerous one. Nothing guarantees the layers above will agree on what must persist through compression to file-level storage; if they don't, the record that survives will be the record that fits — bytes, not decisions.</p>
+<p>Git doesn't need replacing. It needs to stop being the whole conversation. The tooling community should argue about which future it wants — loudly — before the answer settles on its own.</p>
+<hr>
+<h3>Git 為人類雙手而設。AI Agent 正改寫遊戲規則。</h3>
+<p>二十年來，Git 一直是那個看似簡單實則微妙問題的權威答案：誰改了甚麼？如今這個答案已開始動搖——並非因為 Git 老化，而是因為作者已不再可靠地是人類。隨著自主編碼 agent 從自動補全邁向完整任務執行，一篇 O'Reilly Radar 分析指出，source control 面對着一個它從未被設計去處理的問題：不單要記錄改了甚麼，還要記錄這些改動為何應當連在一起。</p>
+<h4>2005 年的交易</h4>
+<p>2005 年 Linus Torvalds 設計 Git 時，他為一個特定群體解決了一個特定問題：讓分散各地的開發者透過 terminal 窗口協作，並以逐行 diff 作為通用貨幣。這項折衷之所以可行，是基於當時無人需要點破的一種對稱性——人類如何推理一項改動，與 diff 如何呈現該改動，實際上形狀相同。這裡改幾行，那裡調一下；patch 與思路彼此吻合。</p>
+<p>Agent 破壞這對稱性的方式是結構性的，而非漸進的。它們並不在平面文字檔或換行之間工作，而是在語法樹、執行 trace、call graph 和型別約束之間推理——只有在最後寫下 commit 時，才把結果壓平成文字。送到 reviewer 面前的 diff，只是一個發生在 Git 從未見過的表示形式中的過程的有損投影。</p>
+<h4>Code review：裂痕最早顯露之處</h4>
+<p>最早、也最明顯的痛處不是儲存，不是性能——而是 code review。人類的 pull request 映照着人類的推理：少數幾個 hunk，每一個都可追溯至一次有意圖的編輯。而一個 agent 在一次執行中橫跨十幾個檔案重寫某個 subsystem，交出來的卻是一面 hunk 牆，reviewer 只能從原始文字反向推敲這些編輯為何聚在一起。行級 diff 在這項任務上向來最弱；agent 的規模正把它從邊緣情況變成日常。</p>
+<p>數量令問題加劇。已經透過 GitHub Copilot、Cursor 或 GitLab Duo 運行 assistant 的團隊都很清楚效果：機器撰寫的改動送達的速度，遠超逐行審視從來能夠消化的速度。讓 agent 將一個任務開啟數分鐘甚至數小時，commit history 便會由決策紀錄退化為 byte 變異的日誌。</p>
+<h4>問責從推斷變為附加</h4>
+<p>這項退化，正是辯論中最常被跳過的關鍵。歷來，Git 的可審計性是靠<em>推斷</em>的——reviewer 和應對人員細看 hunk、倚賴 <code>git blame</code>、從 patch 的形狀重建意圖。這是一種不完美的做法，但屏幕上的 bytes 至少是人類對人類推理的近似。</p>
+<p>當作者是機器，推斷便失效。沒有人看著 agent 作決定。保存問責的唯一辦法，是讓它成為<em>附加</em>的：任務意圖隨執行一併記錄，驗證結果與編輯一同儲存，在散落於各檔案的相關改動之間建立明確連結。可審計性不再是你從歷史中讀出來的東西，而成了必須被帶入歷史的東西。</p>
+<p>真正的爭議就在此處。如果解釋一項改動的證據只存在於 repository 之上的一層，那麼 repository 本身便再不能回答「為何」——事故重現、合規審查和事後檢討（post-mortems）也將全部失去立足點。</p>
+<h4>為甚麼 Git 依然屹立</h4>
+<p>Git 的主導地位從來不是架構上的 brilliance，而是網絡效應：較早的語義化和以 patch 為本的替代方案一直停留於小眾，因為人類從未痛到足以 justify 轉換。當主要作者變成機器，這一約束會減弱，但不會消失。沒有人會放棄他們的 CI pipeline、hook 和肌肉記憶所圍繞建成的系統。</p>
+<p>因此，短期內最可能的答案不是一個 Git killer，而是一個坐在 repo 之上的 translation layer——在 agent 運行期間擷取 provenance、測試證據、invariant 和結構 context，再把這一切壓縮進 Git 的檔案層級記錄的工具。工程上的爭議將發生在壓縮過程之中：甚麼必須在壓縮中存活，以及哪些結構細節一旦壓平便無法復原。目前沒有人就答案達成共識，正因如此，現在就應當為之爭論。</p>
+<h4>兩個未來，以及更危險的那一個</h4>
+<p>Git 面對着自己的 fork。在一個未來，它原生承載更豐富的語義——意圖、驗證、編輯之間的關係——並繼續是整場對話的全部。在另一個未來，它變成一個愚笨的 archival substrate，墊在更聰明、負責推理的層之下。</p>
+<p>第二個未來更可能，也更危險。沒有任何保證上層會就甚麼必須穿過壓縮、存續到檔案層級儲存達成一致；若它們不能，存活下來的記錄將只是裝得下的記錄——bytes，而非決策。</p>
+<p>Git 不需要被取代。它需要不再成為整場對話的全部。工具社群應當大聲爭論它想要哪一個未來——趁答案自行落定之前。</p>
+<p><a href="https://www.oreilly.com/radar/why-git-needs-help-moving-from-files-to-systems-for-source-control/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
