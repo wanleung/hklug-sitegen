@@ -1,0 +1,28 @@
+Date: 2026-11-12 13:02:00
+Author: HKLUG Team
+Title: Intel Xe Driver Prepares SR-IOV Provisioning for Virtual GPU Profiles Upstream
+Content:
+<p>The Intel Xe graphics driver is being prepared for SR-IOV provisioning of virtual GPU profiles in the upcoming mainline kernel cycle — Linux 7.5, per Phoronix. The patch mechanics matter less than the direction they point: standards-based, hardware-enforced GPU partitioning for Intel's discrete graphics stack is moving upstream, potentially giving infrastructure teams an open-source route to a capability that production environments have long had to buy.</p>
+<h4>Why it matters</h4>
+<p>GPU slicing in production is currently defined largely by proprietary software. NVIDIA's Multi-Instance GPU (MIG) and its licensed vGPU stack anchor the accelerator partitioning conversation, while AMD has pursued SR-IOV approaches of its own — both noted here as general industry background rather than new reporting. If Xe's SR-IOV provisioning lands in mainline, cloud and DevOps teams gain a kernel-native path to carving one physical GPU into isolated virtual functions, with no separate proprietary hypervisor component or licence layer to procure and maintain.</p>
+<p>The upstream model is where the operational difference sits. A mainline driver feature arrives with distribution review, community maintenance, and integration paths that Kubernetes device plugins, libvirt configurations, and vendor-independent orchestration layers can consume without wrapping a proprietary SDK. Device isolation, configuration, and lifecycle management move into software that can be audited, patched, and deployed through the normal distro toolchain. That matters to organisations keeping a second GPU vendor in the mix without multiplying overhead, and to multi-tenant and shared virtualisation infrastructure where auditable partitioning is a standing requirement.</p>
+<h4>How it works</h4>
+<p>The mechanism is SR-IOV (Single Root I/O Virtualisation), the PCI specification that lets one physical device present multiple independent virtual functions to a host. In Xe's case, administrators would provision virtual GPUs according to predefined profiles — curated tiers of performance and memory allocation that map a virtual function to a bounded slice of the card. Isolation is enforced by the device itself rather than by software scheduling alone.</p>
+<p>The work also revisits an earlier idea. Intel's GVT-g mediated-passivation approach did reach mainline through i915 and was maintained for years; what never happened was a port into the newer Xe driver. SR-IOV provisioning inside Xe is a structurally different second attempt, not a revival of that code.</p>
+<h4>Caveats on timing</h4>
+<p>Patch status has not been independently verified: whether the series currently sits as an RFC, in a for-next tree, or has already been pulled affects how confidently any timeline can be stated. The kernel version number likewise rests on Phoronix's characterization of the upcoming cycle and should not be treated as confirmed until Linus Torvalds tags the release.</p>
+<p>Hardware coverage is also open. Which Xe generations and PCI IDs the profiles will initially support remains unresolved, and the answer will determine whether the feature lands as workstation-relevant or data-centre-relevant. On our reading, even a successful merge would not translate immediately into usable infrastructure: distributions typically rebase their LTS and enterprise kernels on a delay measured in months, so production fleets should plan around distro rollout schedules rather than merge-window dates.</p>
+<p><em>Source: Phoronix, reported 12 November 2026.</em></p>
+<hr>
+<p>據 Phoronix 報道，Intel Xe 圖像驅動正為即將來臨的主線內核周期——Linux 7.5——作準備，將 SR-IOV 的虛擬 GPU profile 配置功能納入其中。補丁的具體實現並不如它所指的方向重要：以標準為基礎、由硬件強制執行的 GPU 分區技術，正逐步進入 Intel 獨立顯卡軟件堆疊的主線，長遠或可讓基礎架構團隊透過開源途徑，取得生產環境一直需要付費購買的能力。</p>
+<h4>為何重要</h4>
+<p>目前生產環境中的 GPU 切分（GPU slicing）很大程度上由專有軟件所定義。NVIDIA 的 Multi-Instance GPU（MIG）及其需授權的 vGPU 堆疊主導了加速器分區的討論，而 AMD 亦有自身的 SR-IOV 方案——以上僅為一般業界背景，並非本文的新報道。倘若 Xe 的 SR-IOV 配置功能進入主線，雲端及 DevOps 團隊將獲得一條內核原生（kernel-native）的途徑，把一張實體 GPU 切分為多個互相隔離的 virtual function，毋須另外採購及維護專有的 hypervisor 元件或授權層。</p>
+<p>上游（upstream）模式正是營運層面差異所在。主線驅動功能會隨附發行版審核、社群維護及整合途徑，Kubernetes device plugin、libvirt 配置以及不依賴特定廠商的編排層皆可直接採用，毋須封裝專有 SDK。設備隔離、配置及生命週期管理可轉入可審計、可打補丁、並可透過正常發行版工具鏈部署的軟件之中。這對於一方面希望維持第二個 GPU 供應商作為選項、又不想令營運及維護開支倍增的機構而言十分重要；對於多租戶及共享虛擬化基礎架構而言，可審計的分區更是長期存在的要求。</p>
+<h4>運作原理</h4>
+<p>其機制為 SR-IOV（Single Root I/O Virtualisation），即一項 PCI 規範，容許一個實體設備向主機呈現多個獨立的 virtual function。在 Xe 的情況下，管理員可按預先設定的 profile 來配置虛擬 GPU——這些 profile 是經過整理的性能與記憶體分配層級，將 virtual function 對應到顯卡上一個有明確邊界的分片。隔離由設備本身強制執行，而非僅靠軟件調度。</p>
+<p>是次工作同時重新審視一個早前的概念。Intel 的 GVT-g 中介式（mediated-passivation）方案確實曾透過 i915 進入主線，並獲多年維護；但從未實現的是移植到較新的 Xe 驅動。在 Xe 內部加入 SR-IOV 配置，是結構上截然不同的第二次嘗試，並非該段舊代碼的復活。</p>
+<h4>時間表的注意事項</h4>
+<p>補丁狀態尚未經獨立核實：該系列目前究竟是以 RFC 形式存在、已放入 for-next tree，還是已經被拉入（pulled），會影響到任何時間表可以講得多肯定。內核版本編號同樣基於 Phoronix 對即將來臨周期的描述，在 Linus Torvalds 為正式版本加上標籤之前，不應視為已獲確認。</p>
+<p>硬件覆蓋範圍亦未有定論。profile 初期會支援哪些 Xe 世代及 PCI ID 仍未解決，而答案將決定該功能是與工作站相關，還是與數據中心相關。按我們的理解，即使成功合併（merge），亦不會即時轉化為可用的基礎架構：發行版通常會在數月之後才將其 LTS 及企業版內核重新建立（rebase）於新版本之上，因此生產集群應按發行版的推出時間表來規劃，而非以 merge window 日期作準。</p>
+<p><em>來源：Phoronix，2026 年 11 月 12 日報道。</em></p>
+<p><a href="https://www.phoronix.com/news/Linux-7.5-Intel-Xe-vGPU-Profile" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
