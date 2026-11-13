@@ -1,0 +1,34 @@
+Date: 2026-11-13 18:34:00
+Author: HKLUG Team
+Title: Check Point Gateways Used to Push VMware ESXi Wiper, Report Says
+Content:
+<p>Vulnerable Check Point Security Gateway appliances have been compromised in a campaign that used a dropper known as PHP2Shell to reach into virtualised estates and deploy data-wiping malware against VMware ESXi hosts, according to BleepingComputer.</p>
+<p>The attack chain described in the report places an internet-facing network appliance at the start of a path that ends with destruction of virtual machines — a jump from perimeter foothold to hypervisor-level impact that removes the usual containment cushion defenders rely on.</p>
+<p>For organisations in Hong Kong and elsewhere running Check Point gateways on exposed interfaces, the practical first step is a straightforward one: confirm that deployed instances are running vendor-recommended fixed versions, and then treat any gateway that was unpatched during the relevant window as potentially compromised rather than merely vulnerable. Patching closes the door; it does not tell you who walked through it.</p>
+<h4>What PHP2Shell does</h4>
+<p>PHP2Shell functions as a dropper — a lightweight initial stage whose job is to establish execution and hand off to a heavier payload rather than do damage itself. In this campaign the downstream payload targeted ESXi hosts, the layer where an attacker can wipe or encrypt virtual machines in bulk and, in many environments, take out dozens of workloads in a single action.</p>
+<p>That choice of target is what elevates the incident beyond a routine appliance compromise. Perimeter devices are frequently monitored as network infrastructure; hypervisors are monitored as production compute. When the transition happens between the two, the signals often land with different teams, and the handover is where dwell time grows.</p>
+<h4>Where the detection gap sits</h4>
+<p>The core defensive problem is that this campaign spans two monitoring domains with different owners. Network and security teams typically own gateway telemetry — configuration changes, outbound connections, unexpected PHP execution on a device that should not be serving it. Virtualisation teams own ESXi health, snapshot anomalies, and mass power-state changes. Neither dashboard, on its own, tells the whole story.</p>
+<p>Correlating the two is the single highest-value action available right now: any Check Point gateway that was exposed and unpatched should be reviewed for signs of web-shell or PHP-based payload delivery, and ESXi estates should be swept for wiper artefacts — unfamiliar scripts, unexpected scheduled tasks or cron entries, and hosts that lost state without a change record explaining it. The specific indicators above are general defensive advice drawn from how campaigns of this shape typically behave, rather than a list reproduced from the source report.</p>
+<h4>Scope and attribution</h4>
+<p>The source report does not, at time of writing, lay out a full attribution picture or a detailed victim scope. Organisations should therefore rely on vendor advisory channels for the authoritative list of affected and fixed builds rather than second-hand summaries.</p>
+<p>The incident also arrives against a familiar backdrop: internet-facing appliances — VPN gateways, edge routers, mail proxies — have been a recurring entry point for destructive intrusions into internal estates for several years, and the pattern of a small perimeter weakness cascading into datacentre impact is by now well established.</p>
+<p>None of that changes the immediate posture. Confirm the gateway build, hunt for PHP2Shell artefacts on the appliance, and treat the ESXi layer as in scope for the investigation. For any Hong Kong IT team with Check Point hardware facing the internet, those three steps are where the response starts.</p>
+<p><em>Source: BleepingComputer.</em></p>
+<hr>
+<p>據 BleepingComputer 報道，存在漏洞的 Check Point Security Gateway 裝置在一場攻擊行動中被入侵，攻擊者利用名為 PHP2Shell 的投放器（dropper）滲入虛擬化環境，並向 VMware ESXi 主機投放數據抹除惡意軟件。</p>
+<p>報告描述的攻擊鏈以一部面向互聯網的網絡裝置為起點，最終以虛擬機器被摧毀告終——從邊緣立足點躍升至 hypervisor 層面的影響，剝除了防禦者一向依賴的常規緩衝隔離。</p>
+<p>對於香港及其他地區在對外介面運行 Check Point 閘道的機構，實際的第一步相當直接：確認已部署的實例正運行供應商建議的修復版本，然後將在相關時間窗口內未打補丁的任何閘道視為可能已被入侵，而非僅僅存在漏洞。打補丁是關上大門；但它不會告訴你是誰走了進去。</p>
+<h4>PHP2Shell 的運作方式</h4>
+<p>PHP2Shell 的作用是投放器——一個輕量級的初始階段，其職責是建立執行環境並移交給較重大的惡意負載（payload），而非自行造成破壞。在這次行動中，下游負載針對的是 ESXi 主機，即攻擊者可以大批抹除或加密虛擬機器的層面，而在許多環境中，單一行動即可癱瘓數十個工作負載。</p>
+<p>正是這種目標選擇，令此次事故超出一般的裝置入侵。邊緣設備通常作為網絡基礎設施受到監控；hypervisor 則作為生產運算資源受到監控。當轉變發生在兩者之間時，相關訊號往往落入不同團隊手中，而交接之處正是 dwell time（攻擊者駐留時間）增長的地方。</p>
+<h4>偵測缺口所在</h4>
+<p>核心防禦問題在於，這場行動橫跨兩個由不同負責人管轄的監控領域。網絡及安全團隊通常負責閘道遙測數據——配置更改、對外連接、以及在不應執行 PHP 的設備上出現的意外 PHP 執行。虛擬化團隊則負責 ESXi 健康狀況、快照異常及大規模電源狀態變更。單靠任何一方的儀表板，都無法呈現完整情況。</p>
+<p>將兩者關聯起來，是目前價值最高的單一行動：任何曾對外暴露且未打補丁的 Check Point 閘道，都應檢查是否存在 web shell 或基於 PHP 的負載投放跡象；同時應全面掃描 ESXi 環境尋找毀滅式軟件的殘留痕跡——不熟悉的腳本、意外的排程任務或 cron 條目，以及失去狀態卻沒有變更記錄加以解釋的主機。以上具體指標是根據此類行動的典型行為歸納的一般性防禦建議，並非直接抄錄自原始報告的清單。</p>
+<h4>範圍與歸因</h4>
+<p>原始報告在撰稿時並未列出完整的歸因圖景或詳細的受害者範圍。因此，機構應依賴供應商的官方通報渠道，以獲取受影響及已修復版本的權威清單，而非二手摘要。</p>
+<p>此次事故亦處於一個熟悉的背景之中：面向互聯網的裝置——VPN 閘道、邊緣路由器、郵件代理——多年來一直是破壞性入侵內部環境的常見入口，而微小的邊緣弱點層層演變為數據中心影響的模式，時至今日已相當明確。</p>
+<p>以上種種都不會改變即時的應對姿態。確認閘道版本、在裝置上搜尋 PHP2Shell 殘留痕跡，並將 ESXi 層面納入調查範圍。對於任何擁有面向互聯網的 Check Point 硬件的香港 IT 團隊而言，應變工作就是由這三步開始。</p>
+<p><em>來源：BleepingComputer。</em></p>
+<p><a href="https://www.bleepingcomputer.com/news/security/check-point-gateways-hacked-via-php2shell-to-deploy-vmware-esxi-wiper/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
