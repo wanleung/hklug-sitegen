@@ -1,0 +1,39 @@
+Date: 2026-11-13 12:39:00
+Author: HKLUG Team
+Title: NVIDIA Charts a Mainline vGPU Path on Top of Its Rust Nova Driver
+Content:
+<h3>NVIDIA Charts a Mainline vGPU Path on Top of Its Rust Nova Driver</h3>
+<p>NVIDIA is building its case for virtual GPU support in the mainline Linux kernel on top of Nova, the Rust-based driver the company has been developing to eventually stand alongside — and surpass — its proprietary out-of-tree modules. A detailed look at the work in progress was presented at this week's KVM Forum, according to coverage by Phoronix.</p>
+<p>The disclosure matters less as a Rust curiosity than as a signal about where GPU virtualisation on Linux is headed. For anyone operating shared GPU capacity — the kind of deployment model underpinning AI inference and training infrastructure in data centres and private clouds — the practical pain today is not raw performance. It is version-locking. The proprietary NVIDIA driver must be matched to a specific kernel release, and every kernel upgrade risks forcing a reinstall cycle, module rebuild failures, or a deliberate hold-back on security and maintenance updates. That friction is familiar to administrators running vGPU or pass-through fleets, and it is the problem an upstreamed, in-tree solution would remove.</p>
+<h4>Three drivers, three different stories</h4>
+<p>It is worth separating the three drivers in NVIDIA's Linux orbit, because the distinctions are often blurred.</p>
+<p><strong>Nova</strong> is the new one: written in Rust, developed in the open, and targeting a day when it can reach parity with — and then exceed — the capabilities of the current proprietary stack. It is the vehicle NVIDIA appears to be choosing for features like vGPU that would ideally live in the mainline kernel rather than in a separately distributed module.</p>
+<p><strong>The proprietary NVIDIA driver</strong> remains the production workhorse. It is powerful and feature-complete, but it ships out of tree, which means it sits outside the kernel's normal development and review flow and creates the compatibility burden operators know all too well.</p>
+<p><strong>Nouveau</strong>, the long-standing community driver, is largely reverse-engineered. It has never reached parity with the proprietary stack — power management and firmware constraints have historically limited clock speeds and, by extension, practical performance.</p>
+<p>Nova's ambition is to escape that historical trade-off: open development without the feature deficit.</p>
+<h4>Why the timeline deserves caution</h4>
+<p>Two factors argue for a measured expectation of delivery. First, vGPU on Linux is inseparable from the VFIO and IOMMU stack, where device assignment, interrupt remapping and migration semantics have historically been slow, security-sensitive work. Second, virtualisation features are not purely a kernel question: they interact with vendor control-plane tooling for licensing, profile management and guest integration, and that layer does not automatically follow kernel progress.</p>
+<p>In other words, an upstream design is a necessary step, not a shipped feature. Readers should expect a process measured in kernel merge cycles rather than product releases.</p>
+<h4>What it means for operators</h4>
+<p>The direction of travel is clear and worth tracking even before code lands: NVIDIA engineers are publicly presenting work on an open, in-kernel vGPU path, which implies sustained, funded engineering effort rather than a research experiment.</p>
+<p>For operators in Hong Kong and elsewhere running virtualised GPU deployments for AI workloads, the relevance is general but real — any shift toward in-tree GPU virtualisation eases the operational overhead of keeping kernel versions and GPU drivers in step, a recurring cost in rapidly scaling infrastructure.</p>
+<p>The open questions are concrete: whether NVIDIA's design builds on mediated-device (mdev) frameworks or VFIO mediated devices, how live migration and suspension are handled, and which GPU generations are in scope. Until slides or a kernel mailing list thread fill in those details, this remains a strategically significant announcement with substantial engineering work still to come.</p>
+<p>Phoronix's report is currently the primary public account of the talk; further design detail is expected as the work moves toward proposal.</p>
+<hr>
+<h3>NVIDIA 以 Rust Nova 驅動程式為基礎，規劃主線 vGPU 發展路線</h3>
+<p>NVIDIA 正以 Nova 為基礎，為在主線 Linux kernel 中加入虛擬 GPU 支援建立論據。Nova 是該公司一直以來以 Rust 開發的驅動程式，最終目標是與其專屬（proprietary）的 out-of-tree 模組並駕齊驅，甚至取而代之。據 Phoronix 報導，本週 KVM Forum 上詳細展示了這項進行中的工作。</p>
+<p>這項披露的意義，與其說在於 Rust 的新奇之處，不如說是預示了 Linux GPU virtualisation 的發展方向。對於任何營運共享 GPU 容量的人來說——即支撐資料中心及私有雲 AI inference 與 training 基礎設施的部署模式——當前的痛點並非原始效能，而是版本鎖定（version-locking）。專屬 NVIDIA 驅動程式必須配合特定 kernel 版本，每次 kernel 升級都可能觸發重新安裝循環、模組重建失敗，或者被迫刻意擱置安全及維護更新。維運人員管理 vGPU 或 pass-through 機隊時對這種摩擦並不陌生，而這正是上游化（upstreamed）、in-tree 解決方案能夠消除的問題。</p>
+<h4>三款驅動程式，三種不同情況</h4>
+<p>NVIDIA 在 Linux 生態中的三款驅動程式值得分辨清楚，因為外界經常將它們混為一談。</p>
+<p><strong>Nova</strong> 是最新的一款：以 Rust 編寫、公開開發，目標是有朝一日與現有專屬方案達到同等能力，繼而超越。NVIDIA 似乎選擇以它作為載體，讓 vGPU 等理想上應納入主線 kernel 而非獨立發行模組的功能得以實現。</p>
+<p><strong>專屬 NVIDIA 驅動程式</strong>仍是生產環境主力。它功能強大且完備，但以 out-of-tree 方式發行，意味著它脫離了 kernel 正常的開發及審核流程，並帶來系統管理員再熟悉不過的相容性負擔。</p>
+<p><strong>Nouveau</strong> 是歷史悠久的社群驅動程式，主要依靠逆向工程開發，從未達到與專屬方案同等的水平——電源管理及 firmware 限制歷來制約了時脈速度，進而影響實際效能。</p>
+<p>Nova 的抱負是打破這一歷史性取捨：既保有開放開發，又不犧牲功能。</p>
+<h4>時間表須審慎看待</h4>
+<p>有兩項因素令人對交付進度抱持合理預期。其一，Linux 上的 vGPU 與 VFIO 及 IOMMU stack 密不可分，其中裝置指派（device assignment）、中斷重新映射（interrupt remapping）及遷移語義（migration semantics）歷來都是耗時且高度敏感於安全性的工作。其二，virtualisation 功能並不純粹是 kernel 層面的問題：它與廠商控制平面（control-plane）工具在授權、profile 管理及 guest 整合等方面相互作用，而該層面不會自動隨 kernel 進度同步推進。</p>
+<p>換言之，上游化設計只是必要步驟，而非已交付的功能。讀者應預期這個過程要以 kernel merge cycle 計算，而非以產品發佈計算。</p>
+<h4>對營運團隊的意義</h4>
+<p>發展方向已經清晰，即使程式碼尚未落地也值得追蹤：NVIDIA 工程師正公開展示一項開放、in-kernel vGPU 路徑的工作，這意味著持續且有經費支持的工程投入，而非研究性質的實驗。</p>
+<p>對於香港及其他地區營運 virtualised GPU 部署以執行 AI 工作負載的團隊而言，相關性普遍而實際——任何向 in-tree GPU virtualisation 的轉變，都能減輕讓 kernel 版本與 GPU 驅動程式保持同步的運作負擔，這是快速擴展基礎設施中一項反覆出現的成本。</p>
+<p>未解的問題相當具體：NVIDIA 的設計會建立在 mediated-device（mdev）框架之上，還是採用 VFIO mediated devices；live migration 及暫停機制如何處理；以及哪些 GPU 世代在涵蓋範圍之內。在相關簡報或 kernel mailing list 討論串補充這些細節之前，這仍是一項具戰略意義的公告，同時仍有大量工程工作有待完成。</p>
+<p>Phoronix 的報導目前是該演講的主要公開記述；隨著工作逐步推進至提案階段，預期將有更多設計細節披露。</p>
