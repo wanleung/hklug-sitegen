@@ -1,0 +1,40 @@
+Date: 2026-11-13 01:03:00
+Author: HKLUG Team
+Title: Attackers Hijack 4,837 GitHub Accounts and Smuggle Secrets-Stealing Malware via Pull Requests
+Content:
+<p>```</p>
+<p>A campaign tracked as <strong>wfx-loot</strong> has taken control of 4,837 legitimate GitHub accounts and used them to probe 61,764 repositories, open pull requests, and push malware designed to harvest credentials, BleepingComputer reported.</p>
+<p>What sets the campaign apart is not its scale but its delivery route: the malicious code arrives inside pull requests — the everyday ritual of code review — wrapped in the trusted workflow developers are conditioned to accept. That is precisely what makes it hard to spot.</p>
+<p>Crucially, this is an <strong>account compromise campaign, not a breach of GitHub's infrastructure</strong>. There is no indication that attackers exploited a flaw in GitHub itself. Instead, they appear to have obtained real users' credentials by means the source report does not detail, then operated from inside normal collaboration workflows, wielding trusted identities to reach code and secrets that would otherwise be off-limits.</p>
+<h4>How the attack chain works</h4>
+<p>Once an account was under attacker control, it was used to enumerate and probe repositories at scale, then moved downstream: opening pull requests and pushing code carrying secrets-stealing payloads. The scale figures — 4,837 accounts and 61,764 repositories probed — are as cited in the source report and have not been independently verified. Notably, the 4,837 figure refers to individual <strong>accounts</strong>, not companies or organisations.</p>
+<p>Operational details of the campaign remain limited at time of writing, and should be treated as provisional pending further disclosure.</p>
+<h4>Why the blast radius extends past GitHub</h4>
+<p>Repositories rarely contain only code. Development repositories routinely hold cloud API keys, container registry credentials, CI/CD tokens, and signing keys — and a single leaked credential can cascade from a repository compromise into cloud infrastructure takeover, unauthorised package publishing, or supply-chain poisoning affecting every consumer of a poisoned dependency. For teams shipping software through GitHub-hosted pipelines, one compromised developer account can mean a compromised build chain.</p>
+<h4>Defence, mapped to each stage of the attack chain</h4>
+<p><strong>Stage 1 — Account compromise:</strong> Enforce two-factor authentication across all developer accounts; rotate personal access tokens and OAuth app authorisations on a scheduled basis; issue short-lived, narrowly scoped tokens instead of long-lived credentials; audit token scopes and revoke anything unused.</p>
+<p><strong>Stage 2 — Repository probing:</strong> Enable secret scanning with push protection so known credential patterns are blocked before they ever land in history. Treat every repository — including private and forked ones — as potentially exposed, and rotate any secret that has ever been committed, even accidentally.</p>
+<p><strong>Stage 3 — Malicious pull requests and pushes:</strong> Restrict default workflow permissions in repository settings; pin third-party GitHub Actions to a full commit SHA rather than a mutable tag; and scrutinise any pull request touching build scripts, workflow files, or dependency manifests when it originates from an unfamiliar or newly created account.</p>
+<h4>Relevance to Hong Kong development teams</h4>
+<p>No local organisations, regulators, or responses have been reported in connection with wfx-loot — but for teams whose cloud infrastructure keys sit inside their repositories, the credential-hygiene measures above apply immediately, regardless of geography.</p>
+<p>The campaign is a reminder that in modern development platforms, the weakest link is rarely the platform itself. It is the trust developers place in the accounts those platforms rely on.</p>
+<p><em>Source: BleepingComputer, "Hackers compromise 4,800 GitHub accounts to steal cloud credentials."</em></p>
+<hr>
+<p>```</p>
+<p>據 BleepingComputer 報道，一項代號為 <strong>wfx-loot</strong> 的攻擊行動已控制 4,837 個合法 GitHub 帳戶，並藉此探測 61,764 個 repositories、開啟 pull requests，以及推送用於收割憑證的惡意軟件。</p>
+<p>該行動與別不同之處不在其規模，而在其傳播途徑：惡意代碼混入 pull requests 之內——即開發人員日常的代碼審查程序——並包裝在開發人員已習以為常、會不假思索接受的可信工作流程之中。正因如此，它極難被察覺。</p>
+<p>關鍵在於，這是一場<strong>帳戶入侵行動，而非 GitHub 基礎設施被攻破</strong>。目前沒有跡象顯示攻擊者利用了 GitHub 本身的漏洞。相反，他們似乎是以來源報道未有詳述的方式取得真實用戶的憑證，然後從正常的協作工作流程內部運作，運用可信身份接觸原本無法取得的代碼及機密。</p>
+<h4>攻擊鏈的運作方式</h4>
+<p>一旦帳戶落入攻擊者控制，便會被用來大規模列舉及探測 repositories，然後向下游推進：開啟 pull requests，並推送載有機密竊取 payload 的代碼。有關規模數字——4,837 個帳戶及被探測的 61,764 個 repositories——是引述自來源報道，尚未經獨立核實。須注意，4,837 這個數字指的是個人<strong>帳戶</strong>，而非公司或機構。</p>
+<p>截至本文撰寫時，該行動的運作細節仍然有限，應視為初步資料，有待進一步披露。</p>
+<h4>為何影響範圍不限於 GitHub</h4>
+<p>repositories 通常不只包含代碼。開發用 repositories 往往存有 cloud API keys、container registry 憑證、CI/CD tokens 及 signing keys——而一項外洩的憑證，便可由 repository 遭入侵連鎖演變為雲端基礎設施被控制、未經授權發布軟件包，或供應鏈下毒，影響每一名使用受污染 dependency 的用戶。對於透過 GitHub 托管 pipeline 交付軟件的團隊而言，一個被入侵的開發者帳戶，即可能代表整條 build chain 已被攻破。</p>
+<h4>防禦措施：對應攻擊鏈各階段</h4>
+<p><strong>第一階段——帳戶入侵：</strong>在所有開發者帳戶強制啟用雙重認證；定期輪換 personal access tokens 及 OAuth app authorisations；改發行有效期短、範圍收窄的 tokens，取代長期有效的憑證；審核 token scopes，撤銷任何未經使用的授權。</p>
+<p><strong>第二階段——repository 探測：</strong>啟用 secret scanning 及 push protection，令已知的憑證模式在進入 history 之前即被攔截。視每一個 repository——包括私有及 fork 出來的——為可能已曝光，並輪換任何曾被提交過的 secret，即使是無意間提交亦然。</p>
+<p><strong>第三階段——惡意 pull requests 及推送：</strong>在 repository 設定中限制預設 workflow 權限；將第三方 GitHub Actions 固定（pin）至完整的 commit SHA，而非可變動的 tag；當 pull requests 涉及 build scripts、workflow files 或 dependency manifests，且來自不熟悉或新建立的帳戶時，須仔細審查。</p>
+<h4>對香港開發團隊的啟示</h4>
+<p>目前未有報道指香港本地機構、監管機構或任何回應與 wfx-loot 有關——但對於雲端基礎設施 keys 存放在 repositories 之內的團隊而言，上述憑證管理措施不論身處何地，均須即時適用。</p>
+<p>此行動提醒我們，在現代開發平台之上，最薄弱的環節很少是平台本身，而是開發者對這些平台所依賴的帳戶所付出的信任。</p>
+<p><em>來源：BleepingComputer，〈Hackers compromise 4,800 GitHub accounts to steal cloud credentials〉。</em></p>
+<p><a href="https://www.bleepingcomputer.com/news/security/hackers-compromise-4-800-github-accounts-to-steal-cloud-credentials/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
