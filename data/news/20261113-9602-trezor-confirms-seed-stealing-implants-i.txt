@@ -1,0 +1,30 @@
+Date: 2026-11-13 17:03:00
+Author: HKLUG Team
+Title: Trezor Confirms Seed-Stealing Implants in Three Wallets Sold by CryptoBilis
+Content:
+<p>Hardware wallet maker Trezor has confirmed that three Trezor Safe 5 units sold through the reseller CryptoBilis contained an extra circuit board capable of capturing the wallet's recovery phrase, The Hacker News reported on 13 November.</p>
+<p>All three affected units were purchased from CryptoBilis, according to Trezor. The company examined one of the three wallets in its laboratory and identified the other two; the disclosure does not explain how those two were found.</p>
+<p>According to Trezor, the implant siphons the seed phrase directly from the device's display in hardware and transmits it over the mobile network to an attacker-controlled server. There is no indication in the company's disclosure of a broader compromise of its own manufacturing or firmware distribution.</p>
+<p><strong>Why this is a supply-chain story, not a crypto story</strong></p>
+<p>The technical detail worth pausing on is where the attack sits: entirely outside the cryptographic boundary that hardware wallets are designed around. Devices in this class are built so that firmware is signed and seed handling stays inside a secure element, precisely so that a malicious update or a compromised host machine cannot read the phrase. None of those controls model an adversary who opens the enclosure and adds hardware of their own. Once a modified display path is in place, the secret is copied before any signing operation takes place — firmware verification, secure elements and update mechanisms are simply the wrong layer to detect it.</p>
+<p>That shifts the defence to the parts of the pipeline that security engineers tend to treat as logistics rather than security: provenance, tamper-evident packaging, authorised reseller chains, and — in the worst case — teardown and imaging analysis. For anyone procuring tamper-sensitive hardware, whether that means HSMs, smart cards, network appliances or authentication tokens, the incident is a useful reminder that the trust boundary of a device includes its physical journey from factory to desk.</p>
+<p>Practically, buyers who discover or suspect a modified unit should assume the seed displayed on that device is burned. The recovery funds should be moved to a wallet seeded with a phrase that was generated and recorded only on hardware known to be untampered.</p>
+<p><strong>Procurement caution for grey-market hardware</strong></p>
+<p>For IT teams in Hong Kong, where a large volume of security and networking hardware moves through distributors and reseller channels rather than direct from the manufacturer, the incident is a general caution rather than a local finding: the source disclosure names no Hong Kong organisation, channel or buyer. The broad lesson still applies. Procuring devices through authorised channels gives you an auditable chain of custody and packaging that has not been opened in transit; grey-market or second-hand stock removes that assurance. Where tamper-evident seals are present, they should be inspected on receipt and discrepancies treated as security events, not cosmetic returns. For high-assurance devices in particular, buying from the manufacturer or a named authorised partner is materially cheaper than the alternative of detecting an implant after deployment.</p>
+<p><strong>What remains unknown</strong></p>
+<p>Trezor's disclosure does not explain how the three units were physically opened, how the other two were identified, how many other buyers may have received similarly modified stock, or whether CryptoBilis inventory beyond these three units has been examined. The source also does not say what CryptoBilis is, whether it is an authorised Trezor reseller, how it has responded, or whether Trezor has issued guidance to buyers. Those questions matter for anyone who purchased hardware through the same channel, and are worth revisiting if either party publishes further detail.</p>
+<p>The confirmed scope of the incident remains narrow: three units, one disclosed teardown, one reseller channel. Its significance is not in the count, but in the reminder that no amount of firmware hardening protects a device whose enclosure has already been opened.</p>
+<hr>
+<p>硬件錢包製造商 Trezor 已證實，透過經銷商 CryptoBilis 銷售的三台 Trezor Safe 5 內藏額外電路板，能夠擷取錢包的助記詞（recovery phrase），The Hacker News 於 11 月 13 日報道。</p>
+<p>根據 Trezor，三台受影響的設備全部購自 CryptoBilis。該公司在其實驗室檢視了其中一台錢包，並確認了另外兩台的所在；披露文件並未說明後兩台是如何被找出的。</p>
+<p>Trezor 表示，該植入裝置直接以硬件方式從設備顯示屏竊取助記詞，並透過流動網絡將其傳送至攻擊者控制的服務器。公司的披露中並無跡象顯示其自身的生產或 firmware 發行渠道遭到更廣泛的入侵。</p>
+<p><strong>為何這是供應鏈事件，而非加密貨幣事件</strong></p>
+<p>值得留意的技術細節是攻擊所處的位置：完全在硬件錢包設計所圍繞的加密邊界之外。這類設備的設計是 firmware 經簽署驗證、助記詞處理維持在安全元件（secure element）之內，正是為了令惡意更新或被入侵的主機無法讀取助記詞。然而這些防護措施均沒有針對會打開機殼並自行加裝硬件的敵對者作建模。一旦被篡改的顯示路徑就位，秘密在任何簽署操作進行之前便已被複製——firmware 驗證、安全元件及更新機制根本不是偵測此事的正確層級。</p>
+<p>這意味著防禦重心轉移到 pipeline 中安全工程師往往視為物流而非保安的環節：來源溯源、防篡改包裝、授權經銷商鏈條，以及——在最壞情況下——拆解與影像分析。對於採購防篡改敏感硬件的人士而言，不論是 HSM、智能卡、網絡設備還是身份驗證 token，是次事件都是有用的提醒：設備的信任邊界包括它由工廠運送到桌面的整段物理旅程。</p>
+<p>實際而言，發現或懷疑設備被改裝的買家，應假設該設備上顯示的助記詞已經失效。備份資金應轉移至一個以全新助記詞建立的錢包，而該助記詞必須僅在確認未經篡改的硬件上產生及記錄。</p>
+<p><strong>採購灰市硬件的警惕</strong></p>
+<p>對香港的 IT 團隊而言，大量保安及網絡硬件均透過分銷商及經銷渠道流通，而非直接由製造商供應，是次事件屬於一般性警惕而非本地發現：來源披露並未點名任何香港機構、渠道或買家。但宏觀教訓依然適用。透過授權渠道採購設備，可獲得可審計的保管鏈，以及未在運輸途中被開啟的包裝；灰市或二手存貨則失去這重保證。凡設有防篡改封條的設備，收貨時應即時檢查，任何不符之處應視為安全事件處理，而非單純的外觀退貨。對於高保證級別的設備尤其如此，向製造商或具名授權合作夥伴購買，實際上比部署後才偵測植入裝置的代價便宜得多。</p>
+<p><strong>仍然未知的事項</strong></p>
+<p>Trezor 的披露並未說明三台設備如何被物理拆開、另外兩台如何被確認、可能還有多少買家收到同樣被改裝的存貨，亦未說明 CryptoBilis 是否已檢視過這三台以外的庫存。來源資料亦未提及 CryptoBilis 是什麼機構、是否為 Trezor 授權經銷商、如何回應，以及 Trezor 是否已向買家發出指引。對於透過同一渠道購買硬件的人士而言，這些問題至關重要，若任一方日後公布更多細節，值得再次跟進。</p>
+<p>已確認的事件範圍依然狹窄：三台設備、一次已披露的拆解、一條經銷渠道。其重要性不在於數量，而在於提醒我們：固件層面的強化再多，也無法保護一台機殼已被打開的設備。</p>
+<p><a href="https://thehackernews.com/2026/11/trezor-confirms-hidden-hardware.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
