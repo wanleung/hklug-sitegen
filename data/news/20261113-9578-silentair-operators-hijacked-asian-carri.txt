@@ -1,0 +1,42 @@
+Date: 2026-11-13 15:32:00
+Author: HKLUG Team
+Title: SilentAir operators hijacked Asian carrier networks to read SMS one-time codes, Enea reports
+Content:
+<p>A newly documented espionage group has been operating from compromised equipment inside mobile networks across at least six Asian countries, using that access to intercept the calls and text messages of selected individuals — predominantly in Taiwan — according to research from telecom security vendor Enea.</p>
+<p>The Stockholm-based company named the group <strong>SilentAir</strong> in findings published this week and disclosed via The Hacker News on 13 November 2026. Enea assessed, with high confidence, that SilentAir is a state-level actor. The company did not attribute the activity to any specific sponsoring state, and the six affected countries are not named in the published summary. No figures for the number of victims, and no identities for the compromised carriers, have been disclosed.</p>
+<h4>What SilentAir does</h4>
+<p>According to Enea's summary of the findings, the group's intrusion points sit inside the carriers themselves rather than on handsets or in subscriber accounts. From that network-layer position, selected users' voice calls and SMS traffic can be observed as they traverse the carrier's infrastructure. The targeting profile — largely Taiwanese subscribers, with infrastructure spread across the wider region — points to a surveillance campaign rather than financially motivated fraud.</p>
+<p>Enea's summary does not establish the specific technical interface or mechanism used to obtain the interception capability; those details are not set out in the published material reviewed here. Industry background on lawful-interception systems and SS7 signalling is well documented elsewhere, and is background only, not a claim about SilentAir's methods.</p>
+<h4>The 2FA stake</h4>
+<p>The most consequential implication for enterprise security teams is what this means for SMS-based second factors. A one-time passcode delivered by text message is only as strong as the channel carrying it. When an adversary can read SMS traffic from inside the carrier network, every SMS-delivered OTP becomes visible in transit — no SIM swapping, no SS7 query from an attacker-controlled number, no malware on the device is required.</p>
+<p>That makes the mobile carrier the single point of failure for any account protected by SMS 2FA. The compromise of a carrier is, in effect, the compromise of every SMS second factor riding on it. The escape route is already in wide circulation: open-source TOTP libraries, mainstream authenticator apps, and FIDO2 passkeys give development and security teams a practical off-ramp that never touches the carrier network.</p>
+<h4>Practical steps for enterprise defenders</h4>
+<p>Any organisation still routing second factors through SMS across APAC markets faces the same exposure, whatever the carrier or the jurisdiction:</p>
+<ol>
+<li><strong>Inventory SMS-2FA dependencies.</strong> Identify which internal and third-party systems still issue one-time codes by text message, and which privileged or high-value accounts rely on them.</li>
+<li><strong>Move to authenticator-based TOTP or hardware keys.</strong> Push high-risk users — administrators, finance, executives — to time-based one-time password apps or FIDO2 security keys, which are not exposed to carrier-side interception.</li>
+<li><strong>Consolidate remaining SMS use, and press carriers.</strong> Where SMS must stay (regulatory obligations, customer onboarding), treat it as a fallback rather than a primary factor and pair it with device-binding or risk-based checks — then use enterprise mobile contracts to ask carriers about network monitoring, lawful-interception access controls, and incident notification commitments.</li>
+<li><strong>Watch for follow-on credential theft.</strong> Intercepted OTPs are most valuable when paired with passwords from prior breaches; audit whether exposed credentials plus a live SMS channel could reach any production system.</li>
+</ol>
+<p>Enea has not published attribution to a named state, and readers should treat the state-level assessment as Enea's own, held with its stated level of confidence, pending any corroborating disclosures.</p>
+<p><em>Source: <a href="https://thehackernews.com/2026/11/silentair-hijacks-asian-telecom.html">The Hacker News</a>, 13 November 2026. Underlying research: Enea.</em></p>
+<hr>
+<p>電訊安全供應商 Enea 的研究指出，一個新近被記錄的間諜組織一直利用至少六個亞洲國家流動網絡內的被入侵設備運作，藉此攔截特定人物的通話及短訊——受害者主要集中於台灣。</p>
+<p>這家總部設於斯德哥爾摩的公司在本周公布的調查結果中，將該組織命名為 <strong>SilentAir</strong>，並於 2026 年 11 月 13 日透過 The Hacker News 披露。Enea 以高信心程度評估，SilentAir 屬國家級行為者。該公司未有將相關活動歸因於任何特定贊助國，六個受影響國家亦未在已公布的摘要中點名。目前未有披露受害人數數據，亦未有披露被入侵營運商的身份。</p>
+<h4>SilentAir 的手法</h4>
+<p>根據 Enea 對調查結果的摘要，該組織的入侵點位於營運商網絡內部，而非手機裝置或用戶帳戶。憑藉此網絡層位置，特定用戶的語音通話及 SMS 流量在經過營運商基建時可被監視。攻擊目標以台灣用戶為主、基建則遍佈整個區域，顯示這是一場監控行動，而非以牟利為目的的詐騙。</p>
+<p>Enea 的摘要並未確立取得攔截能力所用的具體技術接口或機制；在本文審閱的已公布材料中並無載列這些詳情。關於合法攔截系統及 SS7 信令的業界背景資料在其他地方已有充分記載，此處僅作背景說明，並非對 SilentAir 手法的指稱。</p>
+<h4>2FA 面臨的風險</h4>
+<p>對企業保安團隊影響最深遠的含意，在於此事對 SMS 作為第二重驗證因素的衝擊。透過短訊發送的一次性密碼，其強度取決於承載它的通道。當攻擊者能夠從營運商網絡內部讀取 SMS 流量時，每一個以 SMS 傳送的 OTP 在傳輸途中均可被看見——既無需 SIM 卡調換（SIM swapping），無需以攻擊者控制的號碼發動 SS7 查詢，亦無需在裝置上安裝惡意軟件。</p>
+<p>這意味著流動營運商成為任何受 SMS 2FA 保護帳戶的單一故障點。換言之，營運商被入侵，等同於承載於其上的每一個 SMS 第二重驗證因素均被入侵。可行的出路已廣為流傳：開源 TOTP 函式庫、主流驗證器應用程式，以及 FIDO2 passkey，均為開發及保安團隊提供了實用的替代方案，完全無需接觸營運商網絡。</p>
+<h4>企業防禦者的實務步驟</h4>
+<p>任何仍在亞太市場以 SMS 傳遞第二重驗證因素的機構，無論營運商為何、屬何司法管轄區，均面對同樣風險：</p>
+<ol>
+<li><strong>盤點 SMS-2FA 依賴項目。</strong> 識別哪些內部及第三方系統仍以短訊發送一次性密碼，以及哪些高權限或高價值帳戶依賴這些機制。</li>
+<li><strong>轉用驗證器 TOTP 或硬件密鑰。</strong> 推動高風險用戶——管理員、財務人員、高層——改用 time-based one-time password 應用程式或 FIDO2 安全密鑰，此類方案不會暴露於營運商側面的攔截風險。</li>
+<li><strong>收緊其餘 SMS 用途，並向營運商施壓。</strong> 在必須保留 SMS 的情況下（法規要求、客戶開戶程序），應將其定位為後備方案而非主要驗證因素，並配合裝置綁定或基於風險的檢查；同時利用企業流動通訊合約，要求營運商交代網絡監控、合法攔截存取控制，以及事故通報承諾。</li>
+<li><strong>警惕隨後而來的憑證盜取。</strong> 被攔截的 OTP 在配合先前數據外洩所得密碼時價值最高；應審核已被外洩的憑據加上活躍的 SMS 通道，是否足以入侵任何生產系統。</li>
+</ol>
+<p>Enea 尚未公布指向具名國家的歸因，讀者應將國家級評估視為 Enea 本身的判斷，以該公司聲明的信心程度為準，並等待其他佐證披露。</p>
+<p><em>來源：<a href="https://thehackernews.com/2026/11/silentair-hijacks-asian-telecom.html">The Hacker News</a>，2026 年 11 月 13 日。基礎研究：Enea。</em></p>
+<p><a href="https://thehackernews.com/2026/11/silentair-hijacks-asian-telecom.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
