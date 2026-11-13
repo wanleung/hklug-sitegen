@@ -1,0 +1,33 @@
+Date: 2026-11-13 15:31:00
+Author: HKLUG Team
+Title: XRAID Brings Declustered Parity RAID Inside XFS in Initial Public Release
+Content:
+<p>```</p>
+<p>Longtime Linux developer Christoph Hellwig has announced the initial public release of XRAID, a declustered parity RAID implementation built directly into the XFS file system. The announcement, made on the Linux kernel mailing list and covered by Phoronix, marks the first public look at a project that puts RAID logic inside the file system itself rather than beneath it in the block layer.</p>
+<h4>RAID inside XFS: the architectural bet</h4>
+<p>The defining design choice is placement. Conventional Linux storage stacks typically rely on device-mapper RAID (dm-raid) or mdraid to assemble redundant volumes, with the file system layered on top and unaware of the redundancy scheme underneath. XRAID inverts that arrangement by treating RAID as a first-class XFS feature.</p>
+<p>The practical consequence is that XFS can coordinate reconstruction work itself. When a drive fails, XRAID can spread the rebuild across all member disks in parallel, rather than concentrating write load on the surviving pair of a conventional RAID 5 or RAID 6 array. For storage engineers, that parallelism shortens the window during which a second failure would be fatal — a window that lengthens as drives grow in capacity — while reducing the performance penalty incurred during resilvering.</p>
+<p>The parity scheme itself is declustered, meaning parity blocks are distributed across all drives in the array rather than bound to fixed disk pairs. Declustered layouts are a well-established approach in enterprise storage, which is part of why the technique is credible; what is new here is its coupling with XFS, and that integration is what sets XRAID apart from earlier efforts.</p>
+<h4>Zoned XFS and ZNS drives</h4>
+<p>The initial focus of XRAID is zoned XFS deployments — file systems running on zoned block devices, including zoned namespace (ZNS) SSDs and shingled magnetic recording (SMR) drives. Zoned devices divide storage into sequential-write zones that constrain where data may be written, and they pair naturally with declustered parity because both designs favour distributing writes evenly across members.</p>
+<p>For infrastructure teams weighing rack economics, the appeal is density and endurance: zoned devices let vendors pack more capacity per drive, and declustered parity spreads wear and rebuild traffic more evenly, reducing the hot-spotting that accelerates wear on any single disk.</p>
+<h4>Credibility — and caveats</h4>
+<p>Hellwig's involvement is a significant credibility signal. He is one of the longest-serving contributors to XFS and has maintained the file system for many years, giving the project unusually deep file-system expertise behind it.</p>
+<p>XRAID is, however, an initial public release, not a production-ready product. It should be treated as an early-stage codebase whose stability, performance characteristics, and feature completeness have yet to be demonstrated under real workloads. Organizations evaluating it for capacity planning or rebuild-time improvements should track discussion on the Linux kernel mailing list rather than deploy it against critical storage today.</p>
+<p>The broader significance for the storage community is a signal that RAID innovation is still moving: after years where dm-raid and mdraid were the default answers, XRAID argues that the file system is the right place to reason about redundancy. Whether that argument wins adoption will depend on how the code matures — but the first public evidence is now on the table.</p>
+<p><em>Source: Phoronix, reporting on Hellwig's announcement to the Linux kernel mailing list.</em></p>
+<hr>
+<p>資深 Linux 開發者 Christoph Hellwig 已宣佈 XRAID 初次公開發佈 —— 一套直接建構在 XFS 檔案系統之中的 declustered parity RAID 實作。這項消息由 Hellwig 在 Linux kernel mailing list 上發出，Phoronix 亦作了報導；這是該專案首次公開亮相，其核心做法是把 RAID 邏輯放在檔案系統之內，而非其下的區塊層。</p>
+<h4>RAID 進駐 XFS：一場架構上的押注</h4>
+<p>真正的設計選擇在於擺放層次。傳統 Linux 儲存架構通常倚賴 device-mapper RAID（dm-raid）或 mdraid 組裝冗餘磁碟區，檔案系統疊在上方，對底層採用哪種冗餘方案一無所知。XRAID 把這個安排顛倒過來，視 RAID 為 XFS 的一等功能。</p>
+<p>實際後果是 XFS 可以自行協調重建工作。當硬碟故障時，XRAID 能把重建攤分到所有成員磁碟上平行進行，而不是像傳統 RAID 5 或 RAID 6 那樣，把寫入負載集中在存活的那一對磁碟。對儲存工程師而言，這種平行化縮短了「第二顆硬碟再故障即無救」的時間窗 —— 隨著硬碟容量持續增長，這個時間窗只會愈來愈長 —— 同時降低 resilvering 期間的效能損耗。</p>
+<p>Parity 方案本身採用 declustered 方式，意即校驗區塊分散到陣列中的所有磁碟，而非固定綁定於特定磁碟配對。Declustered 佈局在企業級儲存陣列中是行之有年的成熟做法，這也是此技術具備可信度的原因之一；本次的新意在於它與 XFS 的結合，正是這項整合令 XRAID 有別於以往的嘗試。</p>
+<h4>Zoned XFS 與 ZNS 硬碟</h4>
+<p>XRAID 初期聚焦於 zoned XFS 部署 —— 即運作於 zoned block device 上的檔案系統，涵蓋 zoned namespace（ZNS）SSD 與 shingled magnetic recording（SMR）硬碟。Zoned 裝置把儲存空間劃分為只能順序寫入的分區，限制資料可寫入的位置；它與 declustered parity 天生契合，因為兩者都偏好把寫入平均分散到各個成員。</p>
+<p>對正在盤算機架經濟的基礎架構團隊來說，誘人在於密度與耐用度：zoned 裝置讓廠商在單一硬碟塞入更多容量，而 declustered parity 把磨損與重建流量分散得更均勻，減輕加速單一磁碟老化的熱點效應。</p>
+<h4>可信度 —— 與必要保留</h4>
+<p>Hellwig 的參與是一項重要的可信度訊號。他是 XFS 最資深的貢獻者之一，多年來持續維護這套檔案系統，令專案背後擁有罕見的檔案系統專門知識。</p>
+<p>然而 XRAID 只是初次公開發佈，並非可供生產環境使用的產品。它應被視為早期階段的程式碼庫，其穩定度、效能特性與功能完整度仍有待在真實工作負載下驗證。正在評估以它改善容量規劃或重建時間的組織，應在 Linux kernel mailing list 上追蹤討論進度，而非現階段就把它部署到關鍵儲存系統。</p>
+<p>對儲存社群而言，更大的意義在於一個訊號：RAID 創新仍在推進。多年來 dm-raid 與 mdraid 一直是預設答案，XRAID 則主張檔案系統才是思考冗餘問題的正確層次。這項主張能否取得採納，仍取決於程式碼如何成熟 —— 但第一份公開證據已經擺在桌上。</p>
+<p><em>資料來源：Phoronix，報導 Hellwig 在 Linux kernel mailing list 上的發佈公告。</em></p>
+<p><a href="https://www.phoronix.com/news/XRAID-XFS-RAID" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
