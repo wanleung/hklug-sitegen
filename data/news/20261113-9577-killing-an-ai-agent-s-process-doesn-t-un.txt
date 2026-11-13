@@ -1,0 +1,38 @@
+Date: 2026-11-13 12:33:00
+Author: HKLUG Team
+Title: Killing an AI Agent's Process Doesn't Undo What It Already Did
+Content:
+<p><strong>Analysis</strong></p>
+<p>When a misbehaving AI agent needs to be stopped, the first reflex — killing the process — is also the least meaningful control available. It halts whatever would have happened next; it does nothing about what has already happened. That gap is the question an analysis piece on The Hacker News puts to anyone deploying autonomous agents: what does "stop the agent" actually mean, once the agent has begun acting on a poisoned instruction?</p>
+<p>The scenario it works from is deliberately ordinary. An agent is asked to sort support tickets and look up account details. One ticket carries embedded instructions that lead the agent to export records to an unfamiliar destination. The request succeeds for a mundane reason: the agent's identity legitimately holds access to the records, and its connected tools permit the transfer. Nothing in the chain requires a novel exploit — only over-broad permissions and permissive tooling, a combination that is unremarkable in production agent deployments.</p>
+<p><strong>Termination is containment, not prevention</strong></p>
+<p>Walk the response from the beginning and the shape of the problem becomes clear. "Stopping" an agent is not one action but several, and they fail in different ways:</p>
+<ul>
+<li><strong>Before it acts:</strong> scoped identities, least-privilege tool access, separation of duties, short-lived credentials — controls that constrain what the agent can do in the first place.</li>
+<li><strong>While it acts:</strong> egress allowlists, policy checks at the point of execution, sandboxed tooling, approval gates — controls that make a dangerous action structurally unavailable rather than merely flagged.</li>
+<li><strong>After it acts:</strong> process termination, credential revocation, log reconstruction, forensics.</li>
+</ul>
+<p>Most teams mean only the third category when they say "stop it" — and all of it is retrospective. Killing a process and revoking a token prevent the next action; they do not un-move data that has already left the environment. Detection is not containment. Logging and alerting tell you what happened; meaningful control has to be enforced at execution time.</p>
+<p>That asymmetry bites harder in agentic systems than in conventional automation, because the same input produces the same output, every time, at machine speed. A person who makes a bad decision under a crafted input usually makes it once. An agent, handed the identical ticket, will repeat the decision on every run — turning a one-off human error into a systematic one. A single poisoned ticket therefore scales a mistake into a pattern, which is why broad credentials paired with autonomous tooling represent the real blast radius, not the model itself.</p>
+<p><strong>The design-time question</strong></p>
+<p>The lesson is that agentic security is an identity-and-egress problem before it is a model problem. The levers that actually matter — permission scoping, gates, egress control — are set when the deployment is designed, not patched in after an incident has already occurred. Teams should treat "can we stop it?" as a design-time requirement enforced through controls that prevent the action, rather than a runbook step reserved for the aftermath.</p>
+<p>Any organisation routing personal data through agent tooling faces the same calculus regardless of jurisdiction: the permissions you grant at design time are the permissions the agent will use, at speed, without hesitation.</p>
+<p><em>Source: <a href="https://thehackernews.com/2026/11/when-ai-agent-goes-wrong-can-you-stop-it.html">The Hacker News</a></em></p>
+<hr>
+<p><strong>分析</strong></p>
+<p>當一個行為失控的 AI agent 需要被制止時，第一個本能反應——終止程序——往往是最沒實質意義的控制手段。它只能阻止接下來會發生的事，對已經發生的事毫無辦法。這道落差正是 The Hacker News 一篇分析文章向所有部署自主 agent 的人提出的問題：當 agent 已經開始執行被污染的指令，所謂「停止 agent」究竟意味著什麼？</p>
+<p>文章所採用的場景刻意平淡無奇：一個 agent 被要求分類支援工單並查閱帳戶資料，其中一張工單挾帶嵌入指令，促使 agent 將記錄匯出至一個陌生目的地。該請求之所以成功，理由再平凡不過——agent 的身份本身合法擁有查閱這些記錄的權限，其連接的工具亦允許這次傳輸。整條鏈路不需要任何新穎的漏洞利用，只需過寬的權限與過度寬鬆的工具配置——這在生產環境的 agent 部署中可謂屢見不鮮。</p>
+<p><strong>終止只是遏制，不是預防</strong></p>
+<p>從頭梳理整個應對過程，問題的輪廓便清楚了：「停止 agent」並非單一行動，而是一連串各自在不同環節失效的控制：</p>
+<ul>
+<li><strong>行動前：</strong>範圍收窄的身份、最小權限的工具存取、職責分離、短效期憑證——這些控制從源頭約束 agent 能做什麼。</li>
+<li><strong>行動中：</strong>出口白名單、執行點的策略檢查、沙箱化工具、審批閘門——這些控制讓危險操作在結構上無法發生，而不只是被標記出來。</li>
+<li><strong>行動後：</strong>終止程序、撤銷憑證、重建日誌、取證分析。</li>
+</ul>
+<p>多數團隊說「停止它」時，指的只是第三類——而這一類全是事後補救。終止程序和撤銷權杖只能阻止下一個動作，卻無法把已經離開環境的數據「收回」。偵測不等於遏制。日誌與告警只是告訴你發生了什麼，真正的控制必須在執行那一刻強制落實。</p>
+<p>這道不對稱在 agentic 系統中比傳統自動化更為致命，因為相同的輸入每次都會以機器速度產生相同的輸出。一個人在精心設計的輸入面前做出錯誤判斷，通常只會犯一次；而 agent 拿到同一張工單，每一次運行都會重複同樣的判斷——把一次性的個人失誤變成系統性的失誤。因此，單單一張被污染的工單就能把偶然錯誤擴散為常態模式，這也是為什麼真正的爆炸半徑來自過寬的憑證搭配自主工具，而不是模型本身。</p>
+<p><strong>設計時就要回答的問題</strong></p>
+<p>核心教訓是：agentic 安全首先是身份與出口控制的問題，其次才是模型問題。真正關鍵的槓桿——權限收窄、閘門、出口控制——是在部署設計時設定的，而不是事故發生後才臨時補上。團隊應該把「我們能否阻止它？」當作設計時的需求，透過防止該動作發生的控制來落實，而不是留待事後才啟動的應變手冊步驟。</p>
+<p>任何透過 agent 工具處理個人資料的機構，不論司法管轄區為何，所作的權衡道理都相同：你在設計階段授予的權限，就是 agent 日後會全速、毫不猶豫地使用的權限。</p>
+<p><em>來源：<a href="https://thehackernews.com/2026/11/when-ai-agent-goes-wrong-can-you-stop-it.html">The Hacker News</a></em></p>
+<p><a href="https://thehackernews.com/2026/11/when-ai-agent-goes-wrong-can-you-stop-it.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
