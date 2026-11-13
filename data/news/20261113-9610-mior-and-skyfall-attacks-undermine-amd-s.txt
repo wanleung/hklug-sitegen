@@ -1,0 +1,36 @@
+Date: 2026-11-13 18:36:00
+Author: HKLUG Team
+Title: Mior and Skyfall Attacks Undermine AMD SEV-SNP Confidential VM Guarantees
+Content:
+<p>Two newly disclosed attacks allow a rogue cloud host to read data inside virtual machines protected by AMD's SEV-SNP confidential computing technology — with one of them, Mior, going further by altering VM memory and forging the signed attestation report that confirms which software the VM is running, according to The Hacker News.</p>
+<p>The findings matter because SEV-SNP exists specifically to keep a server's operator out of its guests' memory. Both attacks require the attacker to control the target server's hypervisor; Mior additionally requires control of the server's BIOS. That prerequisite is not a footnote to be waved away: the hostile or compromised host operator is precisely the adversary SEV-SNP's threat model claims to defend against. These are not remotely exploitable flaws, and co-tenants cannot use them to escalate into one another's workloads. But they do represent a crack in the guarantee itself rather than an academic edge case outside the design boundary.</p>
+<h4>The attestation problem is the real story</h4>
+<p>Memory disclosure is the failure mode most organisations already plan for. If a host can read plaintext VM memory, the mitigations are familiar: hold keys in an external KMS, use encrypted volumes, keep credentials short-lived, assume a compromised host may capture what it can. That blast radius is bounded and, critically, already modelled in most security reviews.</p>
+<p>Forgery of the attestation report is a different category of problem. Attestation is the mechanism by which a tenant convinces itself — and any downstream automation — that a workload booted the expected firmware and software in a trusted environment before secrets are released to it. A forged, cryptographically valid-looking report silently poisons everything that consumes a "green" attestation result: automated key release, admission policy gates, and even compliance evidence produced as a control. Nobody detects the failure, because every downstream check reports success. For teams building key-release pipelines on top of attestation, that is the item worth escalating internally.</p>
+<p>The correct reading cuts both ways. Dismissing the research because "the attacker must already own the host" ignores the stated threat model. Equally, declaring SEV-SNP wholly broken overstates the case: conventional VM isolation gives the host far more visibility, and the technology remains a meaningful improvement over running on a shared host with no confidential computing protections at all.</p>
+<h4>What tenants should verify</h4>
+<p>The practical takeaway is verification rather than abandonment. Confidential computing narrows the blast radius of a host compromise; it does not remove the host from the trust model. Before relying on SEV-SNP-backed instances — relevant to any organisation placing workloads on shared or VPS infrastructure, including in Hong Kong — tenants should put four questions to their provider:</p>
+<ol>
+<li><strong>Which CPU generation</strong> backs the offering, and does it support the SEV-SNP revision actually needed for the guarantees being marketed?</li>
+<li><strong>Does attestation get verified independently at provisioning time</strong>, by the tenant's own tooling, or is the provider's own "verified" flag simply trusted?</li>
+<li><strong>Who controls the BIOS</strong>, and can a provider-side or supply-chain-level change to boot firmware go undetected?</li>
+<li><strong>What fallback controls exist</strong> if attestation assurance degrades — external KMS, encrypted volumes, short-lived credentials?</li>
+</ol>
+<p>All claims above are sourced to The Hacker News. The source article does not state AMD's patch status, researcher attribution, or affected CPU generations; readers should treat those points as unconfirmed pending vendor comment.</p>
+<hr>
+<p>據 The Hacker News 報導，兩項最新披露的攻擊手法，容許惡意雲端主機讀取受 AMD SEV-SNP 機密運算技術保護的虛擬機內部資料；其中名為 Mior 的攻擊更進一步，可篡改虛擬機記憶體，並偽造確認虛擬機正執行哪套軟件的簽署認證報告（attestation report）。</p>
+<p>這項研究結果之所以重要，在於 SEV-SNP 設計的初衷正是要將伺服器運營商隔絕於虛擬機客體記憶體之外。兩項攻擊均要求攻擊者控制目標伺服器的 hypervisor；Mior 另外還需控制伺服器的 BIOS。這項先決條件並非可以輕輕帶過的附註：充滿敵意或已被入侵的主機運營商，正是 SEV-SNP 威脅模型宣稱要防禦的對手。這些漏洞並非可遠端利用的缺陷，同機的其他租戶亦不能藉此越權入侵彼此的工作負載。然而，它們確實構成該項保障本身的裂痕，而非設計範圍以外的學術性邊緣情況。</p>
+<h4>認證報告偽造才是真正的問題核心</h4>
+<p>記憶體洩露是多數機構早已預作準備的故障模式。若主機能讀取虛擬機明文記憶體，應對措施並不陌生：將密鑰存放於外部 KMS、使用加密磁碟卷、縮短憑證有效期，並假設主機一旦被入侵，攻擊者能擷取多少便擷取多少。這種爆炸半徑是有限的，而且關鍵在於，絕大多數安全審視早已將其納入模型。</p>
+<p>偽造認證報告則屬另一類問題。認證機制的用途，是讓租戶自行——以及任何下游自動化系統——確認工作負載已在受信任環境中啟動預期的固件及軟件，然後才向其釋放機密。一份偽造但表面上符合加密驗證的報告，會無聲地污染所有消費「綠色」認證結果的環節：自動化密鑰釋放、准入策略閘門，甚至作為控制措施而產生的合規證據。沒有人會察覺失敗，因為每一個下游檢查都回報成功。對於在認證機制之上建構密鑰釋放 pipeline 的團隊而言，這才是值得在內部上報的項目。</p>
+<p>正確的解讀應從兩面看。以「攻擊者必須先擁有主機控制權」為由否定該研究，是無視其明言的威脅模型；同樣，宣稱 SEV-SNP 已完全崩壞亦屬言過其實：傳統虛擬機隔離讓主機擁有的可見度遠高於此，而該技術相對於在毫無機密運算保護的共享主機上運行，仍屬有意義的改進。</p>
+<h4>租戶應驗證什麼</h4>
+<p>實際的啟示是驗證，而非棄用。機密運算收窄了主機被入侵的爆炸半徑，但並未將主機移出信任模型。在依賴 SEV-SNP 支援的實例之前——這適用於任何將工作負載放置於共享或 VPS 基礎設施的機構，包括香港的機構——租戶應向服務供應商提出四個問題：</p>
+<ol>
+<li><strong>哪一代 CPU</strong> 支援該服務，其是否支持市場宣傳之保障實際所需的 SEV-SNP 版本？</li>
+<li><strong>認證是否在配置（provisioning）時由租戶自己的工具獨立驗證</strong>，還是僅僅信任供應商自設的「已驗證」標記？</li>
+<li><strong>誰控制 BIOS</strong>，供應商側或供應鏈層面的啟動固件變更是否可能不被察覺？</li>
+<li><strong>一旦認證保證水平下降，存在哪些後備控制措施</strong>——外部 KMS、加密磁碟卷、短期憑證？</li>
+</ol>
+<p>以上所有說法均引自 The Hacker News。原文並未交代 AMD 的修補狀態、研究人員歸屬或受影響的 CPU 世代；讀者在廠商回應之前，應視這些事項為未經確認。</p>
+<p><a href="https://thehackernews.com/2026/11/new-mior-and-skyfall-attacks-let-rogue.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
