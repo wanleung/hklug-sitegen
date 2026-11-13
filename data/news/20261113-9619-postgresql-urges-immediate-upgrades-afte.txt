@@ -1,0 +1,54 @@
+Date: 2026-11-13 18:24:00
+Author: HKLUG Team
+Title: PostgreSQL Urges Immediate Upgrades After 52-Flaw Release Including 22-Year-Old Code Execution Bug
+Content:
+<p>A type-confusion flaw that has sat undetected in PostgreSQL for roughly 22 years can be turned into code execution on the database server, and it leads a batch of 52 security fixes shipped in updates released this week. Tracked as CVE-2026-6460 and carrying a CVSS score of 8.8, the bug is the headline item in a release that operators of self-hosted and managed PostgreSQL deployments should treat as a single, indivisible upgrade — and full protection additionally requires rebuilding any C-language extensions installed on the server.</p>
+<p><strong>"Authenticated" is not the same as "low risk"</strong></p>
+<p>The flaw is reached by a database user with the ability to create objects — a precondition routinely satisfied by application service accounts, integration accounts, and developer accounts, not only superusers. Because the bug involves a mismatch in how the server interprets object types, that mismatch can be manipulated to steer the server down attacker-supplied code paths it was never meant to reach. Any code executed this way runs with the privileges of the operating-system account that owns the PostgreSQL process, converting what starts as a database-level foothold into host-level execution. The precondition is narrow enough to be common in real-world production setups, which is precisely why the "authenticated" label should not be read as reassurance.</p>
+<p><strong>Two decades of review missed it — age is no shield</strong></p>
+<p>The bug's 22-year residency carries a direct triage implication: exposure cannot be reasoned from installation dates, maintenance history, or how well-kept a branch appears. No long-lived instance is exempt simply because it was deployed recently or sits on a continuously maintained line. Complicating matters, the advisory does not enumerate which release branches are affected, so the only safe posture is to check against the published update rather than infer exposure from version age.</p>
+<p><strong>Two operational consequences</strong></p>
+<p>First, all 52 fixes ship together in a single, coordinated release. There is no supported single-CVE hotfix for CVE-2026-6460 — cherry-picking is not an option, and the remaining 51 corrections arrive in the same update. This is a standard release upgrade, not a surgical patch.</p>
+<p>Second, C-language extensions must be rebuilt in the same maintenance window, not as follow-up work. Extensions compiled against the old server internals link directly into the server process; until they are rebuilt against the patched core, vulnerable code paths remain live in-process even after the server itself is fixed — or the extensions fail to load outright. This is the step most likely to be missed in change management, and the most likely point of failure in a real rollout.</p>
+<p><strong>Companion steps for the maintenance window</strong></p>
+<ol>
+<li>
+<p><strong>Upgrade the PostgreSQL server to the fixed release.</strong> This is the only supported path to the 52 fixes.</p>
+</li>
+<li>
+<p><strong>Rebuild every C-language extension during the same window.</strong> Budget time for recompilation and functional testing as part of the same change.</p>
+</li>
+<li>
+<p><strong>Audit object-creation privileges.</strong> Review which service accounts and non-superuser roles hold database-creation or schema-creation rights (<code>CREATEDB</code> and equivalents) — those are the identities that can reach the exploit precondition. Reducing standing privileges narrows the attack surface independently of the patch.</p>
+</li>
+<li>
+<p><strong>Confirm where managed-service responsibility lies.</strong> Deployments on cloud-hosted PostgreSQL should verify with their provider that the fixed build has been rolled out, and establish whether C extensions on those instances fall under the provider's rebuild responsibility or the customer's. That boundary varies by service and should be settled before an incident, not during one.</p>
+</li>
+</ol>
+<p>Why this matters beyond any single deployment is straightforward: PostgreSQL underpins a large share of self-hosted application stacks, and a flaw old enough to survive two decades of audits demonstrates that long-term residency is not evidence of safety. The combination of a common privilege requirement, host-level code execution, and a mandatory extension rebuild makes this a change-management exercise as much as a security one. Treat the release as one indivisible unit, rebuild extensions alongside it in the same window, and assume that age is no shield.</p>
+<hr>
+<p>一項在 PostgreSQL 中潛伏約 22 年、一直未被發現的類型混淆（type confusion）漏洞，可被利用於數據庫伺服器上執行任意代碼，並成為本週發布的更新中 52 項安全修補的重點項目。該漏洞編號為 CVE-2026-6460，CVSS 評分為 8.8，是本次發布的核心事項。自行託管及託管式 PostgreSQL 部署的管理員應將此次更新視為一個不可分割的整體升級來處理；此外，要獲得完整保護，還須重新編譯伺服器上已安裝的所有 C 語言擴展。</p>
+<p><strong>「已認證」不等於「低風險」</strong></p>
+<p>任何具備建立對象權限的數據庫用戶均可觸發此漏洞——應用程式服務帳戶、整合帳戶及開發人員登入帳戶通常都具備此項前提條件，並不僅限於超級用戶（superuser）。由於漏洞涉及伺服器詮釋對象類型的方式不一致，該不一致可被操縱，引導伺服器執行原本不應接觸的攻擊者指定代碼路徑。以這種方式執行的任何代碼，均會以擁有該 PostgreSQL 進程的作業系統帳戶權限運行，從而將原本僅限於數據庫層面的立足點轉化為主機層面的代碼執行。此前提條件的門檻之低，足以在實際生產環境中普遍存在——這正是不應將「已認證」標籤解讀為安全保證的原因。</p>
+<p><strong>二十年審查無一發現——年資並非擋箭牌</strong></p>
+<p>該漏洞存在長達 22 年，對風險評估有直接影響：不能根據安裝日期、維護歷史，或某個分支表面上維護得有多好，來推斷是否受影響。任何長期運行的實例，不會僅因最近才部署或位於持續維護中的版本線就獲得豁免。更複雜的是，官方公告並未列明哪些發布分支受影響，因此唯一安全的做法是對照官方發布的更新逐一核查，而非按版本年代推斷風險。</p>
+<p><strong>兩項營運層面的影響</strong></p>
+<p>第一，全部 52 項修補以單一、協調一致的版本同批發布。CVE-2026-6460 沒有官方支援的單一 CVE 熱修（hotfix）——不能只挑選個別修補來套用，其餘 51 項修正亦在同一更新中一併推出。這是標準的版本升級，並非針對性的外科手術式修補。</p>
+<p>第二，C 語言擴展必須在同一維護時段內重新編譯，不可留待後續處理。針對舊版伺服器內部介面編譯的擴展，是直接連結至伺服器進程的；在未按已修補的核心重新編譯之前，即使伺服器本身已修正，易受攻擊的代碼路徑仍會繼續在進程內生效——或者擴展根本無法載入。這是變更管理中最容易遺漏的一步，也是實際部署中最可能出錯的環節。</p>
+<p><strong>維護時段的配套步驟</strong></p>
+<ol>
+<li>
+<p><strong>將 PostgreSQL 伺服器升級至已修補的版本。</strong> 這是取得全部 52 項修補的唯一官方支援途徑。</p>
+</li>
+<li>
+<p><strong>在同一時段內重新編譯所有 C 語言擴展。</strong> 將重新編譯及功能測試所需的時間，納入同一項變更的預算之內。</p>
+</li>
+<li>
+<p><strong>審核建立對象的權限。</strong> 檢視哪些服務帳戶及非超級用戶角色持有建立數據庫或建立 schema 的權限（<code>CREATEDB</code> 及同等權限）——這些身份正是能夠觸發漏洞前提條件的帳戶。收緊長期持有的權限，可在修補之外獨立地縮小攻擊面。</p>
+</li>
+<li>
+<p><strong>確認託管服務的責任邊界。</strong> 使用雲端託管 PostgreSQL 的部署，應向服務供應商確認已修補版本是否已推出，並釐清這些實例上的 C 擴展究竟屬於供應商的重新編譯責任，還是客戶自身的責任。此邊界因服務而異，應在事故發生前釐清，而非事到臨頭才處理。</p>
+</li>
+</ol>
+<p>此事的重要性遠超任何單一部署，道理很簡單：PostgreSQL 支撐著絕大部分自行託管的應用架構，而一個足以躲過二十年審查的漏洞證明，長期存在並不能作為安全的證據。常見的權限前提、主機層面的代碼執行，再加上強制重新編譯擴展，使這既是一項安全工作，同樣也是一項變更管理工程。請將此次發布視為不可分割的整體，在同一時段內一併重新編譯擴展，並切記——年資並非擋箭牌。</p>
+<p><a href="https://thehackernews.com/2026/11/postgresql-patches-52-flaws-including.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
