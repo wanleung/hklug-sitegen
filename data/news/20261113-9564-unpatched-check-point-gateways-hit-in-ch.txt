@@ -1,0 +1,42 @@
+Date: 2026-11-13 12:03:00
+Author: HKLUG Team
+Title: Unpatched Check Point Gateways Hit in Chain Ending with TSGA Backdoor and ESXi File Wipes
+Content:
+<p>An unknown attacker is exploiting previously disclosed flaws in Check Point Security Gateways — not a newly discovered zero-day — to break into networks, escalate privileges on the vendor's Gaia OS, plant a backdoor called TSGA, and finally wipe files on VMware ESXi hosts, according to Check Point's findings as reported by The Hacker News.</p>
+<h4>What defenders should do first</h4>
+<ul>
+<li><strong>Check your builds against the advisory.</strong> Check Point's advisory lists the affected and fixed builds; treat verification against that list as an immediate task. Gateways that have not been updated since the PHP2Shell fixes remain exposed to the initial-access step of this chain; treat internet-facing appliances as the priority.</li>
+<li><strong>Hunt for TSGA.</strong> Search persistence locations, scheduled tasks, and outbound connections for signs of the backdoor. A clean patch deployment does not retroactively remove an implant that may already be present.</li>
+<li><strong>Check ESXi hosts.</strong> The final stage involves destructive file wiping on ESXi systems, which typically sits behind the network perimeter. Verify backups, review datastores for unexpected file deletions, and confirm that management interfaces are not reachable from the segment where gateways live.</li>
+<li><strong>Reduce exposure.</strong> Limit administrative access to gateway management planes, monitor for anomalous authentication, and correlate gateway logs with hypervisor activity — the crossover between those two log sources is where this chain becomes visible.</li>
+</ul>
+<h4>The attack chain</h4>
+<p>According to Check Point, activity began on 30 October 2026 and initially targeted organisations in Israel, with a broader second wave following the first. The vendor's disclosure outlines the sequence and the conditions that make it possible.</p>
+<p>The intrusion starts with the PHP2Shell vulnerabilities, which give the attacker a foothold on unpatched gateways. From there, the operator abuses a previously reported local privilege escalation flaw in Gaia OS to gain elevated control of the appliance. With that access established, TSGA is deployed as a persistent backdoor. The chain ends in destruction: files on ESXi hosts are wiped, converting a network compromise into data-loss and availability impact.</p>
+<p>Fixes exist for the PHP2Shell vulnerabilities that open this chain, and each stage builds on previously disclosed flaws rather than novel weaknesses — which frames the practical risk here as remediation lag rather than an unpatchable surprise.</p>
+<h4>Why it matters</h4>
+<p>Security gateways are natural targets: they sit at the edge, are frequently patched late because of uptime concerns, and hold privileged network position. A chain that moves from gateway to appliance OS to backdoor to hypervisor represents a widening blast radius, and the destructive finale suggests an intent to erase evidence or punish the victim rather than quietly persist.</p>
+<p>For infrastructure teams, the takeaway is that edge appliances and virtualisation hosts need to be treated as one investigative surface. Siloed monitoring of firewalls alone would miss the ESXi stage entirely.</p>
+<h4>Hong Kong exposure</h4>
+<p>Nothing in Check Point's disclosure points to Hong Kong organisations as targets — the documented activity centred on Israeli entities. But the underlying weaknesses are version-dependent, not geography-dependent: any organisation running unpatched Check Point gateways anywhere in the region carries the same exposure. Hong Kong IT teams running these appliances should treat the affected-version list from the vendor's advisory as an immediate audit item, and confirm that ESXi backup and recovery procedures are current.</p>
+<p>Check Point's disclosure contains the full technical detail, as relayed in The Hacker News report of 13 November.</p>
+<hr>
+<p>據 Check Point 的調查結果（由 The Hacker News 報導），一名身份不明的攻擊者正利用已披露的 Check Point Security Gateways 漏洞入侵網絡——並非新發現的 zero-day——藉此進入網絡、在供應商的 Gaia OS 上提升權限、植入名為 TSGA 的後門，最後抹除 VMware ESXi 主機上的檔案。</p>
+<h4>防禦者應優先處理的事項</h4>
+<ul>
+<li><strong>核對你的版本是否在安全公告之列。</strong> Check Point 的安全公告列出受影響及已修補的版本；應即時核對自身版本是否在列。自 PHP2Shell 修補以來未曾更新的閘道器，仍然暴露於此攻擊鏈的初始入侵步驟；應將面向互聯網的設備列為首要處理對象。</li>
+<li><strong>搜尋 TSGA 蹤跡。</strong> 檢查持久化位置、排程任務及對外連線，尋找該後門的跡象。完成修補部署並不會事後移除可能已存在的植入程序。</li>
+<li><strong>檢查 ESXi 主機。</strong> 最後階段涉及對 ESXi 系統的破壞性檔案抹除，而此類系統通常位於網絡邊界之內。應核實備份、檢查 datastore 是否有預期之外的檔案刪除，並確認管理介面無法從閘道器所在的網段存取。</li>
+<li><strong>縮小暴露面。</strong> 限制對閘道器管理介面的管理員存取、監控異常認證，並將閘道器日誌與 hypervisor 活動作關聯分析——這兩類日誌的交匯之處，正是此攻擊鏈現形的關鍵。</li>
+</ul>
+<h4>攻擊鏈</h4>
+<p>根據 Check Point，相關活動始於 2026 年 10 月 30 日，最初針對以色列的機構，隨後第二波攻擊範圍更廣。該供應商的披露說明了整個攻擊次序及使其得以成立的條件。</p>
+<p>入侵從 PHP2Shell 漏洞開始，讓攻擊者在未修補的閘道器上取得立足點。隨後，操作者濫用 Gaia OS 中先前已通報的本地權限提升漏洞，取得設備的更高層級控制權。在取得該存取權限後，TSGA 被部署為持久化後門。攻擊鏈最終以破壞告終：ESXi 主機上的檔案遭抹除，將一宗網絡入侵轉化為數據遺失及服務可用性受影響的事件。</p>
+<p>針對引發此攻擊鏈的 PHP2Shell 漏洞已有修補方案，且每個階段均建立於已披露的漏洞之上，而非全新弱點——這意味著此處的實際風險在於修補延遲，而非無法修補的意外漏洞。</p>
+<h4>為何值得關注</h4>
+<p>安全閘道器向來是天然目標：它們位於網絡邊緣、常因維持正常運行時間的考慮而延遲更新，同時佔據網絡中的特權位置。一條由閘道器延伸至設備作業系統、再至後門、最後到達 hypervisor 的攻擊鏈，代表影響範圍不斷擴大；而破壞性的收尾方式則顯示攻擊者意圖抹除證據或懲罰受害方，而非低調地持續潛伏。</p>
+<p>對基礎設施團隊而言，關鍵啟示是：邊緣設備與虛擬化主機必須被視為同一個調查面向。單純以孤島方式監控防火牆，將完全遺漏 ESXi 階段。</p>
+<h4>香港的暴露風險</h4>
+<p>Check Point 的披露並無任何內容指出香港機構是攻擊目標——已記錄的活動集中於以色列機構。然而，相關弱點取決於版本而非地理位置：區內任何機構只要運行未修補的 Check Point 閘道器，即面臨相同的暴露風險。香港運行此類設備的 IT 團隊，應將供應商安全公告中的受影響版本清單列為即時審計項目，並確認 ESXi 備份及還原程序為最新狀態。</p>
+<p>Check Point 的披露包含完整的技術細節，已見於 The Hacker News 於 11 月 13 日的報道。</p>
+<p><a href="https://thehackernews.com/2026/11/hackers-exploit-php2shell-flaws-in.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
