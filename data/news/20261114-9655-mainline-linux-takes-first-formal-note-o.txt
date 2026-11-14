@@ -1,0 +1,32 @@
+Date: 2026-11-14 18:32:00
+Author: HKLUG Team
+Title: Mainline Linux Takes First Formal Note of Apple's M5 With Device-Tree Patches
+Content:
+<p>Initial device-tree support for the base-model Apple M5 has been queued into the <a href="https://git.kernel.org/pub/scm/linux/kernel/git/soc/linux.git/log/?h=apple-soc/dt-7.5"><code>apple-soc/dt-7.5</code></a> Git branch, putting it on track to be merged when the Linux 7.5 development cycle opens, according to <a href="https://www.phoronix.com/news/Apple-M5-For-Linux-7.5">Phoronix</a>.</p>
+<p>The branch serves as the staging area used by the Apple SoC device-tree maintainers ahead of each merge window, so queueing the patches there is a strong indication the material will be accepted upstream rather than returned for rework. What lands, however, is deliberately minimal.</p>
+<h4>What the patches actually deliver</h4>
+<p>Device-tree files are the kernel's static description of a machine's hardware: which SoC is fitted, how blocks are wired together, where memory-mapped peripherals sit, and what properties govern them. They are the foundation on which driver work is built, not a substitute for it.</p>
+<p>In practice, landing these patches would let the mainline kernel formally identify the chip and describe its basic layout. It would not mean an M5 Mac can boot a kernel, mount a root filesystem, drive a display, or do any of the things a user would recognise as "running Linux." There is no completed stack yet for the M5's GPU, media engines, Neural Engine, or the power-management paths that make Apple Silicon laptops viable as portable machines.</p>
+<p>Put plainly: the kernel will know the chip exists. Almost everything else remains to be written.</p>
+<h4>A pattern the community knows well</h4>
+<p>Each new M-series generation has followed the same trajectory since the M1. A minimal device-tree lands first, then months of iterative work follows on display output, storage, USB, wireless, networking, and the thermal and power plumbing that determines whether a laptop is pleasant to use. Only after that does a machine cross the line from "boots to a prompt" to something a person could plausibly depend on.</p>
+<p>The M5 does start from firmer ground than its predecessors. Years of upstreamed Apple SoC infrastructure, plus the accumulated body of Asahi Linux work on earlier generations, provide reusable groundwork that did not exist in 2020. But a better starting point is not a shorter timetable — the sequence of work is the same, and so is the rough order of magnitude of effort.</p>
+<h4>Why it matters beyond the patch itself</h4>
+<p>For the open-source community, the significance is about roadmap visibility. Once a device-tree is queued, it signals that maintainers expect the hardware to be supported and that downstream efforts — above all the Asahi Linux project, which has driven most of the practical Apple Silicon work — have a stable upstream anchor to build against. It also gives prospective contributors a clear entry point: device-tree bring-up is where much of the exploratory reverse-engineering work begins.</p>
+<p>For developers in Hong Kong and elsewhere who use Apple hardware and have been weighing a dual-boot arrangement or an Asahi installation, the takeaway is a scheduling signal rather than a green light. Machines based on the base M5 are now nominally on the mainline roadmap, but buying or migrating with the expectation of near-term Linux support would be premature. The milestones worth watching are the downstream arrival of fuller driver support, and eventually the point at which the hardware moves from bring-up patches to something a user could reasonably rely on.</p>
+<p>For now, the change is exactly what it appears to be: the kernel's first formal acknowledgement that the M5 exists — and the beginning, not the end, of the work needed to run Linux on it.</p>
+<hr>
+<p>據 <a href="https://www.phoronix.com/news/Apple-M5-For-Linux-7.5">Phoronix</a> 報道，基礎型 Apple M5 的初步裝置樹（device-tree）支援已排入 <a href="https://git.kernel.org/pub/scm/linux/kernel/git/soc/linux.git/log/?h=apple-soc/dt-7.5"><code>apple-soc/dt-7.5</code></a> Git 分支，意味著相關內容有望在 Linux 7.5 開發週期開始時合併。</p>
+<p>該分支是 Apple SoC 裝置樹維護者在每個合併視窗（merge window）之前使用的暫存區，因此把補丁排入該分支，強烈表明這些材料將獲上游接受，而不會被退回重做。然而，最終納入的內容是刻意保持最低限度的。</p>
+<h4>補丁實際提供的內容</h4>
+<p>裝置樹檔案是核心（kernel）對一部機器硬件的靜態描述：配備哪款 SoC、各個區塊如何連接、記憶體映射的周邊設備位於何處，以及有哪些屬性管轄它們。它們是驅動程式工作的基礎，而非替代品。</p>
+<p>實際而言，納入這些補丁後，主線核心便能正式識別該晶片並描述其基本佈局。這並不意味著一部 M5 Mac 可以啟動核心、掛載根檔案系統、驅動顯示器，或做到任何用戶會認為「正在執行 Linux」的事情。M5 的 GPU、媒體引擎、Neural Engine，以及令 Apple Silicon 手提電腦成為稱職流動機種的電源管理路徑，目前均未有完整的 stack。</p>
+<p>簡單說：核心將會知道這顆晶片存在。其他幾乎一切都仍有待撰寫。</p>
+<h4>社群早已熟悉的模式</h4>
+<p>自 M1 以來，每一代新款 M 系列晶片都循著相同的軌跡發展。首先是最基本的裝置樹落地，隨後是為期數月的迭代工作，涵蓋顯示輸出、儲存、USB、無線、網絡，以及決定一部手提電腦是否好用的散熱與電源管理架構。只有在這些完成之後，一部機器才會由「能啟動到 prompt」跨過界線，變成一個人可以合理依賴的系統。</p>
+<p>M5 的起點確實比前代更穩固。多年來上游化的 Apple SoC 基礎設施，加上 Asahi Linux 項目在前幾代累積的工作成果，提供了 2020 年所沒有的可重用基礎。但更好的起點並不等於更短的時間表——工作的順序相同，所需投入的規模亦大致相仿。</p>
+<h4>意義不止於補丁本身</h4>
+<p>對開源社群而言，其重要性在於路線圖的可見性。一旦裝置樹排入隊列，即表明維護者預期該硬件將獲支援，亦意味著下游工作——尤其是推動了大部分實際 Apple Silicon 工作的 Asahi Linux 項目——擁有了一個穩定的上游錨點可供依靠。這也為有意參與的貢獻者提供了一個清晰的切入點：裝置樹的初期啟動（bring-up），正是大量探索性逆向工程工作的起始之地。</p>
+<p>對於香港及其他地方使用 Apple 硬件、一直考慮雙系統啟動或安裝 Asahi 的開發者而言，此舉傳遞的是一個時間表上的信號，而非開綠燈。基於基礎型 M5 的機器名義上已列入主線路線圖，但若以近期即有 Linux 支援為前提去購買或遷移，未免言之過早。值得留意的里程碑，是更完整驅動支援何時在下游出現，以及最終硬件由初期啟動補丁過渡到用戶可以合理依賴的狀態之時。</p>
+<p>目前而言，這項變更正如其所見：核心首次正式承認 M5 的存在——這是為其執行 Linux 所需工作的開始，而非終點。</p>
+<p><a href="https://www.phoronix.com/news/Apple-M5-For-Linux-7.5" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
