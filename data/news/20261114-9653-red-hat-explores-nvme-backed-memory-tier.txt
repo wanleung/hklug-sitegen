@@ -1,0 +1,30 @@
+Date: 2026-11-14 18:43:00
+Author: HKLUG Team
+Title: Red Hat explores NVMe-backed memory tiering to lift QEMU VM density
+Content:
+<p>```</p>
+<p>Red Hat engineers are weighing several ways to give QEMU-based virtual machines a cheaper tier in which to keep memory, with NVMe SSDs emerging as the leading candidate for an intermediate tier between DRAM and disk. The aim is to trim how much RAM each VM demands at a time when memory pricing shows little sign of easing.</p>
+<p>The effort is still exploratory and upstream — nothing has shipped in a QEMU release — but the motivation is straightforward economics. RAM remains one of the costliest line items on a virtualization host, and for operators running large fleets, memory pricing effectively caps how densely VMs can be packed onto each machine. Phoronix, which reported on the work, describes the engineers' long-term goal as broader use of NVMe SSDs in QEMU VMs to conserve RAM "given today's sky high memory pricing."</p>
+<h4>Why VM density hinges on RAM</h4>
+<p>For private-cloud and colocation KVM operators, the arithmetic is well known. Compute and storage have enjoyed sustained price-per-unit improvements; DRAM has not kept pace. A host provisioned with, say, 512GB of memory can only host as many VMs as that memory allows, no matter how much idle CPU or flash sits alongside it. Any mechanism that lets a VM's working set live partially on cheaper, slower media while keeping performance acceptable translates directly into more VMs per rack unit.</p>
+<p>QEMU and KVM already ship a partial toolkit for this problem: balloon drivers that return unused guest memory to the host, host-side swapping, and page reporting that lets guests learn which pages they can reclaim. Those controls either depend on guest cooperation or degrade abruptly once memory pressure forces pages all the way out to swap. The gap the Red Hat work targets is a middle ground — a tier above swap but below DRAM, with lower latency and more predictable behaviour under load.</p>
+<h4>NVMe as the pragmatic middle tier</h4>
+<p>NVMe SSDs are the obvious candidate. They deliver sequential and random throughput far beyond SATA flash or spinning disks, and in a colocation hall they are already deployed in volume for storage. Treating a slice of an NVMe device as a memory tier would let the host demote cold pages — parts of a VM's memory untouched for some interval — to flash, then promote them back to DRAM on access, without the guest ever needing to know.</p>
+<p>The trade-off is latency. Even a fast NVMe drive is roughly an order of magnitude slower than DRAM for the scattered, single-page accesses that make up memory traffic. The approach therefore pays off only when a workload's <em>active</em> footprint fits comfortably in RAM while its <em>total</em> footprint does not — a common pattern in virtualized environments where many guests are idle or lightly loaded at any given moment. Workloads with large, uniformly hot memory footprints would gain little and could regress.</p>
+<h4>CXL looms as the longer-term answer</h4>
+<p>NVMe tiering is also best understood as a stepping stone. Compute Express Link, the interconnect standard rolling out across server platforms, offers memory pooling and expansion at latencies much closer to local DRAM than any storage device can manage. CXL-attached memory would push tiering down into hardware, off the hypervisor's plate entirely — but deployments are still early, while NVMe is available in essentially every server shipping today.</p>
+<p>None of the mechanisms under discussion has landed in a QEMU release. The work remains at the proposal and prototyping stage upstream, so operators should treat it as a direction to watch rather than a feature to plan capacity around. With memory pricing showing little sign of easing, though, the signal is worth noting: upstream is actively hunting for ways to do more with less RAM — and NVMe is the first lever it intends to pull.</p>
+<hr>
+<p>```</p>
+<p>Red Hat 工程師正研究多種方案，為基於 QEMU 的虛擬機提供一個成本較低的層級以存放記憶體，其中 NVMe SSD 脫穎而出，成為 DRAM 與磁碟之間中間層級（tier）的首選方案。目標是減少每部虛擬機所需的 RAM 用量——正值記憶體價格毫無回落跡象之際。</p>
+<p>這項工作仍屬探索階段及上游（upstream）開發——尚未有任何成果進入 QEMU 正式版本——但動機出自明確的經濟考量。RAM 一直是虛擬化主機上成本最高的開支項目之一，對於營運大規模機群的系統管理員而言，記憶體價格實際上限制了每部機器可以密集容納多少部虛擬機。報道該項工作的 Phoronix 形容，工程師的長遠目標是在 QEMU 虛擬機中更廣泛運用 NVMe SSD 以節省 RAM「鑑於當今高聳入雲的記憶體價格」。</p>
+<h4>為何虛擬機密度取決於 RAM</h4>
+<p>對於私有雲及託管（colocation）KVM 系統管理員來說，這筆帳人人熟悉。運算與儲存的單位價格長期持續改善；DRAM 卻未能跟上步伐。一部配備例如 512GB 記憶體的主機，無論旁邊閒置多少 CPU 或 flash 容量，能容納的虛擬機數量始終受制於記憶體容量。任何機制只要能讓虛擬機的工作集（working set）部分駐留於較便宜、速度較慢的介質上，同時維持可接受的性能，就能直接轉化為每機櫃單位容納更多虛擬機。</p>
+<p>QEMU 與 KVM 其實已內建應對此問題的初步工具：將客體（guest）未用記憶體歸還主機的 balloon driver、主機端 swapping，以及讓客體得知哪些頁面可被回收的 page reporting。這些控制機制或依賴客體配合，或在記憶體壓力迫使頁面全部擠出至 swap 時性能急劇下滑。Red Hat 這項工作針對的正是中間地帶——一個高於 swap、低於 DRAM 的層級，延遲更低，在負載下行為更可預測。</p>
+<h4>NVMe 作為務實的中間層級</h4>
+<p>NVMe SSD 是顯而易見的候選方案。其順序與隨機吞吐量遠超 SATA flash 或傳統磁碟，而在託管機房中，NVMe 其實已大量部署作儲存用途。將 NVMe 裝置的一部分劃作記憶體層級，主機便可把冷頁——即虛擬機記憶體中某段時間未被觸碰的部分——降級至 flash，存取時再提升回 DRAM，全程無需客體知悉。</p>
+<p>代價是延遲。即使是最快速的 NVMe SSD，面對構成記憶體流量的零散單頁存取，速度仍比 DRAM 慢約一個數量級。因此，這種做法只有在工作負載的<em>活躍</em>佔用空間可舒適容納於 RAM、而<em>總</em>佔用空間不能時才有利——這在虛擬化環境中十分常見，因為任何時刻都有大量客體處於閒置或輕載狀態。佔用記憶體龐大且整體持續高熱的工作負載則得益有限，甚至可能出現性能倒退。</p>
+<h4>CXL 逐漸浮現為長遠答案</h4>
+<p>NVMe tiering 亦應被視為踏腳石。Compute Express Link（CXL）——正逐步普及至各伺服器平台的互連標準——提供的記憶體池化與擴展，其延遲遠比任何儲存裝置更接近本地 DRAM。CXL 連接的記憶體將把 tiering 下推至硬件層面，完全卸下 hypervisor 的責任——惟相關部署尚屬早期，而 NVMe 在現今幾乎每一部出貨伺服器上均告可用。</p>
+<p>目前討論中的所有機制均未進入任何 QEMU 正式版本。上游工作仍處於建議及原型階段，系統管理員應將其視為值得留意的發展方向，而非可據以規劃容量的功能。不過，記憶體價格毫無回落跡象，這個信號值得注意：上游正積極尋求以更少 RAM 做更多事的方法——而 NVMe 就是他們打算拉動的第一根槓桿。</p>
+<p><a href="https://www.phoronix.com/news/QEMU-VM-Memory-Tiering" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
