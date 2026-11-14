@@ -1,0 +1,30 @@
+Date: 2026-11-14 03:07:00
+Author: HKLUG Team
+Title: Wine 11.22 Adds x86 AVX Emulation on ARM64, Easing a Common Windows-on-ARM Crash
+Content:
+<p>Wine 11.22 now emulates x86 AVX instructions on ARM64, addressing one of the more common reasons Windows applications fail outright when run on ARM hardware. The release is out as the project's latest bi-weekly development build, and Phoronix, reporting on the release, highlights the new instruction-set support as the headline addition.</p>
+<p>For anyone who has asked the blunt question — does my Windows application actually run on ARM hardware yet? — AVX support closes a gap that has historically turned "the app installs but instantly crashes" into a support ticket rather than a usable workflow.</p>
+<p>AVX is a SIMD instruction set extension that x86 compilers and application runtimes have leaned on for years. ARM64 CPUs have no native equivalent, so when a Windows binary executes an AVX instruction on an ARM host without emulation support, the process typically dies immediately. Until now, that has been one of the more common silent failure modes when running x86 Windows software under Wine on Apple Silicon Macs, Qualcomm Snapdragon X machines, and ARM-based Linux devices.</p>
+<p>That makes 11.22 more than a routine version bump. The bi-weekly cadence means releases themselves are unremarkable; what matters is the coverage added. With AVX now emulated, a category of applications that previously failed at launch — or failed inconsistently depending on which code path executed — has a plausible chance of running. Which specific AVX variants are covered in this release should be confirmed against the WineHQ 11.22 changelog.</p>
+<h4>The road to Wine 12.0</h4>
+<p>Phoronix frames the release as a step toward the beginning of Wine 12.0 stable release preparations, and that framing matters for anyone tracking the project's roadmap. Development releases like 11.22 are where instruction-set work, driver plumbing, and API fixes are worked out before being consolidated into a stable release. For IT teams and developers evaluating ARM platforms, the practical reading is that emulation coverage — not raw silicon efficiency — is often the gating factor in adoption decisions. A fast ARM machine is of limited use if the software stack cannot execute the binaries you depend on.</p>
+<h5>Scope check: what AVX emulation does and does not cover</h5>
+<p>Before treating this as a universal fix, a caveat is warranted. Emulating an instruction set is not the same as running it at native speed — each emulated AVX instruction requires translation, and code that heavily uses wide vector operations will generally be slower than on equivalent x86 hardware. This is a compatibility fix, not a performance unlock. Developers should verify actual application behaviour rather than assuming coverage.</p>
+<h5>Trying it</h5>
+<p>Wine 11.22 is a development release, so expect rough edges; the WineHQ 11.22 release notes carry the full changelog and installation details.</p>
+<p>For IT professionals in Hong Kong weighing ARM-based notebooks or ARM Linux servers against a Windows software estate, this is a general point in favour of waiting: emulation coverage, not silicon speed, is usually what gates adoption.</p>
+<p><em>Source: Phoronix, "Wine 11.22 Introduces x86 AVX Emulation On ARM64".</em></p>
+<hr>
+<p>Wine 11.22 現已在 ARM64 上模擬 x86 AVX 指令，針對 Windows 應用程式在 ARM 硬件上執行時經常完全無法運作的一大成因作出處理。是次版本作為項目最新每兩星期一次的開發版本推出，Phoronix 在報導該版本時，將新增的指令集支援列為最主要的改動。</p>
+<p>對於曾經直截了當問過「我的 Windows 應用程式到底能不能在 ARM 硬件上跑？」的人來說，AVX 支援填補了一項長久以來的缺口——過往這往往令「應用程式安裝後即時崩潰」變成一張技術支援工單，而非可用的工作流程。</p>
+<p>AVX 是一套 SIMD 指令集擴展，x86 編譯器及應用程式 runtime 多年來一直依賴它。ARM64 CPU 並無原生對應的指令，因此當 Windows binary 在沒有模擬支援的 ARM 主機上執行 AVX 指令時，相關程序通常會即時終止。在此之前，這一直是透過 Wine 在 Apple Silicon Mac、Qualcomm Snapdragon X 機器及 ARM 架構 Linux 設備上執行 x86 Windows 軟件時，其中一種最常見的無聲失敗模式。</p>
+<p>這令 11.22 不只是一次例行的版本號遞增。每兩星期發佈一次的節奏本身並無特別之處；關鍵在於新增的覆蓋範圍。隨著 AVX 獲得模擬，一類過往在啟動階段便失敗——或視乎執行哪條 code path 而時好時壞——的應用程式，現在有合理機會能夠運行。至於本版本涵蓋哪些特定 AVX 變體，仍應對照 WineHQ 11.22 的 changelog 予以確認。</p>
+<h4>通往 Wine 12.0 之路</h4>
+<p>Phoronix 將是次版本定位為邁向 Wine 12.0 穩定版籌備工作的一步，對任何追蹤該項目 roadmap 的人而言，這個定位至關重要。11.22 這類開發版本，正是指令集工作、驅動程式銜接（driver plumbing）及 API 修正先在此落地的地方，之後才會整合為穩定版本。對於評估 ARM 平台的 IT 團隊及開發者來說，實際解讀是：模擬覆蓋範圍——而非晶片本身的原生效能——往往才是採用決策的關鍵因素。若軟件 stack 無法執行你所依賴的 binary，再快的 ARM 機器也用處有限。</p>
+<h5>範圍釐清：AVX 模擬涵蓋與不涵蓋什麼</h5>
+<p>在將此視為萬能解方之前，有一點必須先作說明。模擬一套指令集並不等同於以原生速度執行——每一條被模擬的 AVX 指令都需要轉譯，大量使用寬向量運算（wide vector operations）的 code，整體上會比在同等 x86 硬件上慢。這是一項相容性修正，並非效能解鎖。開發者應驗證應用程式的實際表現，而非想當然假設已全面覆蓋。</p>
+<h5>實際試用</h5>
+<p>Wine 11.22 是一個開發版本，難免會有粗糙之處；WineHQ 11.22 release notes 載有完整 changelog 及安裝詳情。</p>
+<p>對於香港的 IT 專業人士而言，在 ARM 架構手提電腦或 ARM Linux 伺服器與 Windows 軟件資產之間作衡量時，是次更新整體上提供了一個「再等一等」的理由：決定能否採用的通常是模擬覆蓋範圍，而非晶片速度。</p>
+<p><em>來源：Phoronix，〈Wine 11.22 Introduces x86 AVX Emulation On ARM64〉。</em></p>
+<p><a href="https://www.phoronix.com/news/Wine-11.22-Released" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
