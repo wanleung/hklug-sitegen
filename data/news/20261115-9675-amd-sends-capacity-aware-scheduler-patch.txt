@@ -1,0 +1,40 @@
+Date: 2026-11-15
+Author: HKLUG Team
+Title: AMD Sends Capacity-Aware Scheduler Patches for Hybrid CPUs Upstream
+Content:
+<p>AMD has posted a new series of Linux kernel patches that would make the kernel's scheduler more aware of per-core capacity on the company's heterogeneous processors. Phoronix reported the series on Saturday. The work is at an early stage: it has been sent to the kernel mailing list for review, with no merge window and no timeline for landing.</p>
+<h4>What the patches actually change</h4>
+<p>The Linux kernel already tracks per-CPU capacity and uses it to weight the load balancer — infrastructure that matured alongside Intel's hybrid parts, which have shipped since late 2021 with a mix of high-performance and high-efficiency cores. AMD's series tunes that existing layer for its own hybrid topology rather than introducing an entirely new scheduling mechanism.</p>
+<p>The practical problem the work targets is a familiar one on big.LITTLE-style designs: a latency-sensitive thread can land on a low-capacity core while a full-fat core sits idle, or a burst of work gets spread across weak cores that cannot drain it quickly. On a single-architecture server the scheduler rarely has to reason about this; on a hybrid host it becomes a routine source of tail-latency surprises.</p>
+<h4>Why it matters for operations teams</h4>
+<p>For DevOps and systems engineers — including those running mixed fleets here in Hong Kong — the relevance is indirect but real, and it shows up in three places. Each maps to a check you can run now:</p>
+<ul>
+<li><strong>Right-sizing and p99 variance.</strong> Unexplained tail latency on hybrid hosts often traces back to capacity asymmetry rather than application regressions. <em>Check:</em> pull a latency profile per node and see whether tail outliers cluster on specific hybrid hosts or specific cores — that pattern points at capacity placement, not application code. Better capacity awareness should, over time, reduce that class of noise, but only once the code lands and is proven.</li>
+<li><strong>cgroup and Kubernetes CPU accounting.</strong> CPU requests and quotas are expressed in abstract units, while the physical throughput behind a core varies across the die. <em>Check:</em> compare your cgroup quota and Kubernetes CPU request values against the actual per-core throughput you measure on hybrid nodes — mismatches there explain quota-vs-performance gaps that teams often misattribute to throttling.</li>
+<li><strong>Kernel upgrade planning.</strong> If this series merges, it changes scheduling behaviour in ways worth including in test cycles rather than discovering in production. <em>Check:</em> note which of your test suites exercise scheduling-sensitive workloads, so there is a ready regression path to run when a future kernel bumps the scheduler.</li>
+</ul>
+<h4>Read it as a direction signal, not a feature</h4>
+<p>It is worth being blunt about status: this is unmerged, reviewable patch-stage work. Scheduler RFCs are frequently reworked, split, or rejected outright during review. There is no merge window in sight, and nothing here should be treated as a capability to budget against or promise in capacity plans.</p>
+<h4>What to check on your fleet today</h4>
+<p>Nothing needs to change urgently. The actionable step for the next audit cycle: verify how your hybrid hosts are actually placing work — check CPU pinning and topology-aware scheduling policies on nodes running mixed workloads, and confirm whether cgroup quotas reflect the real asymmetry between cores. Those checks are useful whether or not this series ever merges.</p>
+<p>Track the patch thread on the Linux kernel mailing list (lore.kernel.org) alongside the Phoronix coverage for review progress.</p>
+<p><em>Source: Phoronix, "AMD Posts Linux Patches For Capacity Aware Scheduling On Hybrid CPUs."</em></p>
+<hr>
+<p>AMD 已提交一系列新的 Linux kernel 補丁，令 kernel 的排程器更能感知其異質處理器上各核心的容量。Phoronix 已於星期六報道該系列補丁。目前工作仍處於早期階段：已送交 kernel 郵件列表（mailing list）審閱，尚未有 merge window，亦未有時間表落實合併。</p>
+<h4>補丁實際改動了什麼</h4>
+<p>Linux kernel 早已追蹤各 CPU 的容量，並以此對負載平衡器（load balancer）加權——這項基礎設施隨着 Intel 混合架構處理器發展成熟，Intel 自 2021 年底起出貨的處理器便混合了高效能核心與高能效核心。AMD 的補丁系列是針對自身的混合架構拓撲調整這一既有層面，而非引入全新的排程機制。</p>
+<p>該工作針對的實際問題，在 big.LITTLE 類似設計中屢見不鮮：對延遲敏感的執行緒（thread）可能被安排到低容量核心，與此同時全速核心卻閒置；又或者一陣突發工作被分散到運算力較弱的核心，無法迅速消化。在單一架構的伺服器上，排程器極少需要處理這類問題；但在混合架構主機上，它會成為尾部延遲（tail latency）異常的常見來源。</p>
+<h4>為何對營運及維護團隊重要</h4>
+<p>對 DevOps 及系統工程師而言——包括在香港運行混合配置機群的團隊——相關性雖屬間接但確實存在，具體體現於三個方面。每一方面對應一項現時便可執行的檢查：</p>
+<ul>
+<li><strong>容量規模配置與 p99 波動。</strong> 混合架構主機上無法解釋的尾部延遲，往往源自容量不對稱，而非應用程式回歸問題。<em>檢查方法：</em>逐節點取得延遲 profile，觀察尾部異常值是否集中在特定混合架構主機或特定核心——該模式指向容量放置（capacity placement），而非應用程式代碼。容量感知能力提升後，假以時日應可減少這類雜訊，但前提是代碼已合併並經驗證。</li>
+<li><strong>cgroup 與 Kubernetes 的 CPU 計量。</strong> CPU requests 及 quotas 以抽象單位表示，而核心背後的實際吞吐量在整個晶片上各不相同。<em>檢查方法：</em>將你的 cgroup quota 及 Kubernetes CPU request 數值，與在混合架構節點上實測的各核心吞吐量對比——兩者不符可解釋 quota 與性能之間的差距，而團隊往往將此誤歸因於 throttling。</li>
+<li><strong>kernel 升級規劃。</strong> 若此系列合併，將改變排程行為，值得納入測試周期，而非在生產環境才發現。<em>檢查方法：</em>記錄哪些測試套件涵蓋對排程敏感的負載，以便日後 kernel 更新排程器時，有現成的回歸測試路徑可執行。</li>
+</ul>
+<h4>應視之為方向信號，而非功能</h4>
+<p>有必要直言其狀態：這是尚未合併、仍在審閱階段的 patch 工作。排程器的 RFC 常在審閱過程中被重構、拆分，甚至直接拒絕。目前看不到 merge window，此處任何內容均不應視為可納入預算或在容量規劃中作出承諾的能力。</p>
+<h4>今日可檢查機群的哪些項目</h4>
+<p>沒有任何事情需要緊急改變。下一個審核周期的可執行步驟：查明你的混合架構主機實際如何放置工作——檢查運行混合負載節點上的 CPU pinning 及 topology-aware 排程策略，並確認 cgroup quota 是否反映核心之間真實的不對稱情況。無論該系列最終是否合併，這些檢查同樣有用。</p>
+<p>可在 Linux kernel 郵件列表（lore.kernel.org）追蹤該補丁討論串，並配合 Phoronix 的報道了解審閱進展。</p>
+<p><em>來源：Phoronix，"AMD Posts Linux Patches For Capacity Aware Scheduling On Hybrid CPUs."</em></p>
+<p><a href="https://www.phoronix.com/news/AMD-Hybrid-Capacity-Aware-Sched" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
