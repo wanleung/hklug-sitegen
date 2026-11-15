@@ -1,0 +1,46 @@
+Date: 2026-11-15 12:31:00
+Author: HKLUG Team
+Title: Cursor Links Leaked Fireworks AI Key to Tampered Claude Code Extension on Its Marketplace; Full Mechanism Still Unconfirmed
+Content:
+<h3>Cursor Links Leaked Fireworks AI Key to Tampered Claude Code Extension on Its Marketplace; Full Mechanism Still Unconfirmed</h3>
+<p>Cursor (an AI code editor) disclosed on Friday (Nov 13) that Anthropic's official Claude Code extension on its extension marketplace had been trojanized; according to Cursor's investigation, the trace led back to an access key originally issued to Fireworks AI (an inference platform) that leaked after Fireworks itself was breached. A single stolen credential, spanning two vendors, finally reached the "official" extension listing that developers trust most — the core of this incident is a cascading failure of supply-chain trust, not a simple key leak.</p>
+<h4>Cursor's account: the key came from Fireworks</h4>
+<p>Cursor said in its Friday update: "An attacker obtained an access key we had issued to Fireworks." The company added that "The key was exposed by Fireworks," and said the attacker used the key to read a read-only file.</p>
+<p>It's worth noting that "the key was exposed by Fireworks" is Cursor's own statement during its investigation of the incident and represents a one-sided account; The Hacker News's Nov 15 report did not include an independent response from Fireworks. Before both sides' accounts are available, responsibility should not be adjudicated externally — this article only relays each party's position.</p>
+<h4>Where the supply chain broke</h4>
+<p>Based on currently verifiable information, and according to Cursor's account, the incident chain is roughly as follows: Fireworks AI is breached → a Cursor-issued access key leaks → the attacker uses the key to reach data on Cursor's side, enabling the tampering of the official Claude Code extension → developers download the "official" version from the marketplace. As for the complete technical path linking the leaked key to the extension tampering, public information is insufficient for external parties to reconstruct independently. For end users, the marketplace's official badge is usually the endpoint of trust; this incident shows it can also be the last hop of an attack chain.</p>
+<p>Official extensions are high-value targets because such tools typically hold substantial privileges on developer workstations — related discussions often mention access risks involving source code, terminals, and credentials. This is background on "why official extensions are high-value targets," not a confirmed consequence of this incident.</p>
+<h4>What remains uncertain</h4>
+<p>As of press time, what this report can confirm: the existence of the tampering, Cursor's statements above and the timing of the Friday update, and the Fireworks key as the source of the incident. As for the scope of data affected, the time from implantation to detection, install counts, whether other extensions or publishers on the marketplace were affected, and which specific extension versions users should check or reinstall — public information is insufficient to conclude, and this article does not speculate.</p>
+<h4>Vendor key management: a four-point self-check for HK dev teams</h4>
+<p>The takeaway for local development and security teams is this: risk often doesn't start within your perimeter — it starts with the partners you trust. Consider adding the following to your next vendor-risk review:</p>
+<ul>
+<li><strong>Inventory external partners</strong>: enumerate all third parties holding live keys, tokens, or API keys that can reach your environment, and record issue dates and rotation cycles.</li>
+<li><strong>Assess the blast radius of read-only credentials</strong>: even if labeled read-only, confirm what data can be read (config files, read-only repos, internal endpoints) and test abuse scenarios.</li>
+<li><strong>Independently verify package integrity</strong>: don't rely on a single marketplace or package-manager badge — use checksums, signed releases, or out-of-band hashes for comparison.</li>
+<li><strong>Monitor the marketplaces you depend on</strong>: watch for early signs such as publisher account anomalies, version skips, or maintainer changes, and set up change notifications for critical extensions.</li>
+</ul>
+<p>Key rotation shouldn't be a one-time incident response — it should be a standing item in your vendor risk assessment. This incident is a concrete case of "one partner's key is enough to shake your official trust badge."</p>
+<p><em>Source: The Hacker News, November 15, 2026.</em></p>
+<hr>
+<h3>Cursor 將外洩 Fireworks AI 金鑰與市集遭篡改的 Claude Code 擴充功能相關聯：完整機制仍未確認</h3>
+<p>Cursor（AI 程式碼編輯器）週五（11 月 13 日）披露，其擴充功能市集上 Anthropic 官方 Claude Code 擴充功能遭植入惡意程式（trojanized）；依 Cursor 的調查，追查後的源頭指向一枚曾簽發給 Fireworks AI（推理服務平台）、在 Fireworks 遭入侵後外洩的存取金鑰。一次憑證失竊，橫跨兩家供應商，最終抵達開發者高度信任的「官方」擴充功能清單——這起事件的核心是供應鏈信任的連鎖失效，而非單純的金鑰洩漏。</p>
+<h4>Cursor 的說法：金鑰來自 Fireworks</h4>
+<p>Cursor 在週五的更新中表示：「An attacker obtained an access key we had issued to Fireworks.」（攻擊者取得了一枚我們簽發給 Fireworks 的存取金鑰。）該公司並稱「The key was exposed by Fireworks」（該金鑰由 Fireworks 洩出），並指攻擊者利用該金鑰讀取了一份唯讀（read-only）檔案。</p>
+<p>需要留意的是，「金鑰由 Fireworks 洩出」是 Cursor 在事件調查過程中的表述，屬單方說法；《The Hacker News》11 月 15 日的報導並未收錄 Fireworks 的獨立回應。在雙方說法齊備之前，責任歸屬不宜由外界裁定，本文僅轉述各方立場。</p>
+<h4>供應鏈斷在哪一環</h4>
+<p>以目前可確認的資訊，依 Cursor 的說法，事件鏈條大致如下：Fireworks AI 遭入侵 → 一枚 Cursor 簽發的存取金鑰外洩 → 攻擊者以該金鑰觸及 Cursor 側資料，並促成 Claude Code 官方擴充功能遭篡改 → 開發者在市集中下載「官方」版本。至於外洩金鑰與擴充功能遭篡改之間的完整技術路徑，公開資料尚不足以外界獨立還原。對終端使用者而言，市集的官方標記通常是信任的終點；這起事件說明，它也可能成為攻擊鏈的最後一跳。</p>
+<p>官方擴充功能之所以成為高價值目標，是因為此類工具在開發者工作站上通常具備相當權限——相關討論常提及原始碼、終端機與憑證的存取風險。這是對「為何官方擴充功能是高價值目標」的背景說明，並非本次事件已確認造成的後果。</p>
+<h4>目前尚不確定的部分</h4>
+<p>截至發稿，本次報導能確認的是：擴充功能遭篡改的存在、Cursor 的上述聲明與週五更新的時點，以及 Fireworks 金鑰為事件源頭。至於資料影響範圍、從植入到被察覺的時間、安裝次數、是否影響市集內其他擴充功能或發布者，以及使用者應檢查或重裝的具體擴充功能版本，公開資訊尚不足以定論，本文不做推測。</p>
+<h4>供應商金鑰管理：港區開發團隊的四點自查</h4>
+<p>這起事件對本港開發與資安團隊的啟示在於：風險往往不是從你的邊界內開始，而是從你信任的合作夥伴開始。建議在下一次供應商風險檢視（vendor-risk review）中加入以下項目：</p>
+<ul>
+<li><strong>盤點外部合作夥伴</strong>：清查所有持有能連入你環境的即時金鑰、權杖（token）或 API key 的第三方，並記錄簽發日期與輪換週期。</li>
+<li><strong>評估唯讀憑證的爆炸半徑</strong>：即使標示為 read-only，也要確認可被讀取的資料範圍（設定檔、唯讀儲存庫、內部端點），並實測濫用情境。</li>
+<li><strong>獨立驗證套件完整性</strong>：不依賴市集或套件管理器的單一標記，改以校驗碼（checksum）、簽名發行（signed releases）或帶外（out-of-band）雜湊進行比對。</li>
+<li><strong>監控你依賴的市集清單</strong>：留意發布者帳號異常、版本跳號或維護者變動等先行徵兆，並為關鍵擴充功能設定變更通知。</li>
+</ul>
+<p>金鑰輪換不應只是一次性事故應對，而應成為企業供應商風險評估中的常設項目——本次事件正是「合作夥伴的一枚金鑰，足以動搖你的官方信任標記」的具體案例。</p>
+<p><em>資料來源：The Hacker News，2026 年 11 月 15 日。</em></p>
+<p><a href="https://thehackernews.com/2026/11/stolen-fireworks-ai-key-led-to-cursor.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
