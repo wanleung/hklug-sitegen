@@ -1,0 +1,28 @@
+Date: 2026-11-16 13:03:00
+Author: HKLUG Team
+Title: NTFS Resurrection Arc Continues as Linux 7.5 Queues O_TMPFILE Support
+Content:
+<p>The modern in-kernel NTFS driver is in line for another capability upgrade, with <code>O_TMPFILE</code> support queued for the upcoming Linux 7.5 kernel cycle, according to Phoronix.</p>
+<p>The addition is part of the steady stream of feature work that has followed the so-called "NTFS Resurrection" — the overhaul that introduced the current open-source read/write NTFS driver in Linux 7.2 and has seen incremental improvements land in the cycles since. <code>O_TMPFILE</code> is the latest item on that list rather than a standalone headline: it is a piece of feature-parity plumbing that brings the driver closer to how mainstream Linux filesystems behave.</p>
+<p><strong>Practical impact</strong></p>
+<p>For IT teams running mixed Windows and Linux estates — dual-boot workstations, shared external drives, or NTFS-formatted data partitions mounted on Linux hosts — the practical value lies in how temporary files are handled safely.</p>
+<p><code>O_TMPFILE</code> lets a program create a file that exists only as an unnamed inode, with no entry in any directory. The process writes its data to that invisible file, then either attaches it to a path with <code>linkat()</code> when it is ready or lets it be garbage-collected if something fails. That pattern underpins the widely used atomic-replace idiom: write a complete new version to a temporary file, then rename it over the target in one operation, so readers never see a half-written file.</p>
+<p>On a filesystem that does not support the flag, applications fall back to creating an explicitly named temporary file (something like <code>.config.tmp</code>) and renaming it afterward. The fallback works, but it leaves a visible, guessable file lying around for the duration of the write — a nuisance for anything from editor save cycles to package installers and system configuration tooling running against an NTFS mount.</p>
+<p><strong>Two NTFS stacks, compared</strong></p>
+<p>A quick distinction for administrators weighing options: <code>ntfs-3g</code> is the long-standing FUSE-based, userspace NTFS implementation, trading throughput for maturity, while the modern in-kernel driver (commonly referred to as <code>ntfs3</code>) runs in the kernel and offers better performance but has historically trailed on features. <code>O_TMPFILE</code> is one of the gaps being closed on that second front.</p>
+<p><strong>Caveats</strong></p>
+<p>Two points temper the announcement. First, per Phoronix's reporting, the patch set is queued rather than merged — it is intended for the 7.5 cycle, but the final shape could shift before it lands. Second, parity in feature flags does not equal parity in speed; the modern driver continues to improve, but NTFS on Linux should still be viewed as an interoperability layer rather than a replacement for a native filesystem when raw performance matters.</p>
+<p>For anyone whose workflow straddles both operating systems, though, the direction of travel is clear: the in-kernel NTFS driver is steadily shedding the rough edges that once pushed users back to FUSE. Each queued patch makes the Linux side of a mixed-environment setup a little less awkward — and this one removes a small but persistent source of untidy, non-atomic file writes.</p>
+<hr>
+<p>據 Phoronix 報導，現行的 in-kernel NTFS 驅動程式即將迎來另一項功能升級，<code>O_TMPFILE</code> 支援已排入即將到來的 Linux 7.5 kernel 週期。</p>
+<p>本次新增的功能，是所謂「NTFS 復活」以來一連串穩定推進的功能開發的一部分——該次大規模重整在 Linux 7.2 引入了現今的開放源碼 NTFS 讀寫驅動程式，其後各個週期亦持續有漸進式改進落實。<code>O_TMPFILE</code> 是這份清單上的最新項目，而並非一項獨立的頭條功能：它是一項補足功能對等（feature parity）的基建工作，令驅動程式的行為更貼近主流 Linux 檔案系統的運作方式。</p>
+<p><strong>實際影響</strong></p>
+<p>對於同時管理 Windows 及 Linux 環境的 IT 團隊而言——無論是雙系統啟動（dual-boot）的工作站、共享外置硬碟，還是掛載於 Linux 主機上的 NTFS 格式資料分區——實際價值在於臨時檔案能否被安全處理。</p>
+<p><code>O_TMPFILE</code> 允許程式建立一個只以 unnamed inode 形式存在、在任何目錄中都沒有相應條目的檔案。程式先將資料寫入該隱藏檔案，完成後再以 <code>linkat()</code> 將它連結至某個路徑；若中途出錯，則任由其被 garbage collection 回收。此模式正是被廣泛採用的 atomic-replace 慣用做法的基礎：先把完整的新版本寫入一個臨時檔案，再以一次 rename 操作將其覆蓋至目標位置，令讀取方永遠不會見到只寫了一半的檔案。</p>
+<p>在不支援該 flag 的檔案系統上，應用程式只能退而求其次，先建立一個具名的臨時檔案（例如 <code>.config.tmp</code>），完成後再將其 rename。這個 fallback 方法固然可行，但在寫入期間會留下一個可見且容易被猜到的檔案——由編輯器的存檔週期，到套件安裝程式及在 NTFS 掛載點上運行的系統配置工具，都會受此滋擾。</p>
+<p><strong>兩套 NTFS 方案比較</strong></p>
+<p>供管理員取捨時參考的一個簡要分別：<code>ntfs-3g</code> 是歷史悠久、基於 FUSE 的用戶空間（userspace）NTFS 實現，以吞吐量換取成熟度；而現行的 in-kernel 驅動程式（通常稱為 <code>ntfs3</code>）在核心內運行，性能較佳，但過去在功能上一直有所落後。<code>O_TMPFILE</code> 正是這第二條戰線上正在補足的差距之一。</p>
+<p><strong>注意事項</strong></p>
+<p>有兩點為這項公布降溫。其一，據 Phoronix 報道，該 patch set 目前只是排隊（queued）而非已合併（merged）——它原定用於 7.5 週期，但在正式落實前，最終形式仍可能改變。其二，功能旗標上的對等不等於速度上的對等；現行驅動程式固然持續改進，但當原始性能至關重要時，Linux 上的 NTFS 仍應被視為一個互操作層（interoperation layer），而非原生檔案系統的替代品。</p>
+<p>不過，對於工作流程橫跨兩個作業系統的人來說，發展方向已然明確：in-kernel NTFS 驅動程式正逐步消除那些曾經把用戶逼回 FUSE 的粗糙之處。每一項排入隊列的 patch，都令混合環境設定中的 Linux 一面少一分不便——而本次移除的，正是一個雖小卻長期存在的、導致不整潔及非原子化檔案寫入的源頭。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.5-NTFS-TMPFILE" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
