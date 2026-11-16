@@ -1,0 +1,42 @@
+Date: 2026-11-16
+Author: HKLUG Team
+Title: Stolen Keys Fund the Next Hunt: Amazon Traps AI Agents Targeting LiteLLM and Dify
+Content:
+<p>A campaign of AI agents is hunting for credentials inside internet-exposed LLM gateways — and the keys they steal pay for the very model inference that powers the next round of searching, according to Amazon's threat intelligence team. The loop means the operation's compute budget grows with its own success, with victims footing the bill.</p>
+<p>Amazon's researchers set decoy servers on the open internet and captured what came back: the agents' own operational records. Those logs describe reconnaissance runs against self-hosted AI applications — including LiteLLM, One API, and Dify — along with the theft of the AI provider credentials those tools store. The recovered records also show stolen keys being used to run the models that drove further searches for more keys.</p>
+<p>The self-funding structure is the detail defenders should dwell on. Every successful theft expands the campaign's capacity to look for the next one, and the victims whose keys are drained absorb the cost.</p>
+<h4>Why gateways are the target</h4>
+<p>Self-hosted LLM gateways exist to consolidate provider credentials behind one interface. That is a convenience for developers, but it cuts both ways: a single exposed instance can hand an attacker a portfolio of keys spanning multiple providers instead of one service account. Any team running a gateway to manage access across OpenAI, Anthropic, AWS Bedrock, and similar backends is, by design, sitting on a concentrated cache of secrets.</p>
+<p>Amazon's team also explained what made its decoys effective. AI tooling tends to produce unusually detailed, self-describing logs, and in this case the attackers' own reasoning traces doubled as an audit trail of their activity — a rare instance where the adversary's instrumentation works in the defender's favour.</p>
+<p>The campaign also signals a change in character. Earlier exposure hunts typically relied on static scanners firing one-shot probes; adaptive agents can iterate, recover from failed attempts, and keep going as long as tokens remain available. The result is persistent, goal-driven reconnaissance rather than a burst of traffic that ends when a script finishes.</p>
+<h4>What teams should check now</h4>
+<p>The findings point to a standing posture rather than a one-off review. For teams anywhere — including those across Hong Kong that have self-hosted an AI gateway — the practical checklist includes:</p>
+<ul>
+<li><strong>Exposure audits:</strong> Regularly scan for gateway instances — and the dashboards and debug endpoints attached to them — reachable from outside the intended network perimeter.</li>
+<li><strong>Scheduled key rotation with revocation:</strong> Rotation alone is not enough; previously issued credentials must be actively revoked, since a key discovered in a log or pasted into a proxy config will otherwise remain valid longer than its replacement.</li>
+<li><strong>Scoped, minimal keys:</strong> Issue gateway credentials with the narrowest provider permissions and spend limits practical, so a leak cannot be leveraged across an entire account.</li>
+<li><strong>Vault-injected secrets:</strong> Keep provider keys out of configuration files and environment dumps wherever the deployment tooling allows, injecting them at runtime from a secrets manager.</li>
+<li><strong>Authenticated access paths:</strong> Place gateways behind authenticated controls and private network routes rather than directly on the public internet.</li>
+<li><strong>Anomalous-spend monitoring:</strong> Treat unexpected inference billing as a potential indicator of compromise — in a self-funding loop like this, spend anomalies may be the earliest visible signal.</li>
+</ul>
+<p>The takeaway from Amazon's findings is straightforward: the tools that make AI development easier also concentrate the credentials attackers most want, and agents are now patient enough to wait for a mistake.</p>
+<hr>
+<p>Amazon 威脅情報團隊表示，一批 AI agent 正在互聯網上暴露的 LLM gateway 中搜尋憑證——而它們偷取的密鑰，正好用來支付驅動下一輪搜尋的模型 inference 費用。這個循環意味著，行動的運算預算會隨其自身成功而增長，代價則由受害者承擔。</p>
+<p>Amazon 研究人員在公開互聯網上設置了誘餌伺服器，並捕獲了回來的資料：agent 自己的運行記錄。這些日誌描述了針對自託管 AI 應用的偵察行動——包括 LiteLLM、One API 及 Dify——以及盜取這些工具所儲存的 AI provider 憑證。復原的記錄還顯示，被盜的密鑰被用來運行模型，進一步搜尋更多密鑰。</p>
+<p>這種自我資助的結構，正是防禦者應當深思的細節。每一次成功的盜竊都會擴大行動搜尋下一次目標的能力，而密鑰被榨取的受害者則要為此買單。</p>
+<h4>為何 gateway 是目標</h4>
+<p>自託管 LLM gateway 的存在，是為了將多個 provider 的憑證統一置於單一介面背後。這對開發者而言固然方便，但亦是一把雙刃劍：單一暴露的實例，便可能讓攻擊者取得橫跨多個 provider 的一組密鑰，而非單一服務帳戶。任何運行 gateway 以管理 OpenAI、Anthropic、AWS Bedrock 及類似後端存取的團隊，按設計而言，本身便坐擁一處集中的機密儲存庫。</p>
+<p>Amazon 團隊亦解釋了其誘餌之所以有效的關鍵。AI 工具傾向產生異常詳細、自我描述式的日誌，而在本案中，攻擊者自己的推理軌跡（reasoning traces）同時充當了其活動的審計軌跡——這是少數敵方的監測手段反而對防禦者有利的情況。</p>
+<p>此行動亦顯示其性質有所轉變。此前的暴露搜尋通常依賴發射一次性探針的靜態掃描器；而具適應能力的 agent 可以反覆迭代、從失敗嘗試中恢復，只要 token 仍然可用便會持續行動。其結果是持久、以目標驅動的偵察，而非在腳本執行完畢後便告終的一陣流量。</p>
+<h4>團隊現階段應檢查什麼</h4>
+<p>調查結果指向的是一種持續性的防護姿態，而非一次性檢視。對於各地團隊——包括在香港自託管 AI gateway 的團隊——實用的檢查清單包括：</p>
+<ul>
+<li><strong>暴露審計：</strong> 定期掃描 gateway 實例——以及連接其上的儀表板和 debug endpoint——是否可從預期網絡邊界以外存取。</li>
+<li><strong>定期密鑰輪替並配合撤銷：</strong> 僅輪替並不足夠；先前發出的憑證必須主動撤銷，否則在日誌中被發現或貼入 proxy 配置的密鑰，其有效期將長於新換髮的密鑰。</li>
+<li><strong>範圍受限的最小權限密鑰：</strong> 以實際可行的最窄 provider 權限和消費限額發出 gateway 憑證，使外洩事件無法被用於整個帳戶。</li>
+<li><strong>Vault 注入的機密：</strong> 只要部署工具允許，便將 provider 密鑰排除於配置檔案和環境變數傾印之外，改由 secrets manager 在運行時注入。</li>
+<li><strong>已驗證的存取路徑：</strong> 將 gateway 置於已驗證的控制和私有網絡路由背後，而非直接暴露於公開互聯網。</li>
+<li><strong>異常消費監控：</strong> 將意外的 inference 帳單視為潛在的入侵指標——在這種自我資助的循環中，消費異常可能是最早可見的信號。</li>
+</ul>
+<p>Amazon 調查結果的啟示相當直接：令 AI 開發更輕鬆的工具，亦同時集中了攻擊者最想要的憑證，而如今的 agent 已經足夠有耐心，等待錯誤的出現。</p>
+<p><a href="https://thehackernews.com/2026/11/amazon-uncovers-ai-agent-campaign.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
