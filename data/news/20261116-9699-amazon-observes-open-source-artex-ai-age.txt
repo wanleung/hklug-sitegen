@@ -1,0 +1,34 @@
+Date: 2026-11-16 13:34:00
+Author: HKLUG Team
+Title: Amazon Observes Open-Source ARTEX AI Agents Probing Its Decoy Sensors
+Content:
+<h3>Amazon Observes Open-Source ARTEX AI Agents Probing Its Decoy Sensors</h3>
+<p>Amazon's threat intelligence team has observed unauthorised activity from AI agents running on ARTEX, an open-source agentic AI penetration testing framework, interacting with its MadPot decoy sensor network over a five-week window, according to Security Affairs, which carried Amazon's disclosure. Between 3 October and 5 November, the sensors logged requests from ARTEX-driven agents, some of which attempted to harvest AI-related credentials and test whether deepfake identity verification could be bypassed.</p>
+<p>The findings matter because ARTEX is openly available software: what began as an automated testing toolkit is now something defenders have to assume will be pointed at production networks by anyone with the ambition to try — including teams that have deployed AI agents into production themselves.</p>
+<h4>From lab tool to attack surface</h4>
+<p>ARTEX is built to run autonomous agents that plan and execute penetration test workflows. Amazon's observed campaigns show the framework being repurposed for offensive operations rather than sanctioned assessments. Over the observation window, agents contacting MadPot decoys showed two behaviours of particular note.</p>
+<p>The first was credential harvesting aimed specifically at AI system accounts — API keys and tokens that gate access to model endpoints and agent orchestration platforms. The second was probing of identity verification flows to determine whether synthetic, deepfake-generated identity documents could clear them. Together, the two suggest an adversary interested not only in traditional network footholds but in the AI layer itself: the credentials that let an attacker command legitimate automation infrastructure, and the identity checks that stand between a fraudster and account takeover.</p>
+<p>Because MadPot consists of decoy systems with no legitimate users, any interaction with them is effectively by definition suspicious — which gives Amazon a clean signal that these agents were operating without authorisation.</p>
+<h4>The monitoring gap</h4>
+<p>For enterprise security teams, the story exposes a gap that conventional tooling is poorly positioned to close. Automated reconnaissance at machine speed does not resemble a human attacker's slow, iterative probing. It arrives as bursts of activity across many hosts in parallel, often following legitimate-looking patterns because the tooling was designed to mimic how a real pentest operates.</p>
+<p>Three practical takeaways emerge from Amazon's disclosure:</p>
+<p><strong>Egress and allow-list controls.</strong> Agents need outbound access to coordinate. Restricting where workloads — and, increasingly, AI agents running on them — can connect limits an attacker's ability to drive ARTEX against external targets from a compromised environment.</p>
+<p><strong>AI-specific credential hygiene.</strong> API keys and tokens for model endpoints deserve the same rotation, scoping, and secret-management rigour as database passwords, with monitoring for their appearance in logs and repositories.</p>
+<p><strong>Monitoring tuned for machine-speed activity.</strong> Detection rules calibrated to human-paced intrusions will miss parallelised automated scans. Teams should baseline normal agent and automation traffic, then alert on deviations rather than assuming all fast-moving traffic is benign because it looks like internal CI/CD or testing activity.</p>
+<p>The broader context is that offensive tooling built on the same agent architecture enterprises are adopting for productivity is now widely obtainable. Amazon's five-week sensor log is a single vendor's view of a narrow window, but it is a concrete data point: the tooling is in use, it is targeting AI infrastructure specifically, and defenders are not always watching for it.</p>
+<hr>
+<h3>Amazon 觀察到開源 ARTEX AI agent 探測其誘餌感應器</h3>
+<p>據 Security Affairs 報道，Amazon 威脅情報團隊在五星期的觀察期內，觀察到未經授權的活動：一些 AI agent 在開源 agentic AI 滲透測試框架 ARTEX 上運行，並與 Amazon 的 MadPot 誘餌感應器網絡互動。由 10 月 3 日至 11 月 5 日期間，感應器記錄到來自 ARTEX 驅動的 agent 的請求，其中部分試圖收集與 AI 相關的憑證，並測試能否繞過 deepfake 身份驗證。</p>
+<p>此發現意義重大，因為 ARTEX 是公開可得的軟件：最初只是自動化測試工具包，如今防禦方卻必須假設任何有意嘗試的人都會將它指向生產網絡——包括那些已自行將 AI agent 投入生產環境的團隊。</p>
+<h4>從實驗室工具到攻擊面</h4>
+<p>ARTEX 的設計目的是運行自主 agent，規劃並執行滲透測試工作流程。Amazon 觀察到的攻擊行動顯示，該框架被挪用於進攻性行動，而非經授權的評估。在觀察期內，接觸 MadPot 誘餌的 agent 顯示出兩種尤其值得注意的行為。</p>
+<p>第一種是針對 AI 系統帳戶的憑證收集——即用於管控模型 endpoint 及 agent orchestration 平台存取權限的 API keys 和 tokens。第二種是探測身份驗證流程，以判斷合成的、deepfake 生成的身份證明文件能否通過驗證。這兩者結合起來，表明對手不單關注傳統的網絡立足點，更關注 AI 層本身：即讓攻擊者指揮合法自動化基礎設施的憑證，以及阻隔詐騙者與帳戶劫持之間的身份檢查。</p>
+<p>由於 MadPot 由沒有合法用戶的誘餌系統組成，任何與其互動的行為按定義即屬可疑——這使 Amazon 得到明確信號：這些 agent 正在未經授權的情況下運行。</p>
+<h4>監控盲點</h4>
+<p>對企業安全團隊而言，此事暴露了一個傳統工具難以彌補的盲點。以機器速度進行的自動化偵察，並不像人類攻擊者緩慢、反覆的探測。它會以並行方式在多台主機上爆發出現，且往往遵循看似合法的模式，因為工具本身就是模仿真實 pentest 的運作方式而設計。</p>
+<p>Amazon 的披露帶出三項實際啟示：</p>
+<p><strong>Egress 及 allow-list 管控。</strong> Agent 需要對外連接才能協調運作。限制工作負載——以及日益增多的、在其上運行的 AI agent——可以連接至何處，能限制攻擊者從受入侵環境驅動 ARTEX 攻擊外部目標的能力。</p>
+<p><strong>AI 專用憑證管理（credential hygiene）。</strong> 模型 endpoint 的 API keys 和 tokens 應獲得與數據庫密碼同等的輪替（rotation）、範圍限定（scoping）及 secret management 嚴謹程度，並監控它們是否出現在日誌及程式碼庫中。</p>
+<p><strong>針對機器速度活動調校的監控。</strong> 按人類節奏入侵而校準的偵測規則，會漏掉並行化的自動掃描。團隊應先建立正常 agent 及自動化流量的基準，再就偏差發出警報，而非假設所有高速流量僅因貌似內部 CI/CD 或測試活動便屬正常。</p>
+<p>更廣泛的背景是：建立在企業為提升生產力而採納的同一 agent 架構之上的進攻性工具，如今已廣泛可得。Amazon 五星期的感應器日誌只是單一廠商對一個狹窄時間窗口的觀察，但這是一個具體的數據點：相關工具正在使用中，它專門針對 AI 基礎設施，而防禦方並非時刻在監察它的出現。</p>
+<p><a href="https://securityaffairs.com/203188/ai/artex-how-cybercriminals-use-ai-agents-to-scale-their-attacks.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
