@@ -1,0 +1,40 @@
+Date: 2026-11-16 10:23:00
+Author: HKLUG Team
+Title: Eleven-Year-Old NoisyTCP Kernel Bug Can Crash Default Nginx, Apache and SSH Servers
+Content:
+<p>A Linux kernel flaw that has sat undiscovered for roughly 11 years can be abused to remotely crash servers running Nginx, Apache, or SSH with default configurations, according to a report from BleepingComputer. The vulnerability, dubbed NoisyTCP, is described in that report as affecting almost all Linux distributions, making it one of the more pervasive kernel issues to surface in recent memory. The scope claims below — near-universal distro impact and crashability of default installs — are as reported by BleepingComputer and have not been independently verified against the upstream advisory.</p>
+<h4>What happened</h4>
+<p>The core issue, as described in the BleepingComputer report, is a kernel-level defect in how TCP connections are handled. Because the flaw sits in the kernel's networking path rather than in any single application, it reaches default installations of widely deployed services: web servers such as Nginx and Apache, and SSH daemons used for remote administration. An attacker able to reach a vulnerable host does not need valid credentials to trigger a crash — the impact is denial-of-service against systems that have not been modified from their shipped defaults.</p>
+<p>The age of the bug is itself notable. A vulnerability that has persisted for more than a decade implies it survived countless kernel audits, fuzzing campaigns, and security reviews simply because nothing about it looked wrong until now. For operations teams, the uncomfortable implication — again, on the basis of BleepingComputer's reporting — is that the flaw is baked into a very large install base, with no simple configuration flag that removes it from stock systems.</p>
+<h4>Why it matters</h4>
+<p>For Hong Kong IT and operations readers running Linux fleets — whether on-premises, in colocation, or in cloud instances where the kernel is managed by the provider — NoisyTCP is a reminder that "default configuration" does not mean "hardened against long-tail kernel bugs." Web-facing and management-facing services are exposed to unauthenticated remote triggers by definition, which makes reachability triage the first practical question: which hosts accept inbound traffic on ports serving Nginx, Apache, or SSH from untrusted networks?</p>
+<p>The incident also carries a lesson for the open-source community more broadly. A bug that survives 11 years in the world's most scrutinised kernel is a signal that detection tooling still has blind spots in long-lived code paths. The fact that no application-level patch exists — because the defect is in the kernel itself — underlines how much of the internet's attack surface rests on code most operators never read.</p>
+<h4>Response checklist</h4>
+<p>Until full patch details, affected kernel version ranges, and vendor-specific fix status are confirmed from the upstream source, teams should treat this as a procedural response exercise:</p>
+<ol>
+<li><strong>Inventory your kernels.</strong> Record kernel versions across all Linux hosts, including cloud images and containers sharing the host kernel.</li>
+<li><strong>Watch distribution channels.</strong> Monitor your distribution's security channel for NoisyTCP-specific bulletins and apply fixes as they are published for your particular flavour and release.</li>
+<li><strong>Tighten exposure.</strong> Review firewall and security-group rules so that SSH and web listeners are reachable only from trusted networks; prefer bastion or VPN access for administration.</li>
+<li><strong>Prioritise internet-facing hosts.</strong> Identify which machines are exposed to the internet or to untrusted segments — particularly those running default configurations without additional controls — and remediate those first.</li>
+<li><strong>Verify after patching.</strong> Once vendor fixes are applied, reboot onto the patched kernel and re-test — including any published proof-of-concept tooling, if it becomes available — to confirm the crash can no longer be triggered.</li>
+</ol>
+<p>Because specific CVE identifiers, sysctl mitigation parameters, affected kernel version ranges, and per-distro patch timelines were not confirmed in the material available for this report, teams should not rely on parameter-level guidance until the upstream advisory is verified. The safest posture remains: patch promptly when your vendor ships a fix, and reduce attack surface in the meantime.</p>
+<hr>
+<p>據 BleepingComputer 報道，一個在 Linux 核心中潛伏約11年、從未被發現的漏洞，可被利用來遠端癱瘓以預設配置運行 Nginx、Apache 或 SSH 的伺服器。該漏洞命名為 NoisyTCP，報告指其影響幾乎所有 Linux 發行版，堪稱近年來浮現的影響範圍最廣的核心問題之一。以下所述的影響範圍——近乎涵蓋所有發行版、預設安裝亦可被癱瘓——均為 BleepingComputer 的報道內容，尚未對照上游安全公告作獨立核實。</p>
+<h4>事件經過</h4>
+<p>據 BleepingComputer 報道，核心問題在於核心（kernel）處理 TCP 連接的方式存在缺陷。由於漏洞位於核心的網絡處理路徑，而非任何單一應用程序，因此波及廣泛部署服務的預設安裝：包括 Nginx、Apache 等網絡伺服器，以及用於遠端管理的 SSH daemon。攻擊者只要能接觸到存在漏洞的主機，無需有效憑證即可觸發癱瘓——影響是對未經修改、維持出廠預設配置的系統構成 denial-of-service（拒絕服務）。</p>
+<p>漏洞存在時間之長本身值得注意。一個持續十多年的漏洞得以存活，意味著它躲過了無數次核心審計、fuzzing 測試及安全審查，只因在此之前一切看來都沒有問題。對系統管理團隊而言，令人不安的推論——同樣基於 BleepingComputer 的報道——是該缺陷已嵌入極為龐大的安裝基礎，而且並無簡單的配置開關可將其從原廠系統中移除。</p>
+<h4>問題何在</h4>
+<p>對於香港管理 Linux 伺服器群組的 IT 及系統管理讀者——無論是本地自置機房、colocation，還是核心由供應商管理的雲端實例——NoisyTCP 提醒我們：「預設配置」並不等於「已針對長尾核心漏洞強化防護」。面向公眾網絡及面向管理的服務，按其定義便暴露於未經身份驗證的遠端觸發之下，因此可達性排查成為第一個實際要回答的問題：哪些主機會從不可信網絡接收進入服務 Nginx、Apache 或 SSH 的通訊埠的入站流量？</p>
+<p>此次事故對整個開源社群亦有啟示。一個漏洞能在全球被審視得最嚴密的核心中存活11年，顯示偵測工具在長久存在的代碼路徑上仍有盲點。由於不存在任何應用層級的修補——因為缺陷本身就在核心之中——這更凸顯互聯網的 attack surface（攻擊面）有相當大部分建立在大多數系統管理員從未閱讀過的代碼之上。</p>
+<h4>應對清單</h4>
+<p>在從上游來源確認完整修補細節、受影響的核心版本範圍以及各供應商的修復狀態之前，團隊應將此事當作一項流程演練：</p>
+<ol>
+<li><strong>盤點核心版本。</strong> 記錄所有 Linux 主機的核心版本，包括雲端鏡像及共用宿主核心的 containers。</li>
+<li><strong>留意發佈渠道。</strong> 盯緊所用發行版的安全渠道，留意 NoisyTCP 專屬公告，並在針對你所用版本及發行版的修復公佈後即時套用。</li>
+<li><strong>收緊暴露面。</strong> 檢查 firewall 及 security group 規則，確保 SSH 及網絡監聽只可從可信網絡接達；管理操作應優先使用 bastion 或 VPN。</li>
+<li><strong>優先處理面向互聯網的主機。</strong> 識別哪些機器暴露於互聯網或不可信網段——尤其那些維持預設配置、未有額外防護的——並優先修復。</li>
+<li><strong>修補後驗證。</strong> 套用供應商修復後，以已修補的核心重新啟動並再次測試——包括任何已公開的 proof-of-concept 工具（如有）——以確認癱瘓已無法再被觸發。</li>
+</ol>
+<p>由於具體 CVE 編號、sysctl 緩解參數、受影響的核心版本範圍及各發行版的修補時間表，均未在本次報道可得的資料中獲得確認，團隊在上游安全公告核實前，不應依賴參數層面的指引。最穩妥的姿態仍然是：供應商一推出修補便及時套用，並在此期間持續縮減 attack surface。</p>
+<p><a href="https://www.bleepingcomputer.com/news/linux/new-noisytcp-linux-kernel-flaw-lets-attackers-crash-servers/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
