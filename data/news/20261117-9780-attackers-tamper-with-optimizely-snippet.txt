@@ -1,0 +1,40 @@
+Date: 2026-11-17 14:06:00
+Author: HKLUG Team
+Title: Attackers tamper with Optimizely snippets to serve malware across 178 sites
+Content:
+<p>Visitors to 178 organisations' websites were served malicious JavaScript after attackers tampered with snippets belonging to Optimizely Web Experimentation, the A/B testing service that sites embed to trial page changes. The campaign, tracked as OPTIMJACK, was documented by Report URI researchers and reported by Security Affairs.</p>
+<h4>How the tampering worked</h4>
+<p>Optimizely snippets are small blocks of JavaScript that marketing and product teams drop into a page template to run experiments, toggle variants and collect behavioural data. They execute with the full privileges of the hosting page — same origin, same access to cookies, forms and DOM — which is precisely what makes them attractive to an attacker.</p>
+<p>In this case, the injected code served as a delivery channel for a crypto-stealer and payment-card skimmer, alongside payload logic that the research associates with iPhone users. Report URI's audit flagged malicious code in 188 of the 1,611 snippets it examined, spread across the 178 organisations' sites identified in the report — a hit rate scoped strictly to that audited sample, not a claim about the Optimizely install base at large.</p>
+<p>Injected snippets were observed on sites including BBC, CNN and Zoom properties; the report does not establish these brands as confirmed breach victims, only that the tampered code was seen loading on pages under those domains.</p>
+<p>Importantly, the research does not establish how the snippets were altered in the first place. The report leaves the initial access path open — no confirmed Optimizely platform compromise is asserted — so defenders should not read it as a vendor-breach notification. What is confirmed is the end state: someone with edit rights over a snippet could execute arbitrary code on every visitor's machine.</p>
+<h4>What web-stack operators should check</h4>
+<p>For teams running experimentation or tag-management tooling, the incident distils into a short, practical audit:</p>
+<ol>
+<li><strong>Subresource Integrity (SRI).</strong> Third-party <code>&lt;script&gt;</code> files pulled from an external domain should carry an <code>integrity</code> attribute with a pinned hash, so the browser refuses to execute them if the file changes. In practice this protection is rarely applied to scripts injected by tag managers at runtime, and it does nothing for inline script blocks — enumerate both and plan accordingly.</li>
+<li><strong>Content Security Policy.</strong> A restrictive <code>script-src</code> that limits execution to an explicit allowlist of hosts and nonces makes drive-by snippet substitution far harder, even when an attacker can edit markup.</li>
+<li><strong>Snippet inventory and diffing.</strong> Keep a baseline of every third-party snippet on your estate and alert on content drift — changed URLs, appended payloads, unfamiliar CDN origins. Report URI's own methodology (hash-comparing snippets at scale) is a workable model.</li>
+<li><strong>Access review.</strong> Confirm who can edit experimentation snippets and tag containers, and that changes require review rather than landing unattended in production.</li>
+</ol>
+<p>Any organisation running Optimizely or comparable experimentation and tag-management tooling should treat these four checks as a weekend task rather than a backlog item.</p>
+<p>The exposure described in the report is not limited to any single market. Hong Kong IT teams operating content-heavy sites with third-party testing and analytics scripts face the same surface, and the checklist above applies without modification. No Hong Kong-specific regulatory action or incident has been reported in connection with this campaign.</p>
+<p>Attribution for the underlying research goes to Report URI, with the story surfaced by Security Affairs.</p>
+<hr>
+<p>178 個機構的網站訪客被投放惡意 JavaScript，原因是攻擊者篡改了屬於 Optimizely Web Experimentation 的 snippets——網站用來嵌入並測試頁面改動的 A/B 測試服務。這項行動被追蹤為 OPTIMJACK，由 Report URI 研究人員記錄，並由 Security Affairs 報道。</p>
+<h4>篡改手法</h4>
+<p>Optimizely snippets 是一小段 JavaScript，市場推廣及產品團隊將其放入頁面模板，以執行實驗、切換變體及收集用戶行為數據。它們以宿主頁面的完整權限執行——同一 origin、同樣可存取 cookies、表單及 DOM——這正是它們對攻擊者具吸引力之處。</p>
+<p>是次事件中，注入的代碼用作 crypto-stealer 及支付卡 skimmer 的投放渠道，另有研究人員將部分 payload 邏輯與 iPhone 用戶聯繫起來。Report URI 的審計在檢視的 1,611 個 snippets 中標記出 188 個含惡意代碼，散布於報告所指的 178 個機構網站——該命中率嚴格限於所審計的樣本，並非對 Optimizely 整體安裝量的推斷。</p>
+<p>被注入的 snippets 出現在包括 BBC、CNN 及 Zoom 旗下站點；報告並未證實這些品牌為確認的受害者，只說明被篡改的代碼曾在這些域名下的頁面載入。</p>
+<p>值得留意的是，研究並未確認 snippets 最初如何被更改。報告對初始入侵途徑持開放態度——並未斷言 Optimizely 平台被入侵——防範方不應將其視為供應商安全事故通知。確知的是最終結果：任何擁有 snippet 編輯權限的人，均可在每一位訪客的機器上執行任意代碼。</p>
+<h4>網站技術團隊應檢查什麼</h4>
+<p>對於運行實驗或 tag management 工具的團隊，事件可歸納為一份簡短實用的審計清單：</p>
+<ol>
+<li><strong>Subresource Integrity（SRI）。</strong> 從外部域名載入的第三方 <code>&lt;script&gt;</code> 檔案應帶有固定的雜湊值 <code>integrity</code> 屬性，使檔案一旦變更，瀏覽器便拒絕執行。實際上，這項保護極少應用於由 tag manager 在運行時注入的腳本，且對 inline script 區塊完全無效——兩者都要逐一列舉並相應規劃。</li>
+<li><strong>Content Security Policy。</strong> 一個限制嚴格的 <code>script-src</code>，將執行範圍限定於明確的主機及 nonces allowlist，可大幅增加 snippet 被暗中替換的難度，即使攻擊者能夠編輯 markup 亦然。</li>
+<li><strong>Snippet 盤點及差異比對。</strong> 為管轄範圍內每個第三方 snippet 保留基準版本，並在內容出現偏差時發出警報——URL 變更、附加 payload、陌生的 CDN origin。Report URI 自身的方法（大規模比對 snippets 雜湊值）是一個可行的參考模式。</li>
+<li><strong>權限審查。</strong> 確認誰有權編輯實驗 snippets 及 tag containers，並確保任何更改須經覆核，而非無人監督直接進入 production。</li>
+</ol>
+<p>任何運行 Optimizely 或同類實驗及 tag management 工具的機構，都應將上述四項檢查視為週末任務，而非擱置在工作清單上的待辦事項。</p>
+<p>報告所述的暴露面並不限於任何單一市場。香港 IT 團隊運行內容密集的網站，並使用第三方測試及分析腳本，所面對的暴露面相同，上述檢查清單可原樣適用。目前尚未有報道指香港有針對此行動的特定監管行動或事故。</p>
+<p>基礎研究歸功於 Report URI，報道由 Security Affairs 提供。</p>
+<p><a href="https://securityaffairs.com/203289/malware/optimjack-bbc-cnn-and-zoom-among-targets-of-optimizely-script-hijacking.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
