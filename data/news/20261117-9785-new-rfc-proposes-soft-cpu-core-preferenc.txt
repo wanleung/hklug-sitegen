@@ -1,0 +1,62 @@
+Date: 2026-11-17 12:33:00
+Author: HKLUG Team
+Title: New RFC Proposes Soft CPU Core Preferences for Linux User Space
+Content:
+<p>A request-for-comments patch series from an NVIDIA engineer would give Linux user space a new way to express <em>preferred</em> CPU cores — a soft hint rather than the hard pinning mechanisms available today — according to Phoronix, which reported on the proposal.</p>
+<p>The series would expose a sysfs control through which daemons and tuning tools could steer tasks toward particular cores without locking them there. The author works at NVIDIA, though the source material does not attribute any specific corporate motive to the effort. It is an RFC in the earliest sense: no distribution kernel exposes this sysfs file today, and readers should not go looking for one.</p>
+<h4>A different axis, not a different mechanism</h4>
+<p>The obvious first question from anyone who knows the scheduler is whether Linux already has knobs for this. It has several. <code>uclamp</code>, set through <code>sched_setattr</code>, lets a task declare how much CPU capacity it needs. Nice values and cgroup weights scale a task's relative claim on time. Core scheduling coordinates which tasks may share a physical core. None of them, however, tell the kernel <em>where</em> work should land.</p>
+<p>That is the axis the RFC proposes to add. Existing interfaces are demand-oriented: they describe what a task requires, and the scheduler decides the rest. The new control would be destination-oriented: it names cores — effectively warm or cold, in use or idle, preferred or tolerated — and leaves the demand side alone. A preference signal is not a duplicate of <code>uclamp</code>; it answers a question the existing signals do not ask. Whether the design lands in that shape, or collapses into something the kernel already provides, is one of the open questions below.</p>
+<h4>Preference, not pinning</h4>
+<p>The distinction that matters is between preference and affinity. Today, administrators who want a latency-sensitive service off the efficiency cores of a hybrid CPU have a blunt set of tools: affinity masks, cpusets, and kernel boot parameters such as <code>isolcpus</code>. All of these are hard constraints. If the target core is busy, throttled, or otherwise unavailable, the task has nowhere to go — the constraint backfires precisely when it is most needed.</p>
+<p>A soft preference inverts that relationship. The scheduler retains the final say and can override a hint that has become counterproductive, but user-space signals — "this task would do better on a performance core" — would still carry weight. In effect, it extends a long-standing kernel design pattern: keep mechanism in the kernel, keep policy in user space.</p>
+<p>That pattern is what makes the proposal more interesting than the sysfs file itself. Tools such as Intel's Thermald already act on information the kernel scheduler cannot see — package temperatures, power limits, and per-chip binning variation. Wiring a core-preference control into that class of daemon would let external telemetry influence where work lands, without patching scheduler policy for every new signal source.</p>
+<h4>Why user space, why now</h4>
+<p>The argument for putting this control in user space runs as a chain rather than a single claim.</p>
+<p>Hybrid layouts are no longer niche. Intel's P-core/E-core designs and Arm's big.LITTLE-style configurations are common across laptops, desktops, and servers, so the number of plausible places a task could run has multiplied accordingly — and with it, the number of placements that are merely acceptable versus genuinely right.</p>
+<p>The trouble is that the conditions deciding which placement is <em>right</em> — package temperature, sensor readings, power limits, the workload class a service belongs to — are known outside the kernel. The scheduler sees run queues and utilization; it does not see that the machine is thermally constrained, or that this process is the one whose tail latency pays the bills.</p>
+<p>Today the only channel for carrying that knowledge across the boundary is hard pinning: affinity masks, cpusets, <code>isolcpus</code>. User space knows the answer, so it dictates the answer.</p>
+<p>And that is precisely where it fails. Hard constraints do exactly the wrong thing under pressure: when performance cores become scarce — thermal throttling, a burst of competing load — a task pinned to them has nowhere else to go, while a task exiled from them cannot return when the pressure lifts. The mechanism meant to protect latency-sensitive work under load guarantees the worst outcome exactly when load arrives.</p>
+<p>A tail-latency example makes it concrete: suppose a web-serving process is handling a request queue on a hybrid box. If a background job pushes it onto an efficiency core, tail latency can jump noticeably even though throughput on paper looks similar. A preference signal would let a user-space agent notice the pressure and nudge the service back toward a performance core, while still letting the scheduler refuse the request if that core is saturated.</p>
+<p>More broadly, the comparison is not to other patch series but to the tuning workloads IT teams already do by hand — pinning services, isolating cores for real-time processes, and tuning scheduler hints one machine at a time. A standardized, overridable control would give those tools a common, portable interface across fleets of differing hardware.</p>
+<h4>Open questions</h4>
+<p>As an RFC, the proposal raises as many questions as it answers:</p>
+<ul>
+<li><strong>Granularity.</strong> Would preferences apply to individual tasks, process groups, or whole cpusets?</li>
+<li><strong>Permissions.</strong> Who may set a preference, and how is abuse or misconfiguration prevented?</li>
+<li><strong>Interaction with existing policies.</strong> How would hints play with energy-aware scheduling and the scheduler's own load-balancing heuristics?</li>
+<li><strong>Hint weight.</strong> How strongly should a user-space preference count against the kernel's own heuristics?</li>
+<li><strong>Overlap.</strong> Whether the new knob duplicates functionality already available through existing scheduler interfaces — the RFC's own answer to that question is still outstanding.</li>
+</ul>
+<p>A final reality check is warranted. Scheduler-adjacent RFCs face heavier scrutiny than most kernel changes and typically land in modified form, or not at all; nothing usable exists in any shipped kernel yet. Whether maintainers accept, reshape, or reject this series will determine if any of it reaches mainline. For now it remains a proposal — but as a design signal, it suggests the kernel community is open to letting user space participate in core placement more directly, on Linux machines that increasingly need exactly that kind of tuning.</p>
+<p><em>Source: Phoronix, "NVIDIA Engineer Works On New User-Space Linux Control For Preferred CPU Cores."</em></p>
+<hr>
+<p>據 Phoronix 報道，一名 NVIDIA 工程師提出的一份 request for comments（RFC）補丁系列，將為 Linux 用戶空間提供新的方式來表達<em>偏好</em> CPU 核心——這是一種軟性提示，有別於現有的硬性綁定機制。</p>
+<p>該系列補丁將公開一個 sysfs 控制項，讓 daemons 及調校工具可以將任務引導至指定核心，而不必將其鎖定在該處。作者任職於 NVIDIA，不過原始資料並未將任何特定的企業動機歸因於此項目。這是嚴格意義上的 RFC：目前沒有任何發行版內核公開此 sysfs 檔案，讀者不應刻意尋找。</p>
+<h4>不同的軸線，而非不同的機制</h4>
+<p>熟悉排程器（scheduler）的人第一個明顯的疑問，是 Linux 是否已有相關的調節選項。答案是有幾個。透過 <code>sched_setattr</code> 設定的 <code>uclamp</code>，可讓任務聲明其所需的 CPU 容量。Nice 值及 cgroup 權重則調節任務對時間的相對需求。Core scheduling 協調哪些任務可以共享同一實體核心。然而，以上都沒有告訴內核工作<em>應該落在何處</em>。</p>
+<p>這正是該 RFC 提議新增的軸線。現有接口以需求為導向：描述任務需要甚麼，其餘交由排程器決定。新的控制項則以目的地為導向：指定核心——實質上分為熱或冷、使用中或閒置、偏好或可容忍——而不觸碰需求端。偏好信號並非 <code>uclamp</code> 的重複；它回答的問題是現有信號所不涉及的。該設計最終會以這種形式落地，還是會被整合進內核已有的功能之中，是下文列舉的未決問題之一。</p>
+<h4>偏好，而非綁定</h4>
+<p>關鍵的區別在於偏好（preference）與親和性（affinity）之間。現時，管理員若想將延遲敏感的服務移離混合架構 CPU 的能效核心（efficiency cores），可用的工具相當粗糙：affinity masks、cpusets，以及 <code>isolcpus</code> 等內核開機參數。這些全是硬性約束。如果目標核心正忙、被 throttled 或因其他原因不可用，任務便無處可去——約束恰恰在最需要它的時候適得其反。</p>
+<p>軟性偏好則顛倒了這種關係。排程器保留最終決定權，可以推翻已變得適得其反的提示，但用戶空間的信號——「這個任務在 performance core 上會表現更好」——仍然具有分量。實際上，這是延續了內核一項由來已久的設計模式：機制留在內核，政策留在用戶空間。</p>
+<p>正是這一模式，使該提議比 sysfs 檔案本身更值得關注。Intel 的 Thermald 等工具，早已根據內核排程器無法看見的資訊行事——package 溫度、功耗限制，以及各顆晶片的 binning 差異。將核心偏好控制項接入這類 daemon，可讓外部遙測數據影響工作落點，而不必為每個新的信號來源逐一修改排程政策。</p>
+<h4>為何在用戶空間，為何是現在</h4>
+<p>將此控制項放在用戶空間的論證，是一條連鎖推理，而非單一主張。</p>
+<p>混合架構佈局已不再是小眾。Intel 的 P-core/E-core 設計及 Arm 的 big.LITTLE 式配置，在筆記本電腦、桌面電腦及伺服器上均十分普遍，因此任務可能運行的合理位置大增——相應地，「勉強可以接受」與「真正恰當」的放置方案之間的差距也隨之擴大。</p>
+<p>問題在於，決定哪種放置方案<em>正確</em>的條件——package 溫度、感應器讀數、功耗限制、服務所屬的工作負載類別——都是內核以外才知悉的。排程器看到的是 run queues 和利用率；它看不見機器正受制於散熱限制，也看不見某個進程正是以尾部延遲（tail latency）換取收入的關鍵。</p>
+<p>目前，跨越這道邊界傳遞此等知識的唯一渠道，就是硬性綁定：affinity masks、cpusets、<code>isolcpus</code>。用戶空間知道答案，於是直接指令答案。</p>
+<p>而這恰恰是它失敗的地方。硬性約束在壓力之下所做的正是最錯的事：當 performance cores 變得稀缺——thermal throttling、一波競爭性負載湧現——被綁定其上的任務無處可去，而被逐離其上的任務在壓力消退後亦無法回歸。這套本應在負載下保護延遲敏感工作的機制，偏偏在負載來臨時保證最壞的結果。</p>
+<p>以一個尾部延遲的例子加以說明：假設一個網頁服務進程正在混合架構主機上處理請求隊列。若一個背景作業將它推到能效核心上，尾部延遲可能顯著上升，即使帳面上的吞吐量看似相近。偏好信號可讓用戶空間代理察覺壓力，將服務輕推回 performance core，同時仍允許排程器在該核心已飽和時拒絕此請求。</p>
+<p>更廣泛而言，此提議的對照對象不是其他補丁系列，而是 IT 團隊現時以人手進行的調校工作——綁定服務、為即時進程隔離核心、逐台機器調校排程提示。一個標準化、可被覆寫的控制項，將為這些工具提供統一、可攜的接口，橫跨硬件各異的機群。</p>
+<h4>未決問題</h4>
+<p>作為一份 RFC，該提議提出的問題與解答一樣多：</p>
+<ul>
+<li><strong>粒度。</strong> 偏好適用於個別任務、進程組，還是整個 cpusets？</li>
+<li><strong>權限。</strong> 誰可以設定偏好，如何防止濫用或錯誤配置？</li>
+<li><strong>與現有政策的互動。</strong> 提示如何與 energy-aware scheduling 及排程器自身的負載均衡啟發式方法協同運作？</li>
+<li><strong>提示權重。</strong> 用戶空間的偏好應在多大程度上影響內核自身的啟發式判斷？</li>
+<li><strong>功能重疊。</strong> 新的選項是否與現有排程器接口已提供的功能重複——RFC 對此問題本身的回答仍待補充。</li>
+</ul>
+<p>最後仍需一次現實檢視。與排程器相關的 RFC 所受的審視，比一般內核改動更為嚴格，通常要麼以修改過的形式落地，要麼根本無疾而終；目前尚無任何已出貨內核包含可用的實現。維護者接受、重塑或拒絕該系列，將決定其中任何部分能否進入 mainline。目前它仍只是一項提議——但作為一種設計信號，它顯示內核社群願意讓用戶空間更直接地參與核心放置，而 Linux 主機正日益需要這類調校。</p>
+<p><em>來源：Phoronix，〈NVIDIA Engineer Works On New User-Space Linux Control For Preferred CPU Cores〉</em></p>
+<p><a href="https://www.phoronix.com/news/NVIDIA-Linux-Prefer-CPU-Cores" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
