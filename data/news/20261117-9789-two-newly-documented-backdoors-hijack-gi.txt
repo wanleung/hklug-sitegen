@@ -1,0 +1,30 @@
+Date: 2026-11-17 12:22:00
+Author: HKLUG Team
+Title: Two Newly Documented Backdoors Hijack GitHub and SharePoint as Command-and-Control, Kaspersky Warns
+Content:
+<p>Government sectors across Asia and Africa are the target of an active intrusion campaign that installs two previously undocumented backdoors — and the twist that makes it operationally awkward for defenders is where those backdoors report home: the everyday platforms teams already trust, GitHub and Microsoft SharePoint.</p>
+<p>Kaspersky has codenamed the campaign <strong>Operation ShadowCloud</strong> and said it first identified the activity in early 2026, as reported by The Hacker News in mid-November 2026.</p>
+<p>The two backdoors, named GitDoor and GraphDoor by the researchers, are built to blend outbound traffic into the SaaS services that dominate normal corporate egress. Rather than phoning a bulletproof server or a freshly registered domain — the exact artefacts that domain-reputation and IP-reputation controls are tuned to catch — the malware rides connections to GitHub and SharePoint endpoints that, in most environments, are expected and largely unremarkable.</p>
+<p>That design choice is the centre of the story. Attackers are deliberately selecting destinations that defenders are structurally reluctant to block, which neutralises a whole class of network-level controls and pushes the detection burden back onto endpoint and identity telemetry.</p>
+<p>Kaspersky said the toolset deployed in Operation ShadowCloud has not been seen before, and analysts say the campaign's geographic footprint — government entities in Asia and Africa — points to an intelligence-collection objective rather than commodity crime. The researchers have so far attached only a campaign codename to the activity and have not attributed it to any named group.</p>
+<p>That gap matters for remediation. No initial access vector has been made public — whether the entry point is phishing, supply-chain compromise, or exploitation of an exposed service remains unconfirmed — so defenders cannot prioritise patching and awareness efforts with confidence. Organisations assessing their own exposure are effectively working from the backdoors backward, rather than from the entry point forward.</p>
+<p><strong>Why it matters</strong></p>
+<p>The defender's dilemma here is a real constraint, not a footnote. For any organisation running Microsoft 365 — a common setup among Hong Kong IT teams — the stakes are concrete: blocking GitHub breaks developer pipelines, package pulls, and CI/CD workflows; blocking SharePoint breaks document collaboration and, in many estates, entire business processes. The blunt network deny rule that would trivially stop this campaign is effectively off the table, which means visibility has to move to the endpoint layer: scrutinise which processes reach out to these services, what they retrieve, whether the request pattern matches normal human or pipeline behaviour, and whether service accounts are doing anything they were never provisioned to do.</p>
+<p>That scrutiny should extend to Graph API activity — token grants, mailbox or site access by unusual principals, and automated SharePoint site modifications — since Graph is the natural relay for a SharePoint-based backdoor and is routinely treated as trusted infrastructure.</p>
+<p>Practical, low-ceremony steps for developers and platform teams include monitoring SaaS egress for periodic beaconing, constraining the ability of service accounts to create repositories or scripts, and treating unexpected automated commits or site changes as security events rather than pipeline noise.</p>
+<p>Operation ShadowCloud's full scope and operators remain open questions. The findings rest on Kaspersky's published research, and further detail from the vendor could sharpen the picture of how the campaign gets in — and, crucially, how far it has already got.</p>
+<p><em>Source: The Hacker News, reporting on Kaspersky's Operation ShadowCloud research.</em></p>
+<hr>
+<p>亞洲及非洲多國政府部門正成為一場活躍入侵行動的目標，該行動安裝了兩個此前未曾被記錄的後門 —— 而令防禦方在作業上倍感棘手的轉折點，在於這些後門回報指令的位置：正是團隊日常已然信任的平台 —— GitHub 與 Microsoft SharePoint。</p>
+<p>Kaspersky 將該行動代號命名為 <strong>Operation ShadowCloud</strong>，並表示早在 2026 年初已首次識別到相關活動，The Hacker News 於 2026 年 11 月中旬作出報道。</p>
+<p>研究人員將這兩個後門命名為 GitDoor 與 GraphDoor，其設計目的是將外傳流量混入主導企業正常 egress 的 SaaS 服務之中。惡意軟件並非連線至 bulletproof server 或新註冊的域名 —— 這些正是 domain reputation 與 IP reputation 防護機制所針對的典型特徵 —— 而是透過連線至 GitHub 及 SharePoint 端點，在多數環境中，這類連線屬預期之內且大致不會引起注意。</p>
+<p>這項設計選擇正是整篇報導的核心。攻擊者刻意選擇防禦方在結構上不願封鎖的目標，從而使一整類網絡層級的防禦措施形同失效，並將偵測責任推回 endpoint 與 identity telemetry 層面。</p>
+<p>Kaspersky 表示，Operation ShadowCloud 所部署的工具集從未見於過往；分析人員指，該行動的地理足跡 —— 亞洲及非洲的政府機構 —— 顯示其目標為情報蒐集，而非一般犯罪。研究人員迄今只為該活動加上行動代號，未有將其歸因於任何具名組織。</p>
+<p>這一缺口對修復工作影響重大。目前尚未有任何初始入侵途徑公開 —— 入口點是釣魚電郵、供應鏈入侵，還是利用已暴露服務的漏洞，仍未確認 —— 因此防禦方無法有信心地判斷修補及意識培訓的優先次序。評估自身暴露風險的機構，實質上只能由後門反向追溯，而非從入口點順向追查。</p>
+<p><strong>為何重要</strong></p>
+<p>防禦方在此面對的困境是一項實質限制，並非一筆帶過的腳註。對於任何使用 Microsoft 365 的機構 —— 這在香港 IT 團隊中十分普遍 —— 後果具體明確：封鎖 GitHub 會破壞 developer pipeline、package pull 及 CI/CD 工作流；封鎖 SharePoint 則會中斷文件協作，甚至在許多環境中癱瘓整個業務流程。那條本可輕易阻止此行動的粗暴網絡 deny rule 實際上已不可行，這意味著可見性必須轉移至 endpoint 層面：仔細審視哪些程序會連線至這些服務、它們取回甚麼、請求模式是否與正常的人手或 pipeline 行為相符，以及 service account 是否正在執行從未獲授權的任務。</p>
+<p>這種審視亦應涵蓋 Graph API 活動 —— 包括 token 授予、由異常 principal 進行的 mailbox 或 site 存取，以及自動化的 SharePoint site 修改 —— 因為 Graph 是 SharePoint 後門的天然中繼站，且通常被視為可信基建。</p>
+<p>開發者及平台團隊可採取務實而低門檻的措施，包括監察 SaaS egress 是否出現週期性 beaconing、限制 service account 建立 repository 或 script 的權限，以及將非預期的自動 commit 或 site 更改視為安全事件，而非 pipeline 噪音。</p>
+<p>Operation ShadowCloud 的完整範圍及運作方仍是未解之謎。上述發現建基於 Kaspersky 已發表的研究，廠商的進一步資料或可更清晰勾勒該行動如何入侵 —— 以及關鍵在於，它已深入到何種程度。</p>
+<p><em>資料來源：The Hacker News 對 Kaspersky Operation ShadowCloud 研究的報道。</em></p>
+<p><a href="https://thehackernews.com/2026/11/new-gitdoor-and-graphdoor-backdoors.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
