@@ -1,0 +1,40 @@
+Date: 2026-11-17 22:21:00
+Author: HKLUG Team
+Title: Two Unverified RCE Claims Target Telegram's New Android Widget Filter
+Content:
+<h3>Two Unverified RCE Claims Target Telegram's New Android Widget Filter</h3>
+<p>Security firm NebuSec says it has identified two remote code execution exploits in Telegram's Android app, both targeting a security filter the messaging platform introduced only last week, according to a report from The Hacker News published in November 2026. The claimed bypass runs through Telegram's widget feature — the small interactive blocks bots embed inside chat messages, whose JavaScript executes on the recipient's phone.</p>
+<p>NebuSec's argument rests on a gap between what the new filter inspects and where the code ultimately runs. The filter vets what approved bots are permitted to send into a chat, NebuSec says, but does not account for where widget JavaScript executes once it has landed on-device. On that account, a payload can pass inspection at delivery and still run outside the app's boundaries. The researchers claim two distinct exploits built around this design-level blind spot rather than a single parsing edge case.</p>
+<p>Given Telegram's presence among messaging tools used in Hong Kong, an on-device code execution flaw delivered through an ordinary message is broadly relevant to local IT and security teams.</p>
+<h4>What constrains the real-world risk</h4>
+<p>NebuSec's demonstration carries significant caveats that temper immediate concern. The researchers ran their proof of concept on a Telegram test server, not the production environment, and in production only approved bots can send widgets — a hurdle that limits which accounts could deliver an exploit to real users. Neither condition amounts to a fix: a compromised or maliciously obtained approved bot, if one exists, would have a path to code execution on users' devices. The claims sit in an uncomfortable middle ground — constrained today, but not merely theoretical.</p>
+<h4>Disclosure and patch status unknown</h4>
+<p>As of publication, NebuSec's claims have not been independently verified, and neither NebuSec nor Telegram has confirmed a disclosure timeline or a patch status to this publication. It is not established whether the reported issues were responsibly disclosed, acknowledged by Telegram, or scheduled for a fix. Telegram has not publicly responded to the claims at the time of writing. Readers should treat the report as an unconfirmed researcher claim pending either third-party replication or an official statement.</p>
+<h4>Why it matters beyond one app</h4>
+<p>The broader pattern is one of expanding attack surface. As messaging platforms layer rich, interactive features — mini-apps, embedded scripts, and bot-delivered components — into conversations, the boundary between "reading a message" and "running code" grows thinner. Each new feature class needs a security model that covers not just what enters the app, but where and how that content executes once received. A filter that inspects delivery but not execution leaves a gap that researchers are reliably going to probe.</p>
+<h4>What IT and security teams can do now</h4>
+<p>For organisations where Telegram is part of the standard communication stack, two practical steps follow from the report:</p>
+<ul>
+<li><strong>Treat it as unconfirmed but worth monitoring.</strong> Watch for Telegram's official response, a patch release, or independent replication of NebuSec's claims before making sweeping policy changes.</li>
+<li><strong>Review bot integrations.</strong> Inventory which approved bots your organisation uses or has authorised, and confirm their trust status — approved bots are the delivery mechanism in question.</li>
+</ul>
+<p>This publication will update the story if Telegram or NebuSec responds, or if patch and disclosure details become available.</p>
+<hr>
+<h3>兩宗未經證實的 RCE 指控直指 Telegram 全新 Android widget 過濾器</h3>
+<p>根據 The Hacker News 於 2026 年 11 月刊出的報導，保安公司 NebuSec 聲稱已在 Telegram 的 Android 應用程式中發現兩宗 remote code execution（遠端代碼執行）漏洞，兩者均針對該通訊平台僅於上週推出的安全過濾器。相關繞過手法透過 Telegram 的 widget 功能運作——即 bot 嵌入聊天訊息中的小型互動區塊，其 JavaScript 會在收件人的手機上執行。</p>
+<p>NebuSec 的論據建基於新過濾器所檢查的範圍與代碼最終執行位置之間的落差。NebuSec 指出，過濾器只審核獲批 bot 允許向聊天發送的內容，卻沒有顧及 widget JavaScript 落地至設備後的執行位置。據此，有效負載（payload）可以在投遞時通過檢查，卻仍然在應用程式界限之外執行。研究人員聲稱，兩宗截然不同的漏洞均圍繞這個設計層面的盲點構建，而非單一的解析邊界個案。</p>
+<p>鑑於 Telegram 在香港通訊工具中的普及程度，透過普通訊息送達的設備端代碼執行漏洞，對本地 IT 及保安團隊具有廣泛的參考價值。</p>
+<h4>制約實際風險的因素</h4>
+<p>NebuSec 的示範附帶多項重要限制，令即時憂慮有所紓緩。研究人員的 proof of concept 是在 Telegram 測試伺服器上運行，而非正式生產環境；而在生產環境中，只有獲批 bot 才能發送 widget——這道門檻限制了哪些帳戶能夠向真實用戶送達漏洞。不過，上述兩個條件均不構成修補：一個被入侵或惡意取得的獲批 bot（假如此類 bot 存在），仍有途徑在用戶設備上執行代碼。相關指控處於一個尷尬的中間地帶——目前受限，但絕非純屬理論。</p>
+<h4>披露及修補狀況未明</h4>
+<p>截至發稿，NebuSec 的指控尚未獲獨立驗證，NebuSec 及 Telegram 均未向本刊確認披露時間表或修補狀態。有關問題是否已作負責任披露、是否獲 Telegram 確認、或是否已列入修補計劃，目前均未有定論。撰稿時，Telegram 尚未就相關指控公開回應。讀者應將此報導視為未經證實的研究人員聲稱，有待第三方複製驗證或官方聲明作實。</p>
+<h4>為何此事的影響超越單一應用程式</h4>
+<p>更宏觀的模式是攻擊面不斷擴大。隨著通訊平台將豐富的互動功能——mini-apps、嵌入式腳本及由 bot 送達的組件——層層疊加至對話之中，「閱讀訊息」與「執行代碼」之間的界線日益淡薄。每一類新功能都需要一套保安模型，不僅涵蓋進入應用程式的內容，更要覆蓋內容接收後的執行位置及方式。一個只檢查投遞而不檢查執行的過濾器，勢將留下研究人員必然會探測的漏洞。</p>
+<h4>IT 及保安團隊目前可採取的措施</h4>
+<p>對於將 Telegram 納入標準通訊架構的機構，本報導帶出兩項實務步驟：</p>
+<ul>
+<li><strong>視之為未經證實，但值得持續監察。</strong> 在作出大規模政策變更之前，先密切留意 Telegram 的官方回應、修補版本發布，或 NebuSec 指控獲獨立複製驗證。</li>
+<li><strong>檢視 bot 整合。</strong> 盤點貴機構使用或已授權的獲批 bot，並確認其信任狀態——獲批 bot 正是事件中的送達機制。</li>
+</ul>
+<p>若 Telegram 或 NebuSec 作出回應，或修補及披露詳情有所公布，本刊將會更新報導。</p>
+<p><a href="https://thehackernews.com/2026/11/researchers-claim-two-rce-exploits-that.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
