@@ -1,0 +1,42 @@
+Date: 2026-11-17 14:22:00
+Author: HKLUG Team
+Title: SHA Pinning Isn't a Silver Bullet: How Attackers Route Around GitHub's Supply Chain Defense
+Content:
+<p>```</p>
+<h3>SHA Pinning Isn't a Silver Bullet: How Attackers Route Around GitHub's Supply Chain Defense</h3>
+<p>Pinning GitHub Actions to an immutable commit hash — the mitigation most teams adopted after years of supply chain incidents — proved it can be defeated at the point of pinning itself, not after it.</p>
+<p>The case in point: in March 2026, attackers who hijacked Trivy, the widely used open-source security scanner, planted malicious code crafted to look like GitHub's official <code>checkout</code> action, according to The Hacker News. Because the malicious content was already present in the reference before anyone pinned it, every downstream pin would have validated without complaint — a perfect SHA, verified integrity, hostile code.</p>
+<h4>What SHA Pinning Actually Guarantees</h4>
+<p>SHA pinning replaced mutable version tags (such as <code>@v4</code>) with a full commit hash, making it impossible for a maintainer or attacker to silently swap the code behind a workflow reference after the fact. It has since become baseline practice, and organizations should keep it.</p>
+<p>But integrity is not provenance. A pinned SHA proves only that the referenced code has not changed since it was pinned. It says nothing about whether that code was trustworthy, or genuinely from the publisher it claims to be. The Trivy incident exploited pre-pin deception, not post-pin mutation: the counterfeit <code>checkout</code> payload was labeled and structured to look official, so mechanical verification had nothing to catch.</p>
+<p>The exposure was unusually broad. Trivy is itself a defensive tool — a scanner that teams deploy precisely to find problems — and the <code>checkout</code> action is near-ubiquitous in GitHub Actions workflows. By impersonating it, the attackers gave the counterfeit reach wherever the tool was in use.</p>
+<h4>A Mitigation Checklist</h4>
+<p>The fix is not to abandon pinning, but to stop treating it as the whole defense. Industry practice points to four additional layers:</p>
+<p><strong>1. Signed provenance and attestations.</strong> Require cryptographically signed build provenance for actions and artifacts before they execute. Sigstore's signing and verification tooling, GitHub's artifact attestations, and the SLSA framework's provenance levels all let teams confirm not just that code is unchanged, but that it was produced by whoever claims to have produced it. Where an upstream project publishes signed releases, verify them; where it does not, treat unsigned actions as elevated risk.</p>
+<p><strong>2. Policy as code.</strong> Move enforcement out of code review and into automated gates. Open Policy Agent with Conftest can reject workflow definitions that reference unpinned or unverified actions. GitHub's organization-level workflow controls and action allowlists add a second chokepoint, restricting which publishers an entire organization may run.</p>
+<p><strong>3. Least-privilege workflow hygiene.</strong> Set explicit, minimal <code>permissions</code> blocks on every workflow so a compromised action inherits as little access as possible, and isolate secrets from jobs that do not need them.</p>
+<p><strong>4. Lookalike-action audits.</strong> Periodically inventory workflow references and confirm each action resolves to the expected publisher and repository — catching typosquatted or impersonated actions before they are pinned.</p>
+<h4>The Bottom Line</h4>
+<p>SHA pinning is a baseline, not a finish line. It closes the door on post-pin tampering while leaving the provenance question open — and attackers have demonstrated they will exploit that gap directly. Layering attestation, policy-as-code, and token hygiene on top of pinning is what converts a single check into an actual defense-in-depth posture.</p>
+<p>For teams wanting a deeper walkthrough of the technique, The Hacker News piece points to an accompanying webinar covering the bypass and how to close it.</p>
+<p><em>Source: <a href="https://thehackernews.com/2026/11/hackers-found-way-around-github-sha.html">The Hacker News</a></em></p>
+<hr>
+<p>```</p>
+<h3>SHA Pinning 並非萬靈丹：攻擊者如何繞過 GitHub 的供應鏈防禦</h3>
+<p>將 GitHub Actions 固定（pinning）至不可變更的 commit hash——這是多年供應鏈事故後大多數團隊採用的緩解措施——已被證明可以在固定環節本身被繞過，而非事後遭篡改。</p>
+<p>據 The Hacker News 報導，具體案例發生在 2026 年 3 月：攻擊者劫持了廣泛使用的開源安全掃描工具 Trivy，植入了經過精心偽裝、看似 GitHub 官方 <code>checkout</code> action 的惡意代碼。由於惡意內容在任何人進行固定之前就已存在於被引用的版本中，之後每一次下游固定驗證都不會發出任何異常——一個完美的 SHA、已驗證的完整性，以及惡意代碼。</p>
+<h4>SHA Pinning 實際保證了什麼</h4>
+<p>SHA pinning 以完整的 commit hash 取代了可變更的版本標籤（例如 <code>@v4</code>），令維護者或攻擊者無法在事後悄悄替換 workflow 引用背後的代碼。此做法此後已成為基準實踐，各機構應予保留。</p>
+<p>然而，完整性（integrity）並不等同於來源出處（provenance）。固定的 SHA 只能證明被引用的代碼自固定以來未曾更改，卻無法說明該代碼是否可信，或是否真的來自其聲稱的發布者。Trivy 事件利用的是固定前的欺騙（pre-pin deception），而非固定後的篡改（post-pin mutation）：偽造的 <code>checkout</code> 負載在標籤和結構上都刻意模仿官方外觀，機械式驗證因而無從察覺。</p>
+<p>這次影響範圍異常廣泛。Trivy 本身就是一個防禦工具——團隊部署它正是為了找出問題——而 <code>checkout</code> action 在 GitHub Actions workflow 中幾乎無處不在。攻擊者透過冒充該 action，令偽造品隨工具的使用遍及各處。</p>
+<h4>緩解措施清單</h4>
+<p>解決方法並非放棄 pinning，而是不要將其視為完整的防禦。業界實踐指出需要另外四層措施：</p>
+<p><strong>1. 已簽署的來源出處與 attestations。</strong> 要求 action 及 artifacts 在執行前具備經 cryptographic 簽署的建置來源出處。Sigstore 的簽署與驗證工具、GitHub 的 artifact attestations，以及 SLSA framework 的來源出處層級，均令團隊不僅能確認代碼未遭更改，更能確認其確由聲稱的生產者所產生。若上游專案發布已簽署版本，應予驗證；若沒有，則應將未經簽署的 action 視為較高風險。</p>
+<p><strong>2. Policy as code。</strong> 將執行從代碼審查轉移至自動化閘口。Open Policy Agent 配合 Conftest 可拒絕引用未固定或未經驗證 action 的 workflow 定義。GitHub 的機構級（organization-level）workflow 控制與 action allowlist 則提供第二重管制點，限制整個機構可以運行哪些發布者的作品。</p>
+<p><strong>3. 最小權限的 workflow 衛生。</strong> 為每個 workflow 設定明確且最小化的 <code>permissions</code> 區塊，令被入侵的 action 所繼承的權限盡可能少，並將 secrets 與不需要它們的 job 隔離。</p>
+<p><strong>4. 偽冒 action 審計。</strong> 定期盤點 workflow 引用，確認每個 action 都解析至預期的發布者與 repository——在被固定之前揪出 typosquat 或冒充的 action。</p>
+<h4>總結</h4>
+<p>SHA pinning 是基準，而非終點。它關上了固定後篡改的大門，卻令來源出處問題懸而未決——而攻擊者已證明他們會直接利用這一漏洞。在 pinning 之上疊加 attestation、policy as code 與 token 衛生，才能將單一檢查轉化為真正的縱深防禦（defense-in-depth）姿態。</p>
+<p>如欲深入了解該技術，The Hacker News 的文章附有一場網絡研討會，涵蓋此繞過手法及如何堵塞漏洞。</p>
+<p><em>Source: <a href="https://thehackernews.com/2026/11/hackers-found-way-around-github-sha.html">The Hacker News</a></em></p>
+<p><a href="https://thehackernews.com/2026/11/hackers-found-way-around-github-sha.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
