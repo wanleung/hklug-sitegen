@@ -1,0 +1,44 @@
+Date: 2026-11-17 02:22:00
+Author: HKLUG Team
+Title: ModSecurity Slips Back Into AlmaLinux as 10.3 and 9.9 Land — Audit Your Repos Before You Upgrade
+Content:
+<p>Not long after Red Hat Enterprise Linux 10.3 shipped, the community rebuild AlmaLinux followed with its own 10.3 release, alongside a parallel 9.9 — both now available for production use. In other words, maintainers running the 10.x and 9.x maintenance lines are covered by the same batch of updates this time around.</p>
+<p>But according to Phoronix, the detail worth pausing over in this update is not the routine advance of the core release or toolchain. It is the trajectory of a single package: the WAF module <code>ModSecurity</code> has reappeared in AlmaLinux 10's official repositories.</p>
+<h4>From Removal to Return: A Mirror on Clone Structure</h4>
+<p><code>ModSecurity</code> previously vanished from AlmaLinux 10's repositories. For operators still relying on it to protect web services, that gap left only two options: compile the source into an RPM by hand, or turn to a third-party repository. Both raise maintenance overhead and cut against the RHEL-compatible distro convention of treating the official repository as the single source of truth. Restoring it in 10.3 effectively reconnects a broken supply chain.</p>
+<p>Worth noting: AlmaLinux has yet to publish an explanation for why the package was pulled in the first place, or what justified bringing it back. Phoronix does not attribute the change to an upstream Red Hat decision. This remains an open question, and it should not be speculated upon until first-hand sourcing surfaces.</p>
+<p>Pull the camera back and the episode lays bare the RHEL-clone contract. AlmaLinux's core value is republishing Red Hat's source RPMs to achieve byte-level compatibility and zero-cost migration. But that contract cuts both ways: upstream package additions and removals propagate to users of every compatible distribution almost immediately, and those decisions typically pass without community discussion. What you trust is the rebuilder's ability to reproduce — not control over whether each component survives.</p>
+<h4>Why the Return Matters More Than the Version Number</h4>
+<p>From a distribution-operations standpoint, the restoration sends a signal: AlmaLinux's treatment of upstream package choices is not a wholesale mirror. The <code>ModSecurity</code> 2.x line is effectively in maintenance mode, with no active upstream feature development. Keeping a component that "will not evolve further but still has users" in the repository shows maintainers willing to fill upstream gaps rather than mechanically track RPM-side changes. For a distribution selling predictability, that posture matters more than any point-release number.</p>
+<p>Which is why an operational lesson holds across any RHEL-compatible stack: <strong>after every point-release upgrade, re-inventory whether critical security components are still in the repository.</strong> A missing firewall or WAF module is a configuration-management failure first, and a security problem second — it should not surface as "we only noticed the service behaved differently after upgrading."</p>
+<h4>Upgrade Operations and Post-Upgrade Verification</h4>
+<p>For existing 10.2 users, 10.3 is an in-place point-release upgrade; the usual flow is still to refresh the package list, run the upgrade, and reboot:</p>
+<pre><code class="language-bash">sudo dnf upgrade --refresh
+sudo reboot
+</code></pre>
+<p>The 9.x upgrade path is covered by the same release train: 9.9 shipped alongside 10.3, so 9.8 users can proceed through the same point-release process. Cross-major upgrades (for example, 9.x to 10.x) require separate planning — AlmaLinux's ELevate tool is a common option, but it should be fully validated on a test node first.</p>
+<p>The post-upgrade checklist should contain at least three items: confirm that security components such as <code>ModSecurity</code> remain available in the target version's repositories, compare web-server module load state, and regression-test existing WAF rules. The keyword for the first item is <em>repository content diffing</em> — an automated diff of repository inventories before and after the upgrade. Any vanished security component appears immediately, instead of surfacing only when some traffic slips past the rules undetected.</p>
+<h4>Buy vs. Build: What the Episode Means for Procurement</h4>
+<p>On the procurement side, the calculus is straightforward: commercial support buys supply-chain accountability and lifecycle guarantees; building in-house or adopting a free clone buys cost and control. The <code>ModSecurity</code> episode marks exactly where the latter is weakest — when upstream changes arrive without clear communication, you must build your own detection mechanism.</p>
+<p>The lesson applies to any RHEL-compatible environment, regardless of market. Whether a team sits in Hong Kong or elsewhere, the actionable advice is the same: write "repository content diffing" into the automated post-upgrade checks.</p>
+<hr>
+<p>Red Hat Enterprise Linux 10.3 推出後不久，社群重建版本 AlmaLinux 也跟進交付了 10.3，與此同時登場的還有 9.9——兩個版本目前都已進入生產可用狀態。換句話說，維護 10.x 與 9.x 兩條維運線的使用者，這次都在同一批更新的覆蓋範圍內。</p>
+<p>不過，根據 Phoronix 的報導，這次更新真正值得停下觀看的，並非核心版本或工具鏈的例行推進，而是一個套件的動向：WAF 模組 <code>ModSecurity</code> 重新出現在 AlmaLinux 10 的官方軟件庫中。</p>
+<h4>從移除到回歸：一面照見 clone 結構的鏡子</h4>
+<p><code>ModSecurity</code> 此前曾從 AlmaLinux 10 的軟件庫中消失。對仍依賴它保護 Web 服務的維運人員而言，那段空窗期只剩下兩條路：自行把原始碼編譯成 RPM，或轉向第三方倉庫。兩者都會墊高維護成本，也偏離了 RHEL 相容發行版「以官方倉庫為單一事實來源」的使用習慣。10.3 將其恢復，等於把這條斷裂的供應鏈重新接上。</p>
+<p>值得留意的是，AlmaLinux 至今並未公開說明當初移除該套件的確切原因，也未解釋如今恢復的判斷依據。Phoronix 的報導並沒有把這項變動歸因於上游 Red Hat 的決策。這個問題目前仍是懸而未決的開放疑問，在有第一手資料浮現之前不應臆測。</p>
+<p>把鏡頭拉遠一點，這樁插曲其實把 RHEL-clone 的合約攤開在使用者面前。AlmaLinux 的核心價值在於重新發布 Red Hat 的來源 RPM，從而達成位元組層級的相容與零成本遷移；但這份合約有其兩面性——上游的套件增刪往往會近乎即時地傳導到所有相容發行版的使用者身上，而這些決策通常不會經過社群討論。你所信任的是重建者的重現能力，而不是對每個元件存續的控制權。</p>
+<h4>為何回歸比版本號更值得關注</h4>
+<p>從發行版維運的角度看，恢復這個動作傳遞了一個訊號：AlmaLinux 對上游套件的取捨並非全盤照抄。<code>ModSecurity</code> 2.x 系列實際上已處於維護模式，上游並無活躍的新功能開發；把這類「不會再演進但仍有使用者」的元件留在倉庫裏，顯示維護團隊願意在上游缺口處補位，而非機械地追隨 RPM 側的變動。對於以可預測性為賣點的發行版而言，這種姿態比任何點版本號都重要。</p>
+<p>也因此，一個跨越任何 RHEL 相容堆疊都成立的操作教訓浮現了：<strong>每次點版本（point release）升級後，都應重新盤點關鍵安全元件是否仍在軟件庫中</strong>。少了防火牆模組或 WAF 模組，首先是組態管理的失敗，其次才是安全問題——它不該以「升級後才發現服務行為改變」的形式被偵測到。</p>
+<h4>升級作業與升級後驗證</h4>
+<p>對現有 10.2 使用者而言，10.3 屬於原地（in-place）點版本升級，一般流程仍是更新套件清單、執行升級指令並重啟：</p>
+<pre><code class="language-bash">sudo dnf upgrade --refresh
+sudo reboot
+</code></pre>
+<p>9.x 的升級路徑同樣在本次發布的覆蓋範圍之內：9.9 與 10.3 同步登場，因此 9.8 使用者可循相同的點版本流程前進。跨大版本升級（例如 9.x 升至 10.x）則需另行規劃——AlmaLinux 提供的 ELevate 工具是常見選項，但建議先在測試節點上完整驗證。</p>
+<p>升級後的檢查清單應至少包含三項：確認 <code>ModSecurity</code> 等安全元件在目標版本的軟件庫中仍可取得、比對 Web 伺服器的模組載入狀態，以及回歸測試既有 WAF 規則。其中第一項的關鍵字是「倉庫內容比對」（repository content diffing）——把升級前後的倉庫清單做自動化差異比較，任何消失的安全元件都會立刻現形，而不是等到某條流量再也沒有被規則攔下。</p>
+<h4>「買 vs. 自建」的採購啟示</h4>
+<p>在採購決策上，考量點其實相當直接：商業支援換來的是供應鏈可問責性與生命週期保證；自建或採用免費 clone 換來的是成本與控制權。<code>ModSecurity</code> 的插曲正好標示出後者最脆弱的一環——當上游變動沒有明確溝通時，你必須自己建立偵測機制。</p>
+<p>這個教訓對任何 RHEL 相容環境都適用，與身處哪個市場無關。無論團隊在哪個時區，實際可操作的建議都是同一句：把「倉庫內容比對」寫進升級後的自動化檢查裏。</p>
+<p><a href="https://www.phoronix.com/news/AlmaLinux-10.3-Released" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
