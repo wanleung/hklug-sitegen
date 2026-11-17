@@ -1,0 +1,34 @@
+Date: 2026-11-17 15:02:00
+Author: HKLUG Team
+Title: iPhone Audio Bug Let Apps Capture Sound After Users Tapped 'Don't Allow'
+Content:
+<p>A now-patched flaw in Apple's audio service allowed apps on iPhones and iPads to record audio even after the user tapped "Don't Allow" on the microphone permission prompt. Apple shipped the fix in security updates released on 17 August, and neither the company nor the researchers involved report any known exploitation in attacks. The technical breakdown comes from Nik Tsytsarkin of Meta Red Team X, working with a second researcher identified only by the first name Mustafa.</p>
+<p>The bug's significance lies less in its individual severity than in what it reveals about how mobile permission systems can fail: a user-facing consent dialog that was never actually binding on the subsystem underneath it. The flaw is best characterised as an audio-service permission bypass rather than a sandbox escape — an important distinction, since it did not let an app break out of its isolation boundary, but did let it reach microphone capture after a denial. In this case, the deny decision shown in the prompt did not propagate as an enforced block at the audio-service level, leaving a gap between what the interface promised and what the platform enforced.</p>
+<p>The disclosure is researcher-led, with Tsytsarkin's write-up supplying the mechanism detail. Several specifics remain unstated in available reporting: no CVE identifier has been confirmed, no affected or fixed iOS and iPadOS version numbers are given beyond the 17 August update date, and it is not stated whether the bypass was reachable by any app after a denial or only via a specially crafted one. Readers should treat those points as open until confirmed against Apple's own advisory text.</p>
+<p><strong>Why it matters</strong></p>
+<p>The core failure pattern — a UI-level consent prompt not matched by subsystem-level enforcement — is not unique to Apple. Comparable gaps have surfaced across platforms, including Android permission flows and Linux desktop portal implementations, wherever a compositor or dialog layer sits between the user's decision and the service that actually performs the capture. That makes this a useful case study for anyone auditing privacy controls, not just an entry in the Apple patch log.</p>
+<p>For Hong Kong IT teams, the practical angle is adoption lag rather than discovery risk. The fix has been available since 17 August — roughly three months — so the residual exposure is devices that have not been updated, plus environments where microphone permissions were granted broadly and never revisited.</p>
+<p><strong>A short checklist for enterprise fleets</strong></p>
+<ul>
+<li><strong>Verify patch baselines.</strong> Confirm that managed iPhone and iPad fleets have applied the 17 August security updates or later, and check that deferred or supervised update policies are not holding devices on earlier builds.</li>
+<li><strong>Audit microphone permissions.</strong> Review which apps hold microphone access across the fleet, and revoke standing grants for apps with no business need — particularly ones granted during ad-hoc testing.</li>
+<li><strong>Spot-check MDM enforcement.</strong> Periodically verify that restriction profiles for camera and microphone access are actually deployed and reporting correctly, rather than assuming console configuration equals device state.</li>
+<li><strong>Review update-patch cadence.</strong> Align Apple security-update review with your existing monthly patch cycle so three-month-old fixes do not persist in production.</li>
+</ul>
+<p>None of this warrants an emergency response. There is no reported malicious use, and the flaw is already fixed in current releases. The correct action is routine update hygiene and a periodic look at whether the permissions users "denied" are truly denied everywhere below the prompt.</p>
+<hr>
+<p>蘋果音訊服務中一個現已修補的漏洞，曾容許 iPhone 及 iPad 上的應用程式在用戶於麥克風權限提示中點擊「不允許」後仍然錄音。蘋果已於 8 月 17 日發布的安全更新中推出修復，該公司及相關研究人員均表示目前沒有已知的攻擊利用案例。技術分析由 Meta Red Team X 的 Nik Tsytsarkin 撰寫，並與另一名只披露名字 Mustafa 的研究人員合作。</p>
+<p>此漏洞的意義，與其本身的嚴重程度相比，更在於它揭示了流動裝置權限系統可能如何失靈：一個面向用戶的同意對話框，實際上從未對底層子系統產生約束力。此缺陷最恰當的定性是音訊服務權限繞過（permission bypass），而非 sandbox escape——這個區分十分重要，因為它並未令應用程式突破其隔離邊界，卻確實令應用程式在遭到拒絕後仍能使用麥克風錄音。在此案例中，提示畫面顯示的拒絕決定，並未在音訊服務層級轉化為實際執行的封鎖，令介面所承諾的內容與平台實際執行的規則之間出現落差。</p>
+<p>今次披露由研究人員主動進行，Tsytsarkin 的技術文章提供了漏洞機制的詳細說明。現有報道中有若干細節仍未交代：尚無已確認的 CVE 編號、除 8 月 17 日更新日期外未有列明受影響或已修復的 iOS 及 iPadOS 版本號碼，亦未說明該繞過是否任何應用程式在權限被拒後皆可觸發，還是只能透過特別編寫的應用程式達成。讀者在對照蘋果官方安全通告文本核實之前，應將上述各點視為未有定論。</p>
+<p><strong>為何值得關注</strong></p>
+<p>核心的失靈模式——UI 層級的同意提示沒有子系統層級的執行機制配合——並非蘋果獨有。類似漏洞曾在多個平台出現，包括 Android 權限流程及 Linux desktop portal 的實現，凡在用戶的決定與實際執行錄音的服務之間存在 compositor 或對話框層，均可能出現此類落差。因此，對任何審查私隱控制的人士而言，這是一個有用的案例研究，而不只是蘋果補丁紀錄中的一項條目。</p>
+<p>對香港 IT 團隊而言，實際問題在於修補採用滯後，而非漏洞尚未發現。修復自 8 月 17 日起已經提供——約三個月——因此殘餘風險來自尚未更新的裝置，以及曾廣泛授予麥克風權限而從未重新檢視的環境。</p>
+<p><strong>企業裝置管理簡短檢查清單</strong></p>
+<ul>
+<li><strong>核實補丁基線。</strong>確認受管理的 iPhone 及 iPad 裝置隊伍已套用 8 月 17 日或之後的安全更新，並檢查延遲或受監督的更新政策有否令裝置停留在較舊版本。</li>
+<li><strong>審查麥克風權限。</strong>檢視裝置隊伍中哪些應用程式持有麥克風存取權，並撤銷沒有業務需要的應用程式的長期授權——特別是臨時測試期間授予的權限。</li>
+<li><strong>抽查 MDM 執行情況。</strong>定期驗證相機及麥克風存取的限制配置描述檔（restriction profile）確實已部署及正確回報狀態，而非假設管理控制台的設定等同裝置的實際狀態。</li>
+<li><strong>檢視更新補丁節奏。</strong>將蘋果安全更新的審查與現有的每月補丁周期對齊，避免三個月前的修復方案仍長期留存在生產環境。</li>
+</ul>
+<p>以上均不構成需要緊急應變的情況。目前沒有惡意使用的報告，漏洞亦已在現行版本中修復。正確的處理方式是做好例行更新衞生，並定期檢查用戶「拒絕」的權限，是否在提示畫面以下的各層真正得到落實。</p>
+<p><a href="https://thehackernews.com/2026/11/researchers-detail-iphone-flaw-that-let.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
