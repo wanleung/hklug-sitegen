@@ -1,0 +1,44 @@
+Date: 2026-11-17 17:29:00
+Author: HKLUG Team
+Title: MFA Can't Stop Phishing Kits That Replay Your Microsoft 365 Session
+Content:
+<p>Your multi-factor authentication is enabled, your users completed the training, and the phishing email still landed. The attacker gets in anyway — not by defeating MFA, but by stealing what MFA already produced.</p>
+<p>That is the core finding behind a BleepingComputer write-up of research from Huntress, which dissects three phishing toolkits — EvilTokens, Knight Office, and Kali365 — built to capture and replay Microsoft 365 session tokens, turning an ordinary lookalike sign-in page into persistent access to a victim's mailbox.</p>
+<p><strong>How the kits work</strong></p>
+<p>The mechanics are uncomfortable in their simplicity. Instead of harvesting a username and password and then facing an MFA challenge, these kits position a proxy between the user and the real Microsoft sign-in page. The victim authenticates normally, MFA succeeds normally, and the kit captures the resulting session token. The attacker then replays that token from their own machine. MFA authenticates a moment; it does not police the session afterwards.</p>
+<p>The three kits differ in sophistication and packaging, but the shared capability is off-the-shelf: token capture and replay is no longer a bespoke operation reserved for high-tier intrusion organizations. It has commoditised — a shift Huntress situates in the technique's history, where session theft showed up mainly in targeted intrusions working toward ransomware. It now pushes that technique further down the attack chain, into everyday business email compromise, where a hijacked mailbox is used to redirect invoices and payments.</p>
+<p><strong>Why defenders keep losing the signal</strong></p>
+<p>Replayed sessions are, by design, legitimate. The sign-in logs show the right user authenticating successfully. Depending on where the attacker sits, there may be no password spray, no impossible-travel alert, no MFA fatigue prompt. None of those signals can be depended on.</p>
+<p>The practical consequences for a security team are severe: a password reset does not end the session, and a user who reports "I clicked a link but nothing happened" may already have handed over persistent access. Defenders who treat authentication events as the boundary of their visibility are looking in the wrong place.</p>
+<p><strong>A detection and containment checklist</strong></p>
+<p>The defence guidance that emerges from the research is less about blocking the initial click and more about watching what a stolen session does afterwards:</p>
+<ul>
+<li><strong>Hunt on the kits themselves.</strong> EvilTokens, Knight Office, and Kali365 are named tools with identifiable infrastructure — treat them as concrete detection strings in proxy, DNS, and email telemetry rather than as abstract threat categories.</li>
+<li><strong>Watch for session context drift.</strong> A token replayed from a new device or an unfamiliar ASN may still carry a valid sign-in, but browser fingerprints, device IDs, and IP reputation rarely match cleanly.</li>
+<li><strong>Audit post-authentication activity.</strong> New inbox rules that forward or delete mail, and OAuth consent grants to unfamiliar applications, are the classic aftermath of a replayed session.</li>
+<li><strong>Revoke sessions, don't just reset passwords.</strong> Password resets leave existing tokens alive. Containment means sign-out-all, token revocation, and reviewing recent sign-in logs for the affected account.</li>
+<li><strong>Treat MFA as a floor, not a ceiling.</strong> Conditional access policies that bind sessions to compliant devices or tighten token lifetime reduce the window a stolen session buys.</li>
+</ul>
+<p>For IT teams in environments dense with Microsoft 365 deployments — a common profile across Hong Kong's small and mid-sized enterprises, which often run their entire productivity stack on M365 with thin security headcount — the implication is straightforward: the perimeter worth watching is no longer the sign-in screen, but everything that follows it.</p>
+<p>The proliferation of these kits is the story, not any single one of them. Token replay has become a commodity capability, and the detection burden has moved with it.</p>
+<hr>
+<p>你的 multi-factor authentication 已經啟用，用戶完成了培訓，phishing 電郵仍然成功送達。攻擊者依然得手——不是靠破解 MFA，而是直接偷走 MFA 已經產出的東西。</p>
+<p>這正是 BleepingComputer 一篇報導的核心結論，該報導拆解了 Huntress 的一項研究，深入分析三個 phishing 工具包——EvilTokens、Knight Office 和 Kali365——它們專門擷取並重放 Microsoft 365 session token，把一個普通的仿冒登入頁面變成對受害者 mailbox 的持續存取權限。</p>
+<p><strong>工具包的運作方式</strong></p>
+<p>其機制簡單得令人不安。這些工具包不會先收集用戶名稱和密碼再面對 MFA 驗證，而是在用戶與真正的 Microsoft 登入頁面之間架設一個 proxy。受害者正常完成認證，MFA 正常通過，工具包則擷取由此產生的 session token。攻擊者隨後從自己的機器重放該 token。MFA 認證的只是一個時刻，並不會在此後監管整個 session。</p>
+<p>三個工具包在複雜度和包裝上各有不同，但其共同能力已經是現成貨：token 擷取與重放不再是由高階入侵組織專用的客製化操作。這項技術已經商品化——Huntress 將此置於該技術的發展歷史脈絡中：session 竊取過去主要出現在以勒索軟件為目標的定向入侵中。如今這項技術已進一步下移至攻擊鏈，進入日常的 business email compromise（商業電郵詐騙）場景，被劫持的 mailbox 被用來轉移發票和款項。</p>
+<p><strong>防禦方為何屢屢錯失信號</strong></p>
+<p>重放的 session 按其設計本質上是合法的。登入日誌顯示的是正確的用戶成功完成認證。視乎攻擊者所處的位置，可能沒有 password spray、沒有 impossible-travel 警報、沒有 MFA fatigue 提示。以上任何一個信號都不可依賴。</p>
+<p>對安全團隊而言，實際後果相當嚴重：重設密碼並不能終止 session，而報告「我點了一個連結但什麼都沒發生」的用戶，可能已經拱手交出了持續存取權限。把認證事件當作可視範圍邊界的防禦方，看錯了地方。</p>
+<p><strong>偵測與遏制清單</strong></p>
+<p>研究得出的防禦指引，重點不在阻擋最初的點擊，而在於監視被竊 session 之後的行為：</p>
+<ul>
+<li><strong>直接搜尋工具包本身。</strong> EvilTokens、Knight Office 和 Kali365 都是具名工具，擁有可識別的基礎設施——應將它們作為具體的偵測字串應用於 proxy、DNS 和 email telemetry，而非視為抽象的威脅分類。</li>
+<li><strong>留意 session context drift。</strong> 從新設備或陌生 ASN 重放的 token 可能仍帶有有效的登入記錄，但 browser fingerprint、device ID 及 IP reputation 很少能夠完全吻合。</li>
+<li><strong>審計認證後活動。</strong> 轉發或刪除郵件的新收件匣規則，以及向陌生應用程式授予的 OAuth consent，都是 session 被重放後的典型徵狀。</li>
+<li><strong>撤銷 session，而不只是重設密碼。</strong> 重設密碼不會使現有 token 失效。遏制措施意味著 sign-out-all、token 撤銷，以及檢視受影響帳戶的近期登入日誌。</li>
+<li><strong>將 MFA 視為下限而非上限。</strong> 將 session 綁定至合規設備或縮短 token 有效期的 conditional access policy，可縮減被竊 session 所換取的攻擊窗口。</li>
+</ul>
+<p>對於在 Microsoft 365 部署密集環境中運作的 IT 團隊——這是香港中小企業的常見狀況，它們往往將整套生產力工具棧運行在 M365 上，而安全人手卻相當薄弱——其意義十分清楚：值得監視的邊界已不再是登入畫面，而是其後發生的一切。</p>
+<p>這類工具包的氾濫才是事件的全貌，而非其中任何單一工具。Token 重放已成為商品化的通用能力，偵測的重擔也隨之轉移。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/inside-modern-phishing-kits-built-to-steal-microsoft-365-sessions/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
