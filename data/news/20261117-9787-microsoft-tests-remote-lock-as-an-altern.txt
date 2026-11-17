@@ -1,0 +1,40 @@
+Date: 2026-11-17 12:28:00
+Author: HKLUG Team
+Title: Microsoft Tests Remote Lock as an Alternative to Wiping Lost or Stolen Windows Devices
+Content:
+<p>Microsoft is testing a feature called Remote Lock that would let enterprise administrators remotely lock a lost or stolen Windows device without erasing it, according to a report from BleepingComputer. The feature targets a familiar gap in device-loss handling: organisations today are largely choosing between leaving a missing endpoint reachable or performing a full wipe that destroys its recoverable state.</p>
+<h4>What the feature does</h4>
+<p>Rather than treating device loss as an all-or-nothing event, Remote Lock would let an administrator freeze a Windows machine — rendering it unusable to whoever is holding it — while leaving the data and configuration on the device intact. The distinction matters operationally: a wiped device must be re-provisioned from scratch if it turns up, whereas a locked device can potentially be returned to service once it is physically recovered and identity is confirmed.</p>
+<p>Microsoft is circulating the capability as part of its testing programme, with build and rollout details expected to be confirmed as it moves toward general availability. As with any preview feature, availability and behaviour may change before release.</p>
+<h4>Why it matters for incident response</h4>
+<p>For teams running MDM or Intune fleets, the practical appeal is a graduated response. In many organisations today, "someone lost a laptop" and "a laptop was taken from a meeting room" end in the same remediation action, because wiping is the only remotely available lever. A lock creates a middle path: contain the device immediately, then decide whether wipe is warranted.</p>
+<p>Three consequences follow:</p>
+<ul>
+<li><strong>Preserved forensic state.</strong> An immediate wipe can destroy the artefacts needed to determine what the device was doing, which accounts were active, or whether data was accessed before the loss was reported. Locking first keeps that trail available for investigation — which also leaves incident responders better placed to consult their regulator's breach-management guidance on whether an incident is notifiable.</li>
+<li><strong>Narrower exposure window.</strong> A lock can be applied quickly and decisively, cutting off casual use of an unattended or opportunistically taken device without waiting for approval to destroy data.</li>
+<li><strong>Lower recovery cost.</strong> If the device resurfaces in an office drawer or a lost-and-found, a locked endpoint avoids the re-imaging overhead a wipe would incur.</li>
+</ul>
+<h4>Where it fits</h4>
+<p>Remote Lock would sit alongside the levers administrators already have — disabling an account in Entra ID, issuing a wipe through Intune, revoking a BitLocker recovery key — as a containment step that does not require deciding to destroy the device's contents.</p>
+<h4>What admins should do now</h4>
+<p>The lock-versus-wipe decision is typically left as an on-call judgement call at 2 a.m. Organisations are better served updating device-loss runbooks now to distinguish between "unaccounted for" and "confirmed stolen," with a default lock-first step for the former and a defined trigger for escalating to wipe. That way, when Remote Lock graduates from testing to availability, the process is ready — and the decision is a policy question rather than an improvised one.</p>
+<p>Microsoft has not yet published final availability details, so rollout timing remains a watch item on its official channels.</p>
+<hr>
+<p>據 BleepingComputer 報道，微軟正測試一項名為 Remote Lock（遠端鎖定）的功能，容許企業管理員在不抹除資料的情況下，遠端鎖定遺失或被盜的 Windows 裝置。該功能針對設備遺失處理中一個長期存在的缺口：現時機構面對終端裝置失竊，大體只有兩項選擇——任由失竊端點繼續可被存取，或進行徹底抹除，令裝置的可還原狀態盡毀。</p>
+<h4>功能作用</h4>
+<p>Remote Lock 不會將裝置遺失視為非黑即白的事件，而是容許管理員凍結一部 Windows 電腦——令持有者無法使用——同時保留裝置上的資料及配置。此區別在營運上相當關鍵：已被抹除的裝置一旦尋回，便須由零開始重新配備（provisioning）；而已被鎖定的裝置，在實體尋回並確認身份後，則有機會回復運作。</p>
+<p>微軟正將該功能列入其測試計劃中分發，隨著功能逐步邁向正式可用（general availability），build 編號及推出詳情預料亦會隨之確認。與所有 preview 功能一樣，其可用性及行為可能在正式發佈前有所變動。</p>
+<h4>對事件應對的意義</h4>
+<p>對於管理 MDM 或 Intune 裝置群組的團隊而言，實際好處在於提供階梯式的應對方式。現今許多機構中，「有人遺失了手提電腦」與「有電腦在會議室被取走」最終都會觸發相同的補救行動，因為抹除是唯一可遠端執行的手段。鎖定則提供一條中間路線：先即時圍堵裝置，再決定是否需要抹除。</p>
+<p>由此衍生三項後果：</p>
+<ul>
+<li><strong>保存取證狀態。</strong> 即時抹除可能摧毀判斷裝置當時正在執行什麼、哪些帳戶處於啟用狀態、以及資料在失竊申報前有否被存取所需的證據（artefacts）。先作鎖定可保留相關線索供調查——這亦令事件應對人員能更好地諮詢監管機構的資料外洩管理指引，以判斷事件是否須作出通報。</li>
+<li><strong>收窄暴露時間窗。</strong> 鎖定可迅速果斷地執行，在無須等待批准銷毀資料的情況下，即時中止他人對無人看管或乘機取走裝置的隨意使用。</li>
+<li><strong>降低復原成本。</strong> 若裝置其後在辦公室抽屜或失物認領處重現，已被鎖定的端點可免卻抹除所帶來的重新映像（re-imaging）開銷。</li>
+</ul>
+<h4>功能定位</h4>
+<p>Remote Lock 將與管理員現有的手段並列——例如在 Entra ID 停用帳戶、透過 Intune 發出抹除指令、撤銷 BitLocker 復原金鑰——作為一項毋須決定銷毀裝置內容的圍堵步驟。</p>
+<h4>管理員現階段應做的事</h4>
+<p>鎖定抑或抹除的決定，通常留待凌晨兩時的當值判斷。機構宜趁現時更新裝置遺失處理手冊（runbook），區分「下落不明」與「確認被竊」兩種情況：前者預設先作鎖定，後者則設定明確的升級觸發條件以執行抹除。如此一來，當 Remote Lock 由測試階段轉為正式可用時，流程已準備就緒——相關決定亦成為政策問題，而非臨場權宜。</p>
+<p>微軟尚未公佈最終的可用性詳情，推出時間表仍有待其官方渠道進一步公布，須持續留意。</p>
+<p><a href="https://www.bleepingcomputer.com/news/microsoft/microsoft-testing-remote-lock-for-lost-or-stolen-windows-devices/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
