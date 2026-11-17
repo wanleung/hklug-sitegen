@@ -1,0 +1,42 @@
+Date: 2026-11-18 17:22:00
+Author: HKLUG Team
+Title: Redis Fork Redict Is Deprecated; Maintainer Points Users to Valkey
+Content:
+<p>Drew DeVault has deprecated Redict, the copyleft Redis fork he created in response to Redis's 2024 relicensing, and is directing remaining users to Valkey instead. The announcement, dated 17 November, closes down one of the forks that emerged alongside Valkey after that licence change.</p>
+<p>Valkey — the permissively licensed Redis fork governed by the Linux Foundation — is now the recommended destination for users who rejected Redis's new proprietary licence terms. Redict and Valkey are mutually compatible, which should keep the practical cost of switching low for teams that act while Redict is still supported.</p>
+<h5>What the closure says about fork governance</h5>
+<p>The interesting part of this story is not the licence change itself, which is nearly two years old, but which of the resulting forks proved durable. Licensing drove adoption in 2024: teams that could not accept Redis's new terms looked for an equivalent they could keep running without reopening their legal position. What determined survival, however, was governance. Valkey's backing by the Linux Foundation, with commercial participants investing engineering time under a shared structure, gave it a maintenance horizon that a single-maintainer project could not match on its own.</p>
+<p>For anyone choosing dependencies — not just Redis users — the forward-looking question this raises is a practical one: who maintains this in three years, and under what structure? Redict's answer eventually became "nobody."</p>
+<p>The fork landscape is now correspondingly simple: upstream Redis remains the option for teams comfortable with its current terms and who prioritise feature cadence, and Valkey is the de facto destination for everyone else.</p>
+<h5>Migration steps</h5>
+<p>Because the two projects are mutually compatible, the technical migration is closer to a package swap than a rewrite:</p>
+<ol>
+<li><strong>Inventory deployments.</strong> Redis-compatible instances tend to be buried inside larger stacks — caches, session stores, queues, rate limiters, and leaderboards — often owned by teams that did not choose the database in the first place. Discovering them is usually the longest part of the work.</li>
+<li><strong>Swap the server package.</strong> Replace the Redict/Redis binary or container with Valkey on the same host or orchestration target.</li>
+<li><strong>Repoint clients.</strong> Most existing Redis clients should work unchanged against Valkey; connection strings and service discovery entries need updating.</li>
+<li><strong>Validate against real workloads.</strong> Check command and feature coverage for the versions you actually run, and re-test replication, failover behaviour, and performance benchmarks rather than assuming parity from the changelog.</li>
+</ol>
+<p>The window matters: switching while Redict is still receiving attention is materially cheaper than lifting a stale deployment later under pressure.</p>
+<h5>What HK teams should do now</h5>
+<p>HK teams running Redis-compatible stacks can act on the four steps above directly. Start with the inventory: record which fork each deployment runs, which of those workloads you host yourself versus consume from a major cloud provider, and who on your team owns each one — the two categories will need different upgrade paths. Then swap and repoint while Redict is still receiving attention, before support and updates taper off. The code change is cheap; finding every place the software is hiding is not.</p>
+<p><em>This article is analysis based on Drew DeVault's 17 November announcement as reported by LWN.net.</em></p>
+<hr>
+<p>Drew DeVault 已將 Redict 列為棄用（deprecated）。Redict 是他因應 Redis 於 2024 年重新授權而創建的 copyleft 授權 Redis 分支，如今他建議餘下用戶改用 Valkey。該公告日期為 11 月 17 日，正式結束了當年授權變更後與 Valkey 同期湧現的其中一個分支。</p>
+<p>Valkey —— 由 Linux Foundation 治理、採寬鬆授權的 Redis 分支 —— 現已成為不接受 Redis 新專有授權條款的用戶的建議選擇。Redict 與 Valkey 彼此兼容，這意味著趁 Redict 仍獲支持之際轉換的團隊，實際遷移成本應該相當低。</p>
+<h5>分支停止維護反映的治理問題</h5>
+<p>這則新聞的重點並非授權變更本身 —— 該事已發生近兩年 —— 而是眾多分支之中，哪些最終得以存活。2024 年的授權問題驅動了採用：無法接受 Redis 新條款的團隊，紛紛尋找可持續運行、無需重新處理法律立場的同等替代品。然而，真正決定存亡的是治理模式。Valkey 獲 Linux Foundation 支持，商業參與者在共同架構下投入工程人力，使其維護前景遠非單一維護者的項目可獨立媲美。</p>
+<p>對於任何正在挑選依賴項的人 —— 不只是 Redis 用戶 —— 由此引出的前瞻問題相當實際：三年後由誰維護？以什麼架構維護？Redict 最終的答案變成了「沒有人」。</p>
+<p>分支格局如今因此變得相當簡單：上游 Redis 仍是接受現有條款、重視功能更新節奏的團隊的選項；其餘人則事實上以 Valkey 為歸宿。</p>
+<h5>遷移步驟</h5>
+<p>由於兩個項目彼此兼容，技術遷移更接近替換軟件包，而非重寫：</p>
+<ol>
+<li><strong>盤點部署。</strong> Redis 兼容實例往往深埋於更大的技術堆疊之中 —— cache、session store、queue、rate limiter 及排行榜等 —— 通常由當初並非自行選用該數據庫的團隊負責。找出這些實例，往往是最花時間的環節。</li>
+<li><strong>替換伺服器軟件包。</strong> 在同一主機或編排目標上，以 Valkey 取代 Redict／Redis 二進位檔或 container。</li>
+<li><strong>重新指向客戶端。</strong> 大部分現有 Redis client 應可無需修改便與 Valkey 配合運作；connection string 及 service discovery 條目則需更新。</li>
+<li><strong>以真實工作負載驗證。</strong> 按照實際運行的版本檢查指令及功能覆蓋範圍，並重新測試 replication、failover 行為及性能基準，而非僅憑 changelog 假定兩者等同。</li>
+</ol>
+<p>時機很重要：趁 Redict 仍受關注之際轉換，成本遠低於日後在壓力下遷移早已停滯的部署。</p>
+<h5>香港團隊現階段可採取的行動</h5>
+<p>運行 Redis 兼容堆疊的香港團隊，可直接按上述四個步驟行動。先從盤點開始：記錄每個部署運行的是哪個分支、哪些工作負載由你自行託管、哪些取自主要雲端服務商，以及團隊中由誰負責每一項 —— 兩類部署將需要不同的升級路徑。然後趁 Redict 仍受關注、支援及更新尚未完全停止之際，完成替換及重新指向。改代碼的成本很低；找出軟件藏身的每一處，代價卻不低。</p>
+<p><em>本文為根據 LWN.net 報導的 Drew DeVault 於 11 月 17 日公告所作的分析。</em></p>
+<p><a href="https://lwn.net/Articles/1108155/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
