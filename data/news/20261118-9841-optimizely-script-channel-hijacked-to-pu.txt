@@ -1,0 +1,48 @@
+Date: 2026-11-18 00:22:00
+Author: HKLUG Team
+Title: Optimizely script channel hijacked to push malware to hundreds of third-party sites
+Content:
+<p>Attackers hijacked the script delivery channel behind Optimizely, a widely embedded experimentation and tag-management tool, turning hundreds of otherwise uncompromised sites into malware distribution points, Ars Technica reported.</p>
+<p>According to Ars Technica, the intrusion occurred at the distribution layer rather than at any individual publisher. Pages loaded and rendered normally, with no visible warning to users, while the tampered include quietly served what researchers described as a "malware cocktail": cryptocurrency theft payloads on desktop alongside exploit code targeting iOS devices.</p>
+<p>The incident echoes the 2024 Polyfill.io takeover, in which a popular free script host was quietly weaponised and began redirecting visitors on thousands of embedded sites — a reminder that trusted script hosts remain a recurring target for this class of attack.</p>
+<p>That payload combination is what makes this incident unusual. On a desktop browser, the script pursues wallet draining, session-token theft and clipboard hijacking — swapping cryptocurrency addresses with attacker-controlled ones. On mobile, the same page load attempts device compromise. A single browsing session on an otherwise legitimate site, with no interaction beyond opening the page, puts both goals in play.</p>
+<p>The mechanics are a textbook third-party supply-chain attack. Rather than breaching each target individually, the operators replaced a trusted, widely distributed resource, inheriting every downstream property's audience in one move. Any site still embedding the affected include became a distribution point by default.</p>
+<p><em>The following section is HKLUG analysis, not part of the Ars Technica report.</em></p>
+<p><strong>Why this matters for client-side dependencies</strong></p>
+<p>Server-side dependencies typically pass through package registries, version pinning and vulnerability scanning before reaching production. Browser-side includes receive far less scrutiny — despite running with live access to form data, session tokens and wallet state. Marketing and growth teams frequently add third-party tags outside formal security review, and those tags routinely outlive the campaigns that justified them. Every include is a standing delegation of trust and, when upstream fails to notify or roll back promptly, a standing liability.</p>
+<p>For Hong Kong web and e-commerce teams, the incident is a useful prompt to audit their own dependency surface — not because any local deployment has been confirmed affected, but because the same class of exposure exists wherever third-party scripts are embedded without version control or host allowlisting.</p>
+<p><strong>Detection and remediation checklist</strong></p>
+<p>Teams reviewing their own exposure after this incident should work through the following:</p>
+<ul>
+<li><strong>Inventory every third-party script</strong>, including stale tag-manager tags no one remembers approving. Tags that outlive their campaign should be removed.</li>
+<li><strong>Pin versions or self-host critical resources</strong>, and verify that upstream assets have not been silently swapped since they were first deployed.</li>
+<li><strong>Adopt a Content Security Policy allowlist</strong> so scripts from unexpected hosts cannot execute at all, even if an include is tampered with.</li>
+<li><strong>Enable Subresource Integrity</strong> where possible, so altered assets fail loudly rather than loading quietly.</li>
+<li><strong>Review access logs</strong> for unusual traffic to script endpoints and for outbound connections to known-bad infrastructure — the kind of beaconing that a compromised include produces.</li>
+<li><strong>Reassess vendor change-notification and rollback processes.</strong> Ask what notification your organisation would receive if a trusted vendor's delivery channel were hijacked, and how quickly a rollback could be executed.</li>
+</ul>
+<p>Ars Technica described the affected-site count as in the hundreds, though the figure remains fluid as sites remove the dependency and slower-moving deployments catch up with advisories.</p>
+<p>The core lesson is simple: an approved, reputable vendor relationship can become an attack surface overnight. Client-side dependencies deserve the same review discipline as server-side packages — because from the browser's point of view, there is no difference between code you wrote and code you trusted someone else to host.</p>
+<hr>
+<p>攻擊者劫持了 Optimizely 背後的腳本投放渠道。Optimizely 是一款廣泛嵌入網站的實驗及 tag 管理工具，被劫持後，數百個本身並未被入侵的網站淪為惡意軟件散播點，Ars Technica 報道。</p>
+<p>據 Ars Technica 報道，入侵發生在投放層面（distribution layer），而非任何個別發布平台。網頁一如既往正常載入及顯示，用戶並不會看到任何警告訊息，而遭篡改的 include 則暗中投放研究人員形容為「惡意軟件 cocktail」的內容：桌面版投放加密貨幣盜竊 payload，同時附帶針對 iOS 設備的 exploit code。</p>
+<p>此事件令人聯想到 2024 年 Polyfill.io 遭接管事件——當時一個熱門的免費腳本託管服務被悄然武器化，開始將數千個嵌入其腳本的網站訪客重新導向——這提醒我們，受信任的腳本託管平台始終是此類攻擊的經常性目標。</p>
+<p>本次事件之所以非同尋常，在於該 payload 的組合。在桌面瀏覽器上，腳本會嘗試竊取錢包資金、盜取 session token 及劫持剪貼簿——將加密貨幣地址置換為攻擊者控制的地址。在流動裝置上，同一次頁面載入則嘗試入侵設備。用戶只需在一個表面正常的網站瀏覽一次，除了打開頁面外不作任何互動，上述兩個攻擊目標即已同時展開。</p>
+<p>其運作機制是教科書式的第三方 supply chain attack。操縱者並非逐一入侵每個目標，而是取代一個受信任、廣泛分發的資源，一步之間繼承所有下游網站的受眾。任何仍在嵌入受影響 include 的網站，都會自動成為散播點。</p>
+<p><em>以下部分屬 HKLUG 分析，並非 Ars Technica 報道的內容。</em></p>
+<p><strong>為何這對客戶端 dependency 極其重要</strong></p>
+<p>服務器端 dependency 通常在進入 production 之前，會經 package registry、版本鎖定（version pinning）及 vulnerability scanning 等把關程序。瀏覽器端的 include 所受的審查則遠為薄弱——儘管它們能即時存取表單數據、session token 及錢包狀態。市場推廣及增長團隊經常在正式安全審查之外自行加入第三方 tag，而這些 tag 往往在原屬的 campaign 結束後仍長期存在。每一個 include 都代表一份持續授予的信任，一旦上游未能及時通知或回滾（rollback），便是一項持續存在的責任風險。</p>
+<p>對香港的網站及電子商務團隊而言，今次事件是審視自身 dependency surface 的一個契機——並非因為已確認有任何本地部署受影響，而是因為只要網站在沒有版本控制或 host allowlisting 的情況下嵌入第三方腳本，同類暴露風險便會存在。</p>
+<p><strong>偵測及補救 checklist</strong></p>
+<p>團隊應在今次事件後檢視自身暴露情況，逐一處理以下各項：</p>
+<ul>
+<li><strong>盤點所有第三方腳本</strong>，包括無人記得何時獲批的陳舊 tag-manager tag。已超出所屬 campaign 周期的 tag 應予移除。</li>
+<li><strong>鎖定版本（pin versions）或自行託管（self-host）關鍵資源</strong>，並核實上游資產自首次部署以來未曾被悄悄更換。</li>
+<li><strong>採用 Content Security Policy allowlist</strong>，確保來自非預期 host 的腳本完全無法執行，即使 include 遭到篡改也不例外。</li>
+<li><strong>盡可能啟用 Subresource Integrity</strong>，使被更改的資產無法靜默載入，而是即時報錯。</li>
+<li><strong>檢視存取日誌</strong>，留意流向 script endpoint 的異常流量，以及連往已知惡意基礎設施的 outbound connection——這正是被入侵的 include 所產生的 beaconing 行為。</li>
+<li><strong>重新評估供應商的變更通知及回滾機制。</strong> 問清楚：若可信供應商的投放渠道遭劫持，貴公司會收到何種通知？回滾又可以多快執行？</li>
+</ul>
+<p>Ars Technica 形容受影響網站數目達數百個，惟隨著網站逐步移除相關 dependency、進度較慢的部署亦陸續跟進安全公告，該數字仍會持續變動。</p>
+<p>核心教訓很簡單：一段經批准、信譽良好的供應商關係，可能一夜之間變成 attack surface。客戶端 dependency 應獲得與服務器端 package 同等嚴謹的審查紀律——因為從瀏覽器的角度看，你自己編寫的程式碼，與你信任他人代為託管的程式碼，兩者並無分別。</p>
+<p><a href="https://arstechnica.com/security/2026/11/malicious-code-delivered-through-optimizely-hits-visitors-to-hundreds-of-sites/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
