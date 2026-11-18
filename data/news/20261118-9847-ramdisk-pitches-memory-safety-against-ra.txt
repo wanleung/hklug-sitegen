@@ -1,0 +1,30 @@
+Date: 2026-11-18 07:21:00
+Author: HKLUG Team
+Title: Ramdisk Pitches Memory Safety Against Raw Speed in New Kernel Patches
+Content:
+<p>New patches circulating on the Linux Kernel Mailing List (LKML) propose RBRD, a RAM-backed block driver written from scratch in Rust. On its face it is a small piece of infrastructure — an alternative to the long-standing <code>brd</code> driver that backs tmpfs-style scratch devices and ramdisks. The interesting part is not what RBRD does, but why anyone would bother writing it in Rust, and what the measured slowdown reveals about the cost of memory safety in kernel code.</p>
+<p><strong>Why a ramdisk of all things?</strong></p>
+<p>A RAM-backed driver is about as constrained a workload as the block layer offers. There is no real storage device underneath, no DMA quirks, no firmware, no spinning platter or NAND controller to abstract away. Everything the driver touches is memory and the block layer's own plumbing: queue setup, bio handling, request completion. That makes it an unusually clean proving ground for Rust abstractions — the memory-safety guarantees Rust brings (bounds checking discipline, ownership of buffers, no use-after-free through aliasing) can be evaluated without the noise of hardware variability confounding the results.</p>
+<p>In other words, RBRD looks less like a driver anyone urgently needs and more like a benchmark for Rust's fit in one of the kernel's more mundane subsystems. If Rust is going to become a routine option for block drivers, someone has to write the first boring one.</p>
+<p><strong>The performance question</strong></p>
+<p>The catch is that RBRD benchmarks slower than the existing <code>brd</code> driver — a result that lands awkwardly, because speed is the entire reason a ramdisk exists. Abstraction layers, indirection through Rust's traits and bounds enforcement, and the general overhead of code paths that have not yet been tuned by years of optimisation all eat into the numbers.</p>
+<p>For anyone evaluating Rust in the kernel, this is the tension in one frame. Memory-safety bugs in block drivers are a real and recurring class of defect — silent corruption and privilege escalation among them — and Rust removes them by construction. But the kernel is a domain where a few percent of overhead on a hot path is treated as a serious regression. RBRD makes that trade-off visible in its purest form: safety bought with speed, on a device whose only selling point was speed.</p>
+<p>To be clear about practical stakes today: nothing changes for production systems. The default <code>brd</code> driver remains what distributions and initramfs tooling ship and use. No system administrator or kernel developer needs to, or should, swap it out for RBRD. There is no feature in RBRD that <code>brd</code> lacks in a way that matters for real workloads.</p>
+<p><strong>Where it stands</strong></p>
+<p>These are patches under review, not merged code. The proposals will be debated on LKML, and their fate — accept, rework, or drop — is not yet decided, with no merge timeline in sight. Realistic benchmark data beyond the initial comparisons, and any methodology scrutiny that debate produces, remain open questions.</p>
+<p>The signal worth watching, particularly for infrastructure teams that maintain long-lived Linux fleets, is trajectory rather than the patch itself. Each Rust driver that clears review normalises the language in subsystems where it once seemed implausible, and each performance discussion like this one feeds back into the Rust-for-Linux abstractions themselves, pushing them toward lower runtime cost. RBRD's headline numbers may never matter to anyone. Whether they improve — and whether reviewers judge the safety gains worth the gap — says a good deal about how quickly Rust becomes an ordinary choice rather than an experiment.</p>
+<p>For now, the guidance is simple: keep <code>brd</code>, and keep an eye on the mailing list.</p>
+<hr>
+<p>近日在 Linux Kernel Mailing List（LKML）流傳的新補丁提出 RBRD——一款完全以 Rust 編寫的 RAM-backed 區塊驅動。表面上看，它只是一小段基礎設施，用以取代長期存在的 <code>brd</code> 驅動，後者為 tmpfs 式臨時裝置及 ramdisk 提供支援。耐人尋味之處不在於 RBRD 的功能，而在於為何有人特意以 Rust 編寫它，以及實測所得的效能下降，揭示了核心程式碼中記憶體安全的代價究竟有多高。</p>
+<p><strong>為何偏偏是 ramdisk？</strong></p>
+<p>RAM-backed 驅動可說是 block layer 所能提供的最為單純的工作負載。其下並無真正的儲存裝置，沒有 DMA 特例、沒有 firmware、沒有旋轉碟片或 NAND controller 需要抽象化。驅動接觸的一切都是記憶體以及 block layer 自身的內部結構：queue 設定、bio 處理、request 完成。這使它成為評估 Rust 抽象層的一個異常乾淨的試驗場——Rust 所帶來的記憶體安全保障（bounds checking 紀律、buffer 的 ownership、透過別名操作杜絕 use-after-free）可以在不受硬件差異噪音干擾的情況下加以評估。</p>
+<p>換言之，RBRD 看起來與其說是一個各界急需的驅動，不如說是一項測試 Rust 是否適合核心中較為平凡的 subsystem 的基準。若 Rust 要成為區塊驅動的常規選擇之一，總得有人先寫出第一個平淡無奇的驅動。</p>
+<p><strong>效能問題</strong></p>
+<p>問題在於，RBRD 的基準測試成績比現有的 <code>brd</code> 驅動為慢——這個結果相當尷尬，因為速度正是 ramdisk 存在的全部理由。抽象層、透過 Rust traits 的間接呼叫、bounds enforcement，以及尚未經歷多年優化調校的程式碼路徑所帶來的整體開銷，統統侵蝕了成績。</p>
+<p>對於任何在核心中評估 Rust 的人而言，這正是矛盾的集中體現。區塊驅動中的記憶體安全缺陷是一類真實且反覆出現的問題——其中包括靜默損壞（silent corruption）與權限提升（privilege escalation）——而 Rust 從構造上根除了這些問題。然而在核心領域，熱路徑上幾個百分點的開銷便會被視為嚴重的效能回歸。RBRD 以最純粹的形式呈現了這一權衡：以速度換取安全，而這裝置唯一的賣點本來就是速度。</p>
+<p>須說明當下的實際影響：生產系統不會有任何改變。預設的 <code>brd</code> 驅動依然是各發行版及 initramfs 工具所採用的版本。任何系統管理員或核心開發者都無需、亦不應以 RBRD 取代它。RBRD 並無任何 <code>brd</code> 所缺乏、且對實際工作負載構成影響的功能。</p>
+<p><strong>目前進展</strong></p>
+<p>這些補丁仍處於 review 階段，尚未合併。相關提案會在 LKML 上繼續討論，其最終命運——接受、返工或放棄——尚未有定論，亦沒有合併時間表。初步比較以外的實際基準數據，以及討論過程中可能引發的方法論審視，仍是未知數。</p>
+<p>值得持續關注的信號——尤其對於維護長期運行 Linux 機群的基礎設施團隊而言——是整體走向而非補丁本身。每一個通過 review 的 Rust 驅動，都會令這門語言在曾經看來難以置信的 subsystem 中變得司空見慣；而每一次類似的效能討論，都會回饋至 Rust for Linux 的抽象層本身，推動其降低運行時開銷。RBRD 的公開數字或許永遠不會影響任何人。但這些數字能否改善——以及 reviewer 是否認為安全收益足以彌補差距——在很大程度上預示著 Rust 多快會由實驗性嘗試轉變為平常之選。</p>
+<p>目前的建議很簡單：保留 <code>brd</code>，並留意 mailing list 的動向。</p>
+<p><a href="https://www.phoronix.com/news/RBRD-Rust-Linux-RAM-Driver" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
