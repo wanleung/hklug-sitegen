@@ -1,0 +1,30 @@
+Date: 2026-11-18 00:32:00
+Author: HKLUG Team
+Title: Valve Submits AMDGPU Patches Promising Less Stutter in Proton Games
+Content:
+<p>Gamers running Windows titles through Steam Play could see noticeably smoother frame delivery, after Valve's Linux graphics driver team posted a fresh revision of AMDGPU kernel patches targeting stuttering in Proton games.</p>
+<p>Natalie Vock of Valve sent out the updated patch series, which Phoronix reported on, claiming "significant reductions in stuttering" for some newer Windows games played on Linux via Steam Play. The changes have not landed in any released kernel: the series is a proposal, currently awaiting review by the AMD DRM maintainers, and history suggests further revisions are likely before anything is merged.</p>
+<p><strong>What the patches actually change</strong></p>
+<p>At the centre of the series is how the AMDGPU driver handles sparse memory — resources that games allocate but only partially populate at any given moment. According to Phoronix, when the driver mishandles these sparse resources, the resulting memory traffic produces visible frame-time spikes: the momentary hitches players experience as stutter during gameplay, particularly in newer titles that lean heavily on this style of allocation.</p>
+<p>The mechanism matters for Proton users specifically because Windows games translated through the compatibility layer often exercise these allocation patterns more aggressively than native Linux titles, putting the driver's sparse-resource path under heavier load than it was originally tuned for.</p>
+<p>The practical hook is that the fix sits in the mainline AMDGPU driver rather than in Proton, Steam, or any user-space component. If the series survives review and merges, every system running an AMD GPU on a patched kernel benefits — desktops, laptops, and the Steam Deck alike — with no per-game configuration or workaround required. Nothing changes until the patches are actually accepted and shipped in a kernel release, however.</p>
+<p><strong>A familiar pattern of upstream investment</strong></p>
+<p>For those who follow Linux graphics, Valve's latest submission is less a surprise than a continuation. The company has spent years funding kernel and Mesa engineers to fix driver-level problems that AMD and the broader distribution ecosystem would otherwise have to absorb — the same working model that produced the RADV Vulkan driver's rise, work on the NVK driver for NVIDIA hardware, and a long stream of DRM fixes underpinning Proton's success.</p>
+<p>That puts Valve in an unusual position in the ecosystem: a games company whose commercial interest in getting Windows titles running well on Linux aligns neatly with the health of graphics drivers it does not itself maintain. Each upstream contribution lowers the maintenance burden for distributions and hardware vendors while protecting the value of the Steam Deck and Steam Play.</p>
+<p><strong>What to watch next</strong></p>
+<p>Two caveats temper the announcement. First, the magnitude of the stutter reduction and the specific affected titles rest on Valve's own testing as relayed by Phoronix; independent verification will have to wait for testers to run the series on a testable kernel build. Second, the patches remain under review, so AMD's DRM maintainers could request changes — or decline parts of the series — before it reaches a release candidate.</p>
+<p>Linux gamers running AMD hardware should therefore treat this as a promising proposal rather than a shipped fix, and keep an eye on the patch thread and subsequent Phoronix coverage for merge status.</p>
+<hr>
+<p>透過 Steam Play 執行 Windows 遊戲的玩家，或會見到明顯更順暢的幀率輸出，因為 Valve 的 Linux 圖像驅動程序團隊剛發佈了新版 AMDGPU kernel patch，針對 Proton 遊戲的卡頓問題作出改善。</p>
+<p>Valve 的 Natalie Vock 發出了更新版 patch 系列，Phoronix 報道指，該系列宣稱能「大幅減少卡頓」，適用於部分較新的 Windows 遊戲在 Linux 上透過 Steam Play 執行的情況。相關改動尚未納入任何已發佈的 kernel：該系列仍屬建議案，目前正等候 AMD DRM 維護者審核，按歷史慣例，正式合併之前很可能還會有進一步修訂。</p>
+<p><strong>Patch 實際改動了什麼</strong></p>
+<p>該系列的核心在於 AMDGPU 驅動程序如何處理 sparse memory（稀疏記憶體）——即遊戲會預先配置、但在任何特定時刻只會部分填入內容的資源。根據 Phoronix 報道，當驅動程序錯誤處理這些稀疏資源時，由此產生的記憶體流量會造成可見的 frame-time 峰值：玩家在遊玩時體驗到的瞬間停頓，即所謂卡頓，在大量依賴這種配置方式的新遊戲中尤其明顯。</p>
+<p>此機制對 Proton 用戶尤其重要，因為透過相容層轉譯的 Windows 遊戲，往往比原生 Linux 遊戲更頻繁觸發這類配置模式，令驅動程序的稀疏資源路徑承受比原設計調校時更高的負載。</p>
+<p>實際意義在於，修復位於主線 AMDGPU 驅動程序之內，而非 Proton、Steam 或任何 user-space 元件之中。若該系列通過審核並合併，所有在已修補 kernel 上運行 AMD GPU 的系統均可受惠——不論桌面電腦、手提電腦抑或 Steam Deck——無需逐款遊戲設定或採用權宜方案。不過，在 patch 真正被接納並隨 kernel 版本發佈之前，一切均不會改變。</p>
+<p><strong>熟悉的上游投入模式</strong></p>
+<p>對 Linux 圖像領域的關注者而言，Valve 最新的提交與其說是意外，不如說是延續。該公司多年來一直資助 kernel 及 Mesa 工程師，處理本來須由 AMD 及更廣泛發行版生態系統自行吸收的驅動程序層面問題——正是這種運作模式，造就了 RADV Vulkan 驅動程序的崛起、針對 NVIDIA 硬件的 NVK 驅動程序工作，以及長期支撐 Proton 成功的一系列 DRM 修復。</p>
+<p>這使 Valve 在生態系統中處於一個不尋常的位置：作為遊戲公司，其令 Windows 遊戲在 Linux 上順暢運行的商業利益，與它本身並不維護的圖像驅動程序的健康狀況緊密相連。每一次上游貢獻，既降低了發行版及硬件供應商的維護負擔，同時也保障了 Steam Deck 及 Steam Play 的價值。</p>
+<p><strong>接下來要留意什麼</strong></p>
+<p>是次公布有兩點保留。第一，卡頓減少的幅度以及具體受影響的遊戲，均取決於 Phoronix 轉述的 Valve 自行測試結果；獨立驗證須待測試人員在可用的 kernel build 上運行該系列後方可作實。第二，patch 仍在審核之中，AMD 的 DRM 維護者可能要求修改——或拒收部分系列內容——之後才會進入 release candidate 階段。</p>
+<p>因此，使用 AMD 硬件的 Linux 玩家應將此視為一個前景可期的建議案，而非已推出的修復方案，並應持續留意該 patch 討論串及 Phoronix 的後續報道，以掌握合併進度。</p>
+<p><a href="https://www.phoronix.com/news/AMDGPU-Sparse-Gaming-Valve" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
