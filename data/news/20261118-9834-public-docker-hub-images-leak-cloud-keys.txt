@@ -1,0 +1,36 @@
+Date: 2026-11-18 00:28:00
+Author: HKLUG Team
+Title: Public Docker Hub Images Leak Cloud Keys to Automated Harvesters in Seconds
+Content:
+<p>Cloud credentials pushed to public container registries are being pulled down by automated harvesters in as little as eight seconds after publication, according to BleepingComputer — a timeline that effectively rewrites the standard incident-response playbook for leaked secrets.</p>
+<p>That eight-second figure is a minimum observed window, not a typical one. But even taken as a floor, it settles the arithmetic: the "detect, revoke, rotate" sequence that most organisations treat as remediation cannot outrun an attacker who never has to break anything. By the time a scanning alert fires, the key has already been copied, and rotation is no longer prevention — it is cleanup after a credential has, for practical purposes, been public.</p>
+<h4>Why container images leak so readily</h4>
+<p>The mechanics are unglamorous, which is what makes the problem durable. Container images are immutable bundles of layered filesystems, and secrets baked into a build — an <code>.env</code> file copied into the image, a config file that survived a cleanup step, a token exported as a build argument — stay in the layer history even when a later <code>RUN rm</code> appears to delete them. Deleted is not the same as unpublished.</p>
+<p>Image layers are also opaque to tools that only read Git history. A repository-wide secret scan can pass clean while the published image still carries the credential, because the two artefacts diverged at build time. Adversaries, for their part, do not need to compromise a builder or a CI runner at all: according to BleepingComputer, automated crawlers continuously index public registries and extract anything that looks like a key, at near-zero marginal cost. The registry itself becomes the intelligence feed.</p>
+<h4>What actually works</h4>
+<p>The controls are not new. The gap is consistency, not knowledge. Four practical checkpoints:</p>
+<ol>
+<li><strong>Scan images, not just repositories.</strong> Layer-aware scanning of the final artefact — including deleted-file recovery — catches credentials introduced during the build that Git-centric tools will miss.</li>
+<li><strong>Treat build context as hostile input.</strong> Enforce <code>.dockerignore</code> discipline, keep secrets out of the working tree entirely, and prefer multi-stage builds so that source and credential material never reach the final layer.</li>
+<li><strong>Inject secrets at runtime.</strong> Read credentials from a secret manager or orchestrator-injected environment at container start, never from a baked-in file. If the value is in the image, assume it is public.</li>
+<li><strong>Gate before push, not after.</strong> CI should fail a build that would publish an image containing an identifiable secret to a public registry, with private-by-default repositories as the fallback posture.</li>
+</ol>
+<p>The wider lesson is one of attacker economics. Adversaries are no longer buying access to your pipeline when the pipeline volunteers the keys; harvesting self-inflicted leaks is passive, industrialised, and cheap, and the downstream payloads amount to abuses such as cryptomining and unauthorised use of cloud resources.</p>
+<p>For any team publishing images to public registries, the practical shift is procedural: treat the moment of push as the moment of disclosure. For Hong Kong teams, the incident-response lessons here apply regardless of sector — a leaked key can expose whatever data the account can reach, and the response window may be measured in seconds.</p>
+<hr>
+<p>據 BleepingComputer 報道，上載至公開 container registry 的雲端憑證，在發布後最短僅八秒便被自動化程式抓取下載——這一時間線實質上改寫了機密洩漏事件的標準應變手冊。</p>
+<p>八秒是觀察到的最短窗口，並非一般情況。但即使只以這個下限計算，已足以釐清關鍵問題：多數機構視為補救措施的「偵測、撤銷、輪換」流程，根本無法跑贏一個從不需要破解任何東西的攻擊者。當掃描警報觸發時，金鑰早已被複製，輪換已不再是預防——只是在憑證實際上已經公開之後的善後工作。</p>
+<h4>為何 container 映像如此容易洩漏</h4>
+<p>個中機制毫不複雜，正因如此問題才難以根除。Container 映像是由多層檔案系統組成的不可變套件，而在建置過程中混入的機密——複製進映像的 <code>.env</code> 檔、躲過清理步驟的 config 檔、以 build argument 形式匯出的 token——即使之後出現 <code>RUN rm</code> 似乎將其刪除，仍會留在 layer 歷史記錄之中。已刪除，並不等同於已撤下。</p>
+<p>映像的 layer 對只讀取 Git 歷史的工具而言同樣是不透明的。針對整個 repository 的機密掃描可以完全通過，但已發布的映像仍可能攜帶該憑證，因為兩者在建置時已經出現分歧。至於攻擊者，根本無需入侵 builder 或 CI runner：根據 BleepingComputer 的報導，自動化爬蟲持續索引公開的 registry，以近乎零的邊際成本擷取任何看來像金鑰的內容。Registry 本身反而成了情報來源。</p>
+<h4>真正有效的方法</h4>
+<p>相關管控措施並不新穎，問題在於執行的一致性，而非知識不足。四個實際可行的關卡：</p>
+<ol>
+<li><strong>掃描映像，而不只是 repository。</strong> 對最終成品進行 layer-aware 掃描——包括還原已刪除檔案——可捕獲建置期間引入、Git 為本的工具無法發現的憑證。</li>
+<li><strong>將 build context 視為敵意輸入。</strong> 嚴格執行 <code>.dockerignore</code> 規範，讓機密完全不進入 working tree，並優先採用 multi-stage build，確保原始碼及憑證材料永不進入最終 layer。</li>
+<li><strong>在 runtime 注入機密。</strong> 容器啟動時從 secret manager 或由 orchestrator 注入的環境變數讀取憑證，切勿依賴燒錄在映像內的檔案。若值存在於映像之中，就應假設它已公開。</li>
+<li><strong>在 push 之前把關，而非事後補救。</strong> 若 CI 即將把包含可識別機密的映像發布到公開 registry，應令建置失敗，並以預設私有的 repository 作為後備方案。</li>
+</ol>
+<p>更廣泛的啟示在於攻擊者的經濟學。當 pipeline 主動交出金鑰，攻擊者已無需購買你的 pipeline 存取權；收割這些自招的洩漏是被動、工業化而且成本低廉的，其下游用途則是加密貨幣挖礦、未經授權使用雲端資源等濫用行為。</p>
+<p>對於任何向公開 registry 發布映像的團隊，實際上的轉變是程序性的：把 push 的一刻視為披露的一刻。對香港團隊而言，這裡的事件應變教訓不分行業均適用——一把洩漏的金鑰可以暴露該帳戶能接觸的所有數據，而應變窗口可能以秒計。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/cloud-keys-leaked-in-docker-hub-images-are-stolen-within-seconds/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
