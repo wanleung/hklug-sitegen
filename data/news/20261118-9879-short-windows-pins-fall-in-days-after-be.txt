@@ -1,0 +1,62 @@
+Date: 2026-11-18 15:28:00
+Author: HKLUG Team
+Title: Short Windows PINs Fall in Days After Berlin Researchers Reset TPM Lockout Counters
+Content:
+<p>Researchers at Technische Universität Berlin have demonstrated an attack that resets the TPM failed-attempt lockout protecting Windows Hello and BitLocker PINs on AMD-based PCs and some Intel PCs — reducing a security control designed to take years to brute-force into one that can be defeated in days. The Hacker News reported the disclosure on 18 November.</p>
+<h4>What happened</h4>
+<p>According to the researchers, an attacker who physically opens a PC's case can reset the rate-limiting state that counts failed PIN attempts. The attack does not require breaking the TPM's own cryptography: the target is the counter itself, which can be cleared from the platform's flash storage. The exact mechanism — whether achieved through firmware manipulation or a direct flash rewrite — is described by the authors and should be treated as provisional pending the full technical disclosure.</p>
+<p>In laboratory tests, the team recovered a four-digit Windows Hello PIN on an AMD laptop and a six-digit BitLocker PIN on an Intel laptop. Critically, both PINs had been set by the legitimate owners of the machines, meaning the attack works against real-world configurations rather than artificially weakened setups.</p>
+<h4>Why it matters</h4>
+<p>TPM lockout has long been treated as a backstop: even if an attacker obtains a stolen laptop, the theory goes, they face a counter that throttles guessing attempts to a trickle. That reasoning assumed the lockout state was untouchable without defeating the TPM. This research reframes the control as one that depends on physical custody of the device.</p>
+<p>For any organisation whose laptops routinely leave the building, physical access is effectively conceded the moment a device is lost or stolen. Repair-bench scenarios and insider access extend the same exposure. Under this threat model, the difference between a four-digit PIN and a longer passphrase collapses: 10,000 combinations, ordinarily spread across years by the lockout counter, become enumerable in days once the counter is reset.</p>
+<p>The scope is bounded but not trivial. AMD-based PCs are explicitly affected, alongside some Intel systems, and the researchers have validated the technique on specific lab machines. Exact affected models and chip generations should be tracked against vendor advisories as the disclosure is published in full.</p>
+<h4>What IT teams should change</h4>
+<p>The following steps are editorial recommendations for device fleet managers, drawn from the threat model described above rather than quoted from the source:</p>
+<ul>
+<li><strong>Audit PIN length across deployed devices.</strong> Numeric PINs of four to six digits no longer carry the margin of safety their length implies. Prioritise longer, non-numeric passphrases for accounts and devices that store sensitive data.</li>
+<li><strong>Consider a second pre-boot factor</strong> alongside the BitLocker PIN, so that defeating one factor is insufficient.</li>
+<li><strong>Review asset custody practices</strong> for hardware that leaves the premises — including loaner, courier, and repair workflows — and treat physical tamper evidence as a real control rather than a formality.</li>
+<li><strong>Watch for platform advisories</strong> from AMD and Intel, and prioritise firmware updates once fixes are issued.</li>
+</ul>
+<p>For Windows administrators broadly managing large estates with a significant AMD footprint, the practical takeaway is straightforward: the lockout counter can no longer be assumed to be the boundary of your defence. PIN entropy and physical custody of hardware now carry more of that weight.</p>
+<p>The original disclosure, and any vendor responses from AMD and Intel, should be incorporated once available; a follow-up may be warranted when platform advisories are published.</p>
+<hr />
+<h4>繁體中文版</h4>
+<p>柏林工業大學（Technische Universität Berlin）的研究人員示範了一種攻擊，可在 AMD 平台電腦及部分 Intel 電腦上，重設保護 Windows Hello 與 BitLocker PIN 的 TPM 失敗嘗試鎖定機制——將本需時數年才能暴力破解的防護，壓縮至數日內即可突破。Hacker News 已於 11 月 18 日報道此次披露。</p>
+<h5>發生了什麼</h5>
+<p>據研究人員所述，攻擊者只要實際打開電腦機殼，便可重設計數失敗 PIN 嘗試的速率限制狀態。此攻擊無需破解 TPM 自身的密碼學機制：目標是計數器本身，可由平台的 flash 儲存中清除。確切機制——是透過韌體改寫，還是直接改寫 flash——作者雖有描述，但在完整技術披露發布前，應視為暫時性說法。</p>
+<p>在實驗室測試中，團隊於一台 AMD 筆電還原出四位數 Windows Hello PIN，並於一台 Intel 筆電還原出六位數 BitLocker PIN。關鍵在於，兩組 PIN 均由機器的合法擁有者設定，意味著攻擊針對的是真實環境下的配置，而非人為削弱的設定。</p>
+<h5>影響何在</h5>
+<p>TPM 鎖定一直被視為最後一道防線：即使攻擊者取得被盜筆電，理論上面對的是一個把猜測嘗試限速到極低量的計數器。這套推理假設鎖定狀態在未突破 TPM 之前無法觸碰。這項研究重新定位了該控制措施——它其實取決於對裝置的實體保管。</p>
+<p>對於筆電經常離開辦公室的組織而言，裝置一旦遺失或被盜，實質上就等同於讓出了實體接觸的機會。維修檯場景與內部人員權限則延伸了同樣的暴露面。在此威脅模型下，四位數 PIN 與較長通行短語之間的差距會消失：一萬個組合，平時被鎖定計數器攤開到數年，一旦計數器被重設，數日內即可列舉完畢。</p>
+<p>影響範圍有界，但不可忽視。AMD 平台電腦明確受影響，另有部分 Intel 系統，研究人員已在實驗室的特定機器上驗證此技術。確切受影響型號與晶片世代，應於完整披露發布後，對照廠商公報持續追蹤。</p>
+<h5>IT 團隊應作出的改變</h5>
+<p>以下為面向設備管理人員的編輯建議，源自上述威脅模型的推論，並非引自原報道：</p>
+<ul>
+<li><strong>審核已部署裝置的 PIN 長度。</strong> 四至六位的數字 PIN，已不再具備其長度所暗示的安全餘裕。為儲存敏感資料的帳戶與裝置，優先採用較長的非數字通行短語。</li>
+<li><strong>考慮加入第二個開機前因素</strong>，與 BitLocker PIN 並用，使單一因素被突破不足以得手。</li>
+<li><strong>檢視資產保管實務</strong>，涵蓋所有離開辦公場所的硬體——包括借用、快遞與維修流程——並把實體防篡改證據當成真正的控制措施，而非形式。</li>
+<li><strong>留意平台公報</strong>，關注 AMD 與 Intel 的後續公告，並在修復發布後優先安排韌體更新。</li>
+</ul>
+<p>對於普遍管理大型 Windows 環境、且 AMD 佔比顯著的 Windows 管理員而言，實際結論很直接：鎖定計數器已不能再被視為防禦的邊界。PIN 的隨機性與硬體的實體保管，如今承擔了更多這部分的重量。</p>
+<p>原始披露，以及 AMD 與 Intel 的任何廠商回應，待取得後應納入報道；平台公報發布後，或需另行撰寫後續報道。</p>
+<hr>
+<p>柏林工業大學（Technische Universität Berlin）研究人員展示了一項攻擊手法，可重設 AMD 平台個人電腦及部分 Intel 個人電腦上保護 Windows Hello 及 BitLocker PIN 的 TPM 失敗嘗試鎖定機制——將原本需時數年暴力破解的安全機制，縮短至數日內即可攻破。The Hacker News 已於 11 月 18 日報導是次披露。</p>
+<h4>事件經過</h4>
+<p>據研究人員表示，攻擊者只需實體打開個人電腦機箱，即可重設計算失敗 PIN 嘗試次數的速率限制狀態。該攻擊並不需要破解 TPM 自身的加密機制：目標是計數器本身，而計數器可從平台的 flash storage 中清除。確切機制——無論是透過韌體改寫，還是直接改寫 flash——由作者作出描述，並應視為初步結果，有待完整技術披露後確認。</p>
+<p>在實驗室測試中，團隊成功還原一台 AMD 筆記型電腦的四位數 Windows PIN，以及一台 Intel 筆記型電腦的六位數 BitLocker PIN。關鍵在於，兩個 PIN 均由機器的合法擁有者設定，意味著該攻擊針對真實環境配置有效，而非人為削弱的設定。</p>
+<h4>影響何在</h4>
+<p>TPM 鎖定一直被視為最後一道防線：按照理論，即使攻擊者取得被盜的筆記型電腦，他們面對的是一個將猜測嘗試限制至極低頻率的計數器。該假設認為，除非擊敗 TPM，否則鎖定狀態無法被觸碰。這項研究重新界定該機制：它實際上取決於攻擊者是否能實體控制設備。</p>
+<p>對於筆記型電腦經常帶離辦公室的機構而言，設備一旦遺失或被盜，實體存取等同已拱手相讓。維修工作檯場景以及內部人員存取亦擴大同類風險。在此威脅模型下，四位數 PIN 與較長通行短語之間的差別已不復存在：一萬種組合，原本由鎖定計數器分散至數年才可能完成，一旦計數器被重設，數日內便可窮舉。</p>
+<p>影響範圍明確但不可忽視。AMD 平台個人電腦明確受影響，部分 Intel 系統亦然，研究人員已在特定實驗室機器上驗證該技術。確切受影響型號及晶片世代，應隨著完整披露陸續發布，對照廠商平台公報跟進。</p>
+<h4>IT 團隊應採取的措施</h4>
+<p>以下步驟為編輯就上述威脅模型提出、供設備管理人員參考的建議，並非引述原文：</p>
+<ul>
+<li><strong>審核已部署設備的 PIN 長度。</strong> 四至六位數的數字 PIN 已不再具備其長度所暗示的安全餘裕。對儲存敏感數據的帳戶及設備，應優先採用較長的非數字通行短語。</li>
+<li><strong>考慮加入第二個開機前驗證因素</strong>，與 BitLocker PIN 並用，使攻擊者擊破單一因素仍不足夠。</li>
+<li><strong>檢視資產保管流程</strong>，涵蓋所有離開場地的硬體——包括借用、速遞及維修工作流程——並將實體防篡改證據視為真正的控制措施，而非形式主義。</li>
+<li><strong>留意 AMD 及 Intel 的平台公報</strong>，一旦修復方案發出即優先部署韌體更新。</li>
+</ul>
+<p>對於管理大規模設備組合、其中 AMD 佔顯著比例的 Windows 管理員而言，實質啟示相當直接：鎖定計數器已不能再被假定為防線的邊界。PIN 熵值及硬體的實體保管現在承擔了更多防禦重任。</p>
+<p>原始披露以及 AMD、Intel 的任何廠商回應，應在取得後納入報導；若平台公報發布，或值得進一步跟進。</p>
+<p><a href="https://thehackernews.com/2026/11/flash-chip-attack-bypasses-tpm-lockout.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
