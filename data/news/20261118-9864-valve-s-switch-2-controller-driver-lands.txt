@@ -1,0 +1,42 @@
+Date: 2026-11-18 12:29:00
+Author: HKLUG Team
+Title: Valve's Switch 2 Controller Driver Lands in Linux 7.4, SDL Adds Matching Mappings
+Content:
+<p>Two pieces of the puzzle dropped into place this cycle for Linux gamers eyeing Nintendo's newest hardware: Valve's kernel driver for the Switch 2 controllers has been merged in Linux 7.4, and SDL has landed the matching input mappings. With both halves shipped, the controllers should work out of the box — no hacked config files, no community workarounds.</p>
+<p>The driver was written and contributed by Valve, the company behind Steam and the Steam Deck, as reported by Phoronix. On top of it, SDL — the cross-platform abstraction layer that games call for input, audio, video and controller handling — now carries the mappings that tell games how to interpret what the driver reports.</p>
+<h4>Why the SDL side matters as much as the kernel</h4>
+<p>Controller support on Linux is never a single patch. It is a chain, and both links have to hold before a feature reaches anyone's living room.</p>
+<p>The kernel driver is the first link: it speaks to the hardware and puts raw input events on the wire. SDL is the second: it decodes those events into the button and axis semantics games actually expect — standard labels, correct ordering, genuinely analog triggers. Skip the kernel half and the controller is invisible. Skip SDL and the kernel can see the device perfectly while games cannot use it: buttons arrive scrambled, triggers collapse into on/off switches, or the peripheral never registers as a gamepad at all.</p>
+<p>That division of labour is why both merges matter in the same news cycle. Kernel support alone does not equal a usable controller; SDL decides whether a title sees a coherent, standardised device or a stream of unintelligible events. With mappings for Valve's driver now in place, both ends of the chain are covered, and Switch 2 controllers should behave across the large catalogue of SDL-based titles — the standard route most Linux games use to handle gamepads.</p>
+<h4>Valve's upstream habit</h4>
+<p>The more interesting long-term angle is who wrote the code and where it lives. Valve has again pushed its hardware-enablement work into mainline rather than maintaining a private fork, following the pattern established by the contributions that got the Steam Deck's custom APU and controls working on launch day.</p>
+<p>That habit is why vendor-upstreamed drivers outlive the alternative. Code sitting in a downstream patch has to be rebased by hand every time a kernel moves and quietly rots when a maintainer loses interest; code in mainline is carried forward by the kernel's own update machinery, for every distribution and every user of that hardware, not just one vendor's customers. Each contribution of this kind chips away at the long tail of Linux hardware quirks.</p>
+<h4>What to check before troubleshooting</h4>
+<p>One caveat deserves emphasis, because it is the detail most likely to send users chasing the wrong problem: the fix has two halves, and both must be present.</p>
+<ul>
+<li><strong>Kernel 7.4 or newer</strong> — without the Valve driver, the controller is not recognised at all.</li>
+<li><strong>A current SDL build carrying the new mappings</strong> — without it, the kernel sees the device but games mishandle it.</li>
+</ul>
+<p>Updating only one of the two is not enough. Before concluding that the hardware is broken on your setup, confirm both versions.</p>
+<p>Assuming both are in place, the changes arrive through ordinary package updates — no manual configuration, no hand-edited device rules.</p>
+<p>Story via Phoronix.</p>
+<hr>
+<p>本輪 Linux 核心更新中，針對任天堂最新硬件的兩塊拼圖終於各就各位：Valve 為 Switch 2 手掣編寫的核心驅動程式已合併進 Linux 7.4，SDL 亦已加入相應的輸入映射。兩部分同時到位後，手掣應可開箱即用——毋須改動配置檔案，毋須社群的臨時替代方案。</p>
+<p>據 Phoronix 報道，該驅動程式由 Steam 及 Steam Deck 背後的公司 Valve 編寫並貢獻。在此之上，SDL——遊戲用來處理輸入、音訊、影像及手掣的跨平台抽象層——如今已載入映射，告訴遊戲如何解讀驅動程式回報的資料。</p>
+<h4>為何 SDL 這一環與核心同等重要</h4>
+<p>Linux 上的手掣支援從來不是單一補丁可以完成的事，而是一條鏈環，兩個環節都必須穩固，功能才能最終進入用戶的客廳。</p>
+<p>核心驅動程式是第一環：它與硬件對話，把原始輸入事件送上線路。SDL 是第二環：它把這些事件解碼成遊戲真正預期的按鍵與軸心語意——標準標籤、正確次序、真正的類比扳機。略過核心部分，手掣便完全隱形；略過 SDL，核心即使清楚看見設備，遊戲也無法使用它：按鍵次序錯亂、扳機變成簡單的開關，甚至周邊裝置根本不會被登記為手掣。</p>
+<p>這種分工，正是兩個合併都在同一輪新聞中出現的原因。單有核心支援並不等於手掣可用；SDL 決定一款遊戲看到的是連貫、標準化的設備，還是一連串無法理解的事件。如今 Valve 驅動程式的映射已到位，鏈環兩端均獲覆蓋，Switch 2 手掣應能在大量基於 SDL 的遊戲中正常運作——那是大多數 Linux 遊戲處理手掣的標準途徑。</p>
+<h4>Valve 上游提交的慣例</h4>
+<p>更值得長期關注的焦點，是程式由誰撰寫及存放於何處。Valve 再次把硬件啟用工作推上游至主線，而非維護私有分支，延續了當日令 Steam Deck 定製 APU 與操控在發售當天便能運作的貢獻模式。</p>
+<p>這一慣例正是廠商上游驅動程式壽命長於其他方案的原因。停留在下游補丁中的程式碼，每逢核心版本推進便須人手 rebase，維護者失去興趣時更會悄然腐爛；主線中的程式碼則由核心自身的更新機制持續承載，惠及每一種發行版、每一位使用該硬件的用戶，而非僅限單一廠商的客戶。每一次這類貢獻，都在削減 Linux 硬件怪癖的長尾問題。</p>
+<h4>故障排查前先檢查的事項</h4>
+<p>有一點須特別強調，因為它最易令用戶追錯問題根源：修復分成兩半，兩者必須同時存在。</p>
+<ul>
+<li><strong>Linux 核心 7.4 或更新版本</strong> — 沒有 Valve 驅動程式，手掣根本不會被識別。</li>
+<li><strong>載有新映射的現行 SDL 版本</strong> — 沒有它，核心看得見設備，遊戲卻處理不當。</li>
+</ul>
+<p>只更新其中一邊並不足夠。在斷定硬件於你的環境中損壞之前，請先確認兩個版本。</p>
+<p>只要兩者齊備，相關改動便會透過一般軟件更新送達——毋須人手配置，毋須手動編輯設備規則。</p>
+<p>資料來源：Phoronix。</p>
+<p><a href="https://www.phoronix.com/news/SDL-Nintendo-Switch-2-Linux" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
