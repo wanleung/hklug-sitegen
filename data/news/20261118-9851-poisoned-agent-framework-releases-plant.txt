@@ -1,0 +1,61 @@
+Date: 2026-11-18 10:31:00
+Author: HKLUG Team
+Title: Poisoned agent-framework Releases Plant a Credential Stealer in Every Python Launch
+Content:
+<p>```</p>
+<p>Two malicious releases of Microsoft's <code>agent-framework</code> Python package were published to PyPI just 33 minutes apart on 17 November 2026, and are built to trigger a credential stealer every time the Python interpreter starts, The Hacker News reported on 17 November, drawing on findings from seven independent security vendors.</p>
+<p>For teams running AI-agent frameworks in production, the practical response is tonight, not next sprint.</p>
+<p><strong>Check tonight</strong></p>
+<ol>
+<li><strong>Diff your locked versions.</strong> Search lockfiles, <code>requirements.txt</code> files and container base images for <code>agent-framework</code> at 1.26.1 or 1.26.2. Do not rely on a cached inventory — pull the current resolution and compare it against what was deployed last week.</li>
+<li><strong>Purge CI caches and rebuild.</strong> Because the payload executes on interpreter startup, any runner, laptop or container that resolved the package during the exposure window should be treated as having run it. Clear dependency caches, rebuild images from a known-good lockfile, and do not reuse previously populated virtual environments.</li>
+<li><strong>Rotate credentials before starting forensics.</strong> Cloud access keys, tokens, package-index credentials and anything reachable from a developer workstation or CI secret store should be considered exposed. Rotation first limits the window for an attacker who is still using stolen material; timeline reconstruction can follow.</li>
+<li><strong>Verify status and the safe version yourself.</strong> Availability of 1.26.1 and 1.26.2 on PyPI, and any recommended remediation version, should be confirmed directly against PyPI and Microsoft's advisory — package states change quickly during an active incident, and the upstream advisory should be the reference for what to pin.</li>
+</ol>
+<p>Incidents of this shape are broadly relevant to local teams building on Python-based AI tooling, most of which arrives through the same public index and the same CI paths.</p>
+<p><strong>How the compromise works</strong></p>
+<p>According to The Hacker News, versions 1.26.1 and 1.26.2 were pushed on 17 November and are wired to fire a credential stealer on every Python interpreter start. That design choice is what makes this more than a library-level problem: exposure is not limited to code that imports <code>agent-framework</code> directly. Any environment where the package is merely present and the interpreter runs is potentially affected — laptops, CI runners, scheduled jobs and short-lived containers alike.</p>
+<p>The discovery was flagged by Aikido, Endor Labs, OX Security, SafeDep, Socket, StepSecurity and Google-owned Wiz — seven vendors that identified the same two releases within a short window. The convergence is a reasonable measure of how closely the Python and AI-agent ecosystem is being watched right now, and it also means defenders have multiple independent write-ups to cross-check for indicators.</p>
+<p>The source report does not explain how the publishing credentials were obtained — this is consistent with an attacker who already held publishing rights — and does not name a confirmed safe version; both points should be settled from Microsoft's own advisory and PyPI before any version is pinned back into production.</p>
+<p><strong>Why it matters</strong></p>
+<p>Package-index compromise is now a routine rather than exotic supply-chain vector: the attacker needs no phishing, no vulnerable service and no access to your network — only the ability to publish a plausible-looking point release that downstream automation will happily pull. For organisations whose AI workloads are assembled from public packages, the blast radius is set by dependency hygiene and secret handling, not by perimeter controls.</p>
+<p>The order of operations is the part worth internalising: audit versions, purge caches, rotate credentials, then investigate. Teams that reverse that sequence spend the forensics window wondering whether the keys they are analysing are still being used.</p>
+<hr>
+<p>```</p>
+<p>Two malicious releases of Microsoft's <code>agent-framework</code> Python package were published to PyPI just 33 minutes apart on 17 November 2026, and are built to trigger a credential stealer every time the Python interpreter starts, The Hacker News reported on 17 November, drawing on findings from seven independent security vendors.</p>
+<p>For teams running AI-agent frameworks in production, the practical response is tonight, not next sprint.</p>
+<p><strong>Check tonight</strong></p>
+<ol>
+<li><strong>Diff your locked versions.</strong> Search lockfiles, <code>requirements.txt</code> files and container base images for <code>agent-framework</code> at 1.26.1 or 1.26.2. Do not rely on a cached inventory — pull the current resolution and compare it against what was deployed last week.</li>
+<li><strong>Purge CI caches and rebuild.</strong> Because the payload executes on interpreter startup, any runner, laptop or container that resolved the package during the exposure window should be treated as having run it. Clear dependency caches, rebuild images from a known-good lockfile, and do not reuse previously populated virtual environments.</li>
+<li><strong>Rotate credentials before starting forensics.</strong> Cloud access keys, tokens, package-index credentials and anything reachable from a developer workstation or CI secret store should be considered exposed. Rotation first limits the window for an attacker who is still using stolen material; timeline reconstruction can follow.</li>
+<li><strong>Verify status and the safe version yourself.</strong> Availability of 1.26.1 and 1.26.2 on PyPI, and any recommended remediation version, should be confirmed directly against PyPI and Microsoft's advisory — package states change quickly during an active incident, and the upstream advisory should be the reference for what to pin.</li>
+</ol>
+<p>Incidents of this shape are broadly relevant to local teams building on Python-based AI tooling, most of which arrives through the same public index and the same CI paths.</p>
+<p><strong>How the compromise works</strong></p>
+<p>According to The Hacker News, versions 1.26.1 and 1.26.2 were pushed on 17 November and are wired to fire a credential stealer on every Python interpreter start. That design choice is what makes this more than a library-level problem: exposure is not limited to code that imports <code>agent-framework</code> directly. Any environment where the package is merely present and the interpreter runs is potentially affected — laptops, CI runners, scheduled jobs and short-lived containers alike.</p>
+<p>The discovery was flagged by Aikido, Endor Labs, OX Security, SafeDep, Socket, StepSecurity and Google-owned Wiz — seven vendors that identified the same two releases within a short window. The convergence is a reasonable measure of how closely the Python and AI-agent ecosystem is being watched right now, and it also means defenders have multiple independent write-ups to cross-check for indicators.</p>
+<p>The source report does not explain how the publishing credentials were obtained — this is consistent with an attacker who already held publishing rights — and does not name a confirmed safe version; both points should be settled from Microsoft's own advisory and PyPI before any version is pinned back into production.</p>
+<p><strong>Why it matters</strong></p>
+<p>Package-index compromise is now a routine rather than exotic supply-chain vector: the attacker needs no phishing, no vulnerable service and no access to your network — only the ability to publish a plausible-looking point release that downstream automation will happily pull. For organisations whose AI workloads are assembled from public packages, the blast radius is set by dependency hygiene and secret handling, not by perimeter controls.</p>
+<p>The order of operations is the part worth internalising: audit versions, purge caches, rotate credentials, then investigate. Teams that reverse that sequence spend the forensics window wondering whether the keys they are analysing are still being used.</p>
+<hr />
+<h4>繁體中文（香港）</h4>
+<p>Microsoft <code>agent-framework</code> Python 套件的兩個惡意版本於 2026 年 11 月 17 日相隔僅 33 分鐘上傳到 PyPI，這兩個版本都設計成在 Python 解釋器每次啟動時觸發憑證竊取程式；The Hacker News 於 11 月 17 日報道，內容取材自七家獨立安全供應商的發現。</p>
+<p>對在生產環境執行 AI-agent 框架的團隊來說，應對時間是今晚，而不是下個迭代。</p>
+<p><strong>今晚就要查</strong></p>
+<ol>
+<li><strong>比對已鎖定的版本。</strong> 在 lockfiles、<code>requirements.txt</code> 及容器基礎映像中搜尋 <code>agent-framework</code> 的 1.26.1 或 1.26.2。不要依賴快取的清單 — 取得目前的解析結果，與上星期實際部署的版本逐一核對。</li>
+<li><strong>清空 CI 快取並重新建置。</strong> 由於載荷在解釋器啟動時執行，任何在暴露期間解析過此套件的 runner、手提電腦或容器，都應視作已執行過它。清除相依套件快取、以已知良好的 lockfile 重新建置映像，不要重用先前已建立的虛擬環境。</li>
+<li><strong>先輪換憑證，才開始取證。</strong> 雲端存取金鑰、token、套件索引憑證，以及任何可由開發者工作站或 CI secret store 觸及的項目，都應視為已外洩。先輪換可縮短攻擊者繼續使用被盜資料的時間窗口；時間線重建可隨後進行。</li>
+<li><strong>自行確認狀態及安全版本。</strong> 1.26.1 和 1.26.2 在 PyPI 的可用性，以及建議的修復版本，應直接向 PyPI 及 Microsoft 的 advisory 確認 — 事件仍在進行時，套件狀態轉變很快，上游 advisory 應作為鎖定版本的依據。</li>
+</ol>
+<p>這類事件對本地構建 Python AI 工具的團隊同樣適用，這些工具大多經由同一個公開索引及同一條 CI 路徑到達。</p>
+<p><strong>入侵手法如何運作</strong></p>
+<p>據 The Hacker News 報道，1.26.1 和 1.26.2 於 11 月 17 日推送，設計上會在 Python 解釋器每次啟動時觸發憑證竊取程式。正是這種掛勾設計令問題不止於函式庫層面：受影響範圍不只限於直接 import <code>agent-framework</code> 的程式碼 — 任何只要套件存在而解釋器運行的環境都可能中招，手提電腦、CI runner、定時任務及短暫生命週期的容器皆然。</p>
+<p>發現由 Aikido、Endor Labs、OX Security、SafeDep、Socket、StepSecurity 及 Google 旗下的 Wiz 標記 — 七家供應商在短時間內識別出同樣兩個版本。這種匯聚本身就是目前 Python 及 AI-agent 生態受密切注視的合理指標，也讓防禦者有多份獨立報告可交叉核對入侵指標。</p>
+<p>源頭報導沒有說明發布憑證如何取得 — 這與攻擊者原本已持有發布權限的情況一致 — 也沒有指明已確認的安全版本；兩點都應從 Microsoft 自身的 advisory 及 PyPI 落實，然後才把版本鎖回生產環境。</p>
+<p><strong>為何重要</strong></p>
+<p>套件索引入侵如今已是常見而非罕見的供應鏈手法：攻擊者不需要釣魚、不需要易受攻擊的服務，也不需要接觸你的網絡 — 只要能發布一個看似合理的點版本（point release），下游自動化便會樂意拉取。對於以公開套件組裝 AI 工作負載的組織，影響範圍取決於相依套件管理及 secret 處理，而非邊界防禦。</p>
+<p>最值得內化的是一步步的次序：先核對版本、清空快取、輪換憑證，然後調查。次序顛倒的團隊，會在整個取證窗口裡一直懷疑自己正在分析的金鑰是否仍在使用。</p>
+<p><a href="https://thehackernews.com/2026/11/attackers-compromise-microsofts-agent.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
