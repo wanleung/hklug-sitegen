@@ -1,0 +1,52 @@
+Date: 2026-11-18 19:23:00
+Author: HKLUG Team
+Title: Poisoned Microsoft Agent Framework Builds Hit PyPI With Credential-Stealing Payloads
+Content:
+<p>Two malicious releases of Microsoft's official Agent Framework Python package were published to PyPI, carrying payloads built to siphon cloud credentials and other sensitive data from developer machines, according to BleepingComputer, which first reported the compromise.</p>
+<p>The two compromised releases can be identified in BleepingComputer's report and in the package's PyPI release history; confirm them against your own install records before drawing conclusions about exposure.</p>
+<p>The incident is notable less for its mechanics than for its target. Registry poisoning and typosquatting are a daily fact of life on PyPI; what sets this story apart is that the poisoned artifacts came from a first-party vendor namespace. Teams routinely treat packages published under a major vendor's name as pre-vetted, and attackers know it — vendor identity is precisely the signal developers use to skip deeper scrutiny, and it is the class of package an attacker would rationally choose to compromise.</p>
+<h4>Checklist for today</h4>
+<p><strong>1. Check whether you are affected.</strong> Run the following inside every environment that installs Python dependencies — developer laptops, CI runners, build containers:</p>
+<pre><code class="language-bash">pip show agent-framework
+pip list | grep -i agent-framework
+</code></pre>
+<p>Note the installed version, then compare it with the two compromised releases identified in the source report. Also search internal artifacts and caches, not just fresh installs:</p>
+<pre><code class="language-bash">pip list --format=freeze | grep -i agent-framework
+</code></pre>
+<p>If the commands above return nothing, confirm the distribution name against the package's PyPI project page before concluding you are unaffected.</p>
+<p><strong>2. Pin and verify.</strong> If your project depends on this package, pin to a known-good version with an exact match, and prefer hash-checked installs. Substitute the last known-good release from the package's PyPI history for <code>X.Y.Z</code> below:</p>
+<pre><code class="language-bash">pip install agent-framework==X.Y.Z \
+  --require-hashes -r requirements.txt
+</code></pre>
+<p>Add the hashes to your lockfile so that a re-tagged or re-uploaded release cannot silently replace what CI pulls.</p>
+<p><strong>3. Treat credentials as burned.</strong> Assume any machine that installed the malicious versions has exposed secrets. Rotate cloud access keys, tokens, and any credentials available to the process — Azure and AWS keys, CI tokens, package-index tokens, and local <code>.env</code> values. Do not wait for confirmation of exfiltration; the cost of rotation is far lower than the cost of a compromised cloud account.</p>
+<p><strong>4. Rescan your internal mirror.</strong> If your organization mirrors PyPI through an internal index, artifact repository, or caching proxy, purge cached copies of the affected package and rescan. A mirror can keep serving a version long after it has been withdrawn from the public index.</p>
+<p><strong>5. Harden the publishing path.</strong> For anyone who maintains packages, this is the moment to confirm that publishing tokens are scoped and short-lived, ideally via trusted publishing/OIDC rather than long-lived API keys, and that releases are signed.</p>
+<h4>Why vendor packages no longer carry a free pass</h4>
+<p>BleepingComputer's reporting frames this as a compromise of an official vendor distribution — the exact category of package most organizations implicitly trust. That trust assumption is now the vulnerability. Detection here sits with consumers: no advisory, no matter how promptly issued, substitutes for version checks, hash pinning, and routine credential rotation.</p>
+<p>For the open-source and IT community, the practical takeaway is that provenance on PyPI cannot be inferred from the package's name or publisher alone. Official status is a starting signal, not a guarantee — and first-party packages deserve the same scrutiny as everything else in your dependency tree.</p>
+<hr>
+<p>據 BleepingComputer 最先報導有關入侵事件，微軟官方 Agent Framework Python 套件有兩個惡意版本被發佈到 PyPI，內含的 payloads 旨在從開發者機器竊取雲端憑證及其他敏感資料。</p>
+<p>兩個被入侵的版本可於 BleepingComputer 的報導及該套件的 PyPI 發佈記錄中查悉；在就暴露範圍得出結論之前，請先以你自己的安裝記錄作核對。</p>
+<p>是次事件值得注意之處，與其說是其手法，不如說是其目標。Registry 投毒（registry poisoning）及 typosquatting 在 PyPI 上可謂每日都在發生；今次事件的特別之處，在於被投毒的 artifacts 源自第一方（first-party）供應商的命名空間。團隊通常會將大型供應商名下發佈的套件視為已經過審核，而攻擊者對此心知肚明——供應商身份正是開發者用來省卻深入檢查的信號，亦是攻擊者會理性選擇入侵的套件類別。</p>
+<h4>今日檢查清單</h4>
+<p><strong>1. 檢查自己是否受影響。</strong> 在每一個安裝 Python 依賴項的環境中執行以下指令——包括開發者手提電腦、CI runner 及 build container：</p>
+<pre><code class="language-bash">pip show agent-framework
+pip list | grep -i agent-framework
+</code></pre>
+<p>記下已安裝的版本，然後與原始報導中確認的兩個受影響版本作對比。同時要搜尋內部的 artifacts 及快取，而不只是全新安裝：</p>
+<pre><code class="language-bash">pip list --format=freeze | grep -i agent-framework
+</code></pre>
+<p>如果上述指令沒有任何輸出，請先對照該套件的 PyPI 項目頁面確認其 distribution 名稱，然後才可斷定自己未受影響。</p>
+<p><strong>2. 鎖定版本並加以驗證。</strong> 如果你的項目依賴此套件，請以精確匹配的方式鎖定至已知良好的版本，並優先採用 hash 驗證安裝。請以下方的 <code>X.Y.Z</code> 取代為該套件 PyPI 記錄中最後一個已知良好的 release：</p>
+<pre><code class="language-bash">pip install agent-framework==X.Y.Z \
+  --require-hashes -r requirements.txt
+</code></pre>
+<p>將 hashes 加入你的 lockfile，令被重新標籤或重新上載的版本無法悄然取代 CI 所拉取的內容。</p>
+<p><strong>3. 將憑證視為已洩露。</strong> 假設任何安裝過惡意版本的機器都已暴露秘密。輪替（rotate）雲端存取金鑰、token，以及該程序可用的任何憑證——Azure 及 AWS 金鑰、CI token、package index token，以及本地 <code>.env</code> 中的數值。不要等待資料外洩得到確認才行動；輪替憑證的成本遠低於雲端帳戶被入侵的代價。</p>
+<p><strong>4. 重新掃描內部 mirror。</strong> 如果你的機構透過內部 index、artifact repository 或快取 proxy 來鏡像 PyPI，請清除受影響套件的快取副本並重新掃描。即使某個版本已從公開 index 撤回，mirror 仍可能長期繼續提供該版本。</p>
+<p><strong>5. 加固發佈流程。</strong> 對於任何維護套件的人士來說，現在正是確認發佈 token 是否具備範圍限制（scoped）及有效期短的時候，最好透過 trusted publishing／OIDC 而非長效 API key 進行，並確認 release 已簽署。</p>
+<h4>為何供應商套件已不再享有免檢待遇</h4>
+<p>BleepingComputer 的報道將此事定性為官方供應商 distribution 被入侵——正是大多數機構在潛意識中信任的套件類別。這個信任假設如今正是漏洞所在。偵測責任在於使用方：無論多快發出的 advisories，都不能取代版本檢查、hash 鎖定及例行的憑證輪替。</p>
+<p>對開源及 IT 社群而言，實際的啟示是：PyPI 上的套件來源（provenance）不能單憑套件名稱或發佈者來推斷。官方身份只是一個起始信號，並非保證——第一方套件值得與你 dependency tree 中的其他一切接受同樣嚴格的審視。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/microsofts-agent-framework-pypi-package-compromised-to-steal-credentials/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
