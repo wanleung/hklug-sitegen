@@ -1,0 +1,28 @@
+Date: 2026-11-18 15:22:00
+Author: HKLUG Team
+Title: Wine's Wayland Driver Gains Cross-Process OpenGL Presentation, Unblocking CEF Apps
+Content:
+<p>Wine 11.23, due for release next week, will carry a merged change enabling remote OpenGL swapchain image presentation — closing a long-standing driver gap that left Chromium-derived applications such as CEF-based tools drawing blank windows under Wine's native Wayland driver. Phoronix reported the merge on the basis of the incoming Wine 11.23 changes. With the patch in, the affected applications display correctly on Wayland without falling back to X11 or XWayland.</p>
+<h4>Why a blank window is a structural problem</h4>
+<p>The underlying issue was never cosmetic. Under X11, processes have historically been permissive about sharing drawing surfaces with one another, so a sandboxed helper process could push frames into a window owned by another process more or less as a matter of course. Wayland deliberately does not work this way: each buffer is tied to the process and surface that owns it, and cross-process presentation must be handled explicitly through the compositor-owning process.</p>
+<p>Wine's Wayland driver had no explicit path for that cross-process swapchain presentation. The result was a class of bug that manifested as "works on X11, blank window on Wayland" — a problem that had to be chased application by application, because each affected program failed in the same way for the same structural reason. Chromium-derived rendering stacks, of which CEF-based embedded browser panels are the clearest case under Wine, run their rendering in sandboxed out-of-process components and therefore hit the gap hardest. Electron, for its part, inherits CEF's out-of-process rendering model, which suggests it may benefit from the same fix — though that remains untested here.</p>
+<p>In practical terms, this is the difference between a user concluding "Wine is broken on Wayland" and a fixed driver path handling the case once, for everyone. For developers, it removes a category of bug report that could not be fixed inside the application. Put plainly: it just works now, instead of opening a window and seeing nothing inside it.</p>
+<h4>What packagers and upgraders should do</h4>
+<p>The timing detail matters for anyone deciding whether to upgrade immediately or wait. Distributions that build from Wine's stable branch will not carry the change until it is backported or lands in a later point release; packages from other lines may pick it up sooner. Packagers who maintain Wine builds can revisit test matrices that previously assumed CEF-based user interfaces required XWayland, since that assumption no longer necessarily holds once the new presentation path is in the build.</p>
+<p>The merge also belongs to a broader pattern rather than standing alone: Wine's Wayland driver has been closing parity gaps with the X11 driver steadily, and cross-process presentation was one of the more stubborn structural items left.</p>
+<h4>Why it matters beyond desktop hobbyists</h4>
+<p>Wine is frequently used to run business software that has no Linux build, including a range of Electron-based internal and enterprise applications — dashboards, admin consoles and messaging clients that are common in IT environments across Hong Kong and elsewhere. Until now, those tools could appear to launch successfully under Wayland while showing an empty window, a failure mode that is difficult to diagnose for anyone troubleshooting from the outside — the application starts, the process is healthy, and nothing visible is wrong except that the window itself is empty. With the fix in Wine 11.23, that particular blind spot in the troubleshooting picture should disappear for affected applications.</p>
+<p>Source: <a href="https://www.phoronix.com/news/Wine-OpenGL-Cross-Proc-Render">Phoronix — Wine Merges Remote OpenGL Swapchain Image Presentation, CEF Now Works With Wayland</a></p>
+<hr>
+<p>Wine 11.23 將於下星期發布，屆時將包含一項已合併的改動，啟用遠端 OpenGL swapchain 影像呈現功能——這補上了長久以來的驅動程式缺口，該缺口一直令 Chromium 衍生的應用程式（例如基於 CEF 的工具）在 Wine 原生 Wayland 驅動程式下繪製出空白視窗。Phoronix 根據即將到來的 Wine 11.23 改動報道了此次合併。補丁加入後，受影響的應用程式可在 Wayland 下正確顯示，無需回落至 X11 或 XWayland。</p>
+<h4>為何空白視窗是一個結構性問題</h4>
+<p>底層問題從來不是表面瑕疵。在 X11 下，處理程序一向對彼此共享繪圖 surface 持寬鬆態度，因此一個處於沙箱中的輔助處理程序，基本上可以順理成章地將幀推送至另一個處理程序所擁有的視窗。Wayland 則刻意不以此方式運作：每個 buffer 都與擁有它的處理程序和 surface 綁定，跨處理程序呈現必須透過擁有 compositor 的處理程序明確處理。</p>
+<p>Wine 的 Wayland 驅動程式此前並無明確途徑處理這種跨處理程序 swapchain 呈現。結果是一類以「X11 正常、Wayland 空白視窗」形式出現的 bug——這類問題必須逐個應用程式追查，因為每個受影響的程序都是基於相同的結構性原因、以相同方式失效。Chromium 衍生的 rendering stack（其中基於 CEF 的嵌入式瀏覽器面板在 Wine 下是最明顯的例子）在沙箱化的 out-of-process 元件中執行渲染，因此受此缺口影響最深。Electron 則繼承了 CEF 的 out-of-process 渲染模型，這意味著它可能同樣受益於此修復——儘管此處尚未測試。</p>
+<p>就實際意義而言，這就是用戶得出「Wine 在 Wayland 上壞了」的結論，與一條修復後的驅動程式路徑一次性為所有人處理此情況之間的分別。對開發者而言，它消除了一類無法在應用程式內部修復的 bug 報告。簡單來說：它現在能正常運作，而不是打開視窗後發現裡面一片空白。</p>
+<h4>套件維護者及升級用戶應做的事</h4>
+<p>時間點的細節對於決定立即升級還是等候的人十分重要。從 Wine 穩定分支建置的發行版，要待該改動被 backport 或在較後的 point release 中加入後才會包含此更改；其他系列的套件可能更早取得。維持 Wine 建置的套件維護者可以重新檢視此前假設基於 CEF 的用戶介面必須依賴 XWayland 的測試矩陣，因為一旦新的呈現路徑加入建置，該假設便不再必然成立。</p>
+<p>此次合併也屬於一個更廣泛的趨勢，而非孤立事件：Wine 的 Wayland 驅動程式一直穩步縮小與 X11 驅動程式之間的差距，而跨處理程序呈現正是其中最頑固的結構性項目之一。</p>
+<h4>為何此事對桌面愛好者以外的人同樣重要</h4>
+<p>Wine 常被用來執行沒有 Linux 版本的商業軟件，包括一系列基於 Electron 的內部及企業應用程序——在香港及其他地區 IT 環境中常見的儀表板、管理控制台及通訊客戶端。在此之前，這些工具在 Wayland 下看似能成功啟動，實際卻顯示空白視窗；對於從外部排查問題的人來說，這種失效模式難以診斷——應用程式啟動了，處理程序運作正常，表面上沒有任何異常，唯獨視窗本身是空的。隨著 Wine 11.23 加入修復，受影響應用程式在排查過程中的這一特定盲點應會消失。</p>
+<p>來源：<a href="https://www.phoronix.com/news/Wine-OpenGL-Cross-Proc-Render">Phoronix — Wine 合併遠端 OpenGL Swapchain 影像呈現，CEF 現可在 Wayland 下運作</a></p>
+<p><a href="https://www.phoronix.com/news/Wine-OpenGL-Cross-Proc-Render" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
