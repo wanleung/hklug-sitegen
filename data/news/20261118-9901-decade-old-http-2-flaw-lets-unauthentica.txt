@@ -1,0 +1,34 @@
+Date: 2026-11-18 21:27:00
+Author: HKLUG Team
+Title: Decade-Old HTTP/2 Flaw Lets Unauthenticated Attackers Run Code on NGINX Servers (CVE-2026-123007)
+Content:
+<p>A security flaw buried in NGINX's HTTP/2 implementation for a decade can let unauthenticated attackers execute code on affected servers, and F5 has shipped fixes in versions 1.31.9 and 1.30.7, The Hacker News reported on 10 November.</p>
+<p>Tracked as CVE-2026-123007 and nicknamed "nginx2root," the bug has been present in NGINX's open-source code since version 1.9.5, released on 22 September 2015. That means essentially every release line deployed over the past ten years carries it — including many builds currently fronting production traffic.</p>
+<h4>Why this one matters</h4>
+<p>The threat model is about as bad as it gets for an edge server. Per F5's advisory as summarised by The Hacker News, an attacker needs no credentials, no valid session, and no prior foothold: if HTTP/2 is enabled on an exposed listener, the path to running code on the host is open. NGINX is one of the most widely deployed web servers and reverse proxies on the internet, and HTTP/2 has been close to a default configuration for years, so the attack surface is neither obscure nor niche.</p>
+<p>The age of the bug is arguably the bigger story. Ten years of affected versions means there is no obvious "safe floor" — a team cannot assume that anything newer than, say, 2018 is fine. It also undercuts a common comfort assumption in operations: that mature, heavily audited open-source code has already shaken out its serious defects. Late disclosure does not mean late introduction.</p>
+<h4>What to do now</h4>
+<p><strong>1. Inventory first.</strong> Run <code>nginx -v</code> across every instance — not just the obvious VMs, but containers, sidecar proxies, custom-compiled binaries, and appliances. With a decade-long affected range, a heuristic guess at what's "probably fine" will miss things.</p>
+<p><strong>2. Upgrade to 1.31.9 or 1.30.7.</strong> This is a patch-today item, not a maintenance-window item. Verify that downstream packages, vendored builds, and third-party distributions actually carry the fix rather than assuming the upstream release propagated automatically.</p>
+<p><strong>3. If you cannot patch immediately, turn off HTTP/2 on exposed listeners.</strong> This closes the exploit path with only a minor performance cost: clients negotiate down to HTTP/1.1 automatically, so no application changes are required. It is a realistic, cheap stopgap.</p>
+<p><strong>4. Check what sits behind the proxy.</strong> NGINX-based ingress controllers, load balancers, and distro packages ship on their own release cadence, separate from the upstream project. Any component that embeds or wraps NGINX needs to be verified individually, not assumed patched because the upstream advisory is out.</p>
+<p>Teams in Hong Kong running legacy proxies or inherited hosting stacks should note that distro mirrors and local hosting providers do not always carry the fixed versions immediately after an upstream release — check the actual package version available to you before treating an upgrade as complete. This is a general observation for anyone maintaining NGINX in the region, not a claim about any specific provider's rollout schedule.</p>
+<h4>The wider lesson for open-source operators</h4>
+<p>CVE-2026-123007 is a reminder that patch SLAs built around <em>disclosure</em> dates are incomplete. Bugs can sit latent for years before anyone reports them, which means vulnerability scanners keyed to known-CVE feeds will never flag a system running vulnerable code that has no published advisory yet. Asset inventory, configuration-level mitigations like disabling unused protocol features, and verified upgrade paths across the full dependency chain remain the durable defences.</p>
+<p>The fixes are available now in 1.31.9 and 1.30.7. The clock started the moment the advisory landed.</p>
+<hr>
+<p>一處深藏在 NGINX HTTP/2 實作中長達十年的安全漏洞，可讓未經認證的攻擊者在受影響的伺服器上執行代碼；F5 已發布修復版本 1.31.9 和 1.30.7。《The Hacker News》11 月 10 日報導了此事。</p>
+<p>漏洞編號為 CVE-2026-123007，代號「nginx2root」，自 2015 年 9 月 22 日發布的 1.9.5 版起便存在於 NGINX 開源程式碼之中。換言之，過去十年間部署的每一個版本系列幾乎都帶有這項缺陷——包括不少目前仍在承接生產流量的建置版本。</p>
+<h4>為什麼這件事重要</h4>
+<p>對一部邊緣伺服器而言，這個威脅模型幾乎是最壞的情況。根據 F5 安全公告（由《The Hacker News》整理），攻擊者不需要登入憑據、不需要有效 session（會話），也不需要事先取得立足點：只要對外監聽器（listener）啟用了 HTTP/2，通往主機執行代碼的路徑便已敞開。NGINX 是互聯網上部署最廣泛的網站伺服器與反向代理之一，而 HTTP/2 多年來一直接近預設設定，因此攻擊面既不冷門也不小眾。</p>
+<p>漏洞的年齡或許才是更大的故事。十年的受影響版本意味著並不存在明顯的「安全下限」——團隊不能假設 2018 年以後的版本便一定安全。這也動搖了營運工作中一個常見的安心假設：成熟、經大量審計的開源程式碼應該早已把嚴重缺陷震出殆盡。遲來的披露，不代表遲來的引入。</p>
+<h4>現在該做什麼</h4>
+<p><strong>1. 先盤點資產。</strong> 對每個實例執行 <code>nginx -v</code>——不只看明顯的虛擬機，還要涵蓋容器、邊車（sidecar）代理、自行編譯的二進位檔案，以及各式 appliance（一體化裝置）。在長達十年的受影響範圍下，靠「大概沒事」的直覺猜測必然會有遺漏。</p>
+<p><strong>2. 升級到 1.31.9 或 1.30.7。</strong> 這是「今天就補上」的事項，不是可以等維護窗口的項目。請確認下游套件、內嵌建置與第三方發行版確實帶上修復，而不是想當然認為上游版本會自動傳播開去。</p>
+<p><strong>3. 若無法立即修補，關閉對外監聽器上的 HTTP/2。</strong> 這能封住利用路徑，代價只有輕微的效能影響：用戶端會自動降級至 HTTP/1.1，不需修改任何應用程式。這是一個務實、成本低廉的應變措施。</p>
+<p><strong>4. 檢查代理後面的東西。</strong> 以 NGINX 為基礎的 ingress controller（入口控制器）、負載平衡器與發行版套件各有自己的發布節奏，與上游專案脫鉤。任何內嵌或包覆 NGINX 的元件都需要逐一驗證，不能因為上游公告出了就假設已修補。</p>
+<p>在香港營運舊有代理或繼承而來的託管架構的團隊要注意：發行版鏡像站與本地託管服務提供者未必會在上游發布後立即帶上修正版本——在把升級當作完成之前，先檢查你實際可取得的套件版本。這是給本地維護 NGINX 的人士的一般觀察，並非針對任何特定提供者的推出時間作出指控。</p>
+<h4>給開源系統維護人員的更深一課</h4>
+<p>CVE-2026-123007 提醒我們：以<em>披露</em>日期為基準的修補 SLA 並不完整。漏洞可能潛伏多年才有人回報，這代表以已知 CVE 資料源為基礎的漏洞掃描器，永遠不會標記出正在運行著尚無公告的漏洞程式碼的系統。資產盤點、設定層面的緩解措施（例如停用未使用的通訊協定功能），以及橫跨整條相依鏈、經過驗證的升級路徑，仍然是長久有效的防禦手段。</p>
+<p>修復版本 1.31.9 和 1.30.7 現已提供。時鐘在公告落地的那一刻已經開始倒數。</p>
+<p><a href="https://thehackernews.com/2026/11/10-year-old-nginx-http2-flaw-lets.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
