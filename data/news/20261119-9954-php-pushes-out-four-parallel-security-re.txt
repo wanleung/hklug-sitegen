@@ -1,0 +1,26 @@
+Date: 2026-11-19 16:14:00
+Author: HKLUG Team
+Title: PHP pushes out four parallel security releases covering critical RCE flaws
+Content:
+<p>The PHP Project has released security updates for four maintained branches simultaneously — PHP 8.5.13, 8.4.28, 8.3.37 and 8.2.36 — each carrying a set of security and bug fixes, including several fixes for critical vulnerabilities that could allow remote code execution, LWN.net reports.</p>
+<p>Rather than patching only the newest branch, the project shipped fixes across every line users are likely to run in production. The coordinated rollout across four mature branches at once is itself notable: backporting a fix to an older branch without breaking compatibility takes care, and releasing to all four lines on the same day suggests the maintainers judged the risk serious enough to justify the extra release work.</p>
+<p><strong>What the advisory says</strong></p>
+<p>According to LWN.net, the critical vulnerabilities addressed in the releases require either non-default configuration or uncommon setups to be exploitable. The specific CVEs are not enumerated in the summary; the project's changelogs for each version detail the affected components. The releases follow a pre-release announcement made on November 18, with the LWN.net report posted November 19, 2026 by jzb.</p>
+<p>Remote code execution flaws remain among the most severe classes of web-application vulnerability: an attacker who can trigger such a bug gains the ability to run code on the server handling the request. PHP is embedded in a large installed base of web servers, and the window between an advisory and the first exploit attempts is typically short.</p>
+<p><strong>What administrators need to do</strong></p>
+<p>Operators running any of the four affected branches should identify their current version with <code>php -v</code>, upgrade to the corresponding patched release, and restart their PHP-FPM pools or application containers. Deployments still running a version below 8.2 will not receive a patched build in this wave, since 8.2 is the oldest branch covered — for those installations, the release is a prompt to plan a migration rather than a routine version bump. Where a hosting provider manages the PHP runtime, administrators will need to confirm with the provider that the patched build is deployed. As with any point release, testing against a staging environment first is advisable, since even security-only updates can shift deprecation warnings or extension behaviour.</p>
+<p><strong>The open-source maintenance angle</strong></p>
+<p>Coordinating four parallel releases is expensive for a project to produce, and the PHP maintainers appear to have concluded that the risk of leaving the flaws unpatched outweighed the release overhead. The decision underscores a familiar tension in open-source infrastructure: the work of maintaining software used across a very large number of deployments falls to a small group of contributors whose resources do not grow in step with that installed base.</p>
+<p>Operators should treat the four releases as a single coordinated advisory and patch all affected systems rather than staging the rollout over an extended window.</p>
+<hr>
+<p>據 LWN.net 報道，PHP Project 同步為四個仍在維護的分支發布安全更新——PHP 8.5.13、8.4.28、8.3.37 及 8.2.36——每個版本均附帶一系列安全及錯誤修復，當中包括多個可導致遠端代碼執行的重大漏洞修復。</p>
+<p>項目並非只為最新分支打補丁，而是向所有用戶很可能在生產環境運行的版本線都送出了修復。一次協調四個成熟分支的同步發布本身已值得注意：在不破壞相容性的前提下 backport 到較舊分支需要格外小心，而同日向四條版本線同時發佈，顯示維護者認為風險嚴重程度足以證明額外的發佈工作是值得的。</p>
+<p><strong>安全公告內容</strong></p>
+<p>據 LWN.net 報道，本次發布所處理的重大漏洞，需要非預設配置或不常見的環境才可被利用。摘要中並未逐一列出相關 CVE；各版本的 changelog 則詳列了受影響的元件。此次發布之前，項目已於 11 月 18 日作出預發布公告，LWN.net 報告則由 jzb 於 2026 年 11 月 19 日發布。</p>
+<p>遠端代碼執行漏洞仍然屬於最嚴重的一類 Web 應用漏洞：能觸發此類漏洞的攻擊者，可在處理請求的伺服器上執行代碼。PHP 嵌入在大量的 Web 伺服器中，而安全公告與首次漏洞利用嘗試之間的時間窗口通常很短。</p>
+<p><strong>管理員應做的事</strong></p>
+<p>運行任何一個受影響分支的營運者，應以 <code>php -v</code> 確認目前版本，升級至相應的已修復版本，並重啟其 PHP-FPM pools 或應用 containers。仍運行 8.2 以下版本的部署在本輪不會獲得已修復的構建，因為 8.2 是今次涵蓋的最舊分支——對這些安裝而言，今次發布是促使其規劃遷移的提示，而非例行的版本升級。若由託管服務商管理 PHP runtime，管理員須向服務商確認已部署修復版本。與任何 point release 一樣，建議先在 staging 環境測試，因為即使是純安全更新也可能改變棄用警告或 extension 的行為。</p>
+<p><strong>開源維護的角度</strong></p>
+<p>協調四個並行發布對項目而言成本不菲，PHP 維護者看來已判定，讓漏洞懸而未修的風險高於發布本身的開銷。這一決定凸顯了開源基礎設施中一個熟悉的張力：維護在極大量部署中使用的軟件，這份工作落在一小群貢獻者身上，而他們的資源並不會隨安裝基數同步增長。</p>
+<p>營運者應把這四個版本視為一份統一的協調安全公告，修補所有受影響的系統，而非把發佈工作分散到較長的時間窗口內進行。</p>
+<p><a href="https://lwn.net/Articles/1108552/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
