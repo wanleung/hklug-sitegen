@@ -1,0 +1,32 @@
+Date: 2026-11-19 22:28:00
+Author: HKLUG Team
+Title: Gentoo issues combined PHP advisory covering several flaws, one with code-execution risk
+Content:
+<p>```</p>
+<p>Gentoo has published a security advisory covering multiple vulnerabilities in PHP, at least one of which could let a remote attacker run arbitrary code on an affected server. Issued as GLSA 202611-13 and posted to Gentoo's security portal, the notice bundles a set of separately identified defects rather than describing a single flaw.</p>
+<p>That packaging is the first thing worth understanding about the release. Gentoo's summary describes the scope only in general terms — "multiple vulnerabilities," worst case remote code execution — and points to the advisory itself for affected version ranges and upstream bug references. Administrators should read that page directly rather than work from second-hand summaries, because the individual flaws, their severity, and the fixed releases are all enumerated there.</p>
+<h5>A bundled advisory is easy to patch halfway</h5>
+<p>The advisory formally applies to PHP as packaged and shipped by Gentoo. The defects sit in the PHP runtime rather than in Gentoo's build or packaging, however, so deployments drawing PHP from elsewhere — distribution repositories, hosting control panels, or container images built on upstream binaries — may be exposed too. Those operators will need the equivalent notice from whichever vendor supplies their PHP, while the Gentoo release serves as a useful index of what has been fixed upstream.</p>
+<p>Bundled advisories carry a practical trap. An administrator who upgrades only after confirming a specific bug is resolved, or who patches against one named issue, may still be running a version vulnerable to the other flaws covered by the same GLSA. The reliable posture is to move to a version the advisory recognises as fully fixed, then confirm it.</p>
+<p>That consideration carries weight because PHP still underpins a large volume of websites, e-commerce front ends, and internal business applications. Remote code execution in a language interpreter sits at the top of the severity hierarchy for web-facing infrastructure: an attacker able to execute code on the host can read configuration files and database credentials, move laterally to other systems, or establish access that outlasts an ordinary restart.</p>
+<h5>What Gentoo users should do</h5>
+<p>First, identify which installed PHP slot the advisory covers and whether the fixed packages have landed in the tree. Deployments that pin an older slot, or that mask an upgrade to preserve application compatibility, need that decision re-evaluated against this release.</p>
+<p>Remediation follows the usual path: bring the system fully up to date so the rebuilt dependency graph picks up the patched packages, then restart PHP-FPM workers, web-server processes, and any long-lived CLI programs that loaded PHP at startup. Restarting is not optional — an updated package on disk does nothing for a process spawned before the upgrade.</p>
+<p>Administrators on Debian, Ubuntu, Red Hat-family systems, control-panel hosts, and containerised stacks should locate their vendor's equivalent advisory, and rebuild container images from a patched base rather than patching running instances in place.</p>
+<p>For internet-facing hosts, it is worth reviewing logs and exposed endpoints for signs of exploitation after patching, and checking configuration and secrets files for unauthorised access as a precaution against compromise that predates the fix.</p>
+<p>Gentoo's advisory page remains the source of truth for any deployment decision on Gentoo systems. Given the remote code execution risk, this is one to schedule ahead of the next maintenance window rather than squeezed into it.</p>
+<hr>
+<p>```</p>
+<p>Gentoo 已發布一項安全公告，涵蓋 PHP 的多個漏洞，其中至少一個可令遠端攻擊者在受影響的伺服器上執行任意代碼。該公告編號為 GLSA 202611-13，已上載至 Gentoo 的安全入口網站，內容將多項各自獨立確認的缺陷合併處理，而非描述單一漏洞。</p>
+<p>這種合併發布方式是理解是次公告時首先值得留意的一點。Gentoo 的摘要僅以概括方式說明範圍——「多個漏洞」，最嚴重情況可導致遠端代碼執行——並請讀者參閱公告本身以獲取受影響的版本範圍及上游錯誤編號。管理員應直接閱讀該頁面，而非依賴二手摘要，因為各項個別漏洞、其嚴重程度及已修復的版本均在該處詳細列明。</p>
+<h5>綜合公告容易令人只修復一半</h5>
+<p>該公告在形式上適用於 Gentoo 打包及發行的 PHP。然而，相關缺陷存在於 PHP 運行時環境（runtime）之中，而非 Gentoo 的建構或打包流程，因此從其他來源獲取 PHP 的部署——例如發行版套件庫、主機控制面板，或基於上游二進位檔案建構的容器映像——亦可能受到影響。這些營運商需向其 PHP 供應商索取相應公告，而 Gentoo 的是次公告則可作為上游已修復事項的有用索引。</p>
+<p>綜合公告存在一個實際上的陷阱。管理員若只在確認某一特定錯誤已獲修復後才升級，或僅針對其中一個已指名的問題進行修補，其系統仍可能運行著受同一份 GLSA 所涵蓋的其他漏洞影響的版本。可靠的做法是升級至公告確認已全面修復的版本，然後加以核實。</p>
+<p>這一點之所以重要，是因為 PHP 仍支撐著大量網站、電子商務前端及內部業務應用。語言解釋器中的遠端代碼執行，在對外開放的網絡基礎設施中位居嚴重程度層級之首：攻擊者若能在主機上執行代碼，便可讀取設定檔及數據庫憑證、橫向移動至其他系統，或建立可超越一般重啟而持續存在的存取途徑。</p>
+<h5>Gentoo 用戶應如何行動</h5>
+<p>首先，確認已安裝的哪個 PHP slot 屬於公告範圍，以及修復後的套件是否已進入 Portage 樹。固定使用舊版 slot、或為維持應用程式相容性而屏蔽升級的部署，需要就是次公告重新檢視相關決定。</p>
+<p>補救措施依循慣常途徑：將系統完全更新，令重新建構的依賴圖（dependency graph）取得已修補的套件，然後重啟 PHP-FPM worker、Web 伺服器進程，以及所有在啟動時載入 PHP 的長駐 CLI 程序。重啟並非可有可無——磁碟上已更新的套件，對在升級前已啟動的程序毫無作用。</p>
+<p>Debian、Ubuntu、Red Hat 系列系統、控制面板主機及容器化環境的管理員，應查找其供應商的相應公告，並從已修補的基礎映像重建容器映像，而非原地修補正在運行的實例。</p>
+<p>對於面向互聯網的主機，修補後值得檢視日誌及已暴露的端點，留意是否有遭利用的跡象，並檢查設定檔及金鑰檔案是否存在未授權存取，以防修補前已發生的入侵。</p>
+<p>Gentoo 的公告頁面仍是 Gentoo 系統上任何部署決定的權威依據。鑑於存在遠端代碼執行風險，是次更新應預先安排於下一個維護時段之前進行，而非硬塞入該時段之內。</p>
+<p><a href="https://security.gentoo.org/glsa/202611-13" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
