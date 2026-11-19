@@ -1,0 +1,76 @@
+Date: 2026-11-19 19:22:00
+Author: HKLUG Team
+Title: Code execution flaw among multiple nginx bugs flagged in Gentoo advisory GLSA 202611-11
+Content:
+<pre><code>
+Gentoo Linux has published Gentoo Linux Security Advisory GLSA 202611-11, covering multiple vulnerabilities in its packaged nginx — the most severe of which could let an attacker execute arbitrary code. Administrators running nginx from Gentoo's tree should treat this as a patch-now item. The advisory itself is the authoritative source for the individual CVE identifiers, affected version ranges, and fixed ebuild versions; consult it directly at security.gentoo.org rather than relying on secondary summaries before pinning or backporting.
+
+nginx sits at the network edge of most deployments, terminating TLS and routing traffic for web applications, APIs, and ingress layers. That positioning means code-execution bugs in the server warrant urgency regardless of whether public exploit code has surfaced yet; flaws in edge-facing services tend to attract rapid exploitation once details circulate.
+
+## Upgrade path
+
+The GLSA gives explicit upgrade targets for both of Gentoo's nginx tracks. For stable:
+
+```bash
+emerge --ask --oneshot --verbose &quot;&gt;=www-servers/nginx-1.30.7&quot;
+</code></pre>
+<p>For mainline:</p>
+<pre><code class="language-bash">emerge --ask --oneshot --verbose &quot;&gt;=www-servers/nginx-1.31.9&quot;
+</code></pre>
+<p>The critical second step — and the most commonly missed one — is restarting or gracefully reloading the service afterward:</p>
+<pre><code class="language-bash"># graceful reload (keeps existing connections draining)
+nginx -s reload
+# or restart the service via your init system
+</code></pre>
+<p>A patched binary on disk does nothing for long-lived worker processes still executing the old code. Until the workers are recycled, the running service remains exposed to whatever flaws the update addresses.</p>
+<h4>Scope: what this GLSA does and doesn't cover</h4>
+<p>The advisory applies to nginx <strong>as packaged by Gentoo</strong>. It is not a statement about every nginx build in the wild, and it should not be read as confirmation that Alpine-based images, Debian packages, or Docker base images are affected — or, for that matter, that they are fixed. Operators running nginx from any of those channels should verify status with their own distribution or image maintainer, check the upstream nginx security announcements, and confirm which version their container images actually ship.</p>
+<p>That verification matters more than it sounds. In containerised environments, the nginx serving traffic is frequently baked into a base image pulled months ago, and rebuilding an image is the only way to get the fix in place. In Kubernetes clusters, the same question applies to ingress controllers, which may bundle their own nginx build rather than the system package.</p>
+<h4>Recommended actions</h4>
+<ol>
+<li><strong>Inventory</strong> every nginx instance — bare metal, VMs, containers, and Kubernetes ingress controllers.</li>
+<li><strong>Determine provenance</strong> for each: is it a Gentoo ebuild, a distribution package, or a container image layer?</li>
+<li><strong>For Gentoo hosts</strong>, run the <code>emerge</code> command above for your track, then reload or restart the service and confirm the running version (<code>nginx -v</code>).</li>
+<li><strong>For other platforms</strong>, check with your maintainer or image publisher; do not assume this GLSA covers you.</li>
+<li><strong>Until patched binaries are confirmed live</strong>, reduce exposure where possible — firewall rules, network policy, or an upstream filtering layer can limit the reachable attack surface for an edge-facing service.</li>
+</ol>
+<p>Gentoo users can read the full advisory, including CVE identifiers and fixed ebuild versions, at <a href="https://security.gentoo.org/glsa/202611-11">security.gentoo.org/glsa/202611-11</a>.</p>
+<p>The broader lesson is one of process rather than any single bug: advisory-driven patching only works end-to-end when the service is actually reloaded, and knowing where every copy of a widely deployed edge server lives remains the prerequisite for responding to any disclosure quickly.</p>
+<hr>
+<pre><code>
+Gentoo Linux 已發布 Gentoo Linux 安全公告（Gentoo Linux Security Advisory，GLSA）202611-11，涵蓋其打包版本 nginx 中的多項漏洞，其中最嚴重者可令攻擊者執行任意代碼。管理員若正在 Gentoo tree 上運行 nginx，應將此視為即時修補事項。公告本身乃各項 CVE 編號、受影響版本範圍及已修復 ebuild 版本的權威來源；在固定版本（pinning）或反向移植（backport）之前，請直接查閱 security.gentoo.org，切勿倚賴二手摘要。
+
+nginx 位於多數部署架構的網絡邊緣，負責終結 TLS 並為 web 應用程式、API 及 ingress 層路由流量。此一位置意味著，伺服器的代碼執行漏洞無論是否已有公開漏洞利用代碼出現，均須緊急處理；面向邊緣的服務一旦漏洞詳情外傳，往往迅速遭到利用。
+
+## 升級途徑
+
+該 GLSA 對 Gentoo 兩條 nginx 版本線均列出了明確的升級目標。stable（穩定版）：
+
+```bash
+emerge --ask --oneshot --verbose &quot;&gt;=www-servers/nginx-1.30.7&quot;
+</code></pre>
+<p>mainline（主線版）：</p>
+<pre><code class="language-bash">emerge --ask --oneshot --verbose &quot;&gt;=www-servers/nginx-1.31.9&quot;
+</code></pre>
+<p>關鍵的第二步——亦是最常被忽略的一步——是其後重啟或以平滑方式重新載入服務：</p>
+<pre><code class="language-bash"># graceful reload (keeps existing connections draining)
+# （平滑重新載入，讓現有連線逐步排空）
+nginx -s reload
+# or restart the service via your init system
+# 或透過你的 init 系統重啟服務
+</code></pre>
+<p>磁碟上的已修補二進制檔案，對仍在執行舊代碼的長生命週期 worker 進程毫無作用。在 worker 被回收更替之前，運行中的服務依然暴露於更新所針對的各項缺陷之下。</p>
+<h4>範圍：此 GLSA 涵蓋與不涵蓋的事項</h4>
+<p>該公告適用於<strong>由 Gentoo 打包的</strong> nginx。它並非針對市面所有 nginx 構建版本的聲明，不應被理解為確認 Alpine 基礎鏡像、Debian 套件或 Docker 基礎鏡像受影響——同樣地，也不代表這些渠道已獲修復。透過上述任何渠道運行 nginx 的系統維護人員，應向各自的發行版或鏡像維護者核實狀態、查閱上游 nginx 安全公告，並確認其容器鏡像實際出貨的版本。</p>
+<p>此項查核的重要性超乎表面所見。在容器化環境中，對外提供流量的 nginx 經常被烘焙於數月前拉取的基礎鏡像之內，重新構建鏡像是落實修補的唯一途徑。在 Kubernetes 集群中，同樣的問題亦適用於 ingress controllers——它們可能捆綁自有的 nginx 構建版本，而非系統套件。</p>
+<h4>建議採取的行動</h4>
+<ol>
+<li><strong>清點</strong>每一個 nginx 實例——包括實體伺服器、虛擬機、容器及 Kubernetes ingress controllers。</li>
+<li><strong>查明每項實例的來源</strong>：它來自 Gentoo ebuild、發行版套件，還是容器鏡像層？</li>
+<li><strong>對 Gentoo 主機</strong>，按所屬版本線執行上述相應的 <code>emerge</code> 命令，隨後重新載入或重啟服務，並確認運行中的版本（<code>nginx -v</code>）。</li>
+<li><strong>對其他平台</strong>，請向維護者或鏡像發布者查詢；切勿假定此 GLSA 已涵蓋閣下的部署。</li>
+<li><strong>在確認修補後的二進制檔案已投入運行之前</strong>，盡可能降低暴露程度——防火牆規則、網絡政策或上游過濾層均可限制面向邊緣服務的可觸及攻擊面。</li>
+</ol>
+<p>Gentoo 用戶可於 <a href="https://security.gentoo.org/glsa/202611-11">security.gentoo.org/glsa/202611-11</a> 閱覽完整公告，當中包括 CVE 編號及已修復的 ebuild 版本。</p>
+<p>更廣泛的啟示在於流程而非任何單一漏洞：由公告驅動的修補只有在服務真正重新載入之時才能貫徹始終，而掌握每一處廣泛部署的邊緣伺服器所在位置，始終是迅速應對任何漏洞披露的先決條件。</p>
+<p><a href="https://security.gentoo.org/glsa/202611-11" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
