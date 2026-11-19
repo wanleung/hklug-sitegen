@@ -1,0 +1,32 @@
+Date: 2026-11-19
+Author: HKLUG Team
+Title: Polling API and Duration Class Land in PHP 8.6.0
+Content:
+<h3>Polling API and Duration Class Land in PHP 8.6.0</h3>
+<p>PHP 8.6.0 has been released, bringing a small batch of language and standard-library additions: a polling API, a new <code>clamp()</code> function, a <code>SortDirection</code> enum, and a <code>\Time\Duration</code> class. The release is recorded in PHP's <a href="https://www.php.net/archive/2026.php#2026-11-19-4">2026 release archive</a>, with the full change list in the <a href="https://www.php.net/ChangeLog-8.php#8.6.0">8.6.0 changelog</a> and feature notes in <a href="https://www.php.net/releases/8.6/en.php#features">"What's new in 8.6"</a>.</p>
+<h4>What's actually new in 8.6</h4>
+<p>The features themselves are modest but welcome.</p>
+<p>The <strong>polling API</strong> is the most structurally significant addition. The feature notes present it as a general polling mechanism; on its face that means PHP code can wait on multiple sources at once — a capability applications have historically had to approximate with custom loops or extensions. The exact scope is worth confirming against the feature page before anyone designs around it.</p>
+<p>The rest are ergonomic wins. <strong><code>clamp()</code></strong> replaces a recurring snippet for bounding a value within a range — long a favourite of helper libraries. The <strong><code>SortDirection</code> enum</strong> formalises what is almost universally passed around as a bare string or integer in sorting code. And <strong><code>\Time\Duration</code></strong> provides a standard representation for time spans, the kind of thing that third-party packages have filled for years.</p>
+<p>Individually, none of these changes how PHP programs are written. Collectively, they remove small, repeated bits of boilerplate and reduce reliance on helper packages for tasks the language now handles itself.</p>
+<h4>Compatibility and upgrade timing</h4>
+<p>The release notes cited here do not flag a breaking change that would force teams off 8.5 or earlier on day one. The practical calculus is instead the familiar one: what runs on your servers today, what your hosting provider actually offers, and how quickly downstream projects keep pace.</p>
+<p>Shared-hosting users are typically the last to receive a new PHP minor version, so 8.6.0 may lag upstream at a provider by weeks or months — and legacy applications face a different constraint, since frameworks, content management systems, and PHP extensions rarely certify a new runtime immediately. An upgrade that looks trivial on paper can stall on a single unmaintained extension or a CMS release that has not yet declared support.</p>
+<p>Whether an upgrade is urgent also depends on the patch status of the version you are already running rather than on anything shipping in 8.6.0. Administrators should review <a href="https://www.php.net/security.php">PHP's security advisories</a> for the versions in their estate instead of assuming that "latest" and "secure" are the same decision. Production environments are almost always better served by a staged test than by an immediate swap — and by waiting for an early patch release if early adopters surface compatibility regressions.</p>
+<p>For most teams, the sensible approach is to verify extension, framework, and CMS compatibility against 8.6.0, test in a non-production environment, and treat the upgrade as routine maintenance scheduled at the team's own pace. The value of the polling API in particular will become clearer as frameworks and libraries begin to adopt it; until then, its practical impact on most codebases will be limited.</p>
+<p><em>Source: <a href="https://lwn.net/Articles/1108555/">LWN.net</a>. PHP 8.6.0 released 19 November 2026; release details from <a href="https://www.php.net/archive/2026.php#2026-11-19-4">php.net</a>.</em></p>
+<hr>
+<h3>PHP 8.6.0 引入 Polling API 與 Duration 類別</h3>
+<p>PHP 8.6.0 已正式發布，帶來一小批語言及標準函式庫的新功能：polling API、新增的 <code>clamp()</code> 函式、<code>SortDirection</code> enum，以及 <code>\Time\Duration</code> 類別。此次發布已記錄於 PHP 的 <a href="https://www.php.net/archive/2026.php#2026-11-19-4">2026 發布存檔</a>，完整變更列表見 <a href="https://www.php.net/ChangeLog-8.php#8.6.0">8.6.0 changelog</a>，功能說明則載於 <a href="https://www.php.net/releases/8.6/en.php#features">"8.6 新功能"頁面</a>。</p>
+<h4>8.6 究竟新增了什麼</h4>
+<p>各項功能本身雖屬適度，但相當實用。</p>
+<p><strong>Polling API</strong> 是結構上最具意義的新增功能。功能說明將其描述為一般化的 polling 機制；字面上理解，即 PHP 程式碼可同時等待多個來源——此能力過往一直只能靠自訂迴圈或擴展（extension）來模擬。在據此設計之前，值得先核對功能頁面以確認其確切範圍。</p>
+<p>其餘則是使用體驗上的改善。<strong><code>clamp()``** 取代了將數值限制在特定範圍內的常用程式片段——這類片段一直是 helper 函式庫的常客。**</code>SortDirection<code>enum** 則將排序程式碼中幾乎普遍以裸字串或整數傳遞的參數予以正規化。至於 **</code>\Time\Duration`</strong>，則為時間跨度提供標準表示方式，這類需求多年來一直由第三方套件填補。</p>
+<p>單一而言，這些改動都不會改變 PHP 程式的編寫方式；整體而言，它們減少了一再重複的樣板程式碼，並降低對 helper 套件的依賴——這些任務如今語言本身已能處理。</p>
+<h4>相容性與升級時機</h4>
+<p>此處引用的發布說明並未指出會迫使團隊在第一天便脫離 8.5 或更早版本的重大變更（breaking change）。實際需要權衡的，仍是熟悉不過的問題：什麼能在你現有的伺服器上運行、你的主機服務商實際提供哪個版本，以及下游專案跟進的速度有多快。</p>
+<p>共享主機（shared hosting）用戶通常是最後才獲得新版 PHP 次版本的群體，因此 8.6.0 在服務商處可能較上游滯後數週至數月；而舊有應用程式則面對另一重限制——框架、內容管理系統（CMS）及 PHP 擴展（extension）很少會立即認證新 runtime。紙面上看似輕而易舉的升級，可能就卡在某個乏人維護的 extension，或一個尚未宣告支持的 CMS 版本之上。</p>
+<p>升級是否迫切，亦取決於你現行版本的修補狀態，而非 8.6.0 推出了什麼新功能。管理員應檢視其所處環境各版本的 <a href="https://www.php.net/security.php">PHP 安全公告</a>，而非想當然認為「最新」與「安全」是同一個決定。生產環境幾乎一律以分階段測試優於即時替換——若早期採用者發現相容性回歸（regression），等待隨後的早期修補版本亦較為穩妥。</p>
+<p>對大多數團隊而言，合理的做法是先針對 8.6.0 核實 extension、框架及 CMS 的相容性，在非生產環境進行測試，並把升級視為按自身節奏安排的例行維護。尤其是 polling API 的價值，將隨著框架及函式庫開始採用而逐步浮現；在此之前，它對大多數程式碼庫的實際影響仍屬有限。</p>
+<p><em>來源：<a href="https://lwn.net/Articles/1108555/">LWN.net</a>。PHP 8.6.0 於 2026 年 11 月 19 日發布；發布詳情來自 <a href="https://www.php.net/archive/2026.php#2026-11-19-4">php.net</a>。</em></p>
+<p><a href="https://lwn.net/Articles/1108555/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
