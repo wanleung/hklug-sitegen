@@ -1,0 +1,34 @@
+Date: 2026-11-19 18:27:00
+Author: HKLUG Team
+Title: PostgreSQL 19 lands online table repacking and a planner-advice extension
+Content:
+<p>The PostgreSQL Global Development Group has announced the release of PostgreSQL 19, headlining two features aimed squarely at operators who cannot afford maintenance windows: a <code>REPACK (CONCURRENTLY)</code> command for reorganising tables while workloads continue, and a new <code>pg_plan_advice</code> extension for managing query plan stability. LWN.net summarised the release as it was disclosed, pointing to the project's own announcement as the canonical source.</p>
+<h4>Rebuilding tables without pulling the plug</h4>
+<p>As background: table bloat — the accumulation of dead and scattered tuples that inflates storage and slows queries — has long forced database administrators into an awkward choice: rebuild the table during a low-traffic window, or accept degraded performance indefinitely. Community-maintained extensions such as <code>pg_repack</code> have historically handled the job outside core, scheduling the work around the business rather than removing the constraint.</p>
+<p><code>REPACK (CONCURRENTLY)</code> brings that capability into core PostgreSQL, letting an operator reorganise a table's physical layout without disrupting ongoing operations. For services running continuously — where "quiet hours" do not exist — the practical significance is a maintenance task that no longer requires coordinating downtime with application teams.</p>
+<p>As with any online rebuild approach generally, such operations can demand additional disk space while the new copy of the table coexists with the old one, so capacity planning still matters before kicking one off.</p>
+<h4>A channel for planner advice</h4>
+<p>PostgreSQL's query planner has historically made its own choices, and operators who wanted to nudge it toward a particular plan had limited options within the database itself. There is no first-class way to record planner guidance; teams have typically relied on community extensions such as <code>pg_hint_plan</code> or session-level workarounds to pin a plan after the fact — techniques that are easy to lose track of across restarts, connection pools, and multiple application teams.</p>
+<p>The new <code>pg_plan_advice</code> extension is positioned as a more structured way to influence plan stability and query performance, giving teams a first-party channel for recording planner guidance rather than depending on add-ons or session state.</p>
+<p>Beyond these two headline additions, LWN reported that PostgreSQL 19 also ships "a number of performance improvements." The project's release announcement carries the details of where those speed-ups land — reads, writes, concurrency, or particular workloads.</p>
+<h4>What it means for teams on older versions</h4>
+<p>PostgreSQL's yearly major-release cadence means a substantial upgrade window typically runs for several years, so teams running PostgreSQL 16, 17, or 18 are not immediately pressured to move. The decision point is whether online repacking or planner-advice tooling solves a problem you currently pay for in downtime scripts, third-party extensions, or firefighting.</p>
+<p><code>pg_upgrade</code> remains the standard path between major versions, and administrators should review the release notes for any changes affecting extensions, configuration defaults, or deprecated features before scheduling a migration. Environments where extensions are heavily used — including existing plan-hinting tooling — warrant a test run in staging first.</p>
+<p>For the open-source community, PostgreSQL 19 continues a pattern of folding operational pain points that the ecosystem had already solved through add-ons into the core distribution. That consolidation simplifies deployment for teams that prefer to minimise their extension footprint, while leaving the ecosystem room to focus on more specialised needs.</p>
+<p><strong>Sources:</strong> <a href="https://www.postgresql.org/about/news/postgresql-19-released-3449/">PostgreSQL Global Development Group announcement</a>, <a href="https://lwn.net/Articles/1108561/">LWN.net</a></p>
+<hr>
+<p>PostgreSQL 全球開發小組宣布正式發布 PostgreSQL 19，重點推出兩項針對無法承受維護時段的系統管理員的功能：在工作負載持續運行下重整表格的 <code>REPACK (CONCURRENTLY)</code> 指令，以及用於管理查詢計劃（query plan）穩定性的全新 <code>pg_plan_advice</code> 擴展。LWN.net 在消息公布時作出報道摘要，並指出項目本身的公告才是權威消息來源。</p>
+<h4>不必中斷服務即可重建表格</h4>
+<p>作為背景資料：表格膨脹問題——即失效及分散的 tuple 不斷累積，令儲存空間膨脹並拖慢查詢速度——長期以來令資料庫管理員陷入兩難，或者在低流量時段重建表格，或者無限期忍受效能下降。社群維護的擴展如 <code>pg_repack</code>，歷來都在核心之外處理這項工作，圍繞業務時間來安排任務，但並未真正消除限制。</p>
+<p><code>REPACK (CONCURRENTLY)</code> 將此能力帶入 PostgreSQL 核心，讓系統管理員可以在不中斷持續運行操作的情況下重整表格的物理配置。對於需要 7×24 不間斷運行、根本不存在「安靜時段」的服務而言，其實際意義在於：一項維護任務從此不再需要與應用團隊協調停機時間。</p>
+<p>與一般任何線上重建方式相同，此類操作在新舊表格副本並存期間可能需要額外磁碟空間，因此在啟動前容量規劃仍然至關重要。</p>
+<h4>提供計劃器建議的渠道</h4>
+<p>PostgreSQL 的查詢計劃器（query planner）一向自行作出選擇，系統管理員若想引導它採用特定計劃，可用的手段十分有限。資料庫本身並沒有一流的方式來記錄計劃器指引；團隊通常依賴 <code>pg_hint_plan</code> 等社群擴展，或透過 session 層面的變通辦法，在事後固定計劃——但這類技術很容易在重啟、連接池（connection pool）及多個應用團隊之間遺失或失控。</p>
+<p>全新的 <code>pg_plan_advice</code> 擴展定位為影響計劃穩定性及查詢效能的一種更結構化方式，為團隊提供一個由官方提供的渠道來記錄計劃器指引，而不必依賴附加組件或 session 狀態。</p>
+<p>除上述兩項重點新增功能外，LWN 報道 PostgreSQL 19 還包含「多項效能改進」。提速具體體現在哪些方面——讀取、寫入、併發，還是特定工作負載——詳情載於項目的版本發布公告。</p>
+<h4>對仍使用舊版本的團隊意味著什麼</h4>
+<p>PostgreSQL 每年發布一個主要版本的節奏，意味著一個重要的升級窗口通常會延續數年，因此使用 PostgreSQL 16、17 或 18 的團隊不會立即面臨升級壓力。決策關鍵在於：線上重整或計劃器建議工具，是否能解決你目前需要靠停機腳本、第三方擴展或「救火」來應付的問題。</p>
+<p><code>pg_upgrade</code> 仍是跨主要版本升級的標準途徑，管理員在安排遷移前應查閱 release notes，了解任何影響擴展、設定預設值或已棄用功能的變更。重度使用擴展的環境——包括現有的計劃提示工具——應先在 staging 環境進行測試運行。</p>
+<p>對開源社群而言，PostgreSQL 19 延續了一貫模式：將生態系統早已透過附加組件解決的營運維護痛點，收歸核心發行版。此類整合簡化了希望盡量減少擴展依賴的團隊的部署流程，同時為生態系統保留空間，繼續專注於更專業化的需求。</p>
+<p><strong>資料來源：</strong> <a href="https://www.postgresql.org/about/news/postgresql-19-released-3449/">PostgreSQL 全球開發小組公告</a>、<a href="https://lwn.net/Articles/1108561/">LWN.net</a></p>
+<p><a href="https://lwn.net/Articles/1108561/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
