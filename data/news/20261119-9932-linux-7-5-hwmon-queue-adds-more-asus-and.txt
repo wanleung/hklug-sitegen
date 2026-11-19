@@ -1,0 +1,40 @@
+Date: 2026-11-19 13:14:00
+Author: HKLUG Team
+Title: Linux 7.5 hwmon Queue Adds More ASUS and ASRock Motherboard Sensors
+Content:
+<p>A batch of patches covering additional ASUS and ASRock motherboards has been queued in the hardware monitoring subsystem's <code>hwmon-next</code> Git branch ahead of the Linux 7.5 kernel, according to Phoronix. For anyone running a homelab node, a self-hosted rack, or an on-prem server whose thermal telemetry currently falls back to generic or incomplete readings, the practical question is simple: will your board's sensors actually show up after you upgrade?</p>
+<p>That is the question this checklist answers — before you install 7.5, not after your dashboards go blank.</p>
+<p>The source item does not enumerate individual models, sensor ICs, or a board count; the definitive list will be visible once the merge window opens.</p>
+<h4>Why this matters beyond the patch list</h4>
+<p>Sensor support quietly determines whether an ops team can do its job. Without correct <code>hwmon</code> bindings, fan RPM, board voltages, and chipset temperatures either do not appear at all or are reported under the wrong labels — so alerting thresholds are never evaluated, or are evaluated against garbage. For fleet operators, a silent loss of thermal visibility costs far more than the few minutes spent verifying driver binding beforehand.</p>
+<p>There is also a hardware-longevity angle: correct sensor data lets you keep older boards in service with confidence, rather than replacing working hardware because a newer kernel stopped reporting its temperatures reliably.</p>
+<h4>Pre-upgrade checklist</h4>
+<p><strong>1. Check your current kernel first.</strong> Run <code>uname -r</code> and note your version and distribution kernel flavour. On an LTS or vendor kernel, the additions landing in 7.5 may not reach you for months — if at all. Your baseline now tells you whether this upgrade is even relevant.</p>
+<p><strong>2. Capture your existing readings.</strong> Run <code>sensors</code> and <code>sensors -A</code>, and snapshot <code>/sys/class/hwmon/hwmon*/</code> (chip name, <code>name</code>, <code>label</code>, <code>temp*_input</code>, <code>fan*_input</code>). Keep the output as your post-upgrade comparison point.</p>
+<p><strong>3. Identify your board model and revision.</strong> Sensors are frequently tied to a specific board revision or Super-I/O chip, not just the marketing name. Run <code>sudo dmidecode -t baseboard</code> for the exact model and revision, and note the monitoring IC if you can identify it. Coverage in <code>hwmon-next</code> can differ between revisions of the same product line.</p>
+<p><strong>4. Verify which driver currently binds.</strong> For each device under <code>/sys/class/hwmon</code>, inspect <code>device/driver</code> (or <code>readlink</code> it) to confirm that the appropriate platform or Super-I/O driver — ASUS WMI, a Nuvoton or Winbond Super-I/O driver, or similar — is bound, rather than the kernel falling back to a generic path.</p>
+<p><strong>5. Review <code>hwmon-next</code>, but treat it as indicative.</strong> The branch reflects what is <em>queued</em> for the merge window, not a guarantee. Contents can shift before 7.5 is finalised, so confirm against the actual release once it ships.</p>
+<p><strong>6. Audit labels, and test fan control separately.</strong> Prometheus or Zabbix rules key on <code>label</code> strings; renamed or newly exposed sensors can break existing queries. Fan control write access (<code>pwm*</code>) is a separate permission question from read-only temperature reporting — test it in a maintenance window, not production.</p>
+<h4>What to expect at release</h4>
+<p>The patches in <code>hwmon-next</code> indicate the direction of support for 7.5, but the final set of supported models and ICs should be verified against the released kernel. If your board does not appear immediately, check whether backports have landed for your distribution's kernel before concluding the hardware is unsupported.</p>
+<hr />
+<p><em>Source: Phoronix, "More ASUS &amp; ASRock Motherboards Seeing Sensor Monitoring Support With Linux 7.5."</em></p>
+<hr>
+<p>據 Phoronix 報道，一批涵蓋更多 ASUS 及 ASRock 主機板的補丁，已於 Linux 7.5 核心推出前排入硬件監控子系統的 <code>hwmon-next</code> Git 分支。對於正在運行 homelab 節點、自建 rack 或本地伺服器的用戶，若其溫度遙測數據目前只能回退至通用或不完整的讀數，實際問題只有一個：升級後，你的主機板感測器究竟會否真正顯示出來？</p>
+<p>這份清單正是要回答這個問題——在你安裝 7.5 之前，而非等儀表板一片空白之後。</p>
+<p>原始報道並未逐一列明型號、感測器 IC 或主機板數目；正式清單將會在 merge window 開啟後才可見。</p>
+<h4>為何這不只是一份補丁清單</h4>
+<p>感測器支援默默決定了營運團隊能否履行職責。沒有正確的 <code>hwmon</code> 綁定，風扇轉速、主機板電壓及晶片組溫度或者根本不會出現，或者以錯誤標籤呈報——以致告警閾值從未被評估，或依據垃圾數據作出評估。對機隊營運商而言，失去溫度可見性所造成的損失，遠遠超過事先驗證驅動綁定所花的幾分鐘。</p>
+<p>此外亦涉及硬件壽命問題：正確的感測器數據讓你有信心繼續沿用較舊的主機板，而不必因為較新核心不再可靠回報溫度便更換仍可正常運作的硬件。</p>
+<h4>升級前檢查清單</h4>
+<p><strong>1. 先查看你目前的核心。</strong> 執行 <code>uname -r</code>，記下版本及發行版核心類型。若你使用 LTS 或廠商核心，7.5 的新增內容可能要數月後才會到達你手上——甚至永遠不會。你目前的基線可告訴你這次升級是否與你相關。</p>
+<p><strong>2. 記錄現有的讀數。</strong> 執行 <code>sensors</code> 及 <code>sensors -A</code>，並快照 <code>/sys/class/hwmon/hwmon*/</code>（晶片名稱、<code>name</code>、<code>label</code>、<code>temp*_input</code>、<code>fan*_input</code>）。保留輸出作為升級後的比較基準。</p>
+<p><strong>3. 確認你的主機板型號及版本。</strong> 感測器往往與特定主機板版本或 Super-I/O 晶片掛鈎，而非只取決於市場名稱。執行 <code>sudo dmidecode -t baseboard</code> 取得準確型號及版本，並在可能的情況下記下監控 IC。<code>hwmon-next</code> 的覆蓋範圍在同一產品線的不同版本之間可能有所差異。</p>
+<p><strong>4. 驗證目前綁定的驅動。</strong> 就 <code>/sys/class/hwmon</code> 下的每個設備，檢視 <code>device/driver</code>（或以 <code>readlink</code> 查看），確認相應的 platform 或 Super-I/O 驅動——例如 ASUS WMI、Nuvoton 或 Winbond Super-I/O 驅動等——已正確綁定，而非讓核心回退至通用路徑。</p>
+<p><strong>5. 檢閱 <code>hwmon-next</code>，但只視為參考指標。</strong> 該分支反映的是已<em>排入</em> merge window 的內容，並非保證。在 7.5 定案前內容可能有所變動，因此待正式推出後請以實際版本再作確認。</p>
+<p><strong>6. 審核標籤，並另行測試風扇控制。</strong> Prometheus 或 Zabbix 規則以 <code>label</code> 字串為鍵；被改名或新曝光的感測器可能令現有查詢失效。風扇控制的寫入權限（<code>pwm*</code>）與只讀溫度回報是兩回事——請在維護時段測試，切勿在生產環境進行。</p>
+<h4>推出時預期的情況</h4>
+<p><code>hwmon-next</code> 中的補丁顯示了 7.5 支援的方向，但最終支援的型號及 IC 組合仍應與正式推出的核心核對。如果你的主機板未有即時出現，請先檢查你所用發行版的核心是否已合入 backport，然後才斷定硬件不受支援。</p>
+<hr />
+<p><em>來源：Phoronix，"More ASUS &amp; ASRock Motherboards Seeing Sensor Monitoring Support With Linux 7.5."</em></p>
+<p><a href="https://www.phoronix.com/news/Linux-75-More-ASUS-ASRock-HWMON" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
