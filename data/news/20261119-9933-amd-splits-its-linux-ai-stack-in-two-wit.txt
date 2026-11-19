@@ -1,0 +1,28 @@
+Date: 2026-11-19 13:09:00
+Author: HKLUG Team
+Title: AMD Splits Its Linux AI Stack in Two With New AIE Driver Submission
+Content:
+<p>AMD has posted a second Linux driver for its AI silicon — this one covering the AI Engine (AIE) IP block — opening a fresh mainline review cycle that runs alongside the existing AMDXDNA accelerator driver. Phoronix reported on Wednesday that the patch series has been sent to the kernel mailing lists for review, not merged, meaning nothing about its inclusion in an upstream release is settled at this stage.</p>
+<h4>Two drivers, two roles</h4>
+<p>The notable detail is not just that AMD submitted a driver, but that it submitted <em>another</em> one. The kernel already carries AMDXDNA, living under <code>drivers/misc/xdna</code>, which handles the Ryzen AI 300 series NPUs used in current laptops. The newly posted AIE driver targets a different piece of the puzzle: the AI Engine IP block itself — the array of tiles that underpins AMD's accelerator architecture.</p>
+<p>AMD is positioning the two to coexist rather than converge. Each is arriving with its own device tree bindings, firmware loading path, and user-space interface, which is a meaningful design statement: AMD is arguing that the two hardware domains are distinct enough to warrant separate stacks in the kernel tree.</p>
+<p>Whether kernel maintainers will buy that argument is the open question. Reviewers could accept the split-driver structure as-is, or push AMD toward a more unified stack — a decision that will play out on the mailing lists and could become the story's follow-up. AMD has not committed to either a long-term convergence plan or a permanent split.</p>
+<h4>What happens next, and when</h4>
+<p>Review is the beginning of the process, not the end. If the series clears discussion and is accepted, the driver would land some months out; distribution kernels would follow after that. In the interim, users who need AI Engine support today remain on AMD's out-of-tree packages — the prebuilt drivers AMD ships separately from the kernel, requiring manual installation and their own update cadence.</p>
+<p>For users who prefer stock or distribution kernels, the payoff lands precisely when their distro picks the driver up: at that point, Ryzen AI NPU support becomes out-of-box rather than a side-load. That shift is broadly relevant to IT professionals in Hong Kong and the wider region who run managed Linux fleets, though no regional adoption data has been published to quantify the impact.</p>
+<h4>An industry-wide move off out-of-tree</h4>
+<p>The submission also fits a wider pattern. AI accelerator vendors have increasingly treated out-of-tree modules as a liability rather than a shortcut: they complicate enterprise support, break on rolling-release upgrades, and lock users into vendor-specific packaging. Intel, for instance, has been shipping its NPU driver in mainline kernels for some time, giving Intel-based Linux machines head-of-class support for neural engine access without extra installs. AMD's two-driver approach reads partly as an attempt to close that gap — even if it does so with a more complicated structure than its competitor's single stack.</p>
+<p>For the open-source community, the immediate work is less glamorous: binding review, firmware interface scrutiny, and the perennial debate over where one driver should end and another begin.</p>
+<hr>
+<p>AMD 已為其 AI 晶片提交第二個 Linux 驅動程式——本次涵蓋 AI Engine（AIE）IP 模組——展開全新的主線（mainline）審核流程，與現有的 AMDXDNA 加速器驅動程式並行運作。Phoronix 週三報道，該 patch 系列已送往 kernel mailing lists 審核，尚未合併（merge），意味著在目前階段，能否納入上游（upstream）版本仍未有定案。</p>
+<h4>兩個驅動程式，兩種角色</h4>
+<p>值得注意的細節不單是 AMD 提交了一個驅動程式，而是它提交了<em>另一個</em>。kernel 內已有 AMDXDNA，位於 <code>drivers/misc/xdna</code>，負責處理現役手提電腦所用的 Ryzen AI 300 系列 NPU。本次提交的 AIE 驅動程式則針對版圖的另一部分：AI Engine IP 模組本身——即支撐 AMD 加速器架構的 tile 陣列。</p>
+<p>AMD 將兩者定位為並存而非融合。每個驅動程式各自附帶 device tree bindings、韌體載入路徑及 user-space 介面，這是一項意義重大的設計聲明：AMD 主張兩個硬件領域差異足夠大，值得在 kernel 樹中維護各自獨立的技術堆疊。</p>
+<p>Kernel 維護者是否接受這套說法，仍是未知數。審核者可能照單全收這種分拆式驅動結構，也可能要求 AMD 走向更統一的堆疊——此決定將在 mailing lists 上見分曉，並有機會成為事件的後續發展。AMD 既未承諾長遠的融合計劃，亦未表明會永久分拆。</p>
+<h4>接下來會怎樣，以及何時發生</h4>
+<p>審核只是流程的開始，而非終點。倘若該系列通過討論並獲接納，驅動程式約需數月後才會落地；發行版 kernel 則會隨後跟進。在此之前，現時需要 AI Engine 支援的用戶仍須依賴 AMD 的 out-of-tree 軟件包——即 AMD 獨立於 kernel 之外發佈的預建驅動程式，需要手動安裝並按其自身的更新節奏升級。</p>
+<p>對於偏好原廠或發行版 kernel 的用戶，回報將在所屬 distro 採納該驅動程式的那一刻出現：屆時 Ryzen AI NPU 支援將可開箱即用（out-of-box），毋須再以 side-load 方式安裝。這項轉變與香港及周邊地區管理 Linux 系統隊列的 IT 專業人士大致息息相關，惟目前尚未有地區性採用數據以量化其影響。</p>
+<h4>全行業告別 out-of-tree 的趨勢</h4>
+<p>是次提交亦符合一個更廣泛的業界模式。AI 加速器供應商愈來愈視 out-of-tree 模組為負累而非捷徑：它們增加企業支援的複雜度、在 rolling-release 升級時失效，並令用戶被鎖定於供應商專屬的封裝方式。以 Intel 為例，其 NPU 驅動程式已在主線 kernel 發佈一段時間，令 Intel 平台的 Linux 系統無須額外安裝即可獲得同級最佳的 neural engine 存取支援。AMD 的雙驅動程式方案，某程度上可視為填補該差距的嘗試——儘管其結構較對手的單一堆疊更為複雜。</p>
+<p>對開源社群而言，眼前的工作並不算光鮮：bindings 審核、韌體介面檢視，以及圍繞驅動程式應在何處終止、另一個應在何處開始的永恆爭論。</p>
+<p><a href="https://www.phoronix.com/news/AMD-AI-Engine-Linux-Driver" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
