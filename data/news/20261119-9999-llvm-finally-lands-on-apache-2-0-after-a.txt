@@ -1,0 +1,34 @@
+Date: 2026-11-19 22:22:00
+Author: HKLUG Team
+Title: LLVM Finally Lands on Apache 2.0 After a Decade-Long Paper Chase
+Content:
+<p>```</p>
+<p>After almost ten years of chasing down past contributors and auditing legacy code, LLVM's long-running effort to move its entire codebase to the Apache 2.0 licence with LLVM's patent exception is now effectively complete, Phoronix reported.</p>
+<p>The relicensing push began around 2017, when the project set out to retire its custom "LLVM licence" — a 3-clause BSD-style licence — in favour of Apache 2.0. Interim updates tracked the grind: a 2018 report noted the work was still underway, and by 2021 the project was still hunting for past contributors whose sign-off was needed. As 2026 draws to a close, Phoronix describes the effort as effectively finished, though the project itself has framed the status carefully rather than declaring every last file formally done.</p>
+<h4>What actually changed</h4>
+<p>The switch to Apache 2.0 matters less for its copyright terms — which are broadly similar to the old BSD-style licence — and more for what it adds: an explicit patent grant. Under Apache 2.0, contributors license their patent rights alongside their copyright, giving downstream users a defensive shield against patent claims arising from the code they receive. The old LLVM licence offered no equivalent protection, a gap that gave legal and compliance teams pause when LLVM and Clang were embedded in commercial products.</p>
+<p>For enterprise adopters — including organisations evaluating AI and compiler toolchains for procurement — that patent grant removes a real due-diligence obstacle. Apache 2.0 is also a fixture on virtually every corporate open-source approval list, which simplifies license scanning and SBOM (software bill of materials) workflows considerably. Rather than maintaining a bespoke exception process for the LLVM licence, compliance tooling can treat LLVM like any other Apache 2.0 dependency.</p>
+<p>The change also harmonises licensing across the Linux userland toolchain. Clang and LLVM now sit alongside GCC-adjacent projects, binutils, and kernel-adjacent tooling under a much smaller set of licence families, reducing the number of distinct obligations an integrator has to track.</p>
+<h4>The hard part was never the text</h4>
+<p>What made this relicensing take the better part of a decade was not the licence text itself but the paperwork. Because open-source copyright vests in individual contributors, each one had to be located and asked to relicense their contributions — or, where that was impossible, the code had to be identified and handled separately. CLA (contributor licence agreement) and DCO (Developer Certificate of Origin) practices had not been uniformly applied in LLVM's early years, which meant archaeology on mailing lists and commit histories.</p>
+<p>The lesson for other projects contemplating a similar move is stark: a retroactive relicensing is cheap to announce and expensive to execute. Establishing clear DCO or CLA enforcement from day one is far less painful than reconstructing consent a decade later.</p>
+<h4>What it does not change</h4>
+<p>A few caveats matter. First, the effort is described as "effectively complete," not formally finished — residual stragglers could still surface. Second, LLVM source code that has been vendored into other projects over the years remains under whatever licence it carried at the time of copying; a downstream copy does not retroactively become Apache 2.0 because upstream relicensed. Teams auditing vendored LLVM or Clang snapshots should check the actual file headers rather than assuming the current upstream terms apply.</p>
+<p>For Hong Kong IT professionals, the practical takeaway is straightforward: projects that statically link Clang-derived binaries or ship compiler tooling in commercial products can now lean on a standard, patent-granted licence — provided their own copies are verified against current upstream rather than legacy snapshots.</p>
+<p>According to Phoronix, the near-decade of effort is winding down as 2026 ends — a milestone for a project whose code underpins much of the modern Linux toolchain.</p>
+<hr>
+<p>```</p>
+<p>據 Phoronix 報道，在歷時近十年追尋過往貢獻者及審計舊有代碼之後，LLVM 將整個 codebase 轉用 Apache 2.0 授權條款（附 LLVM 專利例外條款）的長期工作，現已實質完成。</p>
+<p>這輪重新授權的工作約於 2017 年展開，當時項目著手淘汰自訂的「LLVM 授權條款」——一份三條款 BSD 形式的授權條款——改用 Apache 2.0。其間的進展一直緩慢：2018 年的報告指出工作仍在進行，到 2021 年項目仍在尋找必須取得簽署確認的過往貢獻者。隨著 2026 年步入尾聲，Phoronix 形容該項工作已實質完成，不過項目本身對進度的表述相當謹慎，並未宣告所有檔案均已正式處理完畢。</p>
+<h4>實際改變了甚麼</h4>
+<p>轉用 Apache 2.0 的意義，較少在於其版權條款——該條款與舊有 BSD 形式授權大致相若——而在於其新增內容：一份明確的專利授權（patent grant）。根據 Apache 2.0，貢獻者會連同其版權一併授予專利權利，令下游使用者獲得防禦性保障，以對抗源自其所接收代碼的專利申索。舊有 LLVM 授權並無等同保護，這一缺口曾令法律及合規團隊在 LLVM 和 Clang 嵌入商業產品時有所顧慮。</p>
+<p>對於企業採用者——包括正評估 AI 及 compiler toolchain 以作採購的機構——這份專利授權移除了一項實質的盡職調查障礙。Apache 2.0 幾乎是所有企業開放源碼核准清單上的固定項目，這亦大大簡化了 license scanning 及 SBOM（software bill of materials，軟件物料清單）流程。合規工具毋須再為 LLVM 授權維護專屬的例外處理程序，只須將 LLVM 視同其他任何 Apache 2.0 dependency 處理。</p>
+<p>這次變更亦統一了 Linux userland toolchain 的授權條款。Clang 和 LLVM 現與 GCC 相關項目、binutils 以及 kernel 相關工具一同納入為數少得多的授權族系之中，減少了系統整合者需要追蹤的獨立合規義務數目。</p>
+<h4>最困難的從來不是條文</h4>
+<p>令這次重新授權耗去近十年時間的，並非授權條文本身，而是文書工作。由於開放源碼的版權歸於個別貢獻者，每人都必須被尋獲並要求重新授權其貢獻；如屬不可能，則須將相關代碼識別出來另行處理。CLA（contributor licence agreement，貢獻者授權協議）及 DCO（Developer Certificate of Origin，開發者來源證明）的做法在 LLVM 早期並未一致執行，因此需要翻查 mailing lists 及 commit histories 進行「考古」。</p>
+<p>對其他考慮類似做法的項目而言，教訓十分鮮明：追溯性的重新授權，宣佈起來代價廉宜，執行起來成本高昂。從第一天起便建立清晰的 DCO 或 CLA 執行機制，遠比十年後才重建同意書來得輕鬆。</p>
+<h4>不會改變的事</h4>
+<p>有幾點需要注意。第一，該工作被形容為「實質完成」，並非正式結束——仍有殘餘個案可能日後浮現。第二，多年來被 vendored（內嵌複製）進其他項目的 LLVM 源碼，仍受其當年被複製時所附帶的授權條款規管；下游副本不會因上游重新授權而追溯變成 Apache 2.0。審核 vendored LLVM 或 Clang 快照的團隊，應檢查實際的檔案檔頭，而非假定現行上游條款適用。</p>
+<p>對香港 IT 專業人士而言，實質的啟示相當直接：以 static linking 連結 Clang 衍生二進位檔案，或在商業產品中捆綁 compiler tooling 的項目，現可依賴一份標準化、附專利授權的授權條款——前提是其自身的副本須與現行上游版本核實，而非沿用舊有快照。</p>
+<p>據 Phoronix 報道，這段接近十年的努力將隨 2026 年結束而落幕——對這個代碼支撐著現代 Linux toolchain 相當大一部分的項目而言，這是一個重要里程碑。</p>
+<p><a href="https://www.phoronix.com/news/LLVM-Re-Licensing-Complete" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
