@@ -1,0 +1,28 @@
+Date: 2026-11-19 14:03:00
+Author: HKLUG Team
+Title: The Management Interface Is the Attack Surface: Two Unauthenticated RCE Flaws in PAN-OS Under Active Exploitation
+Content:
+<h3>The Management Interface Is the Attack Surface: Two Unauthenticated RCE Flaws in PAN-OS Under Active Exploitation</h3>
+<p>On October 28, Palo Alto Networks confirmed that attackers are exploiting two PHP vulnerabilities — CVE-2026-109618 and CVE-2026-109619 — against PAN-OS management interfaces exposed to the internet. According to The Hacker News, both flaws allow anyone to execute arbitrary code on the web server without authentication, and the firewall was one of the early targets of the PHP2Shell campaign. The disclosure process itself also went awry; deployers should rely on the vendor's follow-up advisories to confirm patch timelines and the scope of impact.</p>
+<p>The case highlights a fact many network administrators would rather not face: a firewall admin console is, at its core, an internet-facing web application. The attack surface is not the packet-inspection engine but the layer of PHP code behind it. When the management interface is exposed directly to the public internet, your perimeter device has effectively opened an unlocked door for attackers.</p>
+<p>There are four priorities for IT administrators:</p>
+<ol>
+<li><strong>Apply patches immediately.</strong> Palo Alto's updates may roll out in phases — keep tracking official advisories to confirm patch progress for your models and versions.</li>
+<li><strong>Restrict management plane access.</strong> Place the management interface behind a VPN, jump host, or allowlist, and avoid exposing it directly to the public internet.</li>
+<li><strong>Enforce multi-factor authentication (MFA).</strong> Even before a patch is applied, MFA significantly raises the bar for unauthenticated attacks to succeed.</li>
+<li><strong>Isolate the management and data planes.</strong> Route management traffic over a separate channel so that a compromise at the web layer does not spill over into the forwarding path.</li>
+</ol>
+<p>The problem extends well beyond firewalls: switches, storage arrays, IP cameras, printers — any device with a built-in web management interface shares the same attack surface. They are long-lived, rarely updated, and often sit on core network segments, making them ideal footholds for lateral movement once compromised. Hong Kong readers assessing their own exposure should inventory web-managed devices still exposed to the internet or running outdated firmware, check vendor security advisories and HKCERT notices for affected models, and work through the checklist above item by item.</p>
+<hr>
+<h3>管理介面就是攻擊面：PAN-OS 兩個未驗證 RCE 漏洞已遭實際利用</h3>
+<p>Palo Alto Networks 於 10 月 28 日確認，駭客正在利用兩個 PHP 漏洞——CVE-2026-109618 與 CVE-2026-109619——攻擊暴露在互聯網上的 PAN-OS 管理介面。據 The Hacker News 報導，兩個漏洞都允許任何人未經驗證即可在 Web 伺服器上執行任意程式碼，而防火牆正是 PHP2Shell 攻擊行動的早期目標之一。披露過程亦出現紕漏，實作方應以原廠後續公告為準，確認修補時程與影響範圍。</p>
+<p>這個案例點出一個許多網絡管理者仍不願面對的事實：防火牆管理主控台，本質上就是一台對外開放的 Web 應用。攻擊面不在封包檢查引擎，而在它背後那層 PHP 程式碼。當管理介面直接暴露在公共網絡上，你的邊界設備等於替攻擊者開了一扇沒有門鎖的門。</p>
+<p>對 IT 管理員而言，當務之急有四項：</p>
+<ol>
+<li><strong>立即套用修補。</strong> Palo Alto 的官方更新可能分批推送，請持續追蹤後續官方公告，確認型號與版本對應的補丁進度。</li>
+<li><strong>收緊管理平面存取。</strong> 將管理介面限制在 VPN、跳板機或白名單之後，避免直接對公共網絡開放。</li>
+<li><strong>強制啟用多重認證（MFA）。</strong> 即使漏洞尚未修補，MFA 也能大幅提高未經驗證攻擊成功的門檻。</li>
+<li><strong>隔離管理平面與資料平面。</strong> 讓管理流量走獨立通道，避免一旦 Web 層失守即波及轉發路徑。</li>
+</ol>
+<p>這個問題的範圍其實比防火牆更大：交換器、儲存陣列、IP 攝影機、打印機等所有內建 Web 管理介面的設備，都共享同一種攻擊面——它們壽命長、更新少、常駐核心網段，一旦失守便成為攻擊者橫向移動的跳板。香港讀者若要評估自身風險，建議盤點仍暴露在互聯網上或韌體未更新的 Web 管理設備，查閱各廠商安全公告與 HKCERT 資訊，確認手上型號是否受影響，並按上述清單逐項檢視。</p>
+<p><a href="https://thehackernews.com/2026/11/everything-is-web-application-including.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
