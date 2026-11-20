@@ -1,0 +1,42 @@
+Date: 2026-11-20 05:29:00
+Author: HKLUG Team
+Title: Linux 7.5 Proposal Would Let Admins Disable /proc/kcore at Boot
+Content:
+<p>```</p>
+<p>A patch queued ahead of the Linux 7.5 merge window would give administrators a boot-time switch to block access to <code>/proc/kcore</code>, adding a narrow, opt-in hardening knob for a kernel interface that exposes whole-system memory to privileged processes. Phoronix, which covered the proposal, notes that kernels built with the standard <code>CONFIG_PROC_KCORE</code> option will continue to behave exactly as they do today — the patch only introduces a way to turn the interface off, and nothing changes unless an administrator deliberately asks for it.</p>
+<h4>What <code>/proc/kcore</code> actually is</h4>
+<p>First, a clarification worth making: <code>/proc/kcore</code> is not a core dump (核心轉儲). It is a procfs file that presents the kernel's entire physical memory address space as an ELF core-file-shaped virtual object, letting tools read live kernel and process memory without stopping the system.</p>
+<p>That capability is what makes it valuable — and what makes it a target. Access is gated behind <code>CAP_SYS_RAWIO</code>, so this is not a remote or unauthenticated attack surface. The realistic threat model is post-exploitation: a container escape, a compromised service account that has accumulated capabilities, or an attacker pivoting through a privileged daemon. For an intruder already inside the perimeter, <code>/proc/kcore</code> offers a single-read primitive for harvesting secrets, keys, and credentials scattered across memory — fast, and with a much lower forensic footprint than enumerating and reading every process's memory individually.</p>
+<h4>Lockdown already covers part of the ground</h4>
+<p>Readers familiar with kernel security will immediately ask: doesn't lockdown already handle this? It does. Linux's security lockdown mechanism in confidentiality mode — commonly triggered automatically by Secure Boot — already blocks <code>/proc/kcore</code> reads outright. The proposed patch is therefore a lighter-weight, targeted alternative: a way to remove this specific primitive on systems that want the control without accepting the broader implications of full lockdown mode.</p>
+<h4>The enable/skip decision</h4>
+<p>The practical question for administrators is whether the control earns a place in a hardening baseline:</p>
+<ul>
+<li><strong>Enable it</strong> if hosts run untrusted or semi-trusted workloads in containers, if privileged service accounts are exposed to application logic, or if your threat model includes lateral movement by an attacker with partial privileges — and if your incident-response runbooks do not depend on live memory acquisition from a running system.</li>
+<li><strong>Skip it (or defer)</strong> if your incident-response and debugging workflows rely on reading live kernel memory for triage, memory forensics, or tools built on interfaces like <code>drgn</code>. Disabling <code>/proc/kcore</code> removes a genuinely useful IR path; teams that keep it enabled should ensure their runbooks have an alternative for live memory capture — or accept that acquisition may require rebooting into a recovery environment.</li>
+</ul>
+<h4>Adoption, not availability, is the real story</h4>
+<p>The most important point for anyone reviewing this patch: an opt-in control that ships but is never enabled is functionally absent. The switch only does something when it is written into kernel command lines, provisioning templates, golden images, and configuration-management repositories. Security teams that read the changelog and assume coverage exists will be mistaken — the value of this patch will be decided in build pipelines, not in the merge window.</p>
+<p>There is also a timing caveat. The patch is still queued ahead of the 7.5 merge window, so the option's exact name, its semantics, and how it interacts with lockdown modes or sysctl controls may yet change. Administrators should wait for the merge before codifying any syntax into hardening baselines, and revisit the details once the code lands.</p>
+<h4>A broader trend</h4>
+<p>The proposal fits a pattern: debug-oriented kernel interfaces are increasingly receiving explicit boot-time opt-outs, following the precedent set by <code>lockdown=</code>. Rather than removing useful diagnostics, upstream appears content to ship them gated behind deliberate configuration — leaving the last mile, as always, to the people who build and provision the machines.</p>
+<hr>
+<p>```</p>
+<p>一項已排入 Linux 7.5 合併視窗（merge window）之前佇列的 patch，將為管理員提供一個開機時的開關，用以封鎖對 <code>/proc/kcore</code> 的存取，為這個會將全系統記憶體暴露予特權進程的 kernel 接口，增添一個範圍有限、需自行啟用（opt-in）的加固選項。報道該提案的 Phoronix 指出，以標準 <code>CONFIG_PROC_KCORE</code> 選項編譯的 kernel 將繼續如現狀運作 —— 該 patch 只是引入一個關閉該接口的方法，除非管理員主動要求，否則一切不會改變。</p>
+<h4><code>/proc/kcore</code> 究竟是什麼</h4>
+<p>首先有必要澄清：<code>/proc/kcore</code> 並不是 core dump（核心轉儲）。它是一個 procfs 檔案，以一個 ELF core-file 形狀的虛擬對象呈現 kernel 的整個實體記憶體地址空間，讓工具無需停止系統即可讀取運行中的 kernel 及進程記憶體。</p>
+<p>正是這項能力令它有價值 —— 亦正因如此，它成為攻擊目標。存取受 <code>CAP_SYS_RAWIO</code> 所控制，因此這並非遠端或未經身份驗證的攻擊面。實際的威脅模型是後利用（post-exploitation）階段：容器逃逸（container escape）、已累積多項 capabilities 的被入侵服務帳戶，或攻擊者透過特權 daemon 進行橫向移動（lateral movement）。對於已經進入防線內部的入侵者，<code>/proc/kcore</code> 提供單次讀取就能收割散布於記憶體中的秘密、密鑰及 credentials 的原語 —— 速度快，而且比逐一枚舉及讀取每個進程的記憶體，留下的鑑證痕跡（forensic footprint）低得多。</p>
+<h4>Lockdown 已覆蓋部分範圍</h4>
+<p>熟悉 kernel 安全的讀者會立即追問：lockdown 不是已經處理了這一點嗎？確實是。Linux 的 security lockdown 機制在機密性模式（confidentiality mode）下 —— 通常由 Secure Boot 自動觸發 —— 已經全面封鎖對 <code>/proc/kcore</code> 的讀取。因此，是次提案是一個更輕量、更具針對性的替代方案：為那些希望獲得此項控制權、但不想承受完整 lockdown 模式所帶來較廣泛影響的系統，提供移除這項特定原語的方法。</p>
+<h4>啟用與略過的取捨</h4>
+<p>管理員面對的實際問題是：這項控制是否值得納入加固基線（hardening baseline）：</p>
+<ul>
+<li><strong>啟用它</strong> —— 如果主機在容器中運行不受信任或半受信任的工作負載、如果特權服務帳戶會暴露於應用邏輯之中、又或者你的威脅模型包括具備部分特權的攻擊者進行橫向移動 —— 並且前提是你的事故應變手冊（incident-response runbook）並不依賴從運行中的系統即時擷取記憶體。</li>
+<li><strong>略過它（或延後決定）</strong> —— 如果你的事故應變及偵錯流程依賴讀取運行中的 kernel 記憶體來進行初步分類（triage）、記憶體鑑證，或使用建立於 <code>drgn</code> 等接口之上的工具。停用 <code>/proc/kcore</code> 會移除一條確實有用的 IR 途徑；保留啟用的團隊應確保手冊中有即時記憶體擷取的替代方案 —— 或接受擷取可能需要重啟進入 recovery 環境。</li>
+</ul>
+<h4>真正的關鍵在於採用率，而非是否有提供</h4>
+<p>任何審閱此 patch 的人最重要的一點：一個隨版本發布但從未啟用的 opt-in 控制，在功能上等於不存在。這個開關只有在被寫入 kernel command lines、provisioning 模板、golden images 及配置管理（configuration management）repositories 時才會發揮作用。只讀過 changelog 就假設已有覆蓋的安全團隊將會判斷錯誤 —— 這項 patch 的價值將在 build pipelines 中決定，而非在合併視窗之中。</p>
+<p>另有一個時序上的注意事項。該 patch 仍排在 7.5 合併視窗之前，因此選項的確切名稱、語義，以及它與 lockdown 模式或 sysctl 控制的互動方式，仍然可能改變。管理員應等待合併完成後，才將相關語法寫入加固基線，並在程式碼落地後重新檢視細節。</p>
+<h4>一個更廣泛的趨勢</h4>
+<p>該提案符合一個模式：面向偵錯的 kernel 接口正日益獲得明確的開機時停用選項，沿循 <code>lockdown=</code> 所建立的先例。上游（upstream）並非移除有用的診斷功能，而是滿足於將它們置於刻意配置的控制之下發布 —— 與一如既往一樣，最後一哩路由負責組裝及配置機器的人來完成。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.5-Restrict-proc-kcore" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
