@@ -1,0 +1,49 @@
+Date: 2026-11-20 15:26:00
+Author: HKLUG Team
+Title: LLVM Completes Eight-Year Relicensing: Which Audit and SBOM Records Compliance Teams Need to Update
+Content:
+<p>After eight years, LLVM's relicensing effort has officially come to an end. Kristof Beyls, a member of the project, posted a wrap-up summary to LLVM Discourse this week, declaring the work a success and closing out the long-running effort; LWN.net's report quotes from that post. Beyls notes that the project has been asking past contributors to relicense their work since 2018, and that new contributions have come in under the new terms since January 19, 2019 — the cut-off after which all incoming code landed under Apache-2.0 WITH LLVM-exception. He reports that, of all lines of code ever contributed to LLVM, over 99.5% are now covered by the new licence, too small in volume for copyright to apply, or no longer present in the repository. Contributors who never signed can still contact the project to have their code carry the appropriate SPDX licence identifier.</p>
+<p>For commercial teams building compilers, SDKs or runtime environments on top of LLVM, this is more than a project governance story — it directly affects how licence audits, SBOM entries and customer-facing compliance statements should be written.</p>
+<h4>What the Licence Change Actually Means</h4>
+<p>LLVM was previously offered under UIUC/NCSA, with MIT applying to some runtime libraries only; it now moves to Apache License 2.0 alongside the LLVM Exception. That exception is the clause commercial teams most need to understand. The exception's own wording — rather than anything stated in Beyls's post — is what sets out its scope: activities such as compiling, assembling and linking with LLVM fall outside the Apache 2.0 distribution obligations, while the patent grant is preserved. In practice, vendors shipping a commercial compiler or toolchain can set out a compliance path to legal counsel without necessarily having to release their product's source code. The precise scope still has to be read against the exception's own wording on a case-by-case basis, and should not be inferred from this report.</p>
+<p>That said, several common edge cases are easy to misread:</p>
+<ul>
+<li><strong>Distribution of standalone tools</strong>: if the deliverable is a self-contained tool rather than part of a compilation workflow, whether the exception covers it needs to be judged against the clause itself.</li>
+<li><strong>Vendored and third-party components</strong>: external code embedded in a project carries its own licence and does not change because LLVM's own licence changed.</li>
+<li><strong>Historic code in forks</strong>: branches based on older LLVM releases may still contain old licence files.</li>
+<li><strong>Gaps between upstream and downstream toolchains</strong>: the distribution version your team actually uses may not yet reflect the current licensing status.</li>
+</ul>
+<h4>Compliance Checklist</h4>
+<ol>
+<li><strong>Re-inventory LLVM-related entries in your SBOM</strong>: record the versions used, the licence labels, and whether the LLVM Exception has been correctly identified; entries for older versions should not simply be rewritten to the new licence.</li>
+<li><strong>Check licence statements issued to customers</strong>: if a contract or licence summary still cites MIT/UIUC-NCSA wording, confirm it matches the version actually delivered.</li>
+<li><strong>Distinguish "using LLVM" from "distributing LLVM components"</strong>: the obligations under Apache 2.0 with the exception differ in each case, and audit working papers should record them separately.</li>
+<li><strong>Spot-check for residual old licence files</strong>: even with the project's announcement, the completion state Beyls describes should be verified against your own vendored copies rather than inferred from a "relicensing wrapped" headline. The 99.5% coverage figure also implies a small residue of code outside the new licence — its origin and licensing status is worth tracing separately. LWN's excerpt of the post is partial; whether any old licence files remain should be settled against the full text of the forum post before drawing conclusions.</li>
+</ol>
+<h4>Why Eight Years Is the Lesson Worth Taking Away</h4>
+<p>Beyls's retrospective points to a clear lesson: a project that does not put a CLA (contributor licence agreement), a per-contribution sign-off process or an intellectual property policy in place at the start will pay heavily to retrofit one later — from contributors who can no longer be reached, to code that has to be rewritten. For Hong Kong and Asian teams assessing their open-source strategy, this governance lesson is more transferable than the licence text itself: IP governance should be established alongside the project, not after a problem surfaces.</p>
+<p>This report is also a useful general reference for local IT practitioners trying to understand the audit implications of toolchain licensing changes; sector-specific regulatory requirements should still be judged against the rules that apply to each case.</p>
+<p><em>Source: LWN.net, "Beyls: Wrapping up LLVM's relicensing effort".</em></p>
+<hr>
+<p>歷時八年，LLVM 專案的重新授權工作正式告一段落。專案成員 Kristof Beyls 本週在 LLVM Discourse 發表彙整貼文，宣布視此工作為成功完成，為這項長年的重新授權畫下句點；LWN.net 的報導引述了這篇貼文的內容。Beyls 指出，專案自 2018 年起便持續向過去的貢獻者請求重新授權，而自 2019 年 1 月 19 日起，新進入的貢獻一律以 Apache-2.0 WITH LLVM-exception 條款提交——該日期即為此一分界的截止點。他報告稱，在歷年向 LLVM 提交的全部程式碼行數中，超過 99.5% 已合計落入以下三種情形：由新授權覆蓋、因數量過少而未受版權保護，或已不再存於儲存庫之中。從未簽署的貢獻者仍可聯絡專案，為其程式碼加上相應的 SPDX 授權標識。</p>
+<p>對以 LLVM 為基礎建置編譯器、SDK 或執行環境的商業軟件團隊而言，這不只是專案治理新聞——它直接影響授權審計、SBOM 條目與交付給客戶的合規說明該如何撰寫。</p>
+<h4>授權條款變動的實質意義</h4>
+<p>LLVM 過去以 UIUC/NCSA 授權發布，MIT 僅適用於部分執行期函式庫；如今整體轉為 Apache License 2.0 搭配 LLVM Exception。這個例外條款是商業團隊最需要理解的部分。其適用範圍應以例外條文本身的措辭為準，而非 Beyls 貼文中的任何表述：按條文，編譯、組裝（assembling）及連結（linking）LLVM 等使用場景被排除在 Apache 2.0 的散布義務之外，同時保留專利授予。在實務上，交付商用編譯器或工具鏈的廠商，可據此向法務說明合規路徑，而不必然需要公開產品原始碼。確切的適用範圍仍須回到例外條文本身的措辭逐案判讀，不應由本篇報導推定。</p>
+<p>不過，以下幾種常見邊界情況最容易被誤讀：</p>
+<ul>
+<li><strong>獨立工具的散布</strong>：若交付物是可獨立運作的工具，而非編譯流程的一部分，例外是否涵蓋需按條文本身判斷。</li>
+<li><strong>vendored 與第三方元件</strong>：專案內嵌的外部程式碼各自帶有原授權，不會因 LLVM 本身改採新授權而改變。</li>
+<li><strong>分支中的歷史程式碼</strong>：基於舊版 LLVM 的 fork 可能仍含舊授權檔案。</li>
+<li><strong>上游與下游工具鏈的落差</strong>：團隊實際使用的發行版本，未必已同步至最新授權狀態。</li>
+</ul>
+<h4>合規檢查清單</h4>
+<ol>
+<li><strong>重新盤點 SBOM 中的 LLVM 相關條目</strong>：記錄所用版本、授權標示，以及 LLVM Exception 是否被正確識別；舊版本條目不應直接改寫為新授權。</li>
+<li><strong>對照交付客戶的授權聲明</strong>：若合約或授權摘要中仍引用 MIT/UIUC-NCSA 表述，需確認與實際交付版本一致。</li>
+<li><strong>區分「使用 LLVM」與「散布 LLVM 元件」</strong>：兩者在 Apache 2.0 加例外條款下的義務不同，審計底稿應分別留痕。</li>
+<li><strong>抽查殘留的舊授權檔案</strong>：即使專案已宣布完成，Beyls 所述的完成狀態仍應對自身 vendored 副本逐一核實，而不是僅憑「重新授權已收尾」的標題推定全數換畢。99.5% 的覆蓋率亦意味著仍有一小部分程式碼未納入新授權，其來源與授權狀態值得單獨追查。LWN 所摘錄的貼文內容有限，是否仍有舊授權檔案殘留，宜以論壇原文全文為準再下結論。</li>
+</ol>
+<h4>為何八年之久值得記取</h4>
+<p>Beyls 的回顧凸顯一個教訓：專案若在起步時未設立 CLA（貢獻者授權協議）、逐次簽核流程或知識產權政策，日後補設的成本極高——包括聯繫不到的歷史貢獻者，以及不得不重寫的程式碼。對正在評估開放源碼策略的香港及亞洲開發團隊而言，這項治理教訓比授權條文本身更具參考價值：知識產權治理應與專案同步建立，而不是等到問題浮現才補救。</p>
+<p>這篇報導亦可作為一般性參考，供本地 IT 從業人員理解工具鏈授權變動的審計影響；至於特定產業監管要求，仍應依各自適用的規範判斷。</p>
+<p><em>來源：LWN.net，〈Beyls: Wrapping up LLVM's relicensing effort〉。</em></p>
