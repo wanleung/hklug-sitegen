@@ -1,0 +1,60 @@
+Date: 2026-11-20 08:02:00
+Author: HKLUG Team
+Title: Unpatched Windows FastUnlock Technique Lets Locked PCs Launch Programs Without a Sign-In
+Content:
+<h3>Unpatched Windows FastUnlock Technique Lets Locked PCs Launch Programs Without a Sign-In</h3>
+<p>There is no patch, and no CVE has been assigned. That is the central fact security teams must plan around after a previously undocumented Windows technique, dubbed <strong>FastUnlock</strong>, was publicly disclosed earlier this week by researchers using the handles <strong>MSNightmare</strong> and <strong>Nightmare Eclipse</strong>, as reported by The Hacker News.</p>
+<p>FastUnlock allows someone with <strong>physical access</strong> to a locked Windows machine to start programs on that machine <strong>without signing in to an account</strong>. The session the attacker receives is not an administrator session — it carries only the privileges of a limited account. But with no update available from Microsoft, defenders cannot fall back on their usual "push the patch" reflex. Near-term defence has to come from endpoint policy, disk encryption and physical security instead.</p>
+<h4>What the technique does — and does not do</h4>
+<p>Two caveats matter, and both should travel with any internal briefing on this story.</p>
+<p>First, the precondition is physical possession of the device. This is not a remote, network-reachable exploit. The comparison to evil-maid attacks is illustrative; the source does not formally classify it that way. Either way, like shared-workstation abuse, it requires an attacker who can touch the keyboard — whether in an open-plan office, a hot-desking floor, an airport lounge or an unattended reception desk.</p>
+<p>Second, the resulting session is not administrator-level. A limited account cannot, by itself, reconfigure the machine or read protected credential stores. That constrains the blast radius — but it does not eliminate risk. A pre-authentication session can still stage files on disk, reach network resources over the machine's existing trust relationships, and set up persistence for later escalation. "No admin rights" is not the same as "no exposure."</p>
+<p>The absence of a patch is what makes this a policy problem rather than a patching problem. Until Microsoft issues guidance or an out-of-band fix, the standard vulnerability-management workflow has nothing to act on.</p>
+<h4>What enterprises should do now</h4>
+<p>Hong Kong IT teams running shared, desk-side or loosely supervised Windows endpoints can usefully treat this as a prompt to tighten controls that are worth having regardless of whether a FastUnlock patch ever ships:</p>
+<ul>
+<li>
+<p><strong>Lock down endpoint execution.</strong> Application allowlisting or execution control prevents arbitrary programs from launching in an unauthenticated session — this is the core capability FastUnlock confers. With no vendor fix available, restricting which binaries can run, and from where, is the most direct mitigation on the table.</p>
+</li>
+<li>
+<p><strong>Enforce full-disk encryption.</strong> BitLocker with a strong protector raises the cost of any physical-access attack, including this one, by ensuring data at rest is not simply readable once the machine is powered on and manipulated.</p>
+</li>
+<li>
+<p><strong>Harden physical security at the workstation.</strong> Cable locks, clean-desk policies, screen-lock verification and controlled access to shared or hot-desk areas address the precondition itself. A technique that requires the attacker to hold the device is only as strong as the physical controls around it.</p>
+</li>
+<li>
+<p><strong>Review pre-authentication exposure.</strong> Audit what a locked or limited session can reach — local file staging areas, mapped drives, network shares and machine-level trust relationships — and remove standing access that a limited session should not have.</p>
+</li>
+</ul>
+<h4>The open question</h4>
+<p>Security teams will be watching for two things: whether Microsoft issues official guidance or a patch, and whether detection rules keyed to FastUnlock's behaviour emerge in the absence of a CVE. Neither exists at time of publication. In the meantime, the honest summary is an uncomfortable one — a publicly documented technique, no fix on the horizon, and a defence that rests on layers most organisations already know they should have tightened.</p>
+<p><em>ThreatLocker is named in connection with the disclosure. At time of reporting, Microsoft had not issued a patch or CVE.</em></p>
+<hr>
+<h3>未修補的 Windows FastUnlock 技術：鎖定電腦無需登入即可執行程式</h3>
+<p>目前沒有補丁，也沒有分配 CVE。這是安全團隊在規劃防禦時必須圍繞的核心事實——一種此前並無公開文件記錄的 Windows 技術 <strong>FastUnlock</strong>，本週由使用 <strong>MSNightmare</strong> 和 <strong>Nightmare Eclipse</strong> 代號的研究人員公開披露，據 The Hacker News 報導。</p>
+<p>FastUnlock 允許任何擁有鎖定 Windows 電腦<strong>實體接觸</strong>的人，在<strong>無需登入帳戶</strong>的情況下於該機器上啟動程式。攻擊者獲得的並非管理員 session——它僅攜帶受限帳戶的權限。但在微軟沒有提供更新的情況下，防禦者無法依賴慣常的「推送補丁」反應。近期防禦必須來自 endpoint policy、磁碟加密和實體安全。</p>
+<h4>該技術能做什麼——不能做什麼</h4>
+<p>兩點注意事項至關重要，兩者都應隨任何關於此事的內部通報一同傳達。</p>
+<p>第一，前提是實體持有該裝置。這並非可透過網絡遠端利用的漏洞。與 evil-maid 攻擊的比較只是一個類比；來源並未正式將此手法歸入該類。無論如何，正如共用工作站濫用一樣，它要求攻擊者能夠觸及鍵盤——無論是在開放式辦公室、共用辦公樓層、機場休息室還是無人看管的接待處。</p>
+<p>第二，產生的 session 並非管理員層級。受限帳戶本身無法重新配置機器或讀取受保護的憑證儲存。這限制了影響範圍——但並未消除風險。一個 pre-authentication session 仍可在磁碟上暫存檔案、透過機器現有的信任關係存取網絡資源，並為後續提權設定持久化機制。「沒有管理員權限」不等同於「沒有暴露風險」。</p>
+<p>補丁的缺失正是這成為政策問題而非修補問題的原因。在微軟發布指引或帶外修復之前，標準漏洞管理工作流程沒有任何可執行的動作。</p>
+<h4>企業現階段應採取的措施</h4>
+<p>香港 IT 團隊若運行共用、桌面旁或監管鬆散的 Windows 終端機，可以將此視為一個契機，收緊無論 FastUnlock 補丁是否最終推出都值得具備的控制措施：</p>
+<ul>
+<li>
+<p><strong>收緊終端機執行控制。</strong> 應用程式 allowlisting 或執行控制可防止任意程式在未經驗證的 session 中啟動——這正是 FastUnlock 所賦予的核心能力。在尚無供應商修復方案的情況下，限制哪些二進位檔可以執行、以及從何處執行，是最直接可行的緩解措施。</p>
+</li>
+<li>
+<p><strong>強制執行全碟加密。</strong> 搭配強保護器的 BitLocker 能確保靜態資料在機器開機並遭人操作後不會被直接讀取，從而提高任何實體接觸攻擊（包括此次手法）的成本。</p>
+</li>
+<li>
+<p><strong>強化工作站實體保安。</strong> 纜繩鎖、整潔桌面政策、螢幕鎖定驗證，以及對共用工作區和共用辦公桌區域的出入管制，直接針對前提本身作出應對。一項要求攻擊者手持裝置的手法，其強弱取決於周遭的實體管控是否到位。</p>
+</li>
+<li>
+<p><strong>檢視 pre-authentication 暴露範圍。</strong> 審計鎖定或受限 session 能接觸到甚麼——本機檔案暫存區、對應磁碟機、網絡共用及機器層級的信任關係——並移除受限 session 不應擁有的長期存取權限。</p>
+</li>
+</ul>
+<h4>尚待解答的問題</h4>
+<p>安全團隊將密切關注兩件事：微軟是否會發布官方指引或修補程式，以及在沒有 CVE 的情況下，是否會出現針對 FastUnlock 行為特徵的偵測規則。截至本文刊出時，兩者皆未出現。在此期間，誠實的總結令人不安——一項已公開記錄的技術、看不到修復方案的蹤影，以及防禦仍然依賴大多數機構早已知道應該加強的各個層面。</p>
+<p><em>ThreatLocker 於此次披露中被提及。截至報道時，微軟尚未發布修補程式或 CVE。</em></p>
+<p><a href="https://thehackernews.com/2026/11/new-unpatched-windows-0-day-fastunlock.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
