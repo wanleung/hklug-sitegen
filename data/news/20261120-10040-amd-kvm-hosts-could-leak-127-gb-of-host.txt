@@ -1,0 +1,46 @@
+Date: 2026-11-20 13:23:00
+Author: HKLUG Team
+Title: AMD KVM Hosts Could Leak 127 GB of Host Memory to a Guest VM — Patch and Reboot
+Content:
+<p>A memory-handling flaw in KVM, the hypervisor that ships inside the Linux kernel, allowed researchers to read roughly 127 GB of a cloud server's memory from inside a virtual machine they created themselves on DigitalOcean, The Hacker News reported. The bug is tracked as CVE-2026-99312, and fixed kernels have already shipped.</p>
+<p>The practical stakes depend entirely on where the host is running. The flaw affects only hosts equipped with AMD processors <strong>and</strong> with nested virtualisation enabled — a configuration used to run VMs inside VMs. Intel hosts and AMD hosts running without nesting are out of scope, which means teams can prioritise a specific slice of the estate rather than remediating every KVM server in sight.</p>
+<p>On shared infrastructure, host memory is not empty space. It is the layer where other tenants' guests live, so a guest that can reach beyond its own allocation can, in principle, touch data belonging to other customers. The source article does not itemise what was actually exposed; session tokens, encryption keys, database pages and application state are illustrative candidates for what host memory can contain, not a confirmed list from this incident.</p>
+<p>Notably, no exploit code and no reports of active exploitation in the wild have surfaced for CVE-2026-99312. The research appears to be a controlled demonstration. That makes this a patching story, not an active-compromise story — but the size of the reachable buffer on multi-tenant hardware is reason enough not to defer it.</p>
+<p><strong>Why the patch is easy to miss</strong></p>
+<p>Because KVM is compiled into the kernel rather than installed as a standalone package, remediation is a kernel update <strong>followed by a reboot</strong>. Rolling out a patched image or installing new kernel packages does nothing for the running kernel until the host restarts — a step that regularly slips through maintenance slots on long-lived hypervisor nodes.</p>
+<p>Distributions have begun shipping fixed kernels, but advisory identifiers and backport timing vary by vendor. Treat your distribution's own advisory — not a generic patch-level check — as the source of truth before you mark a host compliant.</p>
+<p><strong>Self-check: is nested virtualisation actually on?</strong></p>
+<p>Before you decide how wide the blast radius is, confirm which hosts are exposed:</p>
+<pre><code>cat /sys/module/kvm_amd/parameters/nested
+</code></pre>
+<p>A value of <code>1</code> means nested virtualisation is enabled on that AMD host and the host falls inside CVE-2026-99312's scope. A value of <code>0</code>, or a missing <code>kvm_amd</code> module, means it does not. The setting is controlled by the <code>nested=1</code> option passed to the AMD SVM kernel module, so it is worth verifying across the whole AMD fleet rather than spot-checking one or two nodes.</p>
+<p><strong>Recommended order of work</strong></p>
+<ol>
+<li>Inventory hosts by CPU vendor and nested status, using the command above.</li>
+<li>Patch AMD hosts with nested virtualisation enabled first — kernel update plus reboot.</li>
+<li>Disable nested virtualisation (<code>nested=0</code>) on AMD hosts where the capability is genuinely unused; that removes the exposure without waiting for a maintenance slot.</li>
+<li>On any remaining unpatched multi-tenant AMD hosts, review access and hypervisor logs as a precaution. Nothing indicates compromise, but 127 GB of reachable host memory on shared hardware warrants the extra pass.</li>
+</ol>
+<p>For Hong Kong teams running private clouds or hosted KVM clusters, the exposure is narrow but the remediation cost is low: a scoped inventory, a reboot, and a configuration flag.</p>
+<hr>
+<p>據 The Hacker News 報道，Linux kernel 內建的 hypervisor KVM 存在一項記憶體處理漏洞，讓研究人員在 DigitalOcean 上自行建立的虛擬機內部，讀取了雲端伺服器約 127 GB 的記憶體。該漏洞編號為 CVE-2026-99312，修補 kernel 已經推出。</p>
+<p>實際風險高低完全取決於主機的運行情況。此漏洞只影響配備 AMD 處理器<strong>而且</strong>啟用了 nested virtualisation（巢狀虛擬化）的主機 — 即在 VM 內部再運行 VM 的配置。Intel 主機以及未啟用巢狀虛擬化的 AMD 主機不在影響範圍之內，這意味著團隊可以針對特定範圍的機群優先處理，無需為所有 KVM server 逐一修補。</p>
+<p>在共享基礎設施上，host memory 並非空白區域，而是其他租戶的 guest 所在的層級。因此，能夠超越自身配額範圍的 guest，理論上可以接觸到其他客戶的數據。原文並未逐一列明實際外洩的內容；session token、encryption key、資料庫頁面及應用程式狀態，只是 host memory 可能包含什麼的舉例，並非本次事件已確認的外洩清單。</p>
+<p>值得注意的是，CVE-2026-99312 目前既未出現 exploit code，亦未有野外實際利用（in-the-wild exploitation）的報告。該研究看來是一次受控的示範。這意味著本事件屬於需要儘快修補的項目，而非正在發生的入侵事件 — 但在多租戶硬件上可觸及的 buffer 規模，已足以令人不宜拖延處理。</p>
+<p><strong>為何這項修補容易被忽略</strong></p>
+<p>由於 KVM 是編譯進 kernel 之內，而非以獨立 package 安裝，修復工作涉及 kernel 更新<strong>以及隨後的重新開機</strong>。推出已修補的映像或安裝新 kernel package，在主機重新啟動之前，對正在運行的 kernel 毫無作用 — 而這一步驟在長時間運作的 hypervisor 節點的維護時段中經常被遺漏。</p>
+<p>各大發行版已開始提供修好的 kernel，但 advisory 編號及 backport 時間因廠商而異。在將主機標記為合規之前，應以你所用發行版自身的 advisory 為準 — 而非只作一般性的 patch level 檢查。</p>
+<p><strong>自查：巢狀虛擬化是否真的已啟用？</strong></p>
+<p>在決定影響範圍之前，先確認哪些主機受到影響：</p>
+<pre><code>cat /sys/module/kvm_amd/parameters/nested
+</code></pre>
+<p>數值為 <code>1</code>，表示該 AMD 主機已啟用巢狀虛擬化，該主機屬 CVE-2026-99312 的影響範圍。數值為 <code>0</code>，或 <code>kvm_amd</code> 模組不存在，則表示不受影響。此設定由傳予 AMD SVM kernel module 的 <code>nested=1</code> 選項控制，因此值得就整個 AMD 機群逐一驗證，而非只抽查一兩個節點。</p>
+<p><strong>建議的處理次序</strong></p>
+<ol>
+<li>使用上述指令，按 CPU 廠商及 nested 狀態建立主機清單。</li>
+<li>優先修補已啟用巢狀虛擬化的 AMD 主機 — kernel 更新加上重新開機。</li>
+<li>對確實未使用該功能的 AMD 主機停用巢狀虛擬化（<code>nested=0</code>），這樣毋須等待維護時段即可消除風險。</li>
+<li>對其餘尚未修補的多租戶 AMD 主機，謹慎起見檢視存取紀錄及 hypervisor 日誌。目前並無跡象顯示系統被入侵，但在共享硬件上有 127 GB 可觸及的 host memory，值得多做一次檢查。</li>
+</ol>
+<p>對於在香港營運私有雲或代管 KVM 叢集的團隊而言，暴露範圍雖然有限，但修復成本很低：一份有範圍界定的主機清單、一次重新開機，以及一個設定旗標。</p>
+<p><a href="https://thehackernews.com/2026/11/new-linux-kvm-flaw-cve-2026-99312-lets.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
