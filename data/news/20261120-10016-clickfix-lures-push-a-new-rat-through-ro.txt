@@ -1,0 +1,40 @@
+Date: 2026-11-20 10:29:00
+Author: HKLUG Team
+Title: ClickFix Lures Push a New RAT Through ROMULUS — and the Human Paste Step Is the Weak Link
+Content:
+<p>Security teams facing the latest ClickFix campaign have a rare advantage: the entire initial infection hinges on a victim manually pasting and running a command. That single human action is a gap defenders can close today — without waiting for fresh indicators of compromise (IOCs) or the name of the implant involved.</p>
+<p>Described by Blackpoint and covered by The Hacker News, threat actors are using a malware delivery platform called ROMULUS to push a previously undocumented remote access trojan (RAT) that shares similarities with CNCMachineRMS. The specific RAT will likely be superseded within weeks; the delivery technique will not.</p>
+<p><strong>How ClickFix bypasses conventional controls</strong></p>
+<p>ClickFix is a social-engineering technique rather than an exploit. Instead of weaponising a document or a vulnerability, the lure walks the user through a fake remediation step — typically presented as a captcha, security check, or error-resolution prompt — that instructs them to open a run dialog or terminal and paste a supplied command. The victim becomes the execution engine.</p>
+<p>That design sidesteps the controls most organisations rely on. Email gateways and sandboxes are tuned to catch exploits and malicious attachments; a command the user willingly executes carries no exploit signature and no file reputation. The endpoint sees a legitimate shell invocation initiated by an authenticated user.</p>
+<p><strong>ROMULUS: a delivery service, not a threat group</strong></p>
+<p>Blackpoint's research frames ROMULUS as a commoditised delivery service rather than a single actor. The platform distributes CNCMachineRMS and Legion Loader through separate, parallel chains while retaining two consistent tradecraft choices: ClickFix for initial execution and signed binary sideloading to make follow-on activity appear benign.</p>
+<p>The implication for defenders is significant. The payload recovered from an endpoint says less about who is behind an intrusion than the platform that delivered it. Tracking payload families in isolation will understate exposure; tracking delivery tradecraft — paste-to-run lures and anomalous DLL-load behaviour — captures the adversary's actual playbook.</p>
+<p>Public reporting has not yet described the new RAT's command set or persistence mechanisms, so behavioural coverage should not assume a specific implant.</p>
+<p><strong>A practical checklist for SOC teams in Hong Kong and elsewhere</strong></p>
+<ol>
+<li><strong>Rehearse the specific lure.</strong> Include paste-to-run prompts in phishing simulations. Generic "don't click suspicious links" training does not prepare users for an instruction that looks like a legitimate troubleshooting step.</li>
+<li><strong>Make non-compliance technically fail.</strong> Where feasible, restrict command execution through allowlisting and application control so that even if a user follows the lure, the pasted command cannot run. Training alone is a soft control; enforcement is a hard one.</li>
+<li><strong>Look past process reputation.</strong> Signed-binary sideloading is designed to look benign. Monitor for unusual child-process relationships and unexpected DLL loads from legitimate executables, rather than relying on vendor reputation scores.</li>
+<li><strong>Treat delivery infrastructure as the priority.</strong> Log and alert on the ClickFix execution pattern itself — shell invocations immediately following user interaction with a browser or captcha flow — so that a new payload arriving through the same platform is caught regardless of its name.</li>
+</ol>
+<p>The durable story here is the delivery technique. ROMULUS illustrates how far the malware-as-a-service economy has moved: initial access is now a subscription, and the implant is interchangeable. For security teams, that shifts the centre of gravity from IOC chasing toward hardening the one step attackers still need a human to perform.</p>
+<hr>
+<p>安全團隊應對最新 ClickFix 攻擊行動時，罕見地掌握一項優勢：整個初始感染過程，完全取決於受害者親手貼上並執行一條命令。這一個人動作正是防守方今日即可堵塞的漏洞 —— 無須等待新的入侵指標（IOC）或涉事 implant 的名稱曝光。</p>
+<p>據 Blackpoint 描述並由 The Hacker News 報導，威脅行為者正使用名為 ROMULUS 的惡意軟件投放平台，推送一種先前未有記錄的遠端存取木馬（RAT），其特徵與 CNCMachineRMS 有相似之處。該特定 RAT 很可能在數週內被取代；但投放技術不會。</p>
+<p><strong>ClickFix 如何繞過傳統防禦</strong></p>
+<p>ClickFix 是一種社交工程技術，而非 exploit。它不會將文件或漏洞武器化，而是引導用戶完成一個虛假的補救步驟 —— 通常偽裝為 captcha、安全檢查或錯誤解決提示 —— 指示用戶開啟 run 對話框或終端機，並貼上所提供的命令。受害者成為了執行引擎。</p>
+<p>這種設計避開了多數機構依賴的防禦機制。Email gateway 和 sandbox 的調校目標是攔截 exploit 和惡意附件；用戶自願執行的命令既沒有 exploit 特徵，也沒有檔案信譽。端點看到的只是一個由已認證用戶發起的正當 shell invocation。</p>
+<p><strong>ROMULUS：投放服務，而非威脅組織</strong></p>
+<p>Blackpoint 的研究將 ROMULUS 定義為商品化的投放服務，而非單一行為者。該平台透過各自獨立的平行鏈路分發 CNCMachineRMS 和 Legion Loader，同時維持兩項一致的 tradecraft 選擇：以 ClickFix 進行初始執行，以及使用 signed binary sideloading 令後續活動看似無害。</p>
+<p>這對防守方意義重大。從端點取回的 payload，所能透露的入侵者身份，遠少於投放它的平台。孤立追蹤 payload 族群會低估暴露程度；追蹤投放 tradecraft —— 貼上即執行的誘餌及異常的 DLL 載入行為 —— 才能掌握對手的真實 playbook。</p>
+<p>公開報導尚未描述新 RAT 的 command set 及持久化機制，因此行為監控不應假設特定 implant。</p>
+<p><strong>給香港及其他地區 SOC 團隊的實務清單</strong></p>
+<ol>
+<li><strong>演練特定誘餌。</strong> 在 phishing 模擬中加入貼上即執行的提示。泛泛的「不要點擊可疑連結」培訓，無法讓用戶準備好應對一條看似正當故障排除步驟的指令。</li>
+<li><strong>以技術手段確保用戶即使照做也無法執行。</strong> 在可行的情況下，透過 allowlist 及應用程式控制限制命令執行，令用戶即使跟隨誘餌，貼上的命令也無法運行。單靠培訓只是軟性控制；執行強制才是硬性控制。</li>
+<li><strong>超越 process reputation。</strong> Signed-binary sideloading 的設計就是要看似無害。應監控異常的子進程關係及來自正當執行檔的意外 DLL 載入，而非依賴廠商的信譽評分。</li>
+<li><strong>將投放基礎設施列為優先。</strong> 記錄並就 ClickFix 執行模式本身發出警報 —— 用戶與瀏覽器或 captcha 流程互動後隨即出現的 shell invocation —— 令透過同一平台到達的新 payload 無論名稱為何都能被攔截。</li>
+</ol>
+<p>此事件的持久啟示在於投放技術。ROMULUS 展示了 malware-as-a-service 的商業形態已演進至何種程度：initial access 已成為訂閱服務，而 implant 則可隨時替換。對安全團隊而言，這將重心從追趕 IOC 轉移至強化攻擊者仍然需要人手執行的那一個步驟。</p>
+<p><a href="https://thehackernews.com/2026/11/romulus-clickfix-attacks-deliver-rat.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
