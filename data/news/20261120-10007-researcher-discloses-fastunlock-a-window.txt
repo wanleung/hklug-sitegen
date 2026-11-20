@@ -1,0 +1,48 @@
+Date: 2026-11-20 10:30:00
+Author: HKLUG Team
+Title: Researcher Discloses FastUnlock, a Windows Lock-Screen Zero-Day Targeting Narrator
+Content:
+<p>A security researcher using the handle Chaotic Eclipse has published details of a new Windows zero-day, dubbed FastUnlock, that abuses the Narrator accessibility feature to get past the lock screen — and, according to the researcher, can also defeat BitLocker encryption. The flaw has no known fix at the time of writing.</p>
+<p>This article is based on Security Affairs' reporting of the disclosure; we have not independently reviewed Chaotic Eclipse's original write-up. Security Affairs reports that Chaotic Eclipse — who also operates under the aliases INFINITE NIGHTMARE, MSNightmare and Nightmare-Eclipse — released the vulnerability information publicly. This is a researcher-disclosed issue: there is no evidence at this stage of in-the-wild exploitation, active campaigning, or any weaponised use of the technique.</p>
+<h4>What FastUnlock does</h4>
+<p>At its core, FastUnlock targets the Windows lock screen, the barrier that stands between a physical machine and anyone attempting to sign in. The attack pivots through Narrator, the built-in screen-reader that remains reachable even when the workstation is locked — a design choice intended for accessibility, but one that also creates an interactive surface on an otherwise secured session.</p>
+<p>The most consequential claim in the disclosure is the BitLocker element. The researcher states that exploiting FastUnlock can bypass BitLocker encryption. One plausible explanation, though not a mechanism confirmed by the source, is that if the technique reaches a user session in which volume keys have already been unsealed, an attacker may be able to interact with the protected volume without needing to crack the key itself. That inference should be treated as analysis rather than as a demonstrated step in the exploit chain.</p>
+<h4>Why BitLocker configuration matters</h4>
+<p>For organisations running BitLocker-encrypted laptops, the practical takeaway is less about the specific bug and more about configuration assumptions. Many deployments rely on TPM-only pre-boot protection: in this mode, the Trusted Platform Module holds the drive's recovery key and unlocks the volume automatically as soon as the machine powers on, with no additional user-supplied factor required. In that configuration, full-disk encryption protects against stolen or powered-down hardware, but does comparatively little against an attacker who can reach a logged-on or lock-screen session.</p>
+<p>Two general hardening steps — our own advice, independent of the disclosure — are worth prioritising:</p>
+<ul>
+<li><strong>Require a pre-boot PIN or USB key in addition to the TPM.</strong> This ensures the volume cannot be unsealed without an additional factor, shrinking the window in which session-level tricks can interact with protected data.</li>
+<li><strong>Audit accessibility services on locked-down systems.</strong> On kiosks, shared workstations, and other controlled endpoints, consider disabling or restricting services such as Narrator where they are not required, reducing the interactive surface available from the lock screen.</li>
+</ul>
+<h4>What remains unconfirmed</h4>
+<p>Several critical details have not been independently verified against Chaotic Eclipse's original disclosure:</p>
+<ul>
+<li><strong>Affected Windows versions and builds</strong> have not been confirmed here.</li>
+<li><strong>Attack prerequisites</strong> — whether the technique needs physical access, particular account states, or other preconditions — remain unconfirmed.</li>
+<li><strong>Exploit maturity</strong> has not been assessed against the primary source.</li>
+<li><strong>Patch and CVE status:</strong> there is no confirmed Microsoft acknowledgment, CVE assignment, or patch timeline at time of writing. No vendor advisory has been verified.</li>
+</ul>
+<p>Vulnerability-specific responses should follow official vendor advisories as they are issued. Further details will be added to this article as they become available.</p>
+<hr>
+<p>一名化名為 Chaotic Eclipse 的安全研究員公開了一項全新 Windows zero-day 漏洞的細節，命名為 FastUnlock。該漏洞濫用 Narrator 輔助功能繞過鎖定畫面，據該研究員表示，更可破解 BitLocker 加密。截至撰稿時，此漏洞仍未有已知修補方案。</p>
+<p>本文基於 Security Affairs 對是次披露的報道撰寫；我們並未獨立審閱 Chaotic Eclipse 的原始技術文章。據 Security Affairs 報道，Chaotic Eclipse——同時亦使用 INFINITE NIGHTMARE、MSNightmare 及 Nightmare-Eclipse 等別名——已將漏洞資訊公開發布。這是一宗由研究員主動披露的漏洞事件：目前沒有證據顯示該漏洞已被實際利用、出現大規模攻擊活動，或該技術已被武器化運用。</p>
+<h4>FastUnlock 的運作方式</h4>
+<p>FastUnlock 的核心攻擊目標是 Windows 鎖定畫面，即阻隔實體機器與任何嘗試登入者之間的防線。攻擊透過 Narrator——Windows 內置的 screen reader，即使工作站已鎖定仍然可以操作——作為跳板。此設計原意是為了輔助功能（accessibility），但同時亦在原本受保護的 session 中開闢了一個可互動的介面。</p>
+<p>是次披露中最關鍵的說法涉及 BitLocker。研究員指出，利用 FastUnlock 可以繞過 BitLocker 加密。一個合理的推測——但並非來源已確認的機制——是如果該技術能進入磁碟區金鑰已解封（unsealed）的使用者 session，攻擊者便可能無需破解金鑰本身，即可與受保護的磁碟區互動。此推測應視為分析推論，而非 exploit chain 中已獲證實的步驟。</p>
+<h4>BitLocker 配置為何重要</h4>
+<p>對於使用 BitLocker 加密手提電腦的機構，實際啟示與其說在於特定漏洞本身，不如說在於配置假設。許多部署依賴僅以 TPM 實現的 pre-boot 保護：在此模式下，Trusted Platform Module 持有磁碟機的復原金鑰，機器一開機便自動解封磁碟區，無需使用者提供任何額外驗證因素。在這種配置下，全碟加密能防範被竊或已關機的硬件，但對能接觸已登入或鎖定畫面 session 的攻擊者，防護作用相對有限。</p>
+<p>以下兩項通用加固措施——屬本刊獨立建議，與是次披露無關——值得優先處理：</p>
+<ul>
+<li><strong>除 TPM 外，要求 pre-boot PIN 或 USB 金鑰。</strong>這可確保磁碟區無法在缺乏額外驗證因素的情況下被解封，縮小 session 層面技巧與受保護數據互動的機會窗口。</li>
+<li><strong>審核鎖定系統上的輔助功能服務。</strong>在 kiosk、共享工作站及其他受控終端上，如非必要，應考慮停用或限制 Narrator 等服務，以減少鎖定畫面可提供的互動介面。</li>
+</ul>
+<h4>尚未確認的事項</h4>
+<p>以下數項關鍵細節尚未根據 Chaotic Eclipse 的原始披露獨立核實：</p>
+<ul>
+<li><strong>受影響的 Windows 版本及 build</strong>尚未在此確認。</li>
+<li><strong>攻擊先決條件</strong>——該技術是否需要實體接觸、特定帳戶狀態或其他前提——尚未確認。</li>
+<li><strong>漏洞利用成熟度</strong>尚未根據第一手來源作出評估。</li>
+<li><strong>修補及 CVE 狀態：</strong>截至撰稿時，未獲 Microsoft 確認承認、未有 CVE 編號分配，亦未有修補時間表。任何廠商安全通告均未獲核實。</li>
+</ul>
+<p>針對特定漏洞的應對措施，應待官方廠商通告正式發出後才跟隨執行。隨後有進一步資料時，將會補充至本文。</p>
+<p><a href="https://securityaffairs.com/203537/hacking/chaotic-eclipse-releases-fastunlock-a-new-windows-zero-day-vulnerability.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
