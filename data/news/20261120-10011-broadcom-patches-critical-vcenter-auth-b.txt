@@ -1,0 +1,32 @@
+Date: 2026-11-20 05:24:00
+Author: HKLUG Team
+Title: Broadcom Patches Critical vCenter Auth Bypass Exploited as a Zero Day Since September
+Content:
+<p>Broadcom has released security updates for a critical VMware vCenter Server authentication bypass flaw that attackers have been exploiting as a zero day since September — leaving organisations exposed for roughly two months before a fix became available.</p>
+<p>The vulnerability, as described in BleepingComputer's report on the disclosure, allows unauthenticated remote callers to circumvent vCenter's authentication checks, with the potential to reach the management layer that governs enterprise virtualised environments. In practice, an attacker who reaches vCenter reaches a great deal behind it.</p>
+<p>Researchers tracking the activity have attributed the reported attacks to a China-linked actor. That attribution should be read with the usual caution — it reflects the assessment of the reporting and the underlying research, not a settled public verdict — but the operational takeaway does not depend on who is behind it: the flaw was in use in the wild before any patch existed, which by definition makes it a zero day.</p>
+<h5>Why vCenter draws fire</h5>
+<p>vCenter is the control plane for VMware estates. For organisations running large ESXi fleets, it is the single most sensitive management service they own — inventory, provisioning, and lifecycle operations all flow through it. That makes it a high-leverage target: compromising vCenter is often a shorter path to broad infrastructure control than pivoting workload by workload.</p>
+<p>Authentication bypass bugs are especially attractive because they skip the credential-stuffing and phishing steps entirely. A remote, unauthenticated path into the management console is exactly the kind of flaw that gets weaponised quickly once it becomes public, and the two-month exploitation history suggests it was already in use before defenders had anything to patch against.</p>
+<h5>What administrators should do now</h5>
+<p>Treat this as a patch-now item rather than one to fold into the next maintenance window, particularly for any vCenter instance reachable from outside a tightly controlled management network.</p>
+<p>Broadcom's bulletin is the definitive source for the CVE identifier, severity score, and the exact build numbers affected and fixed. Check it against your deployed builds, and if you are running an unsupported or end-of-life release, plan an upgrade path rather than waiting for a hotfix that will not arrive.</p>
+<p>While the update is rolling out, the following are worth doing anyway: restrict vCenter management interfaces to known admin networks, audit recent authentication logs for anomalous access, and confirm that any internet-exposed management endpoints have been pulled back behind VPN or bastion access. None of that substitutes for the patch, but it narrows the window for attackers working from public disclosure.</p>
+<h5>The wider lesson</h5>
+<p>This is the familiar pattern of a widely deployed management plane, a silent authentication flaw, and a public fix that trails active exploitation by weeks. For VMware shops — and Hong Kong enterprises running large virtualised estates are no exception as a general matter — the incident is a reminder that infrastructure management tools deserve the same patch urgency as internet-facing applications. Attackers have clearly made that calculation already.</p>
+<p><em>Details of the vulnerability, including CVE and affected versions, are set out in Broadcom's security advisory as summarised by BleepingComputer.</em></p>
+<hr>
+<p>Broadcom 已為一個嚴重的 VMware vCenter Server 驗證繞過缺陷發布安全更新——該缺陷自九月起被攻擊者作為 zero day（零日漏洞）利用，令機構在修補方案出爐前暴露風險約兩個月。</p>
+<p>根據 BleepingComputer 就此事披露的報導，該漏洞容許未經驗證的遠端呼叫者繞過 vCenter 的驗證檢查，並有機會觸及管理企業虛擬化環境的管理層。實務上，攻入 vCenter 即等於攻入其背後的大量資源。</p>
+<p>追蹤相關活動的研究人員已將所報告的攻擊歸因於與中國有關的攻擊者（actor）。此項歸因仍應審慎解讀——它反映的是報導及基礎研究的評估，而非已成定論的公開結論——但實際上的啟示並不取決於幕後是誰：該漏洞在任何修補程式出現之前已在野利用，按定義即屬 zero day。</p>
+<h5>為何 vCenter 成為攻擊目標</h5>
+<p>vCenter 是 VMware 環境的 control plane（控制平面）。對於運行大規模 ESXi 機群的機構而言，它是其擁有的最敏感管理服務——資產清單、佈建（provisioning）及生命週期操作全部透過它進行。這使它成為高槓桿目標：攻陷 vCenter 往往比逐個工作負載進行橫向移動（pivot）更快取得對整體基礎設施的廣泛控制。</p>
+<p>驗證繞過漏洞尤其具吸引力，因為它完全跳過了 credential stuffing（憑證填充）與釣魚兩個步驟。通往管理控制台的遠端未經驗證路徑，正是那類一旦公開便會迅速被武器化的缺陷，而長達兩個月的利用歷史顯示，在防守方取得任何可修補的對象之前，它已遭使用。</p>
+<h5>系統管理員現時應做的事</h5>
+<p>應將此事列為「立即修補」項目，而非排入下一個維護時段處理，尤其是任何可從受嚴格管控的管理網絡以外存取的 vCenter 實例。</p>
+<p>CVE 編號、嚴重性評分，以及受影響和已修補的確切 build 編號，均以 Broadcom 的安全公告為權威來源，請與已部署的 build 逐一核對；若正在執行不受支援或已達 end-of-life（EOL）的版本，請規劃升級路徑，而非等待永不推出的熱修補（hotfix）。</p>
+<p>在更新部署期間，以下各項同樣值得執行：將 vCenter 管理介面限制於已知的管理員網絡、審核近期驗證日誌以查找異常存取，並確認任何暴露於互聯網的管理端點已收回至 VPN 或 bastion 主機之後。這些都無法取代修補程式，但可收窄攻擊者利用公開披露資訊的時間窗口。</p>
+<h5>更廣泛的教訓</h5>
+<p>這是屢見不鮮的模式：一個部署廣泛的管理平面、一個靜默的驗證缺陷，以及一份比在野利用（active exploitation）遲了數週才出台的公開修補方案。對 VMware 用戶——總體而言，營運大規模虛擬化環境的香港企業亦不例外——此事提醒我們，基礎設施管理工具應享有與面向互聯網的應用程式同等的修補緊急程度。攻擊者顯然早已作出這一盤算。</p>
+<p><em>該漏洞的詳細資料，包括 CVE 及受影響版本，載於 Broadcom 的安全通告，並經 BleepingComputer 摘要報導。</em></p>
+<p><a href="https://www.bleepingcomputer.com/news/security/vmware-patches-vcenter-zero-day-exploited-in-attacks-since-september/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
