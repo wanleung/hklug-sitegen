@@ -1,0 +1,36 @@
+Date: 2026-11-20 23:34:00
+Author: HKLUG Team
+Title: Linux 7.5 Prepares to Lift a 1TB Kernel Ceiling That Has Capped Multi-GPU Buffer Mapping
+Content:
+<h4>The scenario</h4>
+<p>Picture a lab workstation running four 48GB GPUs — a common setup for fine-tuning or providing service for mid-size models. Total VRAM is 192GB, and the host may well have 256GB or more of system RAM. On paper, nothing is constrained. In practice, the kernel's graphics memory-management layer can hit a wall that has nothing to do with how much memory the machine actually has.</p>
+<p>The problem is a per-device accounting limit in the shared DRM core — the common code beneath every graphics driver — not a capacity shortage. According to Phoronix, a change set prepped by Intel for the upcoming Linux 7.5 cycle expands the mmap range size for GEM/TTM buffer objects in the kernel graphics drivers from 1TB up to 8TB.</p>
+<h4>Why 1TB breaks a four-GPU box</h4>
+<p>The key detail is that the 1TB figure is a fixed <em>offset range per DRM device file</em> — the window of file offsets a driver can hand out when mapping buffer objects into userspace. Each GPU exposes its own device file, but drivers managing multiple devices, or juggling many large buffers, can exhaust that window quickly.</p>
+<p>Run the numbers on a 4×48GB host: if a driver maps buffers that approach or exceed the ceiling across devices, it burns through available offsets even though RAM, VRAM, and virtual address space are all plentiful. The failure mode is offset exhaustion in that shared DRM core, not an out-of-memory condition — which is why it can catch operators off guard.</p>
+<h4>What the 7.5 change actually does</h4>
+<p>The patchset moves that per-device offset ceiling to 8TB inside the shared DRM memory-management code, so every driver built on GEM/TTM benefits at once rather than each one patching its own workaround.</p>
+<p>Importantly, this is infrastructure, not a user-visible feature. Userspace APIs do not change; applications, container runtimes, and CUDA/ROCm-style stacks see no new interfaces. What they gain is headroom — the ability for a single host to map large buffers across several high-VRAM GPUs without the driver running out of offsets.</p>
+<p>A point worth noting for reviewers: 8TB still fits comfortably within the 47-bit user virtual address space (128TB on x86-64), so the fix does not depend on 57-bit addressing or LA57-capable hardware. It works on ordinary current-generation servers.</p>
+<h4>Status, workarounds, and what to expect</h4>
+<p>This is a patchset heading into the Linux 7.5 merge window, not a shipped change. Engineers running production kernels today should not expect it in their current kernel, and there is no reason to hold deployments for it.</p>
+<p>Until the change is merged and propagates down to stable and longterm branches, the practical mitigations are the ones drivers already rely on: recycling mmap offsets aggressively, spreading buffers across separate device files or driver instances, and keeping mapped buffer counts per device within the safe range. These are workarounds, not fixes — the offset-recycling logic exists precisely to stretch the 1TB window.</p>
+<p>On timelines, changes accepted in a merge window ship with that cycle's release and then trickle down according to each distribution's update cadence; whether individual stable or longterm branches pick it up is a downstream maintainer decision. Teams on vendor kernels should ask their kernel vendor directly about backport plans rather than assuming the fix will arrive on any particular schedule.</p>
+<p>For anyone running multi-GPU AI infrastructure, the takeaway is simple: the constraint was never your hardware — it was a 1TB accounting window in shared kernel code, and Linux 7.5 is where it gets lifted.</p>
+<hr>
+<h4>情境</h4>
+<p>試想像一部實驗室工作站配備四張 48GB GPU——這是用於微調或提供中型模型服務的常見配置。顯示記憶體總容量為 192GB，而主機本身的系統記憶體亦可能達 256GB 或以上。表面上，一切都不受限制。實際上，Linux 核心的圖形記憶體管理層卻可能撞上一面牆，而這面牆與機器實際擁有多少記憶體毫無關係。</p>
+<p>問題在於共用 DRM 核心中每裝置的帳目限制——即所有圖形驅動程式底下的共用程式碼——而非容量不足。據 Phoronix 報導，Intel 為即將到來的 Linux 7.5 開發週期準備的一組變更，將核心圖形驅動程式中 GEM/TTM 緩衝物件（buffer object）的 mmap 範圍大小由 1TB 擴大至 8TB。</p>
+<h4>為何 1TB 會令四 GPU 主機出現瓶頸</h4>
+<p>關鍵細節在於，1TB 這個數字是<em>每個 DRM 裝置檔案的固定 offset 範圍</em>——即驅動程式在將緩衝物件映射（map）至使用者空間時，可以分發的檔案偏移量窗口。每張 GPU 各自對應自己的裝置檔案，但管理多個裝置、或需處理大量大型緩衝區的驅動程式，很快就會耗盡這個窗口。</p>
+<p>以一部 4×48GB 主機計算：若驅動程式跨裝置映射的緩衝區接近或超過上限，即使 RAM、VRAM 和虛擬位址空間都非常充裕，offset 仍會被消耗殆盡。失效模式是共用 DRM 核心中的 offset 耗盡，而非記憶體不足（out-of-memory）情況——這正是它令人措手不及的原因。</p>
+<h4>Linux 7.5 的變更實際做了什麼</h4>
+<p>這組 patchset 將每裝置的 offset 上限在共用 DRM 記憶體管理程式碼內提升至 8TB，令所有基於 GEM/TTM 的驅動程式一併受益，毋須各自加入繞行方案（workaround）。</p>
+<p>必須強調的是，這是基礎設施，而非使用者可見的功能。使用者空間 API 不會改變；應用程式、container runtime 以及 CUDA/ROCm 類型的軟件堆疊不會見到任何新介面。它們獲得的是緩衝空間（headroom）——單一主機能夠跨多張高顯示記憶體 GPU 映射大型緩衝區，而驅動程式不會出現 offset 耗盡的能力。</p>
+<p>審閱者值得注意的一點：8TB 依然完全符合 47 位元使用者虛擬位址空間（x86-64 上為 128TB）的範圍，因此這個修復不依賴 57 位元定址或支援 LA57 的硬件。它可在現今普通世代的伺服器上運作。</p>
+<h4>狀況、繞行方案及預期</h4>
+<p>這是一組即將進入 Linux 7.5 合併窗口（merge window）的 patchset，而非已發佈的變更。現時運行生產環境核心的工程師不應預期它會出現在目前的核心中，亦沒有理由為此延遲部署。</p>
+<p>在該變更正式合入並向下傳播至 stable 及 longterm 分支之前，實務上的緩解措施正是驅動程式現有的做法：積極回收（recycle）mmap offset、將緩衝區分散至不同裝置檔案或驅動程式實例，以及將每個裝置已映射的緩衝區數量維持在安全範圍內。這些是繞行方案，而非根本解決——offset 回收邏輯的存在正是為了延展 1TB 窗口的壽命。</p>
+<p>就時間表而言，在合併窗口獲接納的變更會隨該週期的版本發佈，之後再按各發行版的更新節奏逐步下放；個別 stable 或 longterm 分支是否採納，則由下游維護者決定。使用廠商核心的團隊應直接向核心供應商查詢 backport 計劃，而非假設修復會在某個特定時間到達。</p>
+<p>對任何運行多 GPU AI 基礎設施的人來說，重點很簡單：限制從來不在你的硬件——而是在共用核心程式碼中一個 1TB 的帳目窗口，而 Linux 7.5 正是解除此限制的地方。</p>
+<p><a href="https://www.phoronix.com/news/Linux-7.5-DRM-8TB-mmap" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
