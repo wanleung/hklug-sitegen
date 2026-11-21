@@ -1,0 +1,34 @@
+Date: 2026-11-21 14:24:00
+Author: HKLUG Team
+Title: One Bad OpenPGP Key Is Enough
+Content:
+<p>The GnuPG project has disclosed a critical memory-safety flaw in GPGME, the standard library that applications use to interface with GnuPG, warning that a crafted OpenPGP key with an unusually long user ID can trigger the bug. Reported by The Hacker News on 20 November, the flaw could allow an attacker to steal data from affected applications, and fixed versions have been released.</p>
+<p>The bug is tracked as CVE-2026-129975 and affects all software built against GPGME versions prior to 2.3.0. These identifiers and version boundaries are as disclosed by the GnuPG advisory via The Hacker News and have not been independently verified against the upstream advisory at the time of writing.</p>
+<p><strong>Why GPGME matters</strong></p>
+<p>GPGME (GnuPG Made Easy) is the programmatic layer sitting between applications and the GnuPG binary stack. It handles key management, encryption, decryption, and signing operations — placing it directly in the path of code that processes secret keys and plaintext. That position is what makes the flaw significant: the trigger is not a local command-line mishandling but a key itself. A maliciously crafted OpenPGP key — with an oversized user ID field — arriving from an untrusted source is enough to exercise the vulnerable code path inside any application linked against a pre-2.3.0 GPGME.</p>
+<p><strong>The keyring as attack surface</strong></p>
+<p>The practical implication is that imported keyrings are an attack surface. Developers and administrators who sign commits or packages routinely import keys from contributors, upstream projects, and third-party repositories. Until now, most hardening guidance has focused on key authenticity — fingerprints, Web of Trust, keyservers. This advisory adds a second dimension: the structure of the key data itself can be hostile. Importing a key before validating where it came from may be enough to put an application at risk.</p>
+<p><strong>Remediation checklist</strong></p>
+<ol>
+<li><strong>Inspect <code>libgpgme</code>, not <code>gpg</code>.</strong> A current <code>gpg</code> binary version says nothing about the linked GPGME library. GPGME is often bundled indirectly through distribution packages, language bindings, or static linking, so check the actual <code>libgpgme</code> version on each system — <code>dpkg -l libgpgme*</code> or <code>rpm -q gpgme</code> are quick starting points.</li>
+<li><strong>Upgrade to GPGME 2.3.0 or later</strong> wherever the upstream package is available.</li>
+<li><strong>Track vendor advisories, not just upstream version strings.</strong> Long-term-support distributions frequently backport security fixes without bumping the package version number, so an installation reporting an older GPGME version may already be patched — or may not. Distributor security notices are the reliable signal.</li>
+<li><strong>Restart long-running services after patching.</strong> Daemons retain the old library code in memory until they are relaunched; applying the package update alone will not remove the exposure from a running process. This is the step most often missed.</li>
+</ol>
+<p>The GnuPG project has released fixed versions, and the window between disclosure and patch availability is narrow — but the distributed nature of GPGME means remediation will lag in practice. For teams whose build pipelines or signing infrastructure depend on OpenPGP, checking the linked library version now is the fastest way to determine exposure. More broadly, the advisory is a reminder that anyone running signing or verification workflows should treat the key material they import as untrusted input, not just as objects to authenticate.</p>
+<hr>
+<p>GnuPG 項目披露了 GPGME 中一項嚴重的 memory safety 漏洞。GPGME 是應用程式用來與 GnuPG 介接的標準 library，該項目警告，一把經人為構造、user ID 異常冗長的 OpenPGP 金鑰即可觸發此漏洞。漏洞由 The Hacker News 於 11 月 20 日報道，攻擊者或可藉此從受影響的應用程式中竊取資料，修復版本現已發布。</p>
+<p>該漏洞編號為 CVE-2026-129975，影響所有基於 2.3.0 之前版本 GPGME 編譯的軟件。上述編號及版本界線乃 GnuPG 透過 The Hacker News 發出的公告所披露，截至本文撰寫時並未與 upstream 公告獨立核對。</p>
+<p><strong>GPGME 為何重要</strong></p>
+<p>GPGME（GnuPG Made Easy）是介乎應用程式與 GnuPG binary stack 之間的程式化層（programmatic layer），負責處理金鑰管理、加密、解密及簽署操作——正處於處理 secret key 及 plaintext 的代碼路徑之上。正因如此位置，該漏洞才顯得至關重要：觸發方式並非本地 command line 的操作失誤，而是一把金鑰本身。一把經人為構造、user ID 欄位超標的惡意 OpenPGP 金鑰，只要來自不可信來源，便足以在任何連結了 2.3.0 之前版本 GPGME 的應用程式中觸發有漏洞的代碼路徑。</p>
+<p><strong>keyring 作為攻擊面</strong></p>
+<p>實際影響在於，匯入的 keyring 本身就是一個 attack surface。負責簽署 commits 或軟件包的開發人員及管理員，經常會從貢獻者、upstream 項目及第三方 repository 匯入金鑰。迄今為止，大部分強化指引均集中於金鑰的真實性——指紋（fingerprint）、信任網（Web of Trust）、keyserver。本次公告加入了另一個層面：金鑰資料的結構本身可能具有敵意。在未驗證來源之前便匯入金鑰，可能已足以令應用程式陷於風險。</p>
+<p><strong>修復清單</strong></p>
+<ol>
+<li><strong>檢查 <code>libgpgme</code>，而非 <code>gpg</code>。</strong> 目前 <code>gpg</code> 的 binary 版本並不能反映實際連結的 GPGME library。GPGME 經常透過發行版軟件包、language binding 或 static linking 間接捆綁，因此應逐一檢查各系統上實際的 <code>libgpgme</code> 版本——<code>dpkg -l libgpgme*</code> 或 <code>rpm -q gpgme</code> 是快捷的起步方法。</li>
+<li><strong>升級至 GPGME 2.3.0 或更新版本</strong>，凡 upstream 軟件包可得之處均應採用。</li>
+<li><strong>留意廠商公告，而不僅是 upstream 版本字串。</strong> 長期支援（LTS）發行版經常在不提升軟件包版本號的情況下 backport 安全修補，因此系統回報較舊的 GPGME 版本，可能其實已修補——亦可能尚未修補。發行商的安全通知才是可靠指標。</li>
+<li><strong>修補後重啟長時間運行的服務。</strong> 守護進程（daemon）在重新啟動前會將舊有 library 代碼保留於記憶體中；僅套用軟件包更新，並不能消除正在運行的進程所暴露的風險。這是最常被遺漏的一步。</li>
+</ol>
+<p>GnuPG 項目已發布修復版本，披露與修補程式可用之間的時間窗口雖然短促——但 GPGME 的分散式特性意味著修補在實踐中必然滯後。對於 build pipeline 或簽署基礎設施依賴 OpenPGP 的團隊而言，即時檢查所連結的 library 版本，是判斷暴露程度最快的方法。更宏觀地看，此公告提醒所有執行簽署或驗證流程的人士，應將所匯入的金鑰材料視為不受信任的輸入（untrusted input），而不僅僅是用來認證的物件。</p>
+<p><a href="https://thehackernews.com/2026/11/gnupg-warns-critical-gpgme-flaw-could.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
