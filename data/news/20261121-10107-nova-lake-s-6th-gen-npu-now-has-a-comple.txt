@@ -1,0 +1,30 @@
+Date: 2026-11-21 18:33:00
+Author: HKLUG Team
+Title: Nova Lake's 6th Gen NPU Now Has a Complete Linux Driver Path
+Content:
+<p>Intel has shipped version 1.39.1 of its user-space Linux NPU driver, and the headline addition is official support for Nova Lake and its 6th Gen neural processing unit IP. Phoronix reported the update on Thursday, and the release marks the point at which Intel's out-of-tree, user-visible driver stack catches up to kernel work already merged upstream.</p>
+<p>That two-layer split is the key to reading this story properly. On-device AI acceleration on Intel hardware depends on two pieces of software: the kernel-side IVPU accelerator driver, which manages the device at the operating system level, and the user-space driver, which sits closer to the frameworks and applications that actually schedule inference work. Nova Lake enablement has therefore arrived in two places at two different times — kernel patches enabling the 6th Gen NPU IP have been under development since last year and have since been mainlined in the IVPU driver, while the user-space component only gained official Nova Lake support with this week's 1.39.1 update, according to Phoronix.</p>
+<h5>Why the user-space layer matters</h5>
+<p>For developers and sysadmins, the user-space driver is the layer they interact with most directly. It is the interface through which runtimes and toolchains — including Intel's OpenVINO stack, which the release notes point to as a route for deploying models against the hardware — discover and dispatch work to the NPU. Kernel mainlining ensures the device is recognised and managed reliably across distributions; the user-space release determines which application frameworks can actually make use of it.</p>
+<p>The practical consequence is that early adopters of Nova Lake systems can now assemble a complete driver path on Linux rather than relying on partially mainlined support. That matters for anyone evaluating on-device AI on Linux: the alternative to a functioning user-space driver is falling back to CPU or GPU inference, with the latency and power-draw trade-offs that entails.</p>
+<h5>An incremental update</h5>
+<p>It is worth setting expectations. Nova Lake is pre-release silicon, and this is a forward-looking enablement release rather than a performance milestone. There are no benchmarks attached to the update, and none should be inferred from it — the driver's job at this stage is to expose the hardware correctly, not to demonstrate throughput. As is typical for Intel's NPU driver line, 1.39.1 is an incremental step: the version bump signals maintenance and platform coverage rather than a rewrite of the execution stack.</p>
+<p>That incrementalism is itself the news. Driver enablement consistently trails silicon announcements, and the fact that kernel and user-space layers have now converged on Nova Lake suggests the platform is moving from "patches in flight" toward a supportable state on Linux distributions.</p>
+<h5>Availability</h5>
+<p>As with previous iterations, the driver is distributed through Intel's Linux NPU driver repository rather than through distribution package archives, so users building against Nova Lake hardware will need to pull the 1.39.1 sources directly and compile them against a kernel carrying the mainlined IVPU driver.</p>
+<p>For the broader open-source community, the release is a useful marker of how Intel is staging its AI accelerator story on Linux: kernel support first, user-space support following, and application frameworks — OpenVINO among them — layered on top. Whether Nova Lake's 6th Gen NPU delivers on its on-device AI promises will only become clear once the hardware is in reviewers' hands. More broadly, it is the kind of plumbing update that matters to IT professionals weighing on-device AI inference on Linux systems — even before the hardware itself is widely available. For now, the plumbing is in place.</p>
+<p>Further details are available via Phoronix.</p>
+<hr>
+<p>Intel 已發布其 Linux 用戶空間 NPU 驅動程式 1.39.1 版本，最主要的新增功能是正式支持 Nova Lake 及其第六代神經處理單元（NPU）IP。Phoronix 於周四報道了此次更新，該版本標誌著 Intel 這套在核心樹之外（out-of-tree）、面向用戶的驅動程式堆疊，終於追上了早已合入上游的核心（kernel）開發進度。</p>
+<p>要正確理解這則新聞，關鍵在於這種兩層分工。Intel 硬件上的設備端 AI 加速取決於兩部分軟件：核心端的 IVPU 加速器驅動程式，負責在作業系統層面管理設備；以及用戶空間驅動程式，它更接近實際排程推理工作的框架和應用程式。因此，Nova Lake 的支持分兩個部分、在兩個不同時間點到位——據 Phoronix 報道，啟用第六代 NPU IP 的核心補丁自去年起已投入開發，其後已合入主幹（mainline）並納入 IVPU 驅動程式；而用戶空間組件則直到本周的 1.39.1 更新才獲得 Nova Lake 的正式支持。</p>
+<h5>為何用戶空間層如此重要</h5>
+<p>對開發者和系統管理員而言，用戶空間驅動程式是他們最直接接觸的一層。運行時（runtime）和工具鏈——包括 Intel 的 OpenVINO 堆疊，發布說明將其列為針對該硬件部署模型的途徑——正是透過這個接口發現 NPU 並將工作分派給它。核心合入主幹可確保設備在各個發行版中都能被可靠識別和管理；用戶空間版本則決定了哪些應用框架實際能夠使用它。</p>
+<p>實際影響是，Nova Lake 系統的早期用戶如今可以在 Linux 上組建一條完整的驅動程式路徑，而不必依賴僅部分合入主幹的支持。這對任何在 Linux 上評估設備端 AI 的人士都很關鍵：若用戶空間驅動程式不可用，唯一替代方案就是退回 CPU 或 GPU 推理，並承擔隨之而來的延遲和功耗取捨。</p>
+<h5>一次增量更新</h5>
+<p>有必要先管理好預期。Nova Lake 屬於發布前的晶片，這次是一次面向未來的支持性發布，而非性能里程碑。更新沒有附帶任何基準測試數據，也不應從中推斷出任何數據——驅動程式在這個階段的任務是正確地暴露硬件能力，而非展示吞吐量。與 Intel NPU 驅動程式系列的慣常做法一致，1.39.1 是一個增量步驟：版本號的提升意味著維護和平台覆蓋的擴大，而非執行堆疊的重寫。</p>
+<p>這種增量性本身正是新聞所在。驅動程式的支持向來落後於晶片發布，而核心層和用戶空間層如今在 Nova Lake 上匯合，顯示該平台正從「補丁在途」的狀態邁向可在 Linux 發行版上正式支持的狀態。</p>
+<h5>可獲取途徑</h5>
+<p>與先前版本一樣，該驅動程式是透過 Intel 的 Linux NPU 驅動程式代碼庫分發，而非通過發行版軟件包存檔，因此針對 Nova Lake 硬件進行構建的用戶需要直接下載 1.39.1 源碼，並在搭載了已合入主幹 IVPU 驅動程式的核心上編譯。</p>
+<p>對更廣泛的開源（open source）社區而言，此次發布是觀察 Intel 如何在 Linux 上逐步推進其 AI 加速器策略的一個有用標記：先有核心支持，繼而是用戶空間支持，再在其上疊加應用框架——OpenVINO 即為其中之一。Nova Lake 第六代 NPU 能否兌現其設備端 AI 的承諾，要待硬件送到評測者手中才會明朗。更廣泛地說，這正是一類至關重要的底層管線（plumbing）更新，事關 IT 專業人士評估 Linux 系統上的設備端 AI 推理——即使硬件本身尚未廣泛供應。目前，管線已就位。</p>
+<p>更多詳情可參閱 Phoronix。</p>
+<p><a href="https://www.phoronix.com/news/Intel-LInux-NPU-Driver-1.39.1" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
