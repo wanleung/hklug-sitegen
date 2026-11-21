@@ -1,0 +1,34 @@
+Date: 2026-11-21 14:03:00
+Author: HKLUG Team
+Title: Attackers' AI Agents Reportedly Found a Zero-Day in Medical Imaging Software — Then Used It to Win Root
+Content:
+<p>Suspected China-linked hackers deployed autonomous AI agents to discover a previously unknown flaw in MONAI Label, an open-source medical imaging server, and used it to obtain root access on a university server, according to Amazon Threat Intelligence, as reported by The Hacker News on 21 November.</p>
+<p>The vulnerability affects MONAI Label 0.8.5 and earlier in its default configuration. It allows an attacker with no account to write files outside the server's designated storage directory — an unauthenticated path-traversal flaw that, in this case, is said to have been converted into a foothold with root privileges.</p>
+<p>The headline-grabbing element is not the bug itself, but how it was reportedly found. This is the clearest indication yet that autonomous AI-driven vulnerability discovery has moved out of the bug-bounty and research-lab setting and into live operational intrusion chains. Rather than a human analyst poring over code, the discovery is attributed to machine agents working at machine scale — a capability shift with implications well beyond one imaging tool.</p>
+<p>Attribution should be treated with caution. The operation is attributed to suspected China-linked actors based on findings by Amazon Threat Intelligence researchers, and the disclosure is currently single-source, with limited public corroboration. Details on the timeline and on any post-compromise activity also remain sparse. That the intrusion was reported at all is a reminder that public visibility into these campaigns is partial at best.</p>
+<p>MONAI Label sits in a category that has historically received far less security scrutiny than enterprise software: research and medical-imaging infrastructure maintained by academic and scientific projects. These tools are frequently deployed in institutional environments in default configurations, with limited continuous review and thin maintainer bandwidth. The economics of AI-driven discovery favour attackers here. An autonomous agent can cheaply sweep many small, thinly-resourced repositories simultaneously, and unauthenticated file-write bugs are particularly valuable because they commonly chain toward remote code execution. Unless funding, triage capacity, and coordinated-disclosure infrastructure for scientific open source keep pace, the discovery asymmetry will widen.</p>
+<p>For any team — in Hong Kong, Macau, or elsewhere — running comparable research or imaging services, the practical checklist is conventional even if the discovery method is not:</p>
+<ul>
+<li><strong>Verify exposure.</strong> Confirm the installed MONAI Label version and whether it is running with default settings. Version 0.8.5 and earlier are affected.</li>
+<li><strong>Apply the fix.</strong> Check for and install a vendor patch or advisory once available; until then, consider restricting or disabling the service where operationally feasible.</li>
+<li><strong>Review reachability.</strong> Determine whether the service is exposed to untrusted networks or only to internal segments, and tighten network access controls accordingly.</li>
+<li><strong>Assess privileges.</strong> Determine what account the service runs as, and whether it can be constrained to least privilege — root-level reachability turned a file-write bug into full compromise.</li>
+<li><strong>Audit for unauthenticated write paths.</strong> Unauthenticated file-write flaws should be treated as high-priority across research software inventories, not just MONAI.</li>
+</ul>
+<p>The broader lesson cuts two ways. The immediate task is patching this exposure. The durable one is updating threat models: continuous autonomous scanning of public repositories should now be assumed to be routine, applied indiscriminately across small and specialised projects. In that environment, "too niche to be targeted" is no longer a defensible assumption.</p>
+<hr>
+<p>據 Amazon Threat Intelligence 稱，懷疑與中國有關的黑客部署了自主 AI agents，在開源醫學影像伺服器 MONAI Label 中發現一項此前未知的漏洞，並利用它在一部大學伺服器上取得 root 存取權限。有關報道由 The Hacker News 於 11 月 21 日刊出。</p>
+<p>該漏洞影響 MONAI Label 0.8.5 及更早版本的預設配置。它允許沒有帳號的攻擊者在伺服器指定儲存目錄之外寫入檔案——這是一項無需認證的 path traversal 漏洞，據稱在本案中已被轉化為具有 root 權限的立足點。</p>
+<p>最引人注意的並非漏洞本身，而是據報發現它的方式。這是迄今最清楚的跡象，顯示自主 AI 驅動的漏洞發現已由 bug bounty 和研究實驗室場景，進入實際的入侵鏈之中。這次發現並非由人類分析員埋首審閱程式碼，而是歸因於以機器規模運作的自主 agents——這一能力轉變的影響遠超單一影像工具。</p>
+<p>歸因方面應審慎看待。該行動被歸因於懷疑與中國有關的行為者，依據是 Amazon Threat Intelligence 研究人員的發現，而此次披露目前僅屬單一消息來源，公開佐證有限。有關時間線及入侵後活動的細節亦依然稀少。這次入侵會被報導出來這件事本身，正提醒了外界：這類攻擊行動的公開可見度充其量只是部分的。</p>
+<p>MONAI Label 所屬的類別，歷來所獲的安全審視遠少於企業軟件：由學術及科學項目維護的研究及醫學影像基礎設施。這些工具經常以預設配置部署於機構環境中，持續審查有限，維護者的投放資源亦薄弱。AI 驅動的發現模式在此對攻擊者有利。自主 agent 可以廉價地同時掃描大量細小、資源薄弱的 repositories，而無需認證的檔案寫入漏洞尤其有價值，因為它們通常可進一步鏈接至 remote code execution。除非科學開源項目的資金、分類處理能力及協調披露基礎設施持續跟上，否則這種發現能力的不對稱將會擴大。</p>
+<p>對於任何在香港、澳門或其他地方運行類似研究或影像服務的團隊，即使發現方法並不尋常，實務檢查清單依然是傳統的：</p>
+<ul>
+<li><strong>確認暴露面。</strong> 確認已安裝的 MONAI Label 版本，以及是否以預設設定運行。0.8.5 及更早版本受影響。</li>
+<li><strong>套用修復。</strong> 待廠商 patch 或 advisory 發布後查閱並安裝；在此之前，若在運作上可行，考慮限制或停用相關服務。</li>
+<li><strong>檢視可達性。</strong> 判斷服務是暴露於不受信任的網絡，還是僅限內部網段，並相應收緊網絡存取控制。</li>
+<li><strong>評估權限。</strong> 判斷服務以哪個帳號運行，以及能否限制至最小權限——root 級別的可達性令一個檔案寫入漏洞演變為完全失陷。</li>
+<li><strong>審計無需認證的寫入路徑。</strong> 無需認證的檔案寫入漏洞應在研究軟件的盤點中列為高優先處理項目，而不僅限於 MONAI。</li>
+</ul>
+<p>更廣泛的教訓有兩方面。眼前的任務是修補這次暴露。長遠的任務則是更新威脅模型：現時應假定對公開 repositories 的持續自主掃描已是常態，並且不加分別地應用於細小及專門項目之上。在這種環境下，「太過冷門不會成為目標」已不再是一個站得住腳的假設。</p>
+<p><a href="https://thehackernews.com/2026/11/attackers-ai-agents-found-zero-day-in.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
