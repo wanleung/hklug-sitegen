@@ -1,0 +1,48 @@
+Date: 2026-11-21 11:31:00
+Author: HKLUG Team
+Title: As On-Device AI Learns to Read Your Screen, Signal Locks Down Chats on Android and iOS
+Content:
+<p>```</p>
+<p>Encrypted messaging app Signal said it will block screenshots by default on Android and iOS, a move aimed at stopping on-device AI agents from reading private conversations — while conceding that the safeguard is "incomplete," The Hacker News reported.</p>
+<p>The announcement reframes a threat model that end-to-end encryption was never designed to address: once an AI assistant operating at the system layer can read whatever is rendered on the display, the confidentiality of a chat no longer depends solely on the transport. Signal's own admission that the protection is partial is arguably the most newsworthy part of the disclosure.</p>
+<p><strong>What the change does</strong></p>
+<p>According to The Hacker News, the default restriction applies to agentic features built into iOS 27, and to Android builds where Signal can detect an AI assistant attempting to read its interface — the source does not detail how that detection is implemented.</p>
+<p>That framing matters for IT readers. Signal is effectively treating screen access as a permission surface, not a convenience feature. The chat is still encrypted in transit and at rest; the new exposure is the endpoint itself — the moment pixels become text an agent can ingest, summarise, or exfiltrate.</p>
+<p>Signal's "incomplete" caveat is well placed. Detection has to distinguish human capture from automated capture, and that distinction varies across operating system versions, device vendors, and how aggressively each Android OEM wires its own assistant into the display stack. The source does not enumerate which Android versions or OEM implementations qualify, nor does it state whether users can re-enable screenshots manually; the safe choice remains the out-of-the-box default. Either way, this change raises the bar rather than closing the window. A durable fix almost certainly has to arrive as auditable, OS-level screen-access controls — the kind that let users see which process is reading the display.</p>
+<p><strong>Why it matters beyond consumer apps</strong></p>
+<p>This is a device-policy story, not a messaging-app story. Enterprises and communities that already manage mobile devices through MDM should treat AI screen access the way they treat camera, microphone, and screenshot permissions: as an explicit, logged, and reviewable capability. For organisations in Hong Kong, the practical relevance is generic: whatever an on-device agent can observe is data the organisation should be able to account for — a widening of the compliance surface driven by platform vendors, not by any regulator. MDM policies written before iOS 27 and current Android assistants will need a second look.</p>
+<p>For users in privacy-sensitive environments — anywhere chat records can be subpoenaed or leaked — a screenshot default is one layer among several worth stacking. It removes one silent, default-on way for a conversation to leave the app.</p>
+<p><strong>Detection and hardening checklist</strong></p>
+<ul>
+<li>Enable device screen locks and biometric authentication, and shorten the auto-lock timeout.</li>
+<li>Review which apps or assistants are permitted to capture the screen, and approve them individually.</li>
+<li>Add "screen capture" and "AI assistant access" to your MDM device compliance policies.</li>
+<li>For highly sensitive conversations, avoid running screen-reading assistants at the same time.</li>
+<li>Keep Signal and your operating system up to date — detection behaviour evolves with each release.</li>
+<li>Where appropriate, pair these measures with disappearing messages to reduce the residue left after a screenshot leak.</li>
+</ul>
+<p>Signal has drawn the line in the right place — the endpoint. The next layer of defence has to come from the operating systems.</p>
+<p>Source: <a href="https://thehackernews.com/2026/11/signal-blocks-ai-agents-from-reading.html">The Hacker News</a></p>
+<hr>
+<p>```</p>
+<p>加密通訊應用程式 Signal 宣布將在 Android 與 iOS 預設阻止截圖，此舉旨在防止裝置上的 AI agent 讀取私人對話——同時承認這項保障「並不完整」，據 The Hacker News 報道。</p>
+<p>這項公布重新框定了端到端加密從來未被設計去應對的威脅模型：一旦在系統層面運作的 AI 助理能夠讀取顯示屏上呈現的一切，聊天內容的保密性便不再單靠傳輸層。Signal 自己承認保護只是部分有效，這點可說是整個披露中最具新聞價值的部分。</p>
+<p><strong>這項改動做了什麼</strong></p>
+<p>據 The Hacker News 報道，預設限制適用於 iOS 27 內建的 agentic 功能，以及 Signal 能偵測到有 AI 助理試圖讀取其介面的 Android 版本——消息來源並未詳述該偵測如何實現。</p>
+<p>這個框架對 IT 讀者而言相當重要。Signal 實際上是把螢幕存取視為一個權限層面，而非便利功能。對話本身在傳輸中及靜止狀態下仍然加密；新的風險在於端點本身——當像素變成 AI agent 可以擷取、摘要或外洩的文字那一刻。</p>
+<p>Signal 所謂「不完整」的警告言之成理。偵測必須區分人手截圖與自動化擷取，而這種區分會隨作業系統版本、裝置製造商，以及各家 Android OEM 將自家助理接入顯示屏堆棧的積極程度而異。消息來源沒有列明哪些 Android 版本或 OEM 實作符合條件，亦沒有說明用戶能否手動重新啟用截圖；最穩妥的選擇仍然是維持出廠預設值。無論如何，這項改動是提高門檻，而非完全堵上漏洞。長遠的解決方案幾乎肯定要以可審核的作業系統層面螢幕存取控制來實現——即那種讓用戶可以看到哪個程序正在讀取顯示屏的控制。</p>
+<p><strong>為何此事不只關乎消費級應用</strong></p>
+<p>這是一個裝置政策議題，而非通訊應用程式議題。已經透過 MDM 管理流動裝置的企業和社群，應當像處理相機、咪高峰和截圖權限一樣處理 AI 螢幕存取：視為一種明確、可記錄、可覆核的功能。對香港的機構而言，實際相關性是通用的：任何裝置上 agent 能觀察到的內容，都應是機構能夠交代的數據——這是由平台廠商而非任何監管機構所驅動的合規範圍擴大。在 iOS 27 及現行 Android 助理之前撰寫的 MDM 政策，需要重新檢視。</p>
+<p>對於身處私隱敏感環境的用戶——任何聊天記錄可能被傳票調取或洩露的地方——預設阻止截圖是值得疊加的其中一層防護。它移除了一種安靜地、預設開啟的途徑，令對話內容離開應用程式。</p>
+<p><strong>檢測與加固建議</strong></p>
+<ul>
+<li>啟用裝置鎖屏與生物辨識，縮短自動鎖定時間。</li>
+<li>在系統設定中檢視哪些應用程式或助理獲准擷取畫面，逐一審批。</li>
+<li>將「螢幕擷取」與「AI 助理存取」列入 MDM 裝置合規政策。</li>
+<li>對高敏感對話，避免同時啟用具螢幕讀取功能的助理服務。</li>
+<li>定期更新 Signal 與作業系統——偵測行為會隨版本演進。</li>
+<li>視需要搭配訊息自動刪除，降低截圖外洩後的殘留風險。</li>
+</ul>
+<p>Signal 已在正確的位置劃下防線——端點。下一層防禦必須來自作業系統。</p>
+<p>Source: <a href="https://thehackernews.com/2026/11/signal-blocks-ai-agents-from-reading.html">The Hacker News</a></p>
+<p><a href="https://thehackernews.com/2026/11/signal-blocks-ai-agents-from-reading.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
