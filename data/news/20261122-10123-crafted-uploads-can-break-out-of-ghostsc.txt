@@ -1,0 +1,50 @@
+Date: 2026-11-22 08:22:00
+Author: HKLUG Team
+Title: Crafted Uploads Can Break Out of Ghostscript Sandbox, Researchers Warn
+Content:
+<p>```</p>
+<p>A patched security flaw in Ghostscript could be triggered by an ordinary file upload, allowing the contents of that file to break out of the program's sandbox and execute commands on the server doing the processing, according to research covered by The Hacker News on 22 November.</p>
+<p>The practical consequence is that any web application that accepts document or image uploads and hands them to Ghostscript for conversion may have been exploitable through the flaw — even if the application never calls Ghostscript directly.</p>
+<h4>The escape mechanism</h4>
+<p>Ghostscript is the interpreter commonly installed on Linux servers to render and convert PDFs, PostScript files, and other image formats. It sits behind countless upload pipelines: a user submits a PDF, a background worker converts it to thumbnails, strips embedded JavaScript, or flattens it for archival, and Ghostscript does the work.</p>
+<p>Because it processes attacker-controlled input by design, Ghostscript ships with a sandbox intended to confine what converted files can do. The flaw demonstrated this week defeats that confinement. According to The Hacker News, security firm pwn.ai showed that a crafted file — introduced through a normal upload flow — could escape the sandbox and run commands on the host.</p>
+<p>That is the shape of the risk: not a vulnerability in any single web framework or CMS, but in a widely deployed system library that sits one or two hops away from user input in many architectures. Administrators auditing their own attack surface would need to trace which services shell out to <code>gs</code> or <code>ghostscript</code>, including indirectly through image libraries, document converters, and mail attachment processors.</p>
+<p>The flaw has been patched upstream. Specific CVE identifiers, affected version ranges, and fixed release numbers were not included in the material available for this report; readers should consult the vendor's advisory directly for version-level guidance before applying updates.</p>
+<h4>Why it matters for upload-heavy services</h4>
+<p>The blast radius for any organisation running file-upload features is broader than it first appears. Document management systems, e-invoicing platforms, helpdesk portals, and archival tools routinely convert uploaded files as a matter of course, often in containers running with more privileges than the conversion task strictly requires. If the sandbox is the only thing separating a converted PDF from shell access, defeating it converts a routine user action into a remote-code-execution path.</p>
+<p>Indirect invocation makes inventory harder. A server may not list Ghostscript as an application dependency, yet still execute it when a Python imaging library, a thumbnailing daemon, or a PDF preprocessing step calls into it. Any such service that processes untrusted uploads should be treated as in scope.</p>
+<h4>Mitigation checklist</h4>
+<p>For teams assessing exposure, a practical order of operations:</p>
+<ol>
+<li><strong>Identify callers.</strong> Search servers, containers, and CI runners for <code>ghostscript</code>, <code>gs</code>, and any wrapper scripts or libraries that invoke them — including transitive dependencies.</li>
+<li><strong>Patch to the fixed release.</strong> Update the distribution package or rebuilt binary to the version containing the vendor's fix, then restart any long-running workers that may have the old library loaded in memory.</li>
+<li><strong>Constrain the sandbox.</strong> Run conversion jobs as an unprivileged, dedicated user, inside a container or chroot with no network access and no write paths outside a scratch directory.</li>
+<li><strong>Limit exposure of upload endpoints.</strong> Require authentication on upload features where feasible, cap file sizes, validate content types against actual file signatures, and quarantine converted output before it is served back to users.</li>
+<li><strong>Monitor for abuse.</strong> Review logs from conversion workers for unexpected process spawns or outbound connections, and treat repeated malformed-document submissions as a signal worth investigating.</li>
+</ol>
+<p>Because Ghostscript's reach is indirect, the patch will not announce itself through an application's own dependency manifest. The teams most likely to be caught out are those that assume a vulnerability in a command-line tool is somebody else's problem — when in fact the tool is quietly running behind their upload button.</p>
+<p>Readers should verify version details and the timeline of disclosure against the primary advisory before scheduling maintenance windows.</p>
+<hr>
+<p>```</p>
+<p>據 The Hacker News 於 11 月 22 日報道的研究指出，Ghostscript 一項已修補的安全漏洞可透過一般的檔案上載觸發，令該檔案的內容得以逃離程式的沙箱，並在負責處理的伺服器上執行指令。</p>
+<p>實際後果是，任何接受文件或圖片上載並將其交由 Ghostscript 轉換的網絡應用程式，均可能藉此漏洞被利用——即使該應用程式從未直接呼叫 Ghostscript。</p>
+<h4>逃逸機制</h4>
+<p>Ghostscript 是 Linux 伺服器上常見的解譯器，用於渲染及轉換 PDF、PostScript 檔案及其他圖片格式。它廣泛應用於各式上載流程的背後：用戶提交一份 PDF，背景工作進程將其轉換為縮圖、剝離內嵌的 JavaScript，或將其扁平化以供存檔，而實際執行工作的正是 Ghostscript。</p>
+<p>由於 Ghostscript 的設計就是要處理攻擊者可控的輸入，其出廠時已附帶一個沙箱，旨在限制被轉換檔案所能執行的操作。本週展示的漏洞正是擊敗了該限制。據 The Hacker News 報道，安全公司 pwn.ai 顯示，一個經精心製作的檔案——透過正常的上載流程引入——可以逃離沙箱並在主機上執行指令。</p>
+<p>這就是風險的形態：問題並非出於任何單一網絡框架或 CMS，而是出於一個部署廣泛的系統函式庫，它在許多架構中距離用戶輸入只有一至兩層之遙。管理員若要審視自身的攻擊面，就必須追查哪些服務會向外呼叫 <code>gs</code> 或 <code>ghostscript</code>，包括透過圖片函式庫、文件轉換器及郵件附件處理器等間接途徑。</p>
+<p>該漏洞已在上游修補。由於本報道所獲材料未包含具體的 CVE 編號、受影響版本範圍及已修復的發行版本號碼，讀者在套用更新前，應直接查閱廠商的公告以獲取版本層面的指引。</p>
+<h4>為何對上載量大的服務至關重要</h4>
+<p>任何設有檔案上載功能的機構，其影響範圍比表面上看來更為廣泛。文件管理系統、電子發票平台、服務台入口網站及存檔工具，經常會例行公事般地轉換上載的檔案，而這些轉換往往在權限高於轉換任務實際所需的容器中運作。如果沙箱是隔開已轉換 PDF 與 shell 存取權限的唯一屏障，那麼擊敗它就等於把一個普通的用戶操作轉化為一條遠端代碼執行（RCE）途徑。</p>
+<p>間接呼叫令盤點工作更為困難。伺服器可能不會將 Ghostscript 列為應用程式依賴項，但當 Python 圖片函式庫、縮圖後台程式或 PDF 預處理步驟呼叫它時，仍會將其執行。任何處理不受信任上載的此類服務，都應納入評估範圍。</p>
+<h4>緩解措施清單</h4>
+<p>對於評估暴露風險的團隊，以下是一個實用的工作次序：</p>
+<ol>
+<li><strong>識別呼叫方。</strong> 在伺服器、容器及 CI runner 中搜尋 <code>ghostscript</code>、<code>gs</code>，以及任何呼叫它們的包裝腳本或函式庫——包括傳遞依賴項（transitive dependencies）。</li>
+<li><strong>修補至已修復的發行版本。</strong> 將發行版套件或重新編譯的二進位檔更新至包含廠商修復的版本，然後重新啟動任何可能已在記憶體中載入舊函式庫的長駐工作進程。</li>
+<li><strong>收緊沙箱限制。</strong> 以無權限的專用用戶身份執行轉換任務，置於無網絡存取、且除暫存目錄外無任何寫入路徑的容器或 chroot 中。</li>
+<li><strong>限制上載端點的暴露面。</strong> 在可行情況下要求上載功能進行身份驗證、限制檔案大小、根據實際檔案簽名驗證內容類型，並將轉換後的輸出隔離檢疫，然後才提供給用戶。</li>
+<li><strong>監控濫用行為。</strong> 檢查轉換工作進程的日誌，留意異常的 process 產生或對外連接，並把重複提交格式錯誤的文件視為值得調查的訊號。</li>
+</ol>
+<p>由於 Ghostscript 的觸及範圍是間接的，該修補程式不會透過應用程式自身的依賴清單（dependency manifest）自行顯現。最易被忽略的團隊，往往是那些認為命令列工具的漏洞是別人問題的團隊——而事實上，該工具正悄悄地在他們的上載按鈕背後運作。</p>
+<p>讀者在安排維護時段前，應先根據主要公告核實版本詳情及披露時間表。</p>
+<p><a href="https://thehackernews.com/2026/11/researchers-demonstrate-ghostscript.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
