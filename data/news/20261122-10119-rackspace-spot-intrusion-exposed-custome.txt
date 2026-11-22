@@ -1,0 +1,59 @@
+Date: 2026-11-22 05:24:00
+Author: HKLUG Team
+Title: Rackspace Spot intrusion exposed customer Kubernetes secrets, cloud provider warns
+Content:
+<p>```</p>
+<p>Rackspace is warning customers that attackers who compromised credentials for its Rackspace Spot cloud platform were able to deploy unauthorized workloads and read Kubernetes secrets stored in customer clusters, BleepingComputer reported.</p>
+<p>The intrusion did not depend on a zero-day in Kubernetes or in Rackspace's platform. According to the provider, the entry point was stolen credentials on the vendor side — a supply-chain-style failure in which a single set of compromised keys was enough to cross tenant boundaries and reach customer workloads. That distinction matters: the platform worked as designed, but the trust relationship behind it did not.</p>
+<p>For Kubernetes teams, the incident is a reminder of two uncomfortable properties of the default stack. First, <code>Secret</code> objects in Kubernetes are base64-encoded, not encrypted at rest by default, so anyone with workload-deployment rights inside a cluster can typically read them. Second, once an attacker can create pods, RBAC boundaries become porous — a deployed container can mount service-account tokens and secret volumes and exfiltrate them from inside the trusted perimeter.</p>
+<p>Rackspace has not published the number of affected customers or clusters, the exposure window, or the original method by which its credentials were compromised. Organizations notified directly by the provider should treat all cluster-resident credentials in the affected environment as compromised.</p>
+<h5>What HK Kubernetes teams should audit this week</h5>
+<p>Even for organizations with no Rackspace relationship, the advisory is a useful forcing function for a focused audit:</p>
+<ol>
+<li>
+<p><strong>Inventory your secrets.</strong> Enumerate every <code>Secret</code> object, service-account token, and cloud credential stored in or mounted by workloads across clusters. Anything you cannot account for is an exposure you cannot defend.</p>
+</li>
+<li>
+<p><strong>Review RBAC and workload permissions.</strong> Identify roles that allow <code>create</code> on pods, deployments, or secrets — the exact rights an attacker needs to deploy a container and mount credentials. Remove standing permissions that can be granted just-in-time instead.</p>
+</li>
+<li>
+<p><strong>Rotate credentials on a schedule, and immediately on notification.</strong> Teams contacted by Rackspace should rotate everything cluster-resident as a precaution. Everyone else should treat this advisory as a prompt to check whether rotation of cloud keys, registry tokens, and database passwords is actually happening — not just documented.</p>
+</li>
+<li>
+<p><strong>Enable audit logging and workload admission control.</strong> The detection gap in incidents like this is often simple: nobody can answer "who deployed this pod, and from where?" Cluster audit logs plus an admission policy (OPA/Gatekeeper, Kyverno, or an equivalent) that constrains where images run and which service accounts they assume close that gap.</p>
+</li>
+<li>
+<p><strong>Externalize secrets and shrink vendor blast radius.</strong> Move secret material out of the cluster entirely — HashiCorp Vault, Sealed Secrets, SOPS, or External Secrets Operator backed by a KMS — so that a compromised workload identity yields nothing. In parallel, review which vendors hold credentials capable of reaching your production clusters, and what happens to those credentials when the contract ends.</p>
+</li>
+</ol>
+<h5>The contractual and compliance angle</h5>
+<p>Under Hong Kong's Personal Data (Privacy) Ordinance, a data breach involving personal data may trigger notification obligations to the Privacy Commissioner and affected individuals, depending on severity and data type. The practical step now is contractual, not forensic: confirm that cloud and managed-service agreements define breach notification timelines, audit rights, and the scope of the provider's duty to disclose affected tenants. Teams that discover they were in the dark about a vendor-side intrusion have learned that lesson at the worst possible moment.</p>
+<p>The broader lesson from Rackspace Spot is that customer-side hardening and vendor-side credential hygiene are the same problem viewed from two ends. Clusters are only as trustworthy as the weakest set of credentials that can reach them.</p>
+<hr>
+<p>據 BleepingComputer 報道，Rackspace 向客戶發出警告，指攻擊者在取得其 Rackspace Spot 雲端平台的憑證後，得以部署未經授權的 workload，並讀取客戶集群中儲存的 Kubernetes secrets。</p>
+<p>這次入侵並非利用 Kubernetes 或 Rackspace 平台的零日漏洞（zero-day）。根據該供應商的說法，入口點是供應商一方被竊取的憑證——這屬於一種供應鏈式失效（supply-chain-style failure），單單一組被洩露的密鑰便足以跨越租戶邊界，直接接觸客戶 workload。這個區別至關重要：平台本身運作正常，但其背後的信任關係並不可靠。</p>
+<p>對 Kubernetes 團隊而言，這次事件提醒了預設技術堆疊中兩項不容忽視的特性。第一，Kubernetes 中的 <code>Secret</code> 物件只經 base64 編碼，預設並未加密靜態資料（at rest），因此集群內任何擁有 workload 部署權限的人通常都能讀取。第二，一旦攻擊者能夠建立 pod，RBAC 邊界便變得形同虛設——已部署的容器可以掛載 service-account token 及 secret volume，並從可信邊界內部將其外洩。</p>
+<p>Rackspace 未有公布受影響客戶或集群的數目、暴露時間窗口，以及其憑證最初被洩露的方法。直接收到供應商通知的機構，應將受影響環境中所有駐留於集群的憑證視為已遭洩露。</p>
+<h5>香港 Kubernetes 團隊本周應審計的事項</h5>
+<p>即使機構與 Rackspace 毫無往來，這份通告亦是推動針對性審計的有用契機：</p>
+<ol>
+<li>
+<p><strong>清點你的 secrets。</strong> 列舉所有跨集群儲存或由 workload 掛載的 <code>Secret</code> 物件、service-account token 及雲端憑證。任何你無法說明來源的項目，都是你無法防禦的暴露風險。</p>
+</li>
+<li>
+<p><strong>檢視 RBAC 及 workload 權限。</strong> 找出允許對 pods、deployments 或 secrets 進行 <code>create</code> 的角色——這正是攻擊者部署容器及掛載憑證所需的權限。移除那些可以即時授予（just-in-time）的常設權限。</p>
+</li>
+<li>
+<p><strong>按計劃輪換憑證，接獲通知時立即輪換。</strong> 被 Rackspace 聯絡的團隊應本著審慎原則，輪換所有駐留於集群的憑證。其他人則應以此通告為契機，檢視雲端密鑰、registry token 及數據庫密碼的輪換是否真正執行——而不僅僅停留在文件上。</p>
+</li>
+<li>
+<p><strong>啟用審計日誌及 workload 准入控制。</strong> 此類事件的偵測缺口往往很簡單：沒有人能回答「這個 pod 是誰部署的、從哪裡部署？」集群審計日誌加上限制鏡像運行位置及所用 service account 的准入政策（OPA/Gatekeeper、Kyverno 或同類工具），便可補上這個缺口。</p>
+</li>
+<li>
+<p><strong>將 secrets 外置，縮小供應商的爆炸半徑。</strong> 將 secret 資料完全移出集群——使用 HashiCorp Vault、Sealed Secrets、SOPS，或由 KMS 支撐的 External Secrets Operator——令被洩露的 workload 身分一無所獲。與此同時，檢視哪些供應商持有可觸及你生產集群的憑證，以及合約終止後這些憑證的去向。</p>
+</li>
+</ol>
+<h5>合約及合規層面</h5>
+<p>根據香港《個人資料（私隱）條例》，涉及個人資料的資料外洩或會觸發向私隱專員及受影響人士作出通知的責任，視乎嚴重程度及資料類別而定。目前實際可行的一步屬合約層面，而非取證層面：確認雲端服務及託管服務協議已訂明資料外洩通知時間表、審計權利，以及供應商披露受影響租戶的責任範圍。那些發現自己對供應商一方入侵毫不知情的團隊，是在最壞的時機下才學會這一課。</p>
+<p>Rackspace Spot 事件帶來的更廣泛教訓是：客戶端的強化措施與供應商端的憑證衛生，其實是同一問題的兩端。集群的可信程度，取決於能夠觸及它的最弱一組憑證。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/rackspace-spot-breach-let-hackers-access-customer-kubernetes-secrets/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
