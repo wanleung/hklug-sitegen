@@ -1,0 +1,38 @@
+Date: 2026-11-22 16:02:00
+Author: HKLUG Team
+Title: Intel Coral Rapids and Razor Lake Model IDs Land in Linux 7.4-rc4
+Content:
+<p>Intel's next wave of server and client processors took a small but meaningful step toward production this week, as model IDs for the upcoming Coral Rapids server chips and Razor Lake client chips were submitted in the x86 fixes queued for Linux 7.4-rc4.</p>
+<p>The change arrived as part of the routine weekly x86 pull targeting the 7.4-rc4 release, according to Phoronix's coverage of the submissions. The coverage does not enumerate the individual family and model numbers involved, and the patch series itself is the authoritative reference for those values; the substance of the news is that identification data for both families now exists upstream at all. The IDs exist so that the kernel can recognise and correctly handle the parts once they appear in real systems — a routine but necessary piece of groundwork that tends to land several release cycles before the silicon ships.</p>
+<h4>Why model IDs matter</h4>
+<p>On their own, a handful of family and model numbers look like bureaucratic minutiae. In practice, they are one of the earliest public signals that a new silicon generation is moving from design into the enablement phase.</p>
+<p>Model IDs gate a surprising amount of low-level behaviour: microcode loading, MSR handling, errata workarounds, thermal and power management paths, and per-family quirks in the x86 code. Without an accurate ID match, a kernel may fall back to generic behaviour that is safe but suboptimal — or, in worse cases, fail to apply a necessary mitigation.</p>
+<p>For anyone maintaining Linux fleets, the appearance of these IDs is the point at which planning conversations can start being grounded in something concrete rather than rumour.</p>
+<h4>Reading the roadmap</h4>
+<p>Coral Rapids is Intel's upcoming server processor line, while Razor Lake targets client chips. Neither has been given a firm launch date in these submissions, and model ID enablement alone says nothing about performance, pricing, or availability.</p>
+<p>What it does suggest is that both families are far enough along for the vendor to be publishing identification data upstream — the kind of detail that typically precedes broader platform enablement in distributions by a considerable margin. Kernel support for new x86 families frequently appears a full release cycle or more before hardware reaches customers, with backports to stable and LTS branches following later.</p>
+<p>The timing carries particular relevance for organisations in Hong Kong planning server refreshes or standardising on new client hardware: the kernel code that will eventually underpin those systems is being written now, in public, and can be tracked long before procurement decisions are made.</p>
+<h4>Practical guidance</h4>
+<p><strong>Kernel readiness.</strong> Mainline support will arrive with 7.4 proper, but most production systems run distribution kernels. Administrators should expect the model IDs to be backported to the stable and LTS trees their distributions track, and should confirm that timeline with their vendor rather than assuming immediate availability.</p>
+<p><strong>Distribution rollout.</strong> New-family enablement often lands in a point release before it becomes the default. Track your distributor's changelog for x86 backports if you plan to deploy Coral Rapids or Razor Lake hardware close to launch.</p>
+<p><strong>Fleet planning.</strong> Model IDs in-tree are a leading indicator, not a ship date. Use them as a checkpoint for validating firmware, BMC/BIOS versions, and monitoring tooling assumptions — but keep procurement milestones tied to official platform announcements.</p>
+<p><strong>Legacy and edge systems.</strong> Older kernels will not recognise the new parts. Any appliance or embedded fleet pinned to an aged kernel should be assessed for upgrade paths before new hardware is introduced.</p>
+<p>For Hong Kong IT teams, the practical takeaway is straightforward: the enablement trail for Intel's next server and client generations is now visible in mainline Linux, giving planners an early, verifiable signal to build refresh roadmaps against.</p>
+<hr>
+<p>Intel 下一代伺服器及客戶端處理器本週向量產邁出了雖小但意義深遠的一步：即將推出的 Coral Rapids 伺服器晶片及 Razor Lake 客戶端晶片的型號 ID，已隨 x86 修正合入佇列、目標 7.4-rc4，完成提交。</p>
+<p>根據 Phoronix 對相關提交的報導，該變更屬例行的每週 x86 pull，目標為 7.4-rc4 版本。報導並未列出涉及的各項 family 及 model 編號，patch series 本身才是這些數值的權威依據；新聞的實質在於，兩個系列的識別資料如今已存在於上游。這些 ID 的作用，是讓內核在相關型號出現在真實系統時能夠識別並正確處理——這是例行但必要的基礎工作，通常會在晶片出貨前數個發佈週期便已落地。</p>
+<h4>為何型號 ID 重要</h4>
+<p>單看幾個 family 及 model 編號，彷彿只是官僚式的繁文縟節。實際上，它們是新一代晶片由設計階段進入啟用（enablement）階段的最早公開信號之一。</p>
+<p>型號 ID 所掌控的底層行為之多，往往出人意料：微碼（microcode）載入、MSR 處理、勘誤（errata）應對措施、散熱與功耗管理路徑，以及 x86 代碼中按 family 劃分的特殊處理。若缺乏準確的 ID 匹配，內核可能回落至通用行為——安全但並非最優；在較差的情況下，則可能無法套用必要的緩解措施。</p>
+<p>對於任何維護 Linux fleet 的人而言，這些 ID 的出現，正是規劃討論可以從傳聞轉為有具體依據的起點。</p>
+<h4>解讀路線圖</h4>
+<p>Coral Rapids 是 Intel 即將推出的伺服器處理器系列，Razor Lake 則專為客戶端晶片而設。在本次提交中，兩者均未獲得確定的發佈日期，而僅有型號 ID 的啟用，對效能、定價或供貨情況說明不了什麼。</p>
+<p>它所顯示的是，兩個系列的進展已足以讓 Intel 在上游發佈識別資料——這類細節通常會領先發行版廣泛的平台支援引入相當長一段時間。新 x86 系列的內核支援，往往在硬件送到客戶手上前整整一個發佈週期甚至更早已出現，其後才會向 stable 及 LTS 分支進行 backport。</p>
+<p>時機對香港計劃更新伺服器或統一採用新客戶端硬件的機構尤具參考價值：最終將支撐這些系統的內核代碼，此刻正以公開方式編寫，並可在採購決定作出前很久便開始追蹤。</p>
+<h4>實務建議</h4>
+<p><strong>內核就緒程度。</strong> 主線（mainline）支援將隨正式版 7.4 推出，但大多數生產系統運行的是發行版內核。管理員應預期型號 ID 會 backport 至所用發行版追蹤的 stable 及 LTS 分支，並應向供應商確認時間表，而非假定即時可用。</p>
+<p><strong>發行版部署。</strong> 新系列的啟用往往先在 point release 落地，之後才成為預設選項。若計劃在發佈前後部署 Coral Rapids 或 Razor Lake 硬件，請留意發行版變更紀錄中的 x86 backport 項目。</p>
+<p><strong>Fleet 規劃。</strong> 已進入內核樹的型號 ID 是先行指標，並非出貨日期。可將其用作驗證韌體、BMC/BIOS 版本及監控工具假設的檢查點——但採購里程碑仍應以官方平台公告為準。</p>
+<p><strong>舊有及邊緣系統。</strong> 舊版內核不會識別新型號。任何鎖定於過時內核的應用裝置或嵌入式 fleet，在引入新硬件前應先評估升級路徑。</p>
+<p>對香港 IT 團隊而言，實際結論十分直接：Intel 下一代伺服器及客戶端系列的支援引入軌跡，如今已在主線 Linux 中清晰可見，為規劃者提供了一個及早且可驗證的信號，據以制定硬件更新路線圖。</p>
+<p><a href="https://www.phoronix.com/news/Coral-Rapids-Razor-Lake-7.4" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
