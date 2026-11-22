@@ -1,0 +1,36 @@
+Date: 2026-11-22 19:30:00
+Author: HKLUG Team
+Title: Signal walls off chat screens from Siri and Gemini
+Content:
+<p>Signal has announced new defences designed to keep Apple's Siri and Google's Gemini from harvesting conversation content through the operating system's own screen-aware features — a move that effectively treats the OS itself, rather than only the device holder, as a potential leak path.</p>
+<p>According to BleepingComputer, which reported the changes, Signal will block screenshots on iOS 27 and prevent AI assistants from capturing conversation content on supported Android devices.</p>
+<h4>Why the threat model changed</h4>
+<p>Signal's end-to-end encryption has always assumed that an attacker must break the cryptography, compromise an endpoint, or coerce a participant to read a message. Screen-aware assistants introduce a fourth path that does not require defeating encryption at all: the platform's own multimodal AI can observe whatever is rendered on screen and fold it into a processed, often cloud-linked, context.</p>
+<p>That is a materially different problem from a user deliberately taking a screenshot. It happens as a byproduct of ordinary device use — a voice assistant summarising what is on the display, for example — and it can occur without any malicious intent on the part of the conversation's participants. Because the capture happens at the OS layer, no amount of transport-layer or server-side hardening on Signal's part can prevent it. The countermeasure has to live in the platform, which is precisely where Signal is now pushing.</p>
+<h4>Two platforms, two mechanisms</h4>
+<p>The two implementations are not the same, and the distinction matters for anyone assessing exposure.</p>
+<p>On Apple's side, the fix is blunt: with iOS 27, screenshot capture in Signal is blocked outright. The assistant cannot grab a frame of the conversation because the frame itself is withheld.</p>
+<p>On Android, the approach is narrower. Signal marks its conversation views so they are excluded from AI-assisted capture on devices and OS versions that support the mechanism. BleepingComputer's reporting describes this as protection on "supported Android devices" — a qualifier that does a lot of work.</p>
+<h4>The limits of the fix</h4>
+<p>Coverage is partial by design. The iOS protection depends on users upgrading to iOS 27; the Android protection depends on the device and OS build supporting the capture-exclusion capability. A large installed base of older hardware and lagging enterprise fleets will remain outside the protected perimeter for years, and nothing in Signal's announcement changes that. For IT teams running mobile device management programmes, the practical takeaway is that policy — not just app version — determines whether the protection applies.</p>
+<p>The scope is also app-specific. The measures protect Signal's own views; they say nothing about other applications that render sensitive material on screen, from banking portals to healthcare dashboards. Any app handling regulated or confidential data faces the same OS-level observation risk, and any app that wants equivalent protection must implement its own capture controls.</p>
+<p>It is worth stating plainly that this is not a Signal encryption failure — the ciphertext remains intact. What is undermined is the assumption that encrypted content stays confined to the intended recipients once the operating system can read the screen. For enterprises in Hong Kong and elsewhere that pair encrypted messaging with device-level compliance controls, that distinction is exactly the point: the audit question is no longer only who holds the keys, but what the platform does with what it can see.</p>
+<h4>What comes next</h4>
+<p>The obvious follow-up question is whether competing messaging apps will adopt comparable OS-level capture exclusions, and whether Apple and Google will broaden or constrain the underlying platform features as assistants gain more screen context? Both vendors have strong incentives to make on-device observation more capable, which puts app developers in a continuing negotiation with the platforms rather than in full control of their own privacy guarantees. Expect the next few OS release cycles to be the real test of whether these protections hold — and for regulators and enterprise buyers to ask who is accountable when they do not.</p>
+<hr>
+<p>Signal 宣布推出新的防護措施，旨在阻止 Apple 的 Siri 和 Google 的 Gemini 通過操作系統本身的螢幕感知功能讀取對話內容——這一舉動實質上把操作系統本身，而不僅是裝置持有人，視為潛在的洩漏途徑。</p>
+<p>據報道這些改動的 BleepingComputer 稱，Signal 將在 iOS 27 上封鎖截圖功能，並在支援的 Android 裝置上阻止 AI 助手擷取對話內容。</p>
+<h4>為什麼威脅模型改變了</h4>
+<p>Signal 的端到端加密一向假設攻擊者必須破解密碼學、入侵端點，或脅迫參與者才能讀取訊息。螢幕感知助手引入了第四條途徑，完全不需要破解加密：平台自身的 multimodal AI 可以觀察螢幕上顯示的任何內容，並將其納入經過處理、通常與雲端連結的 context。</p>
+<p>這與用戶主動截圖是截然不同的問題。它是日常使用裝置時的副產品——例如語音助手總結螢幕上顯示的內容——而且可以在對話參與者毫無惡意的情況下發生。由於擷取發生在 OS 層面，Signal 在傳輸層或伺服器端做再多加固都無法阻止。對策必須內置於平台之中，而這正是 Signal 目前攻關的方向。</p>
+<h4>兩個平台，兩種機制</h4>
+<p>兩項實現並不相同，這點對評估暴露風險的人而言十分重要。</p>
+<p>在 Apple 方面，修復方式相當直接：iOS 27 起，Signal 內的截圖功能被全面封鎖。助手無法擷取對話畫面，因為該畫面本身已被扣留。</p>
+<p>在 Android 方面，做法較為窄。Signal 將其對話視圖加以標記，使其在支援該機制的裝置及 OS 版本上被排除於 AI 輔助擷取之外。BleepingComputer 的報道將此描述為在「支援的 Android 裝置」上提供保護——這限定詞作用甚大。</p>
+<h4>修復的局限</h4>
+<p>覆蓋範圍是刻意做到部分性的。iOS 保護取決於用戶升級至 iOS 27；Android 保護則取決於裝置及 OS 版本是否支援擷取排除功能。大量舊硬件及升級緩慢的企業裝置群組將在數年內繼續處於保護範圍之外，而 Signal 的公告並未改變這一點。對於營運流動裝置管理（mobile device management）計劃的 IT 團隊而言，實際啟示是：決定保護是否生效的是政策——而不僅是應用程式版本。</p>
+<p>保護範圍同樣僅限於該應用程式。這些措施保護的是 Signal 自身的視圖；它們沒有提及任何在螢幕上顯示敏感內容的其他應用程式，由銀行門戶到醫療儀表板皆然。任何處理受規管或機密數據的應用程式都面臨同樣的 OS 層觀察風險，而任何希望獲得同等保護的應用程式都必須自行實現擷取控制。</p>
+<p>有必要明確指出，這不是 Signal 的加密失敗——ciphertext 依然完整。被動搖的假設是：一旦操作系統可以讀取螢幕，加密內容便不再局限於預定的接收者。對於香港及其他地區將加密通訊與裝置層合規控制結合的企業而言，這區別正是關鍵：審計問題已不再只是誰持有密鑰，而是平台如何處理它所能看到的東西。</p>
+<h4>接下來會怎樣</h4>
+<p>顯而易見的後續問題是：其他通訊應用程式會否採用類似的 OS 層擷取排除機制，以及 Apple 和 Google 會否在助手獲得更多螢幕 context 的同時擴大或限制底層平台功能？兩家廠商都有強烈動機令裝置上的觀察功能更強大，這使應用程式開發者與平台處於持續談判之中，而非完全掌控自己的隱私保障。預期未來幾個 OS 發布周期將是檢驗這些保護能否真正生效的關鍵——同時也是監管機構和企業買家追問一旦保護失效誰須問責的時刻。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/signal-to-block-siri-gemini-ai-from-capturing-chats-on-ios-android/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
