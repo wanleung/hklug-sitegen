@@ -1,0 +1,63 @@
+Date: 2026-11-22 12:34:00
+Author: HKLUG Team
+Title: Rust Reaches the Kernel's WMI Layer With a Clevo Laptop Driver
+Content:
+<pre><code>
+The Linux kernel's Rust experiment is quietly moving into one of its most mundane corners: firmware glue code. According to Phoronix, the first driver built on the kernel's Rust WMI (Windows Management Instrumentation) interface abstractions is under development, and it targets a familiar name in the barebones laptop world — Clevo.
+
+The new driver, `clevo-laptop`, is being written to talk to Clevo hardware through the kernel's WMI layer. Its practical reach extends well beyond machines that actually carry the Clevo badge: the Taiwan-based contract manufacturer's chassis are rebadged and sold by a long list of vendors, including TUXEDO Computers, Metabox, Sager, and XMG, among others. For anyone who has bought a &quot;no-name&quot; performance laptop in the past two decades, there is a decent chance it was a Clevo underneath.
+
+**What WMI actually does**
+
+WMI is, in plain terms, a channel for talking to firmware. Laptop vendors expose machine-specific functions through it — battery thresholds, keyboard backlight behaviour, fan curves, hotkey handling, and other low-level features that generic ACPI code does not cover. In the kernel, that means a driver that implements a vendor-specific interface on top of the WMI subsystem. It is not glamorous work, and it is exactly the kind of code where bugs tend to be annoying rather than catastrophic.
+
+That is what makes this story interesting beyond the hardware. For years, the Rust-in-the-kernel conversation centred on marquee subsystems and abstract debates about language safety. A WMI driver is the opposite: unglamorous, vendor-specific, and routine. Rust reaching this territory suggests the language is becoming a normal option for the kinds of drivers most kernel developers actually write, rather than a showpiece confined to selected demos.
+
+There is also a kernel convention at play. New subsystem bindings in Linux typically land alongside a reference implementation — a driver that exercises the API and proves it works in practice. The WMI bindings appear to be getting their turn, with `clevo-laptop` serving as the first consumer of the Rust WMI abstractions.
+
+**One driver, not two**
+
+It is worth being precise about what is being proposed. `clevo-laptop` is not an additional driver sitting alongside the existing Clevo support — the current C-based Clevo driver has been in the tree for years and handles this hardware today. The new Rust effort ultimately has to displace that code rather than coexist with it indefinitely. How and when that transition will happen, and which kernel release might carry the result, has not been spelled out in detail.
+
+The driver is under review, not merged. It does not ship in any released kernel today, and its availability for end users remains an open question until it clears the merge process.
+
+For IT professionals tracking platform security and supply-chain exposure, the rebadge angle is a useful reminder of how opaque the laptop market can be: a single Clevo design can surface under half a dozen brands, and firmware-level behaviour is largely identical across them. For the open-source community, though, the headline is simpler — Rust is starting to do the boring work, and in kernel development, boring is a sign of maturity.
+
+*Source: Phoronix.*
+
+---
+
+```yaml
+---
+title: &quot;首個基於 Rust WMI 的驅動程式出爐 目標 Clevo 筆記型電腦&quot;
+date: 2026-11-22T12:34:00
+author: HKLUG Team
+source_url: https://www.phoronix.com/news/Rust-WMI-Driver-Clevo-Laptops
+tags: [linux-kernel, rust, clevo, wmi, laptop-vendors, drivers]
+---
+</code></pre>
+<p>Linux 核心的 Rust 實驗正悄悄推進到其中一個最不起眼的角落：韌體銜接程式碼。據 Phoronix 報導，首個建立在核心 Rust WMI（Windows Management Instrumentation）介面抽象層之上的驅動程式正在開發中，而它的目標，是白牌筆記型電腦世界裡的一個熟悉名字 —— Clevo。</p>
+<p>新驅動程式 <code>clevo-laptop</code> 旨在透過核心的 WMI 層與 Clevo 硬體溝通。它的實際覆蓋範圍遠超真正貼上 Clevo 標誌的機器：這家台灣契約製造商的機身被多家廠商改標發售，包括 TUXEDO Computers、Metabox、Sager 和 XMG 等。過去二十年間買過「無名」效能筆記型電腦的使用者，機殼底下有相當機會其實就是 Clevo。</p>
+<p><strong>WMI 究竟做什麼</strong></p>
+<p>簡單說，WMI 是一條與韌體對話的通道。筆記型電腦廠商透過它提供機器特定功能 —— 電池閾值、鍵盤背光行為、風扇曲線、快捷鍵處理，以及其他通用 ACPI 程式碼未涵蓋的低階功能。在核心裡，這代表一支驅動程式在 WMI 子系統之上實作廠商專屬介面。這工作毫不光鮮，卻正是一旦出錯只會令人頭痛、而不會釀成災難的那種程式碼。</p>
+<p>這正是讓本則新聞超越硬體層面的原因。多年來，核心內 Rust 的討論圍繞著明星子系統，以及關於語言安全的抽象爭論。WMI 驅動程式恰好相反：不起眼、廠商專屬、例行公事。Rust 觸及這一帶，意味著這門語言正成為大多數核心開發者日常所寫那類驅動程式的常規選項，而非侷限於幾個精選示範的展示品。</p>
+<p>背後也有一項核心慣例在起作用。Linux 的新 subsystem binding 通常會伴隨一份參考實作落地 —— 一支驗證 API、證明它在實務中可行的驅動程式。WMI binding 看來正輪到這一步，<code>clevo-laptop</code> 擔任 Rust WMI 抽象層的首個使用者。</p>
+<p><strong>一支驅動程式，不是兩支</strong></p>
+<p>有必要把提案內容講清楚。<code>clevo-laptop</code> 不是在現有 Clevo 支援旁邊再多加一支驅動程式 —— 現有的 C 語言 Clevo 驅動程式已在原始碼樹中存在多年，今天就在處理這批硬體。新的 Rust 工作最終必須取代那段程式碼，而非與它無限期共存。這次轉換會如何進行、何時進行，以及哪個核心版本可能收錄結果，目前尚未有詳細說明。</p>
+<p>該驅動程式仍在審查，並未合併。它不會隨任何已發布的核心出貨；在通過合併流程之前，最終使用者能否用到仍是未知數。</p>
+<p>對追蹤平台安全與供應鏈風險的 IT 專業人士而言，改標角度是個有用的提醒，說明筆記型電腦市場可以多不透明：單一 Clevo 設計可以以數個品牌的名義出現，而韌體層級的行為在各品牌之間大致相同。不過對開源社群來說，結論更簡單 —— Rust 開始接手枯燥的工作，而在核心開發裡，枯燥正是成熟的象徵。</p>
+<p><em>來源：Phoronix。</em></p>
+<hr>
+<p>```</p>
+<p>Linux 核心的 Rust 實驗正悄悄推進到其中一個最不起眼的角落：韌體銜接程式碼。據 Phoronix 報導，首個建立在核心 Rust WMI（Windows Management Instrumentation）介面抽象層之上的驅動程式正在開發中，而它的目標，是白牌筆記型電腦世界裡的一個熟悉名字 —— Clevo。</p>
+<p>新驅動程式 <code>clevo-laptop</code> 旨在透過核心的 WMI 層與 Clevo 硬體溝通。它的實際覆蓋範圍遠超真正貼上 Clevo 標誌的機器：這家台灣契約製造商的機身被多家廠商改標發售，包括 TUXEDO Computers、Metabox、Sager 和 XMG 等。過去二十年間買過「無名」效能筆記型電腦的使用者，機殼底下有相當機會其實就是 Clevo。</p>
+<p><strong>WMI 究竟做什麼</strong></p>
+<p>簡單說，WMI 是一條與韌體對話的通道。筆記型電腦廠商透過它提供機器特定功能 —— 電池閾值、鍵盤背光行為、風扇曲線、快捷鍵處理，以及其他通用 ACPI 程式碼未涵蓋的低階功能。在核心裡，這代表一支驅動程式在 WMI 子系統之上實作廠商專屬介面。這工作毫不光鮮，卻正是一旦出錯只會令人頭痛、而不會釀成災難的那種程式碼。</p>
+<p>這正是讓本則新聞超越硬體層面的原因。多年來，核心內 Rust 的討論圍繞著明星子系統，以及關於語言安全的抽象爭論。WMI 驅動程式恰好相反：不起眼、廠商專屬、例行公事。Rust 觸及這一帶，意味著這門語言正成為大多數核心開發者日常所寫那類驅動程式的常規選項，而非侷限於幾個精選示範的展示品。</p>
+<p>背後也有一項核心慣例在起作用。Linux 的新 subsystem binding 通常會伴隨一份參考實作落地 —— 一支驗證 API、證明它在實務中可行的驅動程式。WMI binding 看來正輪到這一步，<code>clevo-laptop</code> 擔任 Rust WMI 抽象層的首個使用者。</p>
+<p><strong>一支驅動程式，不是兩支</strong></p>
+<p>有必要把提案內容講清楚。<code>clevo-laptop</code> 不是在現有 Clevo 支援旁邊再多加一支驅動程式 —— 現有的 C 語言 Clevo 驅動程式已在原始碼樹中存在多年，今天就在處理這批硬體。新的 Rust 工作最終必須取代那段程式碼，而非與它無限期共存。這次轉換會如何進行、何時進行，以及哪個核心版本可能收錄結果，目前尚未有詳細說明。</p>
+<p>該驅動程式仍在審查，並未合併。它不會隨任何已發布的核心出貨；在通過合併流程之前，最終使用者能否用到仍是未知數。</p>
+<p>對追蹤平台安全與供應鏈風險的 IT 專業人士而言，改標角度是個有用的提醒，說明筆記型電腦市場可以多不透明：單一 Clevo 設計可以以數個品牌的名義出現，而韌體層級的行為在各品牌之間大致相同。不過對開源社群來說，結論更簡單 —— Rust 開始接手枯燥的工作，而在核心開發裡，枯燥正是成熟的象徵。</p>
+<p><em>來源：Phoronix。</em></p>
+<p><a href="https://www.phoronix.com/news/Rust-WMI-Driver-Clevo-Laptops" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
