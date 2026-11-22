@@ -1,0 +1,42 @@
+Date: 2026-11-22 08:06:00
+Author: HKLUG Team
+Title: Prompt Theft Ran for Months Inside Three AI Inference Hosts Before Anyone Noticed
+Content:
+<p>Industrial cybersecurity firm Dragos disclosed this week that attackers had been siphoning data from inside three AI inference providers for months — and that none of the three realised it until researchers brought it to their attention. OpenRouter, the gateway that routes customer AI requests across a pool of upstream inference providers, has since dropped the three firms identified in the research from its roster.</p>
+<p>According to The Hacker News, which reported the disclosure, some of the stolen requests carried the Zero Data Retention (ZDR) flag — the setting intended to guarantee that a prompt is never stored anywhere.</p>
+<p>The incident cuts to a question many enterprises are only now beginning to ask about their AI stack: what exactly does a compliance label on a model provider actually bind?</p>
+<p><strong>A flag, not a guarantee</strong></p>
+<p>ZDR is generally understood as a contractual commitment. A provider agrees, in policy terms, not to retain prompts or completions. What the Dragos finding suggests is that this commitment describes an intention, not an enforced property of the infrastructure. An attacker operating inside an inference host can read and copy traffic regardless of how the request is labelled upstream. The flag survives; the data does not.</p>
+<p>That reframing matters for any organisation that has treated "ZDR: yes" in a vendor questionnaire as a sufficient answer during procurement. It is a policy assertion, and policy assertions are only as durable as the ability of the operator to detect when they are being broken.</p>
+<p><strong>Structural, not careless</strong></p>
+<p>The second uncomfortable detail is that the exfiltration ran for months without any of the three providers noticing. This was not a failure of a single logging configuration; it was a failure to monitor one's own stack closely enough to see outbound traffic leaving it. If the operator cannot detect theft of its own request stream, no downstream attestation — ZDR or otherwise — can be taken at face value.</p>
+<p>For buyers routing through a gateway such as OpenRouter, the architecture compounds the problem. A vendor chosen for its compliance posture may in practice be served by an upstream provider the buyer never evaluated. Visibility into that handoff sits at the routing layer, which is precisely why the delisting itself is a signal worth reading: it tells customers which names were in the pool.</p>
+<p><strong>Why it matters here</strong></p>
+<p>Incidents of this shape resonate with Hong Kong organisations deploying customer-facing AI features, particularly where inference is outsourced and prompts carry personal data subject to the PDPO. This is a general observation about how the architecture works, not a claim that any Hong Kong firm or regulator has responded to this specific disclosure. Where a prompt containing customer PII is copied from infrastructure the direct vendor does not control, accountability becomes difficult to trace — and breach-notification obligations may not have been written to reach the gateway at all.</p>
+<p>A practical checklist for teams reviewing their AI supply chain:</p>
+<ul>
+<li><strong>Confirm current listings.</strong> Verify that the providers behind your gateway are the ones you actually assessed — pools change without procurement being notified.</li>
+<li><strong>Ask how ZDR is enforced, not just declared.</strong> Look for technical controls on the inference host, retention audits, and the operator's own intrusion-detection coverage.</li>
+<li><strong>Extend notification clauses to the gateway.</strong> Ensure breach-notification obligations bind the routing layer as well as the direct model vendor.</li>
+</ul>
+<p>The three providers have not been publicly named in the material reviewed here, and OpenRouter's reply on the intrusion timeline and whether customer requests were among the stolen data remained outstanding at the time of writing, as reported by The Hacker News. Those answers will determine whether this is contained to the providers themselves or reaches the customers who trusted the label.</p>
+<hr>
+<p>工業網絡安全公司 Dragos 本週披露，攻擊者一直在三間 AI 推理服務供應商的系統內部竊取數據，持續數月——而三間公司均未自行察覺，直至研究人員主動通知才知悉。OpenRouter 是一個將客戶 AI 請求分發至上游推理供應商網絡的閘道（gateway），其後已將研究中確認的三間公司從名單中剔除。</p>
+<p>據率先報道此事的 The Hacker News 指出，部分遭竊取的請求附有零數據保留（Zero Data Retention，ZDR）標記——該設定原意是保證提示詞（prompt）不會在任何地方被儲存。</p>
+<p>此事件觸及一個許多企業才剛開始審視自身 AI 技術架構的問題：模型供應商身上的合規標籤，實際上究竟約束了什麼？</p>
+<p><strong>只是一個標記，而非保證</strong></p>
+<p>ZDR 一般被理解為一項合約承諾。供應商在政策層面同意不保留提示詞或回應內容。然而 Dragos 的發現顯示，這項承諾描述的只是一種意圖，而非基礎設施的強制屬性。在推理主機內部運作的攻擊者，不論請求在上游如何標記，均可讀取及複製流量。標記得以保留，數據則不會。</p>
+<p>這個重新理解的角度，對於任何曾在採購過程中將供應商問卷中的「ZDR：是」視為足夠答案的機構而言，意義重大。這是一項政策聲明，而政策聲明能否持久，取決於營運方能否察覺其遭到違反。</p>
+<p><strong>屬結構性問題，而非一時疏忽</strong></p>
+<p>第二個令人不安的事實是，數據外洩持續了數月，三間供應商無一察覺。這不是單一記錄設定的失效，而是未能密切監控自身架構、以致看不到流量流出的失誤。若營運方無法察覺自身的請求流遭竊，則任何下游認證——不論是 ZDR 或其他——均不可照單全收。</p>
+<p>對於經由 OpenRouter 等閘道分發請求的買方而言，此架構令問題更為複雜。因合規表現而獲選的供應商，實際上可能由買方從未評估過的上游供應商提供服務。對這交接環節的可見性位於路由層（routing layer），這正是剔除名單本身值得解讀的原因：它告知客戶哪些名字曾在供應商池中。</p>
+<p><strong>為何與香港相關</strong></p>
+<p>此類事件與部署面向客戶 AI 功能的香港機構息息相關，尤其是推理工作外判、且提示詞涉及受《個人資料（私隱）條例》（PDPO）規管的個人資料的情況。這是對該架構運作方式的一般觀察，並非指稱任何香港公司或監管機構已就此次特定披露作出回應。當含有客戶個人識別資訊（PII）的提示詞從直接供應商未能控制的基礎設施中被複製時，問責鏈難以追溯——而資料外洩通知的義務，可能從未設想涵蓋至閘道層。</p>
+<p>供團隊審視 AI 供應鏈的實用清單：</p>
+<ul>
+<li><strong>確認現有供應商名單。</strong> 核實閘道背後的供應商確實是你曾作評估的那些——供應商池可在未經採購部門知會的情況下變動。</li>
+<li><strong>追問 ZDR 如何強制執行，而不只是如何宣告。</strong> 留意推理主機上的技術控制措施、保留期審計，以及營運方自身的入侵偵測覆蓋範圍。</li>
+<li><strong>將通知條款延伸至閘道。</strong> 確保資料外洩通知義務同時約束路由層與直接模型供應商。</li>
+</ul>
+<p>在本文審閱的材料中，三間供應商並未公開具名；據 The Hacker News 報道，截稿時 OpenRouter 就入侵時間線、以及客戶請求是否在遭竊數據之列的回覆仍懸而未決。這些答案將決定事件會否局限於供應商本身，還是波及信任該標籤的客戶。</p>
+<p><a href="https://thehackernews.com/2026/11/openrouter-drops-3-providers-after.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
