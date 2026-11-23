@@ -1,0 +1,54 @@
+Date: 2026-11-23 18:29:00
+Author: HKLUG Team
+Title: AI Agents Cross Vendor Borders, but No One Vendor Owns the Risk
+Content:
+<h3>AI Agents Cross Vendor Borders, but No One Vendor Owns the Risk</h3>
+<p>AI agents that call tools, read data and act across several SaaS platforms, clouds and identity providers are breaking the shared-responsibility model: each vendor governs only its own perimeter, and none can see the whole action trail. Accountability has effectively shifted to the deploying organization — the only party with a cross-vendor view, and one rarely equipped to carry it. That is the core finding of an analysis from Token Security, examined by BleepingComputer.</p>
+<h4>The failure mode: a blind spot made of vendors</h4>
+<p>An agent pointed at a ticketing system, a code repository and a cloud control plane accumulates permissions as it moves to new tasks. Each integration is approved locally; no vendor can correlate activity across the others. When something anomalous happens, alerts fire in disconnected consoles, and the correlation that would expose a compromised agent identity has to be assembled manually — after the fact.</p>
+<p>Agent identities make it worse. They hold broad, long-lived credentials per platform, accrete scopes over time, and act at machine speed without the behavioural markers user-behaviour analytics rely on, so conventional alerting may never fire. The near-term risk is the lag between agents reaching production and governance catching up, not the model itself.</p>
+<h4>Why identity is the first lever</h4>
+<p>Consistent with Token Security's emphasis on managing agent identities, permissions and accountability, the practical sequence — ours, not the source's — runs as follows.</p>
+<p><strong>1. Inventory every agent identity.</strong> Most organizations cannot name all the non-human identities running in their environment, let alone describe their scopes or owners. Nothing else works until this list exists.</p>
+<p><strong>2. Scope credentials to the task, and make them short-lived.</strong> Standing, over-privileged credentials are the default outcome of incremental integration work. Task-scoped, short-lived tokens narrow blast radius when an agent is prompt-injected, misconfigured or compromised — the same case NIST SP 800-207 makes against standing access.</p>
+<p><strong>3. Correlate logs on the customer side.</strong> No vendor stitches the action trail together. Pulling identity-provider, SaaS and cloud audit logs into a common timeline is a customer obligation, not a feature request.</p>
+<p><strong>4. Fix the contract before the incident.</strong> Procurement language is where cross-vendor accountability gets settled: logging depth, data retention windows, notification timelines, and — the hardest clause to write — how breach attribution works when an incident spans three vendors who each hold partial evidence.</p>
+<h4>SOC playbooks must assume a non-human actor</h4>
+<p>The second governance gap is procedural. Incident-response runbooks written for human identities assume a session can be killed by disabling an account and that evidence will be found in one team's logs. Agents break both assumptions. Rehearsals should assume an entity that may exist under several identities at once, acting across vendors whose cooperation must be pre-arranged rather than requested under pressure.</p>
+<h4>A working checklist</h4>
+<p>For platform and security teams taking agents to production:</p>
+<ul>
+<li><strong>Inventory</strong> all agent identities, owners and scopes across IdP, SaaS and cloud.</li>
+<li><strong>Scope</strong> credentials to the specific task; enforce short lifetimes and rotation.</li>
+<li><strong>Correlate</strong> audit logs cross-platform into a single customer-controlled timeline.</li>
+<li><strong>Contract</strong> for logging depth, retention, notification windows and breach attribution at procurement time.</li>
+<li><strong>Rehearse</strong> an incident scenario in which the actor is non-human and evidence spans multiple vendors.</li>
+</ul>
+<p>The uncomfortable conclusion is that shared responsibility has not disappeared — it has moved. Vendors will keep governing their perimeters; only the deploying organization can govern what crosses them. For teams in Hong Kong and elsewhere rolling agents beyond pilots, that makes identity inventory, contract language and SOC rehearsal the highest-leverage moves available now, before the first cross-vendor incident writes the playbook for you.</p>
+<p><em>Source: BleepingComputer, reporting on analysis by Token Security.</em></p>
+<hr>
+<h3>AI Agents 跨越供應商邊界，卻無人承擔風險責任</h3>
+<p>能夠調用工具、讀取數據，並跨多個 SaaS 平台、雲端服務及身份提供商（identity provider）行事的 AI agents，正令 shared responsibility model（共享責任模式）失效：每個供應商只管轄自身範圍，沒有任何一方能看見完整的操作軌跡。問責實質上已轉移至部署機構——它是唯一具備跨供應商視角的一方，卻往往缺乏承擔這一角色的能力。這是 Token Security 一份分析的核心結論，由 BleepingComputer 檢視報道。</p>
+<h4>失效模式：由供應商構成的盲區</h4>
+<p>一個同時連接工單系統、程式碼儲存庫及雲端控制平面的 agent，在處理新任務時會不斷累積權限。每項整合均在本地獲批；沒有供應商能將活動與其他平台的記錄作關聯。當異常發生時，警報只會在各自獨立的控制台響起，而用於識別被入侵 agent 身份的關聯分析，只能在事後人工拼湊。</p>
+<p>Agent 身份令情況更為惡化。它們在每個平台持有廣泛而長期有效的憑證，權限範圍（scope）隨時間不斷擴大，並以機器速度行事，缺乏 user-behaviour analytics 所依賴的行為特徵，因此傳統警報機制可能永遠不會觸發。近期風險在於 agent 投入生產環境與治理追趕之間的時間差，而非模型本身。</p>
+<h4>為何身份是第一個槓桿</h4>
+<p>與 Token Security 強調管理 agent 身份、權限及問責的方向一致，以下實際推行次序由本文歸納，並非源自原文：</p>
+<p><strong>1. 盤點每一項 agent 身份。</strong> 多數機構無法列出運行於其環境中的所有非人類身份（non-human identities），更遑論描述其權限範圍或負責人。在這份清單建立之前，其他措施均無法奏效。</p>
+<p><strong>2. 將憑證範圍限定於任務，並縮短有效期。</strong> 長期存在、權限過大的憑證，是逐項增量整合工作的預設結果。以任務為範圍的短期 token，能在 agent 遭到 prompt injection、設定錯誤或被入侵時縮小爆炸半徑——這與 NIST SP 800-207 反對長期存取（standing access）的論點如出一轍。</p>
+<p><strong>3. 在客戶端關聯日誌。</strong> 沒有供應商會把操作軌跡拼接起來。將身份提供商、SaaS 及雲端審計日誌匯入統一時間軸，是客戶的責任，而非功能請求。</p>
+<p><strong>4. 在事故發生前修補合約條款。</strong> 採購條文是跨供應商問責的落實之處：日誌記錄深度、數據保留期限、通知時限，以及——最難擬寫的一條——當事故橫跨三家各持部分證據的供應商時，入侵歸因（breach attribution）如何運作。</p>
+<h4>SOC playbooks 必須假設非人類行為者</h4>
+<p>第二個治理缺口在於流程。為人類身份編寫的事故應急手冊（incident-response runbooks），假設只要停用帳戶即可終止會話，並假設證據會存在於單一團隊的日誌中。Agent 同時打破了這兩個假設。演練應假設一個實體可能同時以多重身份存在，其跨供應商行動所需的配合必須事先安排，而非在壓力下臨時請求。</p>
+<h4>實用清單</h4>
+<p>給正將 agents 推向生產環境的平台及安全團隊：</p>
+<ul>
+<li><strong>盤點</strong> IdP、SaaS 及雲端上所有 agent 身份、負責人及權限範圍。</li>
+<li><strong>限定</strong> 憑證至具體任務；強制短期有效期及定期輪換（rotation）。</li>
+<li><strong>關聯</strong> 跨平台審計日誌，匯入單一由客戶控制的時間軸。</li>
+<li><strong>在採購時</strong> 就日誌深度、保留期限、通知窗口及入侵歸因訂明合約條款。</li>
+<li><strong>演練</strong> 一項行為者非人類、證據橫跨多個供應商的事故情境。</li>
+</ul>
+<p>令人不安的結論是：shared responsibility 並未消失——只是轉移了位置。供應商會繼續管轄各自的範圍；只有部署機構能管轄跨越這些範圍的事物。對於香港及其他地區正將 agents 由試點推向大規模部署的團隊而言，在首宗跨供應商事故替你寫好 playbook 之前，身份盤點、合約條文及 SOC 演練就是當下最具效益的行動。</p>
+<p><em>Source: BleepingComputer, reporting on analysis by Token Security.</em></p>
+<p><a href="https://www.bleepingcomputer.com/news/security/ai-agents-are-creating-a-shared-responsibility-gap/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
