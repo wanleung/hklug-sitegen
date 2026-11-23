@@ -1,0 +1,42 @@
+Date: 2026-11-23 15:03:00
+Author: HKLUG Team
+Title: binary-parser Users Urged to Upgrade to 2.3.1 After Code-Injection Bug Surfaces
+Content:
+<p>A code-injection vulnerability in the widely used <code>binary-parser</code> npm library has come to light, and teams running affected versions are being told to move to 2.3.1 or later without delay. Tracked as <strong>CVE-2026-134814</strong> and rated <strong>CVSS 9.2</strong> in one assessment (8.1 in another), the flaw affects every release below 2.3.1 and lets an attacker who controls a parser definition run arbitrary JavaScript inside the host application, according to coverage by The Hacker News.</p>
+<p>The advisory language is unambiguous: binary-parser before 2.3.1 can be coaxed into executing attacker-supplied code through its parsing configuration — turning what developers assume is declarative data into a live execution path.</p>
+<h4>The attack path is the definition, not the payload</h4>
+<p>What makes this bug notable, and easy to misread, is where the injection lands. The malicious input is <strong>not</strong> a crafted binary file decoded at runtime. It is the parser definition itself: the JSON-like object a developer hands the library to describe a binary structure. binary-parser compiles that definition into generated parsing code, so a hostile or tampered definition can smuggle in statements that run with the application's privileges.</p>
+<p>That shifts the risk squarely into supply-chain territory. An attacker does not need to reach a network-facing decoder; they only need to influence a configuration object that flows to the library — via a compromised dependency, a poisoned template, or a definition file altered in a repository. It is a pattern the JavaScript ecosystem keeps rediscovering: when a library compiles declarative configuration into generated source, that configuration is executable code by another name.</p>
+<p>Published CVSS figures have caused some confusion: the vulnerability carries a <strong>9.2 base score under one assessment and 8.1 under another</strong>, as cited in The Hacker News coverage. Anyone reconciling the two against the NVD entry should note that the gap does not alter the practical guidance — the flaw is critical-to-high either way, and the fix version is identical.</p>
+<h4>Patch first, audit second</h4>
+<p>The remediation is straightforward: <strong>upgrade <code>binary-parser</code> to 2.3.1 or above</strong>. Where an immediate upgrade is off the table, interim measures include freezing parser definitions to a reviewed, fixed set, limiting who can modify definition files or templates in CI, and holding definition changes to the same review and approval gates as code changes.</p>
+<p>Risk is conditional, but that is not a reason to wait. Deployments built on fixed, internally authored definitions — reviewed once and never populated from external input — face markedly lower risk, since the vector requires control of the definition rather than the data. Even there, the upgrade belongs in routine maintenance rather than being deferred indefinitely: a refactor that starts generating definitions from external sources can quietly close that gap.</p>
+<h4>Dependency-audit checklist for Node.js teams</h4>
+<p>For IT and security teams in Hong Kong running Node.js dependency scanning as part of routine supply-chain hygiene, a quick triage step is available:</p>
+<ul>
+<li>Run <code>npm ls binary-parser</code> across each service and CI workspace to identify installed versions.</li>
+<li>Flag any version below 2.3.1 for upgrade, including transitive dependencies.</li>
+<li>Search repositories for parser definitions sourced from files, packages, or environment-provided configuration rather than hard-coded, reviewed values.</li>
+<li>Re-run the scan after the upgrade and confirm the resolved version in the lockfile.</li>
+</ul>
+<p>The framing matters most for sectors that lean heavily on binary parsing: fintech services decoding wire formats, IoT platforms handling device payloads, and CI pipelines that ingest build artifacts. In all three, a library that turns configuration into executable parsing logic sits squarely on the path between untrusted inputs and application runtime — which is precisely why the fix in 2.3.1 warrants prompt attention.</p>
+<hr>
+<p>廣泛使用的 <code>binary-parser</code> npm 函式庫被揭發存在代碼注入漏洞，運行受影響版本的團隊被要求立即升級至 2.3.1 或以上版本。據 The Hacker News 報道，該漏洞編號為 <strong>CVE-2026-134814</strong>，其中一項評級為 <strong>CVSS 9.2</strong>（另一項為 8.1），影響 2.3.1 以前的所有版本，可令控制 parser 定義的攻擊者在宿主應用程式內執行任意 JavaScript。</p>
+<p>安全公告措辭毫無含糊之處：2.3.1 以前的 binary-parser 可被誘使透過其解析配置執行攻擊者提供的代碼——將開發者視為純宣告式的資料，變成實際的執行路徑。</p>
+<h4>攻擊路徑來自定義，而非負載</h4>
+<p>此漏洞之所以值得注意、亦容易被誤解，在於注入發生的位置。惡意輸入<strong>並非</strong>在執行時解碼的精心構造二進制檔案，而是 parser 定義本身：即開發者交給函式庫、用以描述二進制結構的類 JSON 物件。binary-parser 會將該定義編譯成產生的解析代碼，因此敵意或被篡改的定義可以夾帶以應用程式權限運行的語句。</p>
+<p>這使風險直接落入供應鏈範疇。攻擊者毋須接觸面向網絡的解碼器，只需影響流入該函式庫的配置物件即可——途徑包括被入侵的依賴項、被污染的模板，或在程式碼倉庫中被修改的定義文件。這是 JavaScript 生態系統屢次重演的模式：當函式庫將宣告式配置編譯成產生的原始碼時，該配置其實就是另一種形式的可執行代碼。</p>
+<p>已公布的 CVSS 數據造成一些混淆：根據 The Hacker News 的報道引用，該漏洞在一項評級下<strong>基礎分數為 9.2，另一項則為 8.1</strong>。任何對照 NVD 條目核實兩者的人須留意，分數差異並不會改變實際操作指引——不論採用哪項評級，漏洞均屬嚴重至高危級別，而修復版本亦完全相同。</p>
+<h4>先修補，後審計</h4>
+<p>補救措施直接明確：<strong>將 <code>binary-parser</code> 升級至 2.3.1 或以上</strong>。若無法即時升級，臨時措施包括將 parser 定義鎖定為經審核的固定集合、限制 CI 中可修改定義文件或模板的人員，以及將定義變更納入與代碼變更相同的審核及批准程序。</p>
+<p>風險視乎具體條件，但這並非拖延的理由。以固定、內部編寫的定義構建的部署——經一次性審核、從不從外部輸入填充——風險明顯較低，因為該攻擊向量需要控制定義而非資料。即便如此，升級仍應納入例行維護，而非無限期擱置：一次改為從外部來源產生定義的重構，隨時可能悄悄填補這個缺口。</p>
+<h4>Node.js 團隊依賴項審計清單</h4>
+<p>對於香港日常執行 Node.js 依賴項掃描、以維護供應鏈衞生的 IT 及保安團隊，以下為快速篩查步驟：</p>
+<ul>
+<li>在每個服務及 CI 工作區執行 <code>npm ls binary-parser</code>，確認已安裝的版本。</li>
+<li>標記任何低於 2.3.1 的版本以作升級，包括間接依賴項（transitive dependencies）。</li>
+<li>搜尋程式碼倉庫中有否源自檔案、套件或環境變數配置的 parser 定義，而非硬編碼並經審核的數值。</li>
+<li>升級後重新執行掃描，並確認 lockfile 中的已解析版本。</li>
+</ul>
+<p>此一論述角度對高度依賴二進制解析的行業尤為重要：解碼 wire format 的金融科技服務、處理裝置 payload 的 IoT 平台，以及接收 build artifacts 的 CI pipelines。在上述三者中，將配置轉化為可執行解析邏輯的函式庫，正好處於不受信任輸入與應用程式執行時之間的路徑上——這正是 2.3.1 中的修復需要即時關注的原因。</p>
+<p><a href="https://thehackernews.com/2026/11/critical-binary-parser-flaw-enables.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
