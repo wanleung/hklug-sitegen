@@ -1,0 +1,30 @@
+Date: 2026-11-23 22:03:00
+Author: HKLUG Team
+Title: Mesa 27.0 Turns Off Legacy Radeon Driver Support by Default, Pushing AMD Users to AMDGPU
+Content:
+<p>Mesa 27.0 will ship with the RadeonSI Gallium3D driver's compatibility for the legacy <code>radeon</code> kernel driver switched off by default, according to Phoronix — the clearest signal yet that AMD's long-running migration to the <code>amdgpu</code> driver has reached its final stretch.</p>
+<p>The change is narrowly scoped to early-generation hardware. It applies to GCN 1.0 and GCN 1.1 parts — Southern Islands, Sea Islands and Volcanic Islands-era chips, including Kaveri-vintage R7 and R9 cards — which have continued to load the legacy <code>radeon</code> kernel driver by default. Owners of newer AMD GPUs built on GCN 1.2 and later, and virtually every card shipped in recent years, are untouched, since <code>amdgpu</code> has been their default for some time.</p>
+<p><strong>A closing door, not a sudden break</strong></p>
+<p>AMD and the Mesa community have spent the better part of a decade preparing for this moment. Phoronix notes that feature parity between the two drivers for the remaining GCN 1.0/1.1 hardware was reached roughly a year ago, removing the last technical justification for keeping the legacy path enabled by default. Mesa 27.0's default should therefore be read as the final turn of a deliberate transition rather than an abrupt deprecation.</p>
+<p>Practically, systems still loading <code>radeon.ko</code> when Mesa 27.0 lands can expect to lose hardware acceleration — with degraded video playback and stuttery desktop compositing as a result. It is an unwelcome surprise during a routine upgrade, but not a destructive one: no data is at risk, and display output generally still works.</p>
+<p>Crucially, the support has been <strong>disabled, not deleted</strong>. Upstream still provides a way to re-enable Radeon kernel driver compatibility as a temporary escape hatch, though that reprieve is expected to disappear eventually. Administrators should treat the option as a stopgap for buying time, not as a migration plan.</p>
+<p><strong>Why it matters</strong></p>
+<p>For administrators overseeing mixed-age workstations, the exposure concentrates in two places: systems pinned to long-lived enterprise LTS kernels, and environments running custom-built graphics stacks. Both are more likely to lag behind the kernel-side transition, and both can easily find themselves running a Mesa version that no longer interoperates with the driver their kernel is using.</p>
+<p>The practical lesson is straightforward — pair kernel and Mesa upgrades in the same validation cycle rather than rolling them out independently. Migration is gated by kernel support, not by Mesa, so a graphics stack upgrade lands safely only once the kernel underneath it is already driving the GPU through <code>amdgpu</code>. Before any major stack upgrade, inventory the graphics hardware in the fleet and confirm which driver each machine is actually loading; older installations with decade-old GCN parts may warrant a hardware refresh instead of continued remediation.</p>
+<p>The change also doubles as a case study in responsible legacy-code retirement: upstream reached feature parity first, kept the old path reachable, and made the switch reversible before flipping the default. That sequencing is what separates this from a sudden break — and it is why affected users have a window, however narrowing, to plan the move rather than react to it.</p>
+<p>Mesa 27.0's default simply confirms what AMD has signalled for years: the future of AMD Linux graphics is a single driver, <code>amdgpu</code>.</p>
+<p><em>Source: <a href="https://www.phoronix.com/news/RadeonSI-Radeon-Disable-Default">Phoronix</a></em></p>
+<hr>
+<p>據 Phoronix 報道，Mesa 27.0 將出廠時預設關閉 RadeonSI Gallium3D 驅動對舊版 <code>radeon</code> kernel 驅動的相容支援——這是迄今最明確的信號，顯示 AMD 遷移至 <code>amdgpu</code> 驅動的長期進程已進入最後階段。</p>
+<p>此項變更的影響範圍僅限於早期硬件，適用於 GCN 1.0 及 GCN 1.1 產品——即 Southern Islands、Sea Islands 及 Volcanic Islands 時代的晶片，包括 Kaveri 時期的 R7 及 R9 顯卡——這些硬件一直以來仍預設載入舊版 <code>radeon</code> kernel 驅動。採用 GCN 1.2 或更新架構的新款 AMD GPU，以及近年推出的幾乎所有顯卡，均不受影響，因為 <code>amdgpu</code> 早已是它們的預設驅動。</p>
+<p><strong>循序漸進的收束，而非突然中斷</strong></p>
+<p>AMD 與 Mesa 社群為這一刻已準備了近十年。Phoronix 指出，兩款驅動在餘下 GCN 1.0/1.1 硬件上的功能對等（feature parity）約在一年前已達成，這消除了繼續預設啟用舊版路徑的最後技術理據。因此，Mesa 27.0 的預設設定應理解為一次精心安排的轉型的最後一步，而非突如其來的棄用。</p>
+<p>實際而言，系統在 Mesa 27.0 發布後仍載入 <code>radeon.ko</code> 的話，預期將失去硬件加速——結果是影片播放質素下降以及桌面合成（compositing）出現卡頓。在例行升級中遇到這種意外當然不受歡迎，但並非破壞性的：沒有數據會受影響，顯示輸出一般仍然正常運作。</p>
+<p>關鍵在於，相關支援只是<strong>被停用，而非刪除</strong>。上游仍然提供重新啟用 Radeon kernel 驅動相容性的方法，作為臨時的應急手段（escape hatch），不過預期該緩解措施最終會被移除。系統管理員應將此選項視為爭取時間的權宜之計，而非遷移方案。</p>
+<p><strong>為何重要</strong></p>
+<p>對於管理混合年齡工作站的管理員而言，風險主要集中在兩處：一是鎖定長期企業版 LTS kernel 的系統，二是運行自建圖形堆疊（graphics stack）的環境。這兩類系統都較容易落後於 kernel 端的轉型，也都很容易出現 Mesa 版本已不再與 kernel 正在使用的驅動互通的情況。</p>
+<p>實際教訓很直接——應將 kernel 與 Mesa 的升級安排在同一個驗證周期內進行，而非各自獨立推出。遷移取決於 kernel 支援，而非 Mesa，因此只有當底層 kernel 已透過 <code>amdgpu</code> 驅動 GPU 時，圖形堆疊的升級才算安全落地。在任何重大堆疊升級之前，應先盤點機群中的圖形硬件，確認每部機器實際載入的是哪個驅動；配備已近十年歷史的 GCN 零件的舊安裝，可能更適合直接更新硬件，而非持續補救。</p>
+<p>這項變更同時也是一個負責任的舊代碼退役案例研究：上游先達成功能對等，保留舊路徑的可用性，並在切換預設值前確保轉換可逆。正正是這種先後次序，令此事有別於突如其來的中斷——也正因如此，受影響用戶仍有一個（儘管日益收窄的）窗口期來規劃遷移，而非被動應對。</p>
+<p>Mesa 27.0 的預設設定，只是確認了 AMD 多年來的明確表態：AMD Linux 圖形的未來只有一個驅動，就是 <code>amdgpu</code>。</p>
+<p><em>來源：<a href="https://www.phoronix.com/news/RadeonSI-Radeon-Disable-Default">Phoronix</a></em></p>
+<p><a href="https://www.phoronix.com/news/RadeonSI-Radeon-Disable-Default" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
