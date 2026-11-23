@@ -1,0 +1,60 @@
+Date: 2026-11-23 11:22:00
+Author: HKLUG Team
+Title: Legacy ASP.NET Anti-CSRF Library Idunno.AntiCsrf Carries 9.3-Severity Unauthenticated RCE Flaw
+Content:
+<blockquote>
+<p><strong>繁體中文 TL;DR｜重點摘要</strong>
+遺留的 ASP.NET 反 CSRF 函式庫 <strong>Idunno.AntiCsrf</strong>（<code>Idunno.AntiCsrf.dll</code>）被發現存在編號 <strong>CVE-2026-131914</strong> 的嚴重漏洞，CVSS 評分達 <strong>9.3／10.0</strong>，可遭<strong>未經身份驗證的遠端程式碼執行（RCE）</strong>攻擊，且<strong>已在野外被利用</strong>。受影響版本為 <strong>0.9.1.0</strong> 與 <strong>0.9.1 Beta</strong>。研究人員建議<strong>直接停用並遷移</strong>至 ASP.NET 框架內建的防偽令牌機制（<code>ValidateAntiForgeryToken</code> 或 <code>[AutoValidateAntiforgeryToken]</code>），與其等待更新版本。</p>
+<p>以下是本欄針對因應此次披露而採取行動的團隊整理的步驟：在正式與<strong>預備環境</strong>中搜尋 <code>Idunno.AntiCsrf.dll</code>、優先處理對外開放的系統、改用框架內建的防偽機制、檢視妥協跡象，並把審計範圍擴大至其他<strong>遭遺棄的二進制檔案</strong>及<strong>在引入套件源之前加入的元件</strong>——這正是掃描工具經常漏掉的一類元件。</p>
+<p>此次事件令人不安之處，不只在於漏洞本身，而在於同類遭遺棄的函式庫可能仍於生產環境執行、無人監控，<strong>等待着同類問題被揭發</strong>。</p>
+</blockquote>
+<hr />
+<p>A legacy anti-forgery helper shipped as <code>Idunno.AntiCsrf.dll</code> has become an urgent remediation item for ASP.NET teams, after researchers disclosed a critical flaw that attackers are already exploiting.</p>
+<p>The vulnerability, tracked as <strong>CVE-2026-131914</strong>, carries a <strong>CVSS score of 9.3 out of 10.0</strong> and permits <strong>unauthenticated remote code execution</strong> — meaning an attacker needs no credentials to reach it. According to The Hacker News, which reported the disclosure, the flaw affects library versions <strong>0.9.1.0</strong> and <strong>0.9.1 Beta</strong>, and has been observed being exploited in the wild rather than remaining a theoretical risk.</p>
+<p>The recommendation from the researchers is unusually blunt: <strong>discontinue the library rather than hold out for an updated release</strong>. For teams still carrying the dependency, the corrective action is removal and replacement.</p>
+<h4>Why a forgotten DLL matters more than the CVE</h4>
+<p><code>Idunno.AntiCsrf</code> is the kind of small, single-purpose assembly that gets dropped into a project years ago and never reviewed again. That is precisely what makes it dangerous. Dependencies of this vintage frequently sit outside modern software composition analysis (SCA) coverage and rarely appear in a software bill of materials, because they were added before the team adopted tooling — or were committed directly as a binary rather than pulled from a package feed.</p>
+<p>The result is an inventory blind spot: an internet-facing application can be running a 9.3-severity unauthenticated RCE path through a DLL that may never have appeared in any scanner's inventory. The security value of the library is also ironic — a component whose entire job was to harden requests is now the attack surface.</p>
+<p>The broader lesson for the .NET community is that legacy anti-CSRF helpers have been superseded by first-party framework features, leaving no reason to maintain them.</p>
+<h4>A practical checklist for .NET teams</h4>
+<p>The steps below are this desk's operational guidance for teams responding to the disclosure — not recommendations quoted from the researchers:</p>
+<ol>
+<li><strong>Locate the binary.</strong> Search production and staging servers, deployment packages, and source repositories for <code>Idunno.AntiCsrf.dll</code>, plus references in <code>web.config</code> and project files. Check versions 0.9.1.0 and 0.9.1 Beta specifically.</li>
+<li><strong>Prioritise internet-facing systems.</strong> Any host reachable from the public internet where the DLL is present should be treated as an immediate remediation candidate, given the unauthenticated nature of the flaw and reports of in-the-wild exploitation.</li>
+<li><strong>Migrate to framework-native anti-forgery.</strong> Replace the library with ASP.NET's built-in protections — <code>ValidateAntiForgeryToken</code> in Web Forms and MVC, or the <code>[AutoValidateAntiforgeryToken]</code> attribute in newer stacks. These are maintained by the framework and require no third-party dependency.</li>
+<li><strong>Hunt for compromise indicators.</strong> Because exploitation has already been reported, review logs and endpoint telemetry on affected hosts for signs of intrusion before, during, and after removal.</li>
+<li><strong>Widen the dependency audit.</strong> Treat this as a prompt to enumerate other orphaned binaries and pre-feed packages across the estate — exactly the class of component that typical scanning misses.</li>
+</ol>
+<h4>The estate-wide question</h4>
+<p>CVE-2026-131914 is notable less for its mechanism — the source reporting did not detail the root cause — than for what it represents: a security tool quietly turned into a vulnerability, sitting unnoticed in inventories precisely because it predates them.</p>
+<p>The uncomfortable question for any organisation running long-lived ASP.NET applications is how many similar abandoned libraries are still executing in production, unmonitored and unpatched, waiting for the same discovery.</p>
+<p><em>Source: The Hacker News, <a href="https://thehackernews.com/2026/11/hackers-exploit-critical-aspnet-anti.html">original report</a>.</em></p>
+<hr>
+<blockquote>
+<p><strong>繁體中文 TL;DR｜重點摘要</strong>
+遺留的 ASP.NET 反 CSRF 函式庫 <strong>Idunno.AntiCsrf</strong>（<code>Idunno.AntiCsrf.dll</code>）被發現存在編號 <strong>CVE-2026-131914</strong> 的嚴重漏洞，CVSS 評分達 <strong>9.3／10.0</strong>，可遭<strong>未經身份驗證的遠端程式碼執行（RCE）</strong>攻擊，且<strong>已在野外被利用</strong>。受影響版本為 <strong>0.9.1.0</strong> 與 <strong>0.9.1 Beta</strong>。研究人員建議<strong>直接停用並遷移</strong>至 ASP.NET 框架內建的防偽令牌機制（<code>ValidateAntiForgeryToken</code> 或 <code>[AutoValidateAntiforgeryToken]</code>），與其等待更新版本。</p>
+<p>以下是本欄針對因應此次披露而採取行動的團隊整理的步驟：在正式與<strong>預備環境</strong>中搜尋 <code>Idunno.AntiCsrf.dll</code>、優先處理對外開放的系統、改用框架內建的防偽機制、檢視妥協跡象，並把審計範圍擴大至其他<strong>遭遺棄的二進制檔案</strong>及<strong>在引入套件源之前加入的元件</strong>——這正是掃描工具經常漏掉的一類元件。</p>
+<p>此次事件令人不安之處，不只在於漏洞本身，而在於同類遭遺棄的函式庫可能仍於生產環境執行、無人監控，<strong>等待着同類問題被揭發</strong>。</p>
+</blockquote>
+<hr />
+<p>一款以 <code>Idunno.AntiCsrf.dll</code> 形式發佈的遺留反偽造輔助程式，已成為 ASP.NET 團隊的緊急修復項目——此前研究人員披露了一項嚴重漏洞，而攻擊者已實際加以利用。</p>
+<p>該漏洞編號為 <strong>CVE-2026-131914</strong>，<strong>CVSS 評分為 10.0 分中的 9.3 分</strong>，可容許<strong>未經身份驗證的遠端程式碼執行</strong>，意味著攻擊者無需任何憑證即可觸及。據報道此次披露的 The Hacker News 表示，漏洞影響函式庫的 <strong>0.9.1.0</strong> 與 <strong>0.9.1 Beta</strong> 版本，而且已被觀察到在野外遭利用，並非僅屬理論上的風險。</p>
+<p>研究人員的建議異常直截了當：<strong>停用該函式庫，而非等待更新版本</strong>。對於仍然依賴此套件的團隊，補救措施就是移除並予以替換。</p>
+<h4>為何一個被遺忘的 DLL 比 CVE 更值得關注</h4>
+<p><code>Idunno.AntiCsrf</code> 正是那種小型、單一用途的 assembly，多年前被放進專案後便從未再受檢視——這恰恰是它危險之處。此類年代久遠的依賴項往往落在現代軟件組合分析（software composition analysis, SCA）的覆蓋範圍之外，也很少出現在軟件物料清單（software bill of materials）之中，因為它們是在團隊採用相關工具之前便已加入——又或者是以二進制檔案形式直接提交，而非透過 package feed 引入。</p>
+<p>結果便形成一個庫存盲點：一個面向互聯網的應用程式，可能正透過某個從未出現在任何掃描器庫存中的 DLL，執行着一條嚴重程度 9.3 分的未經身份驗證 RCE 路徑。而該函式庫的安全價值亦帶有諷刺意味——一個本職就是強化請求防護的元件，如今竟成了攻擊面。</p>
+<p>對 .NET 社群而言，更廣泛的教訓是：遺留的反 CSRF 輔助程式已被第一方框架功能取代，再無理由繼續維護它們。</p>
+<h4>給 .NET 團隊的實用清單</h4>
+<p>以下步驟是本欄針對因應此次披露而採取行動的團隊所擬的操作指引，並非引自研究人員的建議：</p>
+<ol>
+<li><strong>找出該二進制檔案。</strong> 在正式及預備環境伺服器、部署套件和原始碼儲存庫中搜尋 <code>Idunno.AntiCsrf.dll</code>，以及 <code>web.config</code> 和專案檔案中的相關引用。特別檢查 0.9.1.0 及 0.9.1 Beta 版本。</li>
+<li><strong>優先處理對外開放的系統。</strong> 任何可從公共互聯網存取、且載有該 DLL 的主機，鑑於漏洞的未經身份驗證性質及野外利用報告，均應列為即時修復對象。</li>
+<li><strong>遷移至框架原生的防偽機制。</strong> 以 ASP.NET 內建防護取而代之——Web Forms 及 MVC 使用 <code>ValidateAntiForgeryToken</code>，較新的技術堆疊則使用 <code>[AutoValidateAntiforgeryToken]</code> attribute。這些由框架維護，無需任何第三方依賴。</li>
+<li><strong>搜尋妥協跡象。</strong> 由於已有利用事件報告，應在移除前、移除期間及移除後，檢視受影響主機的日誌和 endpoint 遙測數據，尋找入侵跡象。</li>
+<li><strong>擴大依賴項審計範圍。</strong> 將此事視為契機，在整個環境中列舉其他遭遺棄的二進制檔案，以及在引入套件源之前加入的元件——這正是典型掃描所遺漏的一類元件。</li>
+</ol>
+<h4>涉及整體環境的問題</h4>
+<p>CVE-2026-131914 值得注意之處，與其說是其漏洞機制（報道來源並未詳述根本成因），不如說是它所代表的意義：一件保安工具悄然變成了漏洞，正正因為它早於各項庫存系統而存在，才一直無人察覺。</p>
+<p>對於任何運行長期維持的 ASP.NET 應用程式的機構，一個令人不安的問題是：究竟還有多少同類被廢棄的函式庫，仍在生產環境中運行、無人監察、未有修補，等待着同類問題被揭發。</p>
+<p><em>來源：The Hacker News，<a href="https://thehackernews.com/2026/11/hackers-exploit-critical-aspnet-anti.html">原文報道</a>。</em></p>
+<p><a href="https://thehackernews.com/2026/11/hackers-exploit-critical-aspnet-anti.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
