@@ -1,0 +1,42 @@
+Date: 2026-11-23 14:28:00
+Author: HKLUG Team
+Title: XNU Linux Slips Apple's Kernel Into a Loadable Module to Run Unmodified macOS Binaries on Linux
+Content:
+<h4>XNU Linux Slips Apple's Kernel Into a Loadable Module to Run Unmodified macOS Binaries on Linux</h4>
+<p>A new open-source effort called XNU Linux takes an unusually direct route to running macOS software on Linux: instead of reimplementing Apple's application binary interface, it loads Apple's own XNU kernel code into Linux as a loadable kernel module. The result, as reported by Phoronix, is that unmodified macOS user-space binaries can execute on an otherwise stock ARM64 Linux host — no emulator, no modified distribution, and no ABI shim standing in between.</p>
+<p>The mechanism is the notable part. XNU Linux builds on the XNU kernel components that Apple publishes as open source, adapting them so they can be inserted into a running Linux kernel as a module. In that arrangement, Linux retains control of the hardware while XNU services the macOS syscall surface that applications expect. The host system itself remains unmodified apart from loading the module — a design choice that separates the project from most existing compatibility layers.</p>
+<p>That separation is clearest when compared with Darling, the long-running project that aims to let macOS binaries run on Linux and other Unix-like systems by reimplementing Apple's ABI and frameworks from scratch. Darling-style approaches chase behavioural drift: every Apple API call has to be recreated and kept in sync with a moving target. XNU Linux sidesteps that problem by executing Apple's own kernel code, which should offer higher behavioural fidelity — but it inherits the constraints and quirks of that code in exchange.</p>
+<h5>Known limitations</h5>
+<p>The project is explicitly early-stage, and both its scope and its caveats matter for anyone considering it:</p>
+<ul>
+<li><strong>No graphical interface.</strong> The current setup is headless; there is no display server or GUI stack. This is a command-line and server-oriented tool, not a way to run macOS desktop applications.</li>
+<li><strong>ARM64 only.</strong> Support depends on the ARM64 host architecture matching what XNU expects. There is no x86_64 path at this stage.</li>
+<li><strong>Licensing is not GPL.</strong> XNU is distributed under Apple's Public Source License (APSL), whose conditions differ materially from the GPL and LGPL. "Open-source kernel" does not mean unrestricted redistribution — notably, it does not grant rights to redistribute macOS binaries or Apple's proprietary user-space components, which remain covered by Apple's own terms.</li>
+<li><strong>Incomplete compatibility.</strong> As an early-stage project, coverage of the macOS user-space surface is partial, and expectations should be calibrated accordingly.</li>
+</ul>
+<h5>The trust-boundary question</h5>
+<p>There is also a security dimension worth stating plainly. Dropping a third-party kernel component into the Linux address space expands the host's attack surface and runs counter to the trust-boundary assumptions under which XNU was originally written — on Apple hardware, beneath Apple's own userspace. Any defects, unexpected behaviour, or supply-chain problems in that module now sit below Linux's own privilege boundaries. The prudent posture for now is isolated research and development use on throwaway or non-production machines, not deployment on systems that carry real workloads.</p>
+<h5>Where it could be useful</h5>
+<p>Despite those limits, the project has a plausible near-term niche. Development teams that depend on macOS-specific tooling — build scripts, code-signing utilities, or other binaries that assume a Darwin environment — often need those tools inside Linux-based CI pipelines and containers. Today that usually means maintaining a macOS build runner or resorting to emulation. Loading XNU directly onto an ARM64 Linux worker could simplify that workflow, provided the compatibility coverage matures.</p>
+<p>The architecture inverts the usual compatibility-layer playbook, which makes XNU Linux a project worth watching rather than adopting: if its syscall coverage improves and the security story firms up, it may offer a lower-friction path to macOS-dependent automation on Linux infrastructure. Until then, the recommendation is to keep it at arm's length in production and follow its progress instead.</p>
+<p>Phoronix's coverage is available at the source link above.</p>
+<hr>
+<h4>XNU Linux 將 Apple 內核嵌入可載入模組，於 Linux 上執行未經修改的 macOS 二進位檔</h4>
+<p>一項名為 XNU Linux 的嶄新開源計劃，以異常直接的途徑在 Linux 上執行 macOS 軟件：它並非重新實作 Apple 的 application binary interface（ABI），而是將 Apple 自身的 XNU 內核代碼作為可載入內核模組（loadable kernel module）載入 Linux。據 Phoronix 報道，結果是未經修改的 macOS user-space 二進位檔可以在一台未經改動的原裝 ARM64 Linux 主機上執行——毋須模擬器、毋須改動的發行版本，中間亦沒有任何 ABI shim。</p>
+<p>機制本身正是最值得注意的部分。XNU Linux 建基於 Apple 以開源形式發布的 XNU 內核組件，加以適配，使其能夠以模組形式插入運行中的 Linux 內核。在這種安排下，Linux 仍然掌控硬件，而 XNU 則負責處理應用程式所期望的 macOS syscall 界面。主機系統本身除載入模組外並無改動——這一設計選擇正是該計劃與大多數現有 compatibility layer 的區別所在。</p>
+<p>與長期計劃 Darling 相比較，這一區別最為明顯。Darling 旨在透過從頭重新實作 Apple 的 ABI 及 frameworks，讓 macOS 二進位檔可在 Linux 及其他 Unix-like 系統上執行。Darling 式的方法須不斷追趕行為差異（behavioural drift）：每一個 Apple API 呼叫都必須重新實作，並與不斷變動的目標保持同步。XNU Linux 則透過直接執行 Apple 自身的內核代碼避開了這一問題，理應提供更高的行為保真度——但作為代價，它也繼承了該代碼的限制與怪癖。</p>
+<h5>已知限制</h5>
+<p>該計劃明確仍處於早期階段，其範圍與注意事項對任何有意採用者均相當重要：</p>
+<ul>
+<li><strong>沒有圖形介面。</strong> 現階段配置為 headless；沒有 display server，亦沒有 GUI stack。這是一款面向命令行及伺服器的工具，並非用來執行 macOS 桌面應用程式。</li>
+<li><strong>僅支援 ARM64。</strong> 支援取決於 ARM64 主機架構與 XNU 所預期者相符。現階段沒有 x86_64 路徑。</li>
+<li><strong>授權並非 GPL。</strong> XNU 以 Apple 的 Public Source License（APSL）發布，其條款與 GPL 及 LGPL 有實質差異。「開源內核」並不等於可不受限制地再分發——尤其它並未授予再分發 macOS 二進位檔或 Apple 專有 user-space 組件的權利，後者仍受 Apple 自身條款約束。</li>
+<li><strong>相容性未臻完整。</strong> 作為早期計劃，對 macOS user-space 界面的覆蓋只是部分，用家對此應有合理期望。</li>
+</ul>
+<h5>信任邊界（trust boundary）問題</h5>
+<p>此外還有一個值得直言的安全層面。將第三方內核組件置入 Linux 位址空間，會擴大主機的 attack surface，並與 XNU 原本撰寫時所依賴的信任邊界假設背道而馳——即運行於 Apple 硬件之上、Apple 自身 userspace 之下。該模組中任何缺陷、非預期行為或供應鏈問題，如今都位於 Linux 自身 privilege boundary 之下。現階段審慎的做法，是在可丟棄或非生產用途的機器上進行隔離的研發使用，而非部署於承載實際工作負載的系統。</p>
+<h5>何處可能有用</h5>
+<p>儘管存在上述限制，該計劃仍有可信的近期定位。依賴 macOS 專用工具的開發團隊——包括 build scripts、code-signing 工具，或其他假定 Darwin 環境的二進位檔——往往需要在基於 Linux 的 CI pipelines 及 containers 內使用這些工具。今日這通常意味著要維護一台 macOS build runner，或訴諸模擬。直接在 ARM64 Linux worker 上載入 XNU，只要相容性覆蓋日趨成熟，便有望簡化該工作流程。</p>
+<p>此架構顛倒了傳統 compatibility layer 的做法，使 XNU Linux 成為一個值得觀察而非即時採用的計劃：若其 syscall 覆蓋有所改善，安全狀況亦趨穩固，它或可為在 Linux 基礎設施上執行依賴 macOS 的自動化工作提供一條阻力較低的路徑。在此之前，建議在生產環境中與其保持距離，持續跟蹤其進展即可。</p>
+<p>Phoronix 的相關報道可透過上文來源連結閱覽。</p>
+<p><a href="https://www.phoronix.com/news/XNU-Linux" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
