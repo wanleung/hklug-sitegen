@@ -1,0 +1,34 @@
+Date: 2026-11-23 22:02:00
+Author: HKLUG Team
+Title: OpenRouter Purges Three AI Providers After Prompt and Secret Exposure
+Content:
+<p>OpenRouter has removed three AI providers from its aggregation platform after determining that the vendors violated the data-handling policies they publicly advertise, according to a BleepingComputer report published on 20 November 2026. The ejection covers providers found to have exposed sensitive material — including user prompts and secrets — in a manner inconsistent with their stated retention and processing terms.</p>
+<p>The reported account does not name the three providers, nor does it specify precisely what data was accessed or how much of it. What makes the episode notable is not the scale of any exposure, which remains undetailed, but the nature of the failure: this appears to be policy non-compliance rather than a third-party intrusion into OpenRouter's own systems. On the report's account, upstream vendors fell short of assurances that downstream developers were never in a position to verify directly.</p>
+<h5>The broken link</h5>
+<p>Aggregator platforms such as OpenRouter exist because they compress a fragmented market into a single API. Developers write one integration and gain access to dozens of models from many behind-the-scenes providers. In exchange, they implicitly trust the aggregator's roster as a vetting layer: the assumption is that whoever is listed has been screened, and that its published data-handling terms hold.</p>
+<p>That chain held only as far as the paperwork. The providers in question did not suffer a breach that overrode their controls, the report indicates — they departed from the guarantees themselves. The distinction matters, because aggregation trust rests almost entirely on policy statements rather than on technical enforcement. If a vendor can advertise strict retention rules and then fail to honour them, the aggregator's audit function is weaker than it appears, and downstream users inherit an exposure they did not knowingly accept.</p>
+<p>The pairing of "prompts and secrets" is also high-signal. Prompts routinely carry customer records, internal documents, and proprietary code snippets. Credentials leak into context windows with alarming regularity as developers paste connection strings, API keys, and tokens into debugging sessions. An exposure of prompts is therefore not merely a confidentiality event — it can become a credential-compromise event with consequences well beyond the LLM traffic in question.</p>
+<p>Ejecting the providers publicly, rather than handling the matter behind closed doors, sets a useful precedent: enforcement over silence. But the structural opacity remains. In its current form, developers routing traffic through the platform cannot necessarily tell which upstream model answered a given request, which makes independent due diligence close to impossible.</p>
+<h5>What developers should do</h5>
+<ul>
+<li><strong>Treat aggregator rosters as a starting point, not an audit.</strong> Check each provider's retention and training terms individually, and prefer routing modes that let you pin requests to a specific upstream or region.</li>
+<li><strong>Assume prompts are leaving your perimeter.</strong> Redact secrets, customer identifiers, and credentials before they reach any hosted model, and scope access with short-lived, least-privilege keys as if context windows were hostile.</li>
+</ul>
+<h5>Why it matters beyond one platform</h5>
+<p>Nothing in the reported facts suggests the problem is unique to one aggregator. The same exposure applies to teams running multi-model routing in their own stacks: anyone fronting several upstream LLM vendors with an open-source gateway — LiteLLM, common reverse proxies, in-house router layers — is accumulating the same diffuse supply chain, and inherits the same responsibility for vetting it. Whether aggregators will move beyond policy statements toward verifiable, per-request data-handling guarantees — routing pinning, downstream data-processing agreements, retention attestations — is the open question this incident leaves behind.</p>
+<hr>
+<p>根據 BleepingComputer 於 2026 年 11 月 20 日發表的報道，OpenRouter 已從其聚合平台移除三家 AI 供應商，原因是認定這些供應商違反了其公開宣稱的資料處理政策。遭移除的供應商被發現以與其聲稱的資料保留及處理條款不一致的方式，暴露敏感資料——包括用戶 prompts 及 secrets。</p>
+<p>相關報道並未點名三家供應商，亦沒有明確指出究竟哪些數據被存取、數量有多少。本次事件值得關注之處，並非外洩規模（目前仍無詳細資料），而是失誤的性質：這看來是政策不合規問題，而非第三方入侵 OpenRouter 自身系統。按報道所述，上游供應商未能兌現其保證，而下游開發者從來無法直接核實這些保證。</p>
+<h5>斷裂的環節</h5>
+<p>OpenRouter 之類聚合平台之所以存在，是因為它們將分散的市場壓縮為單一 API。開發者只需編寫一次整合程式，便可存取來自眾多幕後供應商的數十個模型。作為交換，他們含蓄地信任平台的供應商名單作為審核層：假設是名單上的供應商已經過篩選，而其公布的資料處理條款確實有效。</p>
+<p>這條鏈條僅在文件層面成立。報道指出，相關供應商並非遭受了突破其防護措施的入侵——而是其自行偏離了原先的保證。這點區別十分重要，因為聚合信任幾乎完全建基於政策聲明，而非技術層面的強制執行。如果供應商可以宣傳嚴格的保留規則卻不遵守，平台的審核功能便比表面看來更薄弱，而下游用戶則承受了他們並非知情同意的風險。</p>
+<p>「prompts 及 secrets」的組合同樣釋出強烈訊號。prompts 通常會攜帶客戶記錄、內部文件及專屬代碼片段。開發者將連接字串、API keys 及 tokens 貼入除錯環節時，credentials 滲入 context windows 的情況屢見不鮮。因此，prompts 的外洩絕非單純的機密性事件——它可能演變成 credentials 遭濫用事件，其影響遠超乎相關的 LLM 流量本身。</p>
+<p>公開移除相關供應商，而非私下低調處理，確立了一個有用的先例：執法勝於沉默。然而結構性的不透明依然存在。在目前的形式下，透過平台路由流量的開發者未必能分辨哪個上游模型回應了特定請求，這使得獨立的 due diligence 幾乎不可能進行。</p>
+<h5>開發者應如何應對</h5>
+<ul>
+<li><strong>將聚合平台的供應商名單視為起點，而非審核結果。</strong>逐一查閱每家供應商的保留及訓練條款，並優先使用可將請求固定（pin）至特定上游或地區的路由模式。</li>
+<li><strong>假設 prompts 已離開你的防護範圍。</strong>在資料送達任何託管模型之前，先行遮蔽 secrets、客戶識別資料及 credentials，並以短生命週期、最小權限（least-privilege）的 keys 管控存取，把 context windows 視為敵意環境。</li>
+</ul>
+<h5>為何此事的影響不限於單一平台</h5>
+<p>報道所載的事實並未顯示問題獨限於某一家聚合平台。同樣的風險亦適用於在自身技術堆疊中運行多模型路由的團隊：任何人只要以開源 gateway——例如 LiteLLM、常見 reverse proxies 或自家 router 層——連接多家上游 LLM 供應商，便是在累積同樣分散的供應鏈，並須承擔同樣的篩選責任。聚合平台會否從政策聲明進一步走向可驗證、逐請求（per-request）的資料處理保證——包括路由固定、下游 data-processing agreements 及保留證明（retention attestations）——正是本次事件遺留下來的懸而未決問題。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/openrouter-drops-ai-providers-over-leaked-prompts-and-secrets/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
