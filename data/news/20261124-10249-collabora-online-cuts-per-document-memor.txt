@@ -1,0 +1,28 @@
+Date: 2026-11-24 17:28:00
+Author: HKLUG Team
+Title: Collabora Online Cuts Per-Document Memory Use by Half in Copy-on-Write Rework
+Content:
+<p>Collabora Online, the open-source office suite derived from LibreOffice, can now load a document using 50% less memory than before, following an optimization to how the platform handles copy-on-write memory, according to Phoronix.</p>
+<p>The change targets one of the sharpest cost drivers in self-hosted document collaboration: memory footprint per open document. Collabora Online runs document sessions server-side, so every concurrently edited file consumes RAM on the host. A per-document reduction of that magnitude translates directly into either more concurrent users on existing hardware or smaller server sizing for a given user count.</p>
+<p>The optimization adjusts how the platform manages copy-on-write pages so that less memory is duplicated per loaded document. Copy-on-write is a standard technique in which processes initially share the same physical memory and only diverge when one of them writes to it — the mechanism that allows Collabora Online to serve many document sessions from a common base. Collabora's engineers have reworked how that sharing is maintained, Phoronix reports, though the precise architectural details of the change have not been independently verified at the time of writing.</p>
+<p>For operators, the practical implication is server sizing. Collabora Online has frequently been positioned as a self-hosted alternative to Microsoft 365 and Google Workspace, where the trade-off against SaaS convenience is the cost of running and scaling the infrastructure. Memory is usually the tightest constraint in such deployments: it caps how many simultaneous document sessions a node can handle before users start seeing sluggish loads or the OOM killer intervenes. Halving the per-document requirement is, in effect, a doubling of session density — or, viewed another way, a substantial cut in the memory line of a hosting bill.</p>
+<p><strong>Availability still to be confirmed</strong></p>
+<p>One question remains open for prospective upgraders: which release carries this optimization, and whether it reaches the CODE (Collabora Online Development Edition) line used by community self-hosters, or ships first in Collabora's supported enterprise builds. Administrators evaluating an upgrade should confirm with the vendor which builds include the change before sizing hardware against it.</p>
+<p><strong>Why it matters beyond the code change</strong></p>
+<p>The broader context is the economics of open-source productivity stacks. Organizations weighing a move away from Microsoft 365 or Google Workspace rarely object to the software itself — LibreOffice-derived functionality is broadly competitive for day-to-day document work — but to the operational cost of hosting it well. Memory efficiency does not make that argument on its own, but it removes one of the recurring objections raised in capacity planning discussions: that self-hosted collaboration needs disproportionately large servers to stay responsive.</p>
+<p>For organisations whose data-sovereignty requirements may rule out handing files to a third-party cloud suite, the same arithmetic lands harder: a self-hosted stack has to be cheap enough to run, or it loses to the convenience it was meant to replace. That is a matter of editorial framing rather than a claim about any specific deployment or jurisdiction.</p>
+<p>It is also a reminder that infrastructure efficiency gains of this kind rarely arrive through dramatic rewrites. They come from tightening the memory lifecycle of a system that has been in production for years, and from the kind of unglamorous work on shared-state handling that only shows up on a monitoring dashboard.</p>
+<p>Collabora Online is free and open-source software; deployments can be self-hosted directly or obtained through commercial support arrangements from Collabora.</p>
+<hr>
+<p>據 Phoronix 報導，源自 LibreOffice 的開源辦公套件 Collabora Online，經優化平台處理 copy-on-write 記憶體的方式後，現時載入單一文件所需的記憶體較從前減少 50%。</p>
+<p>是次改動針對自託管文件協作中其中一項最尖銳的成本來源：每份已開啟文件所佔用的記憶體。Collabora Online 的文件會話在伺服器端運行，因此每一台同時編輯中的檔案都會佔用主機的 RAM。單一文件記憶體需求如此幅度的下降，直接轉化為兩者之一：在現有硬件上支持更多同時在線用戶，或在既定用戶數目下縮減伺服器規格。</p>
+<p>該項優化調整了平台管理 copy-on-write 頁面的方式，令每份已載入文件被複製的記憶體減少。copy-on-write 是一項標準技術，程序初期共享同一份實體記憶體，僅在其中一方寫入時才分離——正是此機制令 Collabora Online 能以共同基底提供大量文件會話。Phoronix 報道指，Collabora 工程師已重新構建這項共享的維持方式，惟改動的具體架構細節在本文撰寫時尚未獲獨立核實。</p>
+<p>對營運者而言，實際影響在於伺服器規格規劃。Collabora Online 一直被定位為 Microsoft 365 及 Google Workspace 的自託管替代方案，與 SaaS 便利性相權衡的代價，正是運行及擴展基礎設施的成本。在此類部署中，記憶體通常是最緊絀的限制因素：它決定了單一節點在用戶開始感到載入緩慢或 OOM killer 介入之前，最多能處理多少個同時進行的文件會話。將單一文件的需求減半，實際上等於會話密度倍增——或者換個角度說，是託管帳單中記憶體開支一項的大幅削減。</p>
+<p><strong>可用版本仍有待確認</strong></p>
+<p>潛在升級用戶仍有一個疑問：這項優化收錄於哪個版本，以及是否會惠及社區自託管用戶所使用的 CODE（Collabora Online Development Edition）系列，抑或先行推出於 Collabora 的支援企業版本。管理員在評估升級前，應先向供應商確認哪些版本包含此改動，然後才據此規劃硬件規格。</p>
+<p><strong>為何這超越代碼改動本身</strong></p>
+<p>更廣闊的背景是開源生產力技術堆疊的經濟學。機構考慮脫離 Microsoft 365 或 Google Workspace 時，極少是對軟件本身有異議——源自 LibreOffice 的功能在日常文件處理上大致具競爭力——而是反對妥善託管它的營運成本。記憶體效率本身並不足以提出這項論點，但它移除了容量規劃討論中其中一項反覆出現的質疑：自託管協作需要不成比例地龐大的伺服器才能維持回應速度。</p>
+<p>對數據主權要求可能不容許將檔案交予第三方雲端套件的機構而言，同一筆帳更為重要：自託管堆疊的運行成本必須足夠低廉，否則便會敗給它原本要取代的便利性。這屬編輯框架層面的問題，並非針對任何特定部署或司法管轄區的論斷。</p>
+<p>這亦提醒我們，此類基礎設施效率提升很少以戲劇性的重寫方式到來。它們來自收緊一套已投入生產多年系統的記憶體生命週期，以及那種毫不光鮮、只會在監控儀表板上顯現的共享狀態處理工作。</p>
+<p>Collabora Online 屬自由及開源軟件；部署可直接自託管，或透過 Collabora 的商業支援安排取得。</p>
+<p><a href="https://www.phoronix.com/news/Collabora-Online-Half-Memory" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
