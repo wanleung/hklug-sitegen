@@ -1,0 +1,32 @@
+Date: 2026-11-24 08:03:00
+Author: HKLUG Team
+Title: Shirudo: OpenAI and Cisco Open-Source eBPF Layer to Block Linux Exploits While Patches Catch Up
+Content:
+<p>OpenAI and Cisco have unveiled Shirudo — Japanese for "shield" — an open-source Linux runtime that lets AI agents author and deploy eBPF-based controls at runtime, intended to stop exploitation in the window between a vulnerability being disclosed and a patch being rolled out. The Hacker News reported the launch in November.</p>
+<p>"Letting agents write dynamic eBPF controls to shield systems from exploits, giving defenders more time to test and roll out patches," OpenAI said in a post on X, framing the tool as a stopgap rather than a replacement for patch management.</p>
+<h4>The gap it targets</h4>
+<p>For Linux administrators running production estates under change-control and maintenance-window constraints, disclosure day is rarely patch day. Staging, regression testing, vendor validation and multi-team sign-off routinely push remediation days or weeks out — and in that interval, compensating controls have traditionally meant hand-crafting firewall rules or syscall restrictions host by host, if at all. Shirudo is aimed squarely at that pain point: an automated layer that can react at disclosure speed while humans proceed at change-management speed.</p>
+<h4>What eBPF is doing here</h4>
+<p>eBPF (extended Berkeley Packet Filter) is a Linux kernel feature that allows small, sandboxed programs to run inside the kernel without modifying source code or loading new modules. Originally built for networking and observability, it has become a foundation for security tooling — Cilium uses it for network policy, and Tracee uses it for runtime behavioural detection. Shirudo's distinct claim is that an AI agent, rather than a human operator, writes the dynamic eBPF controls that go into the data path at runtime.</p>
+<p>That distinction is exactly what makes open sourcing significant. Any system in which a language model authors kernel-level policy sitting in the execution path deserves independent review of its privilege boundaries, its validation-before-load workflow, and whether it fails open or fails closed when the agent is unavailable or wrong. Releasing the code is what makes that scrutiny possible — though the licence, supported kernel versions and accuracy figures remain unconfirmed until the project repository and official OpenAI and Cisco announcements can be checked in full.</p>
+<h4>Positioning: a shield, not a substitute</h4>
+<p>The OpenAI–Cisco pairing also signals a broader shift: AI assistance moving out of the chat window and into the kernel data path, combining agent reasoning with infrastructure and deployment reach. How well AI-authored controls hold up against real adversaries — rather than curated demonstrations — will determine whether this becomes a standard defensive layer or a laboratory curiosity.</p>
+<p>The more defensible reading of Shirudo is as a time-buying mechanism. Patches remain the remediation; runtime controls are the seatbelt worn until the patch arrives. Organisations should be wary of any framing that presents autonomous response as a reason to deprioritise patching.</p>
+<h4>For practitioners: test before you trust</h4>
+<p>Teams evaluating Shirudo should treat it as lab work before production work. Concretely: inspect every eBPF program the agent generates before it is loaded; measure syscall overhead on syscall-heavy workloads to quantify the performance cost; and test the controls against realistic exploit chains rather than single CVEs. A compensating control that blocks the wrong behaviour, or degrades latency under load, is a risk in itself.</p>
+<p>Shirudo's promise is simple to state and hard to execute — using AI to hold the line while humans do the careful work. Whether it holds depends on scrutiny the open-source release now makes possible.</p>
+<hr>
+<p>OpenAI 與 Cisco 推出 Shirudo——日語意為「盾牌」——這是一個開源 Linux runtime，允許 AI agents 在執行期間編寫及部署基於 eBPF 的防禦控制措施，旨在漏洞披露至修補程式推出之間的空檔期阻止漏洞被利用。The Hacker News 於 11 月報道了此次推出。</p>
+<p>「讓 agents 編寫動態 eBPF 控制措施，以保護系統免受漏洞利用，為防禦者爭取更多時間測試及推出修補程式，」OpenAI 在 X 平台的帖文中表示，將該工具定位為權宜之計，而非 patch management 的替代品。</p>
+<h4>它針對的空檔</h4>
+<p>對於在變更控制及維護窗口限制下運行生產環境的 Linux 管理員而言，披露日很少等於修補日。分階段部署、回歸測試、供應商驗證及多團隊簽批，通常會將修補工作推遲數天甚至數星期——而在這段期間，傳統上的補償控制（compensating control）意味著要逐台主機手工編寫防火牆規則或 syscall 限制（如有的話）。Shirudo 正是針對這一痛點：一個能以披露速度作出反應的自動化層級，而人類則按 change management 的速度推進。</p>
+<h4>eBPF 在此的角色</h4>
+<p>eBPF（extended Berkeley Packet Filter）是 Linux kernel 的一項功能，允許小型、受沙盒隔離的程式在 kernel 內部運行，無需修改源代碼或載入新模組。eBPF 最初為網絡及可觀測性而設計，現已成為安全工具的基礎——Cilium 用它執行網絡策略，Tracee 用它進行 runtime 行為檢測。Shirudo 獨特之處在於，由 AI agent 而非人類操作員編寫動態 eBPF 控制措施，並在執行期間置入 data path。</p>
+<p>正因這項區別，開源才顯得意義重大。在任何由語言模型編寫 kernel 級別策略並置於執行路徑中的系統裡，其權限邊界、載入前驗證流程，以及當 agent 不可用或判斷錯誤時系統是 fail open 還是 fail closed，都應接受獨立審查。公開代碼正是使這種審查成為可能的關鍵——不過 licence、受支持的 kernel 版本及準確性數據，在核對項目 repository 及 OpenAI、Cisco 官方公告之前仍未獲確認。</p>
+<h4>定位：是盾牌，不是替代品</h4>
+<p>OpenAI 與 Cisco 的合作亦預示著更廣泛的轉變：AI 協助正從聊天視窗走進 kernel data path，將 agent 推理能力與基礎設施及部署覆蓋結合。AI 編寫的控制措施在真實對手面前——而非精心編排的示範——表現如何，將決定這會否成為標準防禦層級，還是僅為實驗室裡的新奇事物。</p>
+<p>對 Shirudo 較站得住腳的解讀，是將其視為爭取時間的機制。修補程式仍是修補手段；runtime 控制則是修補程式到達前所佩戴的安全帶。企業應警惕任何將自主回應（autonomous response）視為降低修補程式優先次序理由的論述。</p>
+<h4>對實務人員而言：先測試，後信任</h4>
+<p>評估 Shirudo 的團隊應先將其視為實驗室工作，而非生產工作。具體而言：在載入前檢查 agent 生成的每一段 eBPF 程式；在 syscall 密集型工作負載上量度 syscall 開銷，以量化效能代價；並以真實可行的 exploit chain 而非單一 CVE 來測試控制措施。一個攔截了錯誤行為、或在負載下導致延遲惡化的補償控制，本身就是一項風險。</p>
+<p>Shirudo 的承諾說來簡單，執行艱難——利用 AI 穩住陣線，同時讓人類完成細緻的工作。它能否站得住腳，取決於開源發布如今所促成的審查。</p>
+<p><a href="https://thehackernews.com/2026/11/openai-and-cisco-unveil-ai-assisted.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
