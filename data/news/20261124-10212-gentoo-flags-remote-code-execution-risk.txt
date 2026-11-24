@@ -1,0 +1,28 @@
+Date: 2026-11-24 02:22:00
+Author: HKLUG Team
+Title: Gentoo flags remote code execution risk in GPL Ghostscript advisory GLSA 202611-15
+Content:
+<p>Gentoo Linux has published Global Security Advisory GLSA 202611-15, covering multiple vulnerabilities in GPL Ghostscript and warning that the most serious of them could let a remote attacker run arbitrary code on an affected machine.</p>
+<p>The advisory, posted on Gentoo's security portal, carries an overall severity rating of "normal" and flags the issues as remotely exploitable. It does not summarise the individual flaws inline: the specific vulnerability identifiers, the affected package version ranges, and the releases that resolve each issue are enumerated in the full GLSA, which administrators should read directly at security.gentoo.org/glsa/202611-15 before scoping an update.</p>
+<p><strong>Updating on Gentoo</strong></p>
+<p>Gentoo users should refresh their tree and pull the fixed package as the advisory directs — <code>emerge --sync</code>, followed by <code>emerge --ask --oneshot --verbose "&gt;=app-text/ghostscript-gpl-10.08.0"</code> — then restart anything that links against or calls Ghostscript: print spoolers, background preview generators, containerised conversion workers. Patching the host alone is not enough where Ghostscript ships inside container images; those images need to be rebuilt so the running workloads actually load the fixed code.</p>
+<p><strong>Why a Ghostscript advisory travels further than it looks</strong></p>
+<p>Ghostscript sits behind far more software than its name suggests. As a general observation about how Linux desktops and servers are assembled rather than a claim taken from Gentoo's advisory, the interpreter is routinely reached indirectly — print dialogs, PDF tooling, and image-processing pipelines such as ImageMagick can hand EPS, PDF, and PostScript input to Ghostscript for rendering. A system that never advertises Ghostscript as an application may still route untrusted files through it.</p>
+<p>That indirection is where the exposure concentrates. On a desktop, the realistic path is a user opening or previewing a crafted document. On internet-facing services — anything accepting document uploads for conversion, preview generation, OCR, or scan-to-database workflows — the same code path is reachable without user interaction, and a single malicious upload can be enough to reach the interpreter.</p>
+<p><strong>Beyond Gentoo</strong></p>
+<p>The fix is not distribution-specific. Ghostscript is packaged by Debian and Ubuntu, Fedora and Red Hat Enterprise Linux, SUSE, Arch Linux and others; administrators running mixed fleets should check each distribution's own security tracker for its corresponding advisory and patch status rather than assuming the Gentoo update covers the estate.</p>
+<p>Patching remains the primary control. Organisations that process untrusted documents server-side can add a second layer on any distribution: run conversion jobs in a sandbox, drop to an unprivileged user before calling Ghostscript, and constrain the job's file system and network access so a successful exploit is contained rather than escalated. Those measures do not substitute for the update, but they blunt the impact if a variant resurfaces in a codebase with a long record of parser bugs.</p>
+<p>Full details, including the authoritative list of vulnerability identifiers, affected version ranges, and fixed releases, are at security.gentoo.org/glsa/202611-15.</p>
+<hr>
+<p>Gentoo Linux 已發布全球安全通告 GLSA 202611-15，涵蓋 GPL Ghostscript 的多項漏洞，並警告其中最嚴重者可能讓遠端攻擊者在受影響的機器上執行任意代碼。</p>
+<p>該通告發佈於 Gentoo 的安全入口網站，整體嚴重程度評級為「normal」（正常），並標註相關問題可遭遠端利用。通告本身並未逐一列述各項缺陷：具體的漏洞編號、受影響的軟件包版本範圍，以及修正各項問題的發行版本，均詳列於完整 GLSA 內容之中，管理員應在規劃更新範圍前，直接到 security.gentoo.org/glsa/202611-15 閱讀原文。</p>
+<p><strong>在 Gentoo 上更新</strong></p>
+<p>Gentoo 用戶應按通告指示更新軟件樹並取得已修正的軟件包——先執行 <code>emerge --sync</code>，再執行 <code>emerge --ask --oneshot --verbose "&gt;=app-text/ghostscript-gpl-10.08.0"</code>——隨後重啟所有連結或呼叫 Ghostscript 的程序：打印佇列服務、背景預覽生成器、容器化轉換工作程序。若 Ghostscript 隨容器映像一同發佈，僅更新主機並不足夠；相關映像需要重新建構，令運行中的工作負載實際載入已修正的代碼。</p>
+<p><strong>為何 Ghostscript 通告的影響範圍比表面看來更大</strong></p>
+<p>Ghostscript 所支撐的軟件遠比其名稱所示的更多。以下是有關 Linux 桌面系統及伺服器如何組裝的一般性觀察，並非取自 Gentoo 通告的說法：這解釋器通常間接被呼叫——打印對話框、PDF 工具，以及 ImageMagick 等圖像處理管線，都可能把 EPS、PDF 及 PostScript 輸入交由 Ghostscript 渲染。一部從未把 Ghostscript 列為應用程式的系統，仍可能把不受信任的檔案轉交其處理。</p>
+<p>正正是這種間接呼叫令風險集中。在桌面環境下，最現實的攻擊路徑是用戶開啟或預覽一份經精心構造的文件；而在面向互聯網的服務上——任何接受文件上傳以進行轉換、預覽生成、光學字元識別（OCR）或掃描入庫流程的服務——同一代碼路徑無需用戶互動即可觸達，單一惡意上傳便足以接觸到該解釋器。</p>
+<p><strong>Gentoo 以外</strong></p>
+<p>此修正並非 Gentoo 專有。Debian 及 Ubuntu、Fedora 及 Red Hat Enterprise Linux、SUSE、Arch Linux 等均有打包 Ghostscript；管理混合版本環境的管理員，應各自查閱所用發行版的安全追蹤平台，確認對應通告及補丁狀態，而非假設 Gentoo 的更新已涵蓋整個環境。</p>
+<p>打補丁仍然是首要的控制手段。在伺服器端處理不受信任文件的機構，無論採用哪種發行版，均可加設第二層防護：以沙箱執行轉換作業，在呼叫 Ghostscript 前降權至非特權用戶，並限制作業的文件系統及網絡存取，令成功利用漏洞的影響得以遏制而非擴大。這些措施不能取代更新本身，但在一個解析器缺陷紀錄累累的代碼庫中，若再有變種漏洞浮現，它們能有效減輕其影響。</p>
+<p>完整資料，包括權威的漏洞編號清單、受影響版本範圍及已修正的發行版本，請參閱 security.gentoo.org/glsa/202611-15。</p>
+<p><a href="https://security.gentoo.org/glsa/202611-15" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
