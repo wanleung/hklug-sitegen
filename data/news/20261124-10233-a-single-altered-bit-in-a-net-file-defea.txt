@@ -1,0 +1,48 @@
+Date: 2026-11-24 13:22:00
+Author: HKLUG Team
+Title: A Single Altered Bit in a .NET File Defeated Windows Code Integrity — and VirtualBox Hardening
+Content:
+<p>A single bit flipped inside a .NET assembly file was enough for a local attacker to slip untrusted code past two layered Windows protections — Windows Code Integrity itself, and Oracle VirtualBox's process hardening — Google Project Zero researcher James Forshaw demonstrated in a write-up highlighted by The Hacker News.</p>
+<p>The same .NET Framework loading quirk produced both bypasses. VirtualBox's weakness is tracked as CVE-2026-87268. Patch status from Microsoft and Oracle has not been confirmed; the priority is to apply fixes as soon as advisories land, with build servers, administrator workstations, and hosts running VirtualBox first in line.</p>
+<p><strong>Why Code Integrity was supposed to stop this</strong></p>
+<p>Windows Code Integrity — enforced through mechanisms such as Windows Defender Application Control (WDAC) and Device Guard — exists to guarantee that only approved, untampered code runs. In plain terms, it validates cryptographic signatures and hashes on binary files: if even one bit of a file changes, the hash no longer matches, and the loader should reject it. That is the promise.</p>
+<p>The problem, Forshaw showed, is that the promise is enforced through .NET's own assembly-loading pipeline, and that pipeline does not apply the check consistently. The .NET Framework performs its own assembly loading and resolution steps before Code Integrity verification is applied uniformly, and a metadata flag inside the assembly steers the loader down a loading path where the integrity check is not applied consistently — so the modified file is treated as legitimate despite failing the validation that should have caught it. Forshaw's original research carries the full mechanism detail.</p>
+<p>The result is that one loading behaviour neutralised two controls normally assumed to back each other up: OS-level application control (WDAC/Device Guard) and hypervisor-level process hardening in VirtualBox. Layered defences are only as strong as the shared assumptions beneath them, and both layers assumed the other would catch modified code.</p>
+<p><strong>What it does — and doesn't — mean</strong></p>
+<p>Both issues are bypasses, not remote entry points. An attacker needs local file-write access first. That caveat matters, but it does not make the finding academic: containing exactly this scenario — a low-privileged or malware foothold escalating to arbitrary code execution despite application control — is what Code Integrity exists to do.</p>
+<p>VirtualBox's presence on developer workstations, CI runners, and test labs raises the stakes, since these environments routinely hold signing keys, build artefacts, and credentials. Windows and .NET estates are a common profile across Hong Kong's enterprise and developer infrastructure, so the guidance below applies broadly.</p>
+<p>The correct takeaway is not that Code Integrity failed wholesale, or a reason to weaken it. It is that the control's guarantees rest on assumptions worth auditing.</p>
+<p><strong>Mitigation: a hardening review, not a fire drill</strong></p>
+<p>For Windows and .NET estates, this is a prompt for structured review rather than urgent response:</p>
+<ul>
+<li><strong>Patch first.</strong> Update Windows, the .NET Framework, and VirtualBox as advisories land, prioritising build servers, administrator workstations, and hosts running VirtualBox.</li>
+<li><strong>Check WDAC enforcement mode.</strong> Confirm the WDAC policies are in enforced mode rather than audit mode, and review exception scopes deliberately — audit logs will not stop a bypass.</li>
+<li><strong>Inventory runtimes.</strong> List the .NET Framework versions in use and plan migration for end-of-life runtimes, which will not receive fixes.</li>
+<li><strong>Treat write access as the real boundary.</strong> Apply least privilege, restrict write permissions on application and framework directories, and enable Attack Surface Reduction rules.</li>
+<li><strong>Hunt for anomalies.</strong> Alert on unsigned or unexpected .NET assemblies loading from user-writable paths, and use file integrity monitoring on sensitive directories.</li>
+<li><strong>Contain VirtualBox exposure</strong> on production-adjacent hosts, considering whether it belongs there at all.</li>
+</ul>
+<p>The level of work required to reach this result is itself notable: Forshaw had to push deep into .NET's loading internals to find a shared assumption two separate controls were resting on.</p>
+<hr>
+<p>Google Project Zero 研究員 James Forshaw 在一篇獲 The Hacker News 報導的技術分析中示範，只要在一個 .NET assembly 檔案中翻轉單一位元，本機攻擊者便足以令不受信任的代碼繞過兩層 Windows 防護機制——Windows 程式碼完整性（Code Integrity）本身，以及 Oracle VirtualBox 的 process 加固機制。</p>
+<p>兩個繞過漏洞皆源自同一個 .NET Framework 載入行為的特性。VirtualBox 的弱點編號為 CVE-2026-87268。Microsoft 與 Oracle 的修補狀態尚未確認；一旦安全公告發布便應盡快套用修補，優先次序為 build server、管理員工作站以及執行 VirtualBox 的主機。</p>
+<p><strong>為何 Code Integrity 本應攔截此攻擊</strong></p>
+<p>Windows Code Integrity——透過 Windows Defender Application Control（WDAC）及 Device Guard 等機制強制執行——其存在目的是確保只有經批准、未經竄改的代碼得以運行。通俗而言，它會驗證二進制檔案的加密簽章及雜湊值：只要檔案中任何一個位元發生改變，雜湊值便不再吻合，載入器理應拒絕載入。這就是它所作出的承諾。</p>
+<p>Forshaw 指出，問題在於該承諾是透過 .NET 自身的 assembly 載入流程來落實，而這流程並未一致地執行相關檢查。.NET Framework 會在 Code Integrity 驗證統一套用之前，先行執行自身的 assembly 載入及解析步驟；assembly 內的一個 metadata 標記會引導載入器走向一條未有貫徹執行完整性檢查的載入路徑——因此，修改過的檔案儘管未能通過本應攔截它的驗證，仍被視為合法。Forshaw 的原始研究載有完整機制細節。</p>
+<p>結果是，單一載入行為令兩項本被視為互相備援的防護措施同時失效：作業系統層面的應用程式控制（WDAC／Device Guard），以及 VirtualBox 層面的 hypervisor process 加固。分層防禦的強度取決於其底層共同假設，而兩個層面皆假設對方會攔截經修改的代碼。</p>
+<p><strong>此發現代表什麼——以及不代表什麼</strong></p>
+<p>兩個問題均屬繞過漏洞，而非遠端入侵點。攻擊者須先具備本機檔案寫入權限。此前提固然重要，但並不代表發現流於學術性：抵禦的正是此類情境——低權限使用者或惡意軟件立足點在應用程式控制之下仍能提升至任意代碼執行——這正是 Code Integrity 存在的目的。</p>
+<p>VirtualBox 出現在開發者工作站、CI runner 及測試環境中，令風險更為突顯，因為這些環境通常存有簽章金鑰、build artefacts 及憑證。Windows 及 .NET 系統在香港企業及開發者基礎架構中甚為普遍，故以下指引適用範圍廣泛。</p>
+<p>正確的結論並非 Code Integrity 全盤失效，亦不是削弱它的理由，而是該控制機制的保證建立在若干值得審視的假設之上。</p>
+<p><strong>緩解措施：一次加固檢視，而非緊急救火</strong></p>
+<p>對於 Windows 及 .NET 系統，這是一次進行結構化檢視的契機，而非即時應急行動：</p>
+<ul>
+<li><strong>先套用修補。</strong> 隨安全公告發布更新 Windows、.NET Framework 及 VirtualBox，優先處理 build server、管理員工作站及執行 VirtualBox 的主機。</li>
+<li><strong>檢查 WDAC 執行模式。</strong> 確認 WDAC 原則（policy）處於 enforced mode 而非 audit mode，並審慎檢視例外範圍——審計日誌無法阻止繞過攻擊。</li>
+<li><strong>盤點執行版本。</strong> 列出使用中的 .NET Framework 版本，並為已停止支援的執行環境規劃遷移，因這些版本將不會收到修補。</li>
+<li><strong>將寫入權限視為真正的防線。</strong> 實施最低權限原則，限制應用程式及 framework 目錄的寫入權限，並啟用 Attack Surface Reduction 規則。</li>
+<li><strong>搜尋異常行為。</strong> 對來自用戶可寫路徑載入的未經簽章或來歷不明的 .NET assembly 設定警報，並在敏感目錄啟用檔案完整性監控。</li>
+<li><strong>收緊 VirtualBox 暴露範圍</strong> 於接近生產環境的主機上，並考慮它是否根本應存在於該處。</li>
+</ul>
+<p>要達致此結果所需的研究深度本身已值得注意：Forshaw 必須深入 .NET 載入機制的核心，才找出兩項獨立控制機制所依賴的同一個共同假設。</p>
+<p><a href="https://thehackernews.com/2026/11/google-researcher-shows-how-single-bit.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
