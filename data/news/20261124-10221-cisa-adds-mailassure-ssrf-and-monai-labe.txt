@@ -1,0 +1,42 @@
+Date: 2026-11-24 08:24:00
+Author: HKLUG Team
+Title: CISA Adds MailAssure SSRF and MONAI Label Flaws to Exploited Vulnerabilities Catalog
+Content:
+<p>The U.S. Cybersecurity and Infrastructure Security Agency (CISA) on Monday, November 23, added two vulnerabilities to its Known Exploited Vulnerabilities (KEV) catalog — one affecting N-able MailAssure's email security platform and the other affecting MONAI Label, an open-source medical imaging annotation tool. The agency cited evidence of active exploitation in both cases.</p>
+<p>The higher-scoring of the two is <strong>CVE-2026-134624</strong>, rated 9.3 on the CVSS scale (critical severity). It is a server-side request forgery (SSRF) flaw in the LDAP component of N-able MailAssure. SSRF allows an attacker to coax a server into making requests to internal network resources, and in managed service provider (MSP) environments such flaws frequently serve as a stepping stone to lateral movement.</p>
+<h4>The MONAI Label claim rests on an uncorroborated report</h4>
+<p>Reporting on the update has attributed the MONAI Label exploitation to AI agents. That report names no researchers, cites no vendor advisory and links to no technical analysis; the specific indicators that would mark an attack as genuinely agentic — autonomous reconnaissance, multi-step tool-chain calls, or prompt-generated exploit payloads — are absent from the material available.</p>
+<p>It is worth separating two things that are easy to conflate. Inclusion in the KEV catalog means CISA has concluded the flaw has been observed being exploited; it does not indicate that the attackers used autonomous AI tooling in doing so. CISA's own KEV entry for the MONAI Label item carries the full CVE identifier, CVSS score, affected component and remediation deadline, as does the project's official security advisory.</p>
+<h4>Two unrelated product lines, one catalog update</h4>
+<p>MailAssure and MONAI Label occupy entirely different markets — email security and the MSP supply chain on one side, healthcare AI imaging annotation on the other. Their simultaneous appearance in the catalog reflects the timing of CISA's update rather than a linked campaign, and nothing publicly available connects the two to a single operation.</p>
+<h4>What Hong Kong MSPs and healthcare teams should check</h4>
+<p>No public information indicates that Hong Kong organizations were affected directly. The following steps are offered as general guidance for local operators in similar positions:</p>
+<ul>
+<li><strong>Map the exposure surface.</strong> Confirm whether any MailAssure management interface or LDAP endpoint is reachable from the internet, and check whether MONAI Label is deployed on research or hospital networks.</li>
+<li><strong>Confirm affected versions.</strong> Cross-reference the full CVE identifiers and patched versions in the CISA KEV entries and vendor advisories; until that information is in hand, network isolation is a reasonable interim mitigation.</li>
+<li><strong>Review SSRF protections.</strong> Apply outbound allowlists to all server-side request functions, blocking access to internal subnets and cloud metadata endpoints.</li>
+<li><strong>Check permission boundaries on medical AI tooling.</strong> Annotation platforms handling clinical imagery should not have direct connectivity to hospital information systems.</li>
+<li><strong>Watch for exploitation.</strong> Add both CVE identifiers to IDS/IPS rules and log search patterns, and distinguish automated mass scanning from targeted exploitation.</li>
+<li><strong>Note the remediation clock.</strong> The KEV catalog operates under U.S. federal Binding Operational Directive 22-01, which sets fix deadlines for federal agencies; local organizations may use that cadence to set their own internal targets.</li>
+</ul>
+<p>For Hong Kong's managed service providers and healthcare IT teams, the immediate priority is vulnerability mapping and exposure review. The broader question of whether AI agents are driving this class of attack should wait for citable first-hand evidence.</p>
+<hr>
+<p>美國網絡基礎設施安全局（CISA）於週一（11 月 23 日）將兩項漏洞新增至「已知被利用漏洞」（Known Exploited Vulnerabilities, KEV）目錄，分別涉及 N-able MailAssure 郵件安全平台及開源醫學影像標註工具 MONAI Label。該局指兩項漏洞均出現活躍利用的證據。</p>
+<p>兩者中評分較高的是 <strong>CVE-2026-134624</strong>，CVSS 評分 9.3（嚴重等級），屬 N-able MailAssure LDAP 元件的伺服器端請求偽造（SSRF）漏洞。SSRF 可讓攻擊者誘使伺服器向內部網絡資源發出請求，在託管式服務供應商（MSP）環境中，此類漏洞往往成為橫向移動的跳板。</p>
+<h4>MONAI Label 一項的說法缺乏佐證</h4>
+<p>有關是次更新的報導，將 MONAI Label 的漏洞利用歸因於 AI 代理（AI agents）。該報導沒有列出任何研究人員姓名，未引述任何廠商公告，亦沒有連結至任何技術分析；可據以判定攻擊確屬「代理化」的具體指標——自主偵察、多步驟工具鏈調用，以及由提示詞產生的攻擊載荷——在現有材料中一概闕如。</p>
+<p>有兩點容易混淆，值得分開說明。漏洞獲收錄於 KEV 目錄，代表 CISA 已判定該漏洞曾被觀察到遭利用；這並不表示攻擊者在過程中使用了自主式 AI 工具。CISA 就 MONAI Label 一項的 KEV 條目列有完整的 CVE 編號、CVSS 評分、受影響元件及修補期限，該項目的官方安全通告亦載有同樣資料。</p>
+<h4>兩條互不相干的產品線，一次目錄更新</h4>
+<p>MailAssure 與 MONAI Label 分屬完全不同的市場——前者是電郵安全與 MSP 供應鏈，後者是醫療 AI 影像標註。兩者同期出現於目錄之中，反映的是 CISA 更新的時間，而非兩者同屬一項攻擊行動；現階段亦沒有任何公開資料將兩者連結至同一運作。</p>
+<h4>香港 MSP 與醫療資訊團隊應檢視的事項</h4>
+<p>沒有公開資料顯示香港機構因此次事件直接受影響。以下步驟供本地同類機構作一般參考：</p>
+<ul>
+<li><strong>盤點暴露面</strong>：確認是否有對外可達的 MailAssure 管理介面或 LDAP 端點，並檢視 MONAI Label 是否部署於研究或醫院網絡內。</li>
+<li><strong>查證受影響版本</strong>：在 CISA KEV 條目及廠商安全通告中核對完整 CVE 編號與修補版本；資料未齊備前，網絡隔離是合理的臨時緩解措施。</li>
+<li><strong>審視 SSRF 防護</strong>：為所有伺服器端請求功能加上出站白名單，封鎖對內部網段及雲端元數據端點的存取。</li>
+<li><strong>檢視醫療 AI 工具的權限邊界</strong>：處理臨床影像的標註平台，不應與醫院資訊系統直接互通。</li>
+<li><strong>監控利用跡象</strong>：將兩個 CVE 編號納入 IDS/IPS 規則與日誌搜尋模式，區分自動化大規模掃描與有針對性的利用行為。</li>
+<li><strong>記錄修補時限</strong>：KEV 目錄依據美國聯邦《有約束力行動指令 22-01》（Binding Operational Directive 22-01）運作，為聯邦機構訂立修補期限；本地機構可參考該節奏自訂內部時限。</li>
+</ul>
+<p>對香港的託管式服務供應商與醫療資訊團隊而言，當務之急是完成漏洞對應與暴露面盤點。至於 AI 代理是否正驅動此類攻擊這一更廣泛的問題，則有待可引用的一手證據出現後再行跟進。</p>
+<p><a href="https://thehackernews.com/2026/11/hackers-exploit-n-able-mailassure-flaw.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
