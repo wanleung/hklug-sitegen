@@ -1,0 +1,44 @@
+Date: 2026-11-24 19:22:00
+Author: HKLUG Team
+Title: Espionage Group Routes KuboShell C2 Traffic Through the Public IPFS Network
+Content:
+<p><em>An Iran-aligned espionage cluster is routing command-and-control traffic through decentralised public storage — a technique that complicates takedowns and blurs the line between malicious and legitimate infrastructure.</em></p>
+<p>A previously undocumented Iran-linked cyber espionage group has been observed using a backdoor that carries out command-and-control (C2) communications through the InterPlanetary File System (IPFS), The Hacker News reported in November 2026.</p>
+<h5>Key players</h5>
+<p>The cluster, tracked as Volant Manticore, has targeted telecommunications companies, airlines, and critical infrastructure operators in Cyprus. At the centre of its operations is a backdoor dubbed KuboShell, which abuses IPFS for C2, alongside a post-compromise framework called Homa that is deployed once a foothold has been established.</p>
+<h5>Why IPFS makes for an awkward C2 channel</h5>
+<p>IPFS is a peer-to-peer, content-addressed storage network originally designed as an open, decentralised alternative to conventional web hosting. Files are addressed by cryptographic hash rather than location, and copies of a file can be served by any node that holds it. Kubo is the reference Go implementation of the IPFS protocol — the naming detail matters here because tooling associated with it is freely downloadable, signed, and widely mirrored, which gives malicious use of the network a degree of built-in legitimacy.</p>
+<p>KuboShell exploits that property. Rather than reaching out to an attacker-controlled server that can be sinkholed or seized, the implant retrieves instructions from content pinned on the IPFS network. Any node can serve that content, so the traffic terminates on ordinary public infrastructure rather than on assets an operator can attribute to the group. The practical effect is a C2 channel with no single owner whose takedown would end the channel.</p>
+<p>Homa extends the attacker's capability beyond initial access, covering the post-compromise phase once the implant is established. Reported indicators associated with the campaign include artefacts tied to both the KuboShell implant and Homa's activity — defenders should treat specific hashes and domains as leads to validate against their own telemetry, not as a ready-made blocklist.</p>
+<p>The reported victim set — telecommunications carriers, airlines, and critical infrastructure in Cyprus — is itself notable. Our reading of the targeting is that these sectors offer a combination of broad communications coverage and long-lived footholds, which is a profile consistent with intelligence collection rather than financially motivated intrusion. That assessment is editorial analysis based on the sectors named in the reporting, not a claim made by the original source; the specific objectives pursued inside the compromised environments were not detailed.</p>
+<h5>What defenders can act on</h5>
+<ul>
+<li><strong>Audit exposure on IPFS ports.</strong> Review firewall and egress rules for 4001/tcp (IPFS peer-to-peer traffic) and 5001/tcp (the Kubo API), and confirm neither is reachable from untrusted networks or routable externally without explicit justification.</li>
+<li><strong>Monitor public IPFS gateway usage.</strong> Web gateways act as an HTTP bridge to IPFS content. Log and review requests to public gateways from servers and endpoints, and consider blocking or proxying them where the business does not require them.</li>
+<li><strong>Hunt at the Homa layer.</strong> Look for persistence, privilege escalation, and lateral movement artefacts consistent with post-compromise framework deployment, rather than relying solely on network signatures for the implant.</li>
+<li><strong>Share indicators.</strong> Consume and contribute IoCs relating to KuboShell and Homa through established industry and sector-sharing channels, treating published indicators as leads to validate internally, so clusters that cross organisational boundaries are joined up.</li>
+</ul>
+<p>For defenders in Hong Kong and across the region, the relevance is general rather than local: none of the reported activity is attributed to targets here, but the technique is portable. Any environment running internet-facing IPFS nodes, gateways, or developer tooling is exposed to the same ambiguity between sanctioned use and abuse.</p>
+<h5>The wider lesson for open infrastructure</h5>
+<p>Content-addressed storage, peer-to-peer delivery, and legitimate developer tooling are not vulnerabilities in themselves — they are dual-use capabilities. When an espionage group borrows public infrastructure as a covert channel, defence shifts away from attributing and seizing attacker-controlled servers and toward endpoint behaviour, egress discipline, and knowing which normal-looking traffic is actually abnormal.</p>
+<hr>
+<p><em>一個與伊朗有關的間諜活動組織正透過去中心化公共儲存網絡轉發 command-and-control（C2）流量——此技術令取締行動更為困難，亦模糊了惡意與合法基礎設施之間的界線。</em></p>
+<p>據 The Hacker News 於 2026 年 11 月報道，一個此前未有記錄在案的伊朗網絡間諜組織，被發現使用一款後門，透過 InterPlanetary File System（IPFS）進行 command-and-control（C2）通訊。</p>
+<h5>主要角色</h5>
+<p>該組織集群被追蹤為 Volant Manticore，曾針對塞浦路斯的電訊公司、航空公司及關鍵基礎設施營運者。其行動核心是一款名為 KuboShell 的後門，利用 IPFS 進行 C2 通訊；此外並配有一個稱為 Homa 的 post-compromise framework，在成功建立立足點後部署。</p>
+<h5>為何 IPFS 是一個尷尬的 C2 通道</h5>
+<p>IPFS 是一種 peer-to-peer、以內容地址（content-addressed）的儲存網絡，最初設計為傳統網頁寄存的開放式、去中心化替代方案。檔案以加密雜湊（cryptographic hash）而非位置作地址，任何持有該檔案副本的節點均可提供服務。Kubo 是 IPFS 協定的 Go 參考實作——此命名細節在此相當重要，因為與其相關的工具可自由下載、附有簽名且廣泛設有鏡像，令惡意使用該網絡時帶有一定程度的內建正當性。</p>
+<p>KuboShell 正是利用了這一特性。植入程式（implant）並非連接到可被 sinkhole 或查封的攻擊者控制伺服器，而是從 IPFS 網絡上已 pin 住的內容中擷取指令。任何節點均可提供該內容，因此流量終止於普通公共基礎設施，而非營運者可歸因至該組織的資產。實際效果是一條沒有單一擁有者、可藉取締其而終結該通道的 C2 通道。</p>
+<p>Homa 將攻擊者的能力延伸至初始訪問以外，涵蓋植入程式建立後的 post-compromise 階段。已報道與該行動相關的指標包括與 KuboShell 植入程式及 Homa 活動相關的 artifacts——防禦者應將具體雜湊值及域名視為需對照自身遙測數據驗證的線索，而非現成的封鎖名單（blocklist）。</p>
+<p>已報道的受害者組合——塞浦路斯的電訊營運商、航空公司及關鍵基礎設施——本身已值得注意。我們對此目標選擇的解讀是，這些行業同時具備廣泛的通訊覆蓋及長期存在的立足點，與情報收集而非金錢動機入侵的特徵一致。此評估屬編輯分析，依據乃報道中點名的行業，並非原始來源所作的聲明；受入侵環境內被追蹤的具體目標並無詳細說明。</p>
+<h5>防禦者可採取的行動</h5>
+<ul>
+<li><strong>審視 IPFS 端口的暴露情況。</strong> 檢查防火牆及 egress 規則中 4001/tcp（IPFS peer-to-peer 流量）及 5001/tcp（Kubo API）的設定，確認兩者均無法從不受信任網絡訪問，或在沒有明確理據下可從外部路由。</li>
+<li><strong>監察公共 IPFS gateway 的使用。</strong> Web gateway 充當 IPFS 內容的 HTTP 橋樑。記錄及審查來自伺服器及 endpoints 對公共 gateway 的請求，在業務並不需要時考慮封鎖或以 proxy 處理。</li>
+<li><strong>在 Homa 層面進行 hunt。</strong> 尋找與 post-compromise framework 部署相符的持久化（persistence）、權限提升（privilege escalation）及 lateral movement artifacts，而非單靠網絡特徵（signature）偵測植入程式。</li>
+<li><strong>共享指標。</strong> 透過既有的行業及領域共享渠道，接收及提供與 KuboShell 及 Homa 相關的 IoCs，將已公布的指標視為需在內部驗證的線索，使跨越組織邊界的集群得以互相關聯。</li>
+</ul>
+<p>對於香港及整個地區的防禦者而言，相關性屬一般性而非針對本地：已報道的活動並無歸因至此間目標，但該技術具可移植性。任何運行面向互聯網的 IPFS 節點、gateways 或開發者工具的環境，同樣面臨合規使用與濫用之間的模糊地帶。</p>
+<h5>對開放基礎設施的更深遠啟示</h5>
+<p>Content-addressed storage、peer-to-peer 分發及合法開發者工具本身並非漏洞——它們是 dual-use capabilities。當間諜組織借用公共基礎設施作為 covert channel 時，防禦重心便從歸因及查封攻擊者控制的伺服器，轉向 endpoint 行為、egress 紀律，以及辨識哪些看似正常的流量實際上並不正常。</p>
+<p><a href="https://thehackernews.com/2026/11/iran-aligned-volant-manticore-uses-ipfs.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
