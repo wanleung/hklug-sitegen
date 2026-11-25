@@ -1,0 +1,40 @@
+Date: 2026-11-25 11:22:00
+Author: HKLUG Team
+Title: Attackers Used a Decade-Old CVSS 10.0 Bug to Run Commands on Six Hex.pm Servers
+Content:
+<p>An attacker executed operating system commands on six production servers of Hex.pm, the package registry that Elixir and Erlang developers rely on to fetch dependencies, The Hacker News reported on 25 November. The remote code execution flaw behind the intrusion carried a perfect CVSS score of 10.0 and had been sitting in the registry's own codebase since February 2016 — roughly ten years of latent exposure before it was finally used in the wild.</p>
+<p>The maintainers of the community-run service moved fast once the intrusion began: every server was on a patched build within about 15 minutes of the first malicious request. For a service run largely by volunteers, that containment window is unusually tight and points to effective monitoring and a rehearsed patching path.</p>
+<p>But speed of patching and speed of assessment are different things. 15 minutes limits how long an attacker could operate; it does not, on its own, establish what that attacker did while the window was open.</p>
+<h4>The central open question: access vs. tampering</h4>
+<p>The critical distinction in the public reporting so far is between <em>server access</em> and <em>package tampering</em>. What has been established is that OS-level commands ran on six registry servers, that the flaw enabling it dated from 2016, and that patched builds followed within minutes. What has not been established is whether the contents of any published packages were altered, whether registry metadata or integrity records were touched, or whether the intruder's activity was limited to the servers themselves.</p>
+<p>That difference determines whether this is a server breach at a registry or a supply-chain event affecting downstream users. Until Hex.pm publishes a scope statement or post-incident report, teams should treat the incident as active supply-chain risk rather than assume a benign outcome. This article will be updated if clarity emerges on that point.</p>
+<h4>A same-day checklist for downstream teams</h4>
+<p>For Elixir and Erlang shops — and any team that pulls from community registries — three steps are worth taking today:</p>
+<ul>
+<li><strong>Re-check lockfile integrity hashes against upstream.</strong> Hex lockfiles record checksums for resolved dependencies. Compare yours against what upstream serves, prioritising anything resolved close to the incident window.</li>
+<li><strong>Confirm CI verifies checksums rather than skipping them.</strong> Checksum verification is frequently disabled to shave seconds off builds. Now is the moment to confirm yours is actually enforced.</li>
+<li><strong>Audit recently fetched dependencies before your next release.</strong> Anything pulled in the days around the incident deserves a second look before it is released — and any post-incident disclosure from Hex.pm, whether a forensic summary, integrity audit, or credential-rotation guidance, should be treated as priority reading.</li>
+</ul>
+<h4>Why a 2016 bug in 2026 matters</h4>
+<p>The dwell time is the story's real signal. A critical flaw can persist in a widely trusted codebase for years without being exploited, and CVSS scores measure impact, not likelihood — a 10.0 rating tells you what would happen if the bug were reached, not when or whether it will be. Registry code paths are rarely rewritten once they work, and the attack surface of these services grows with every package, mirror, and integration bolted on, typically faster than the security attention they receive.</p>
+<p>Hex.pm functions as a trust anchor for the BEAM ecosystem in much the same way npm, PyPI, and crates.io do for their communities: developers install from it on the assumption that what they fetch is what was published. When that anchor is questioned, every team downstream inherits the uncertainty — whether or not their own systems were touched.</p>
+<p>The 15-minute patch is a genuine success story and should be acknowledged as one. It narrows the window. It does not, by itself, answer the question that matters most to the people who install from Hex every day: what did the attacker change while the door was open?</p>
+<hr>
+<p>據 The Hacker News 於 11 月 25 日報道，一名攻擊者在 Hex.pm 的六部生產伺服器上執行了作業系統指令。Hex.pm 是 Elixir 及 Erlang 開發者用以獲取依賴套件的 package registry。是次入侵背後的遠端執行代碼（remote code execution）漏洞獲評 CVSS 滿分 10.0，而且自 2016 年 2 月起一直潛伏於該登錄庫自身的 codebase 之中 —— 大約十年的潛在暴露期，直到最近才首次在野外被實際利用。</p>
+<p>這項由社群營運的服務的維護人員在入侵發生後反應迅速：首個惡意請求出現後約 15 分鐘內，所有伺服器均已更新至已修補版本。對於一項主要由志願者營運的服務而言，如此緊湊的遏制時間窗相當罕見，反映其監控機制有效，並具備預先演練過的 patching 流程。</p>
+<p>然而，修補速度與評估速度是兩回事。15 分鐘限制的是攻擊者能夠活動的時長；這本身並不能說明攻擊者在該時間窗之內做了什麼。</p>
+<h4>核心未解問題：伺服器存取 vs. 套件竄改</h4>
+<p>至今公開報道的關鍵界線，在於 <em>伺服器存取（server access）</em> 與 <em>套件竄改（package tampering）</em> 之間的分別。目前已確立的事實是：六部登錄庫伺服器上確實執行了 OS 層級指令、促成此事的漏洞源自 2016 年，以及已修補版本在數分鐘內部署完畢。尚未確立的則是：任何已發佈套件的內容是否遭到改動、登錄庫的 metadata 或 integrity 記錄是否被觸碰，以及入侵者的活動是否僅限於伺服器本身。</p>
+<p>這一分別決定事件的性質究竟是一次登錄庫的伺服器入侵，還是影響下游用戶的供應鏈事件。在 Hex.pm 公佈範圍聲明或事後報告之前，各團隊應將此事視為持續存在的供應鏈風險，而非假設結果無害。倘若該點日後有進一步澄清，本文將會更新。</p>
+<h4>下游團隊當日檢查清單</h4>
+<p>對於 Elixir 及 Erlang 團隊 —— 以及任何從社群 registry 取用套件的團隊 —— 今天有三個步驟值得執行：</p>
+<ul>
+<li><strong>重新核對 lockfile 的 integrity hash 是否與上游一致。</strong> Hex lockfile 記錄了已解析依賴的 checksum。請將本機檔案與上游所提供的內容作比對，優先處理在事故時間窗前後解析的項目。</li>
+<li><strong>確認 CI 有真正執行 checksum 驗證，而非略過。</strong> 為縮短建置時間，checksum 驗證經常被關閉。現在正是確認你的流程有真正強制執行的時候。</li>
+<li><strong>在下一次發佈前審視最近取得的依賴。</strong> 在事故前後數日內取得的任何套件，在發佈前都值得再作檢查 —— 而 Hex.pm 日後任何事後披露，無論是取證摘要、integrity 審計還是 credential rotation 指引，都應列為優先閱讀材料。</li>
+</ul>
+<h4>為何 2016 年的漏洞在 2026 年仍然重要</h4>
+<p>潛伏期（dwell time）才是這則新聞的真正訊號。一個嚴重漏洞可以在廣受信任的 codebase 中潛伏多年而不被利用；CVSS 評分衡量的是影響，而非可能性 —— 10.0 的評級告訴你一旦漏洞被觸及會發生什麼，而非它何時或是否會被觸及。登錄庫的 code path 一旦運作正常便鮮有重寫，而這些服務的 attack surface 隨著每一個新增的套件、mirror 及 integration 而擴大，其增速通常快於它們所獲得的安全關注。</p>
+<p>Hex.pm 之於 BEAM 生態系統，其信任錨點的角色與 npm、PyPI 及 crates.io 之於各自社群大致相同：開發者從中安裝套件，前提是所取用的就是所發佈的。當這個錨點受到質疑，下游每一個團隊都會繼承這份不確定性 —— 無論自身系統是否曾被觸及。</p>
+<p>15 分鐘內完成 patching 是一個真正的成功案例，應予肯定。它收窄了時間窗。但它本身並未回答那個對每天從 Hex 安裝套件的人最為重要的問題：門被打開期間，攻擊者改了什麼？</p>
+<p><a href="https://thehackernews.com/2026/11/hackers-exploited-cvss-100-hexpm-rce.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
