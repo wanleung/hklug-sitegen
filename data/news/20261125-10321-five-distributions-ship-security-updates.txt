@@ -1,0 +1,212 @@
+Date: 2026-11-25 21:03:00
+Author: HKLUG Team
+Title: Five Distributions Ship Security Updates Across SSH, Container Runtimes and Rails: How to Sequence the Patch Queue
+Content:
+<p>LWN.net reported in "Security updates for Wednesday" that AlmaLinux, Debian, Fedora, Mageia and Oracle all issued security updates within the same two-day window, covering everything from container runtimes and SSH to VPN, DNS, web frameworks and middleware. For teams running Linux hosts, the significance of this batch lies less in any single CVE than in where the updates land: almost all of them sit on the system's trust boundaries — the components that decide who gets in and what they can do once inside a sandboxed environment.</p>
+<p>Taking each distribution in turn: AlmaLinux updated emacs, go-toolset:rhel8, xorg-x11-server-Xwayland and yggdrasil-worker-package-manager; Debian updated flatpak, libeot, libzstd, mapserver, rails, request-tracker5 and runc; Fedora's advisory covers the widest range, including age, chromium, three cri-o branches (1.35/1.36/1.37), fluxbox, git-annex, libreswan, mariadb-connector-c, mimedefang, mycli, nextcloud, openssh, perl-Data-Dump, php-smarty4, python-pydantic and python-pydantic-core, sbsigntools and sqlite; Mageia issued seven consecutive advisories from MGASA-2026-0607 through 0613 covering awslc, haproxy, java-11-openjdk and java-1.8.0-openjdk, miniupnpc, perl-Imager, python3-loguru and scapy; Oracle published a series of ELSA-2026-* advisories spanning .NET 8/9/10, bind, flatpak, freerdp, openssh, rsync, ruby, tomcat9, mysql8.4, grafana, dovecot, cockpit, buildah and more.</p>
+<h5>Prioritising the Risky Components (By Exposure Surface, Not CVE Count)</h5>
+<p>The table below is ordered by exposure surface and reflects this article's own triage judgment; for actual CVE identifiers and severity ratings for each package, consult the relevant distribution's official security advisory.</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Distribution</th>
+<th>Exposure Surface</th>
+<th>Suggested Order</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>openssh</td>
+<td>Fedora / Oracle</td>
+<td>Inbound connection entry point, host-wide impact</td>
+<td>First</td>
+</tr>
+<tr>
+<td>libreswan</td>
+<td>Fedora</td>
+<td>IPsec VPN endpoint</td>
+<td>First</td>
+</tr>
+<tr>
+<td>bind, rsync</td>
+<td>Oracle</td>
+<td>Public DNS and file synchronisation services</td>
+<td>First</td>
+</tr>
+<tr>
+<td>runc</td>
+<td>Debian</td>
+<td>Container escape boundary</td>
+<td>Second</td>
+</tr>
+<tr>
+<td>cri-o 1.35–1.37</td>
+<td>Fedora</td>
+<td>Container isolation layer (three advisories issued together)</td>
+<td>Second</td>
+</tr>
+<tr>
+<td>flatpak</td>
+<td>Debian / Oracle</td>
+<td>Application sandbox</td>
+<td>Second</td>
+</tr>
+<tr>
+<td>rails, request-tracker5, mapserver</td>
+<td>Debian</td>
+<td>Internet-facing web frameworks</td>
+<td>Third</td>
+</tr>
+<tr>
+<td>tomcat9, mysql8.4, grafana, dovecot</td>
+<td>Oracle</td>
+<td>Middleware and data tier</td>
+<td>Third</td>
+</tr>
+<tr>
+<td>nextcloud, php-smarty4, python-pydantic, etc.</td>
+<td>Fedora</td>
+<td>Applications and libraries</td>
+<td>Fourth</td>
+</tr>
+<tr>
+<td>haproxy, java-11-openjdk</td>
+<td>Mageia</td>
+<td>Proxy and runtime environment</td>
+<td>Fourth</td>
+</tr>
+<tr>
+<td>emacs, Xwayland, fluxbox, chromium</td>
+<td>AlmaLinux / Fedora</td>
+<td>Desktop-side components</td>
+<td>Fifth</td>
+</tr>
+</tbody>
+</table>
+<p>The ordering logic puts exposure first: network services ahead of container isolation, container isolation ahead of web frameworks, development libraries after that, and desktop patching last. Chromium is the exception — it should not wait for the routine cycle — while Xwayland and fluxbox can.</p>
+<h5>Commands for Tracking and Applying the Advisories</h5>
+<pre><code class="language-bash"># Debian
+apt update &amp;&amp; apt list --upgradable
+apt changelog runc            # Review the security fix details
+sudo apt install --only-upgrade runc
+
+# Fedora
+dnf updateinfo list security
+dnf updateinfo info openssh
+sudo dnf upgrade --security
+
+# AlmaLinux / Oracle Linux
+dnf updateinfo list security
+sudo dnf updateinfo info --bugfix
+</code></pre>
+<h5>Routine Post-Deployment Checks</h5>
+<p>These are general checks to run after applying updates — not claims drawn from this particular batch, but standard practice for advisories that touch long-running services. First, where an update touches CRI-O, Nextcloud, or a daemon that depends on sshd, the relevant service must be restarted before the new code is loaded. Second, AlmaLinux's go-toolset update is a compiler toolchain fix: it only protects binaries compiled after the update, so existing programs that need protection should be rebuilt with the patched toolchain. Third, sbsigntools and flatpak relate to boot-time signing and application sandboxing respectively — rebooting once after the first and confirming that existing sandboxed apps have picked up the update after the second will surface any problems early.</p>
+<h5>Aligning Internal Scheduling With This Batch of Advisories</h5>
+<p>When five distributions release advisories across the same two-day span, a fixed maintenance window often cannot absorb them all, and back-filling later extends the exposure period. One workable approach is to treat "security advisory arrives" as its own trigger, allowing trust-boundary packages (SSH, VPN, DNS, container runtimes) to move ahead of the routine window while everything else returns to the established cadence.</p>
+<p>A final practical note: patch baselines rarely line up across distributions, and the same fix may land on Debian days before AlmaLinux. Environments maintaining multiple distributions without a cross-version asset inventory often find that "vulnerability response" amounts to chasing only part of the estate. Take stock of the versions of trust-boundary packages — runc, openssh, CRI-O — first, and only then start talking about deadlines.</p>
+<hr>
+<p>LWN.net 於「Security updates for Wednesday」報導，AlmaLinux、Debian、Fedora、Mageia 與 Oracle 五個發行版在同一個兩日時段內先後發出安全更新，涵蓋範圍從容器執行期、SSH 到 VPN、DNS、網頁框架與中間件。對營運 Linux 主機的團隊而言，這批更新的意義不在任何單一 CVE，而在於它們落在哪裏——幾乎全部都落在系統的信任邊界上，也就是決定「誰可以進來、在隔離環境裡能做什麼」的元件。</p>
+<p>按發行版整理，AlmaLinux 更新了 emacs、go-toolset:rhel8、xorg-x11-server-Xwayland 與 yggdrasil-worker-package-manager；Debian 更新了 flatpak、libeot、libzstd、mapserver、rails、request-tracker5 與 runc；Fedora 的公告涵蓋面最廣，包括 age、chromium、cri-o 三個分支（1.35／1.36／1.37）、fluxbox、git-annex、libreswan、mariadb-connector-c、mimedefang、mycli、nextcloud、openssh、perl-Data-Dump、php-smarty4、python-pydantic 與 python-pydantic-core、sbsigntools 及 sqlite；Mageia 發出 MGASA-2026-0607 至 0613 一連七份公告，涵蓋 awslc、haproxy、java-11-openjdk 與 java-1.8.0-openjdk、miniupnpc、perl-Imager、python3-loguru 及 scapy；Oracle 則發布一系列 ELSA-2026-* 公告，涵蓋 .NET 8／9／10、bind、flatpak、freerdp、openssh、rsync、ruby、tomcat9、mysql8.4、grafana、dovecot、cockpit、buildah 等。</p>
+<h5>高風險元件分級（依暴露面，而非 CVE 數量）</h5>
+<p>下表按「暴露面」排序，屬本文的分級判斷；各套件的實際 CVE 編號與嚴重度，請查閱對應發行版的官方安全公告。</p>
+<table>
+<thead>
+<tr>
+<th>元件</th>
+<th>發行版</th>
+<th>暴露面</th>
+<th>建議順位</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>openssh</td>
+<td>Fedora／Oracle</td>
+<td>對外連線入口，全機受影響</td>
+<td>第一</td>
+</tr>
+<tr>
+<td>libreswan</td>
+<td>Fedora</td>
+<td>IPsec VPN 終端</td>
+<td>第一</td>
+</tr>
+<tr>
+<td>bind、rsync</td>
+<td>Oracle</td>
+<td>對外 DNS 與檔案同步服務</td>
+<td>第一</td>
+</tr>
+<tr>
+<td>runc</td>
+<td>Debian</td>
+<td>容器逃逸邊界</td>
+<td>第二</td>
+</tr>
+<tr>
+<td>cri-o 1.35–1.37</td>
+<td>Fedora</td>
+<td>容器隔離層（三份公告同時發布）</td>
+<td>第二</td>
+</tr>
+<tr>
+<td>flatpak</td>
+<td>Debian／Oracle</td>
+<td>應用沙箱</td>
+<td>第二</td>
+</tr>
+<tr>
+<td>rails、request-tracker5、mapserver</td>
+<td>Debian</td>
+<td>對外網頁框架</td>
+<td>第三</td>
+</tr>
+<tr>
+<td>tomcat9、mysql8.4、grafana、dovecot</td>
+<td>Oracle</td>
+<td>中間件與資料層</td>
+<td>第三</td>
+</tr>
+<tr>
+<td>nextcloud、php-smarty4、python-pydantic 等</td>
+<td>Fedora</td>
+<td>應用與函式庫</td>
+<td>第四</td>
+</tr>
+<tr>
+<td>haproxy、java-11-openjdk</td>
+<td>Mageia</td>
+<td>代理與執行環境</td>
+<td>第四</td>
+</tr>
+<tr>
+<td>emacs、Xwayland、fluxbox、chromium</td>
+<td>AlmaLinux／Fedora</td>
+<td>桌面端</td>
+<td>第五</td>
+</tr>
+</tbody>
+</table>
+<p>排序邏輯是暴露面優先：網路服務先於容器隔離，容器隔離先於網頁框架，開發函式庫再後，桌面修補最後——chromium 例外，不應等例行週期，Xwayland 與 fluxbox 則可等。</p>
+<h5>追蹤與套用公告的指令</h5>
+<pre><code class="language-bash"># Debian
+apt update &amp;&amp; apt list --upgradable
+apt changelog runc            # 查看安全修補內容
+sudo apt install --only-upgrade runc
+
+# Fedora
+dnf updateinfo list security
+dnf updateinfo info openssh
+sudo dnf upgrade --security
+
+# AlmaLinux / Oracle Linux
+dnf updateinfo list security
+sudo dnf updateinfo info --bugfix
+</code></pre>
+<h5>部署後的例行檢查</h5>
+<p>以下是套用更新後的通用檢查，並非源自本批公告的主張，而是針對涉及長時間運行服務的公告的標準做法。第一，凡更新涉及 CRI-O、Nextcloud 或依賴 sshd 的常駐程式，須先重啟相關服務，新程式碼才會載入。第二，AlmaLinux 的 go-toolset 屬編譯工具鏈修補，只保護新編譯的二進位檔，既有程式如需獲得保護，應以修補後的工具鏈重新編譯。第三，sbsigntools 與 flatpak 分別涉及開機簽章與應用沙箱——前者套用後重開機一次，後者則檢查既有沙箱應用是否已取到更新，可及早發現問題。</p>
+<h5>內部排程怎麼對齊這批公告</h5>
+<p>當五個發行版在同一個兩日時段內先後發出公告，固定的維護時段往往無法全部容納，事後追補則會延長暴露期。可行的做法是把「安全公告到達」獨立成觸發條件，允許信任邊界套件（SSH、VPN、DNS、容器 runtime）脫離例行時段先行處理，其餘再回歸既定節奏。</p>
+<p>最後一項實務提醒：跨發行版的修補基線很少對齊，同一個修補可能在 Debian 早於 AlmaLinux 數天落地。同時維護多個發行版的環境若沒有跨版本的資產清單，所謂「漏洞回應」往往只是追著部分機器跑。先把 runc、openssh、CRI-O 這類信任邊界套件的版本盤點清楚，再談時限。</p>
+<p><a href="https://lwn.net/Articles/1109650/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
