@@ -1,0 +1,42 @@
+Date: 2026-11-25 09:26:00
+Author: HKLUG Team
+Title: Suspected AI-Assisted Campaign Hits 24 Check Point Management Servers Across 22 Organisations, GreyNoise Reports
+Content:
+<p>Attackers targeting Check Point's security management console — not the firewalls themselves — have compromised 24 management servers belonging to 22 organisations worldwide, according to research disclosed by GreyNoise and reported by The Hacker News.</p>
+<p>The campaign, tracked as GreyNoise Threat 13 (GT13) and detailed in The Hacker News's 10 November coverage of the GreyNoise findings, is assessed — with the caveat that this remains GreyNoise's working judgement rather than a confirmed finding — to have used AI-driven offensive tooling. No group has been attributed to GT13, and the AI component rests on behavioural indicators rather than hard evidence. The targeting pattern itself suggests the operation treats management servers as a class of asset to compromise, rather than chasing a single disclosed flaw.</p>
+<p><strong>The console is the prize</strong></p>
+<p>The most important detail for defenders is the target selection. A Security Management server is the control plane for a firewall estate: whoever holds it can rewrite policy, harvest credentials, and disable inspection across every gateway it manages. It is typically the highest-value asset in a perimeter deployment and, equally often, the least continuously monitored.</p>
+<p>The numbers reinforce that this is deliberate work rather than opportunistic scanning. Twenty-four compromised servers spread across 22 organisations means several victims suffered multiple compromised instances — a pattern more consistent with focused, high-value targeting than with mass exploitation. The affected organisations span financial services, energy, and government sectors, according to the GreyNoise research as summarised by The Hacker News. The victims identified so far span multiple sectors and regions; no Hong Kong organisations are named in the research, but the checklist below applies to any deployment with a Check Point management server.</p>
+<p>GreyNoise's externally collected telemetry also suggests, but does not prove, that some of the affected management servers were reachable from the internet. That inference should not be treated as a general condition of Check Point deployments — the only way to know is to audit your own exposure.</p>
+<p><strong>What administrators should check now</strong></p>
+<p>The practical takeaway is straightforward: the appliance guarding your defences deserves at least as much scrutiny as the defences themselves. For teams running Check Point management servers, a prioritised starting point:</p>
+<ol>
+<li><strong>Confirm management servers are not internet-reachable.</strong> Audit firewall rules, jump hosts, and remote-access tooling for any path that exposes the management plane externally.</li>
+<li><strong>Review administrative accounts and authentication logs.</strong> Look for unfamiliar logins, newly created accounts, or policy changes made out of process.</li>
+<li><strong>Verify software currency.</strong> Confirm appliances are on supported versions with current hotfixes, and keep Check Point advisory channels under review — if an advisory issues for this campaign, it should be folded into your patching plan.</li>
+<li><strong>Audit recent policy and object changes</strong> against a known-good baseline, and investigate unexplained divergences.</li>
+<li><strong>Log and monitor the management plane itself</strong>, not only the traffic passing through the gateways it controls.</li>
+</ol>
+<p><strong>What remains open</strong></p>
+<p>Two questions stay unresolved: GT13 remains unattributed, and the AI attribution is unconfirmed. If GreyNoise publishes further detail on either point, that would warrant follow-up reporting; until then, the hedged assessment above stands. Administrators should also check the figure of 24 compromised servers against GreyNoise's primary announcement, since it has been widely repeated via secondary coverage.</p>
+<p>For the IT community, the broader lesson is architectural: management planes are increasingly an attack surface in their own right, and they are frequently the least-monitored component of an otherwise well-defended perimeter.</p>
+<hr>
+<p>根據 GreyNoise 公布的研究、並由 The Hacker News 報道，攻擊者鎖定 Check Point 的安全管理主控台（而非防火牆本身），已入侵全球 22 間機構共 24 台管理伺服器。</p>
+<p>該行動被編號為 GreyNoise Threat 13（GT13），The Hacker News 於 11 月 10 日的報道已詳述 GreyNoise 的發現。目前評估認為——但須注意，這仍屬 GreyNoise 的初步判斷，並非已確認的結論——該行動使用了由 AI 驅動的攻擊工具。暫未有組織被確認與 GT13 有關聯，而 AI 部分的判斷依據是行為指標，並非確鑿證據。從鎖定目標的模式本身可見，行動將管理伺服器視為一類整體入侵的資產目標，而非追逐單一已披露的漏洞。</p>
+<p><strong>主控台才是目標</strong></p>
+<p>對防禦者而言，最重要的是目標選擇。Security Management server 是整個防火牆架構的 control plane：誰掌控它，就能改寫政策、攫取憑證，並關閉其所管理的每一道 gateway 的檢查功能。它通常是周邊防禦部署中價值最高的資產，同樣地，也往往是最少受到持續監察的資產。</p>
+<p>各項數據顯示這是蓄意行動，而非機會式掃描。24 台被入侵的伺服器分佈在 22 間機構，意味著部分受害者有多台機器被入侵——這種模式更符合集中於高價值目標的定向攻擊，而非大規模濫用漏洞。據 The Hacker News 總結的 GreyNoise 研究，受影響機構涵蓋金融服務、能源及政府部門。目前已識別的受害者橫跨多個行業及地區；研究中並未點名任何香港機構，但下述檢查清單適用於任何部署了 Check Point 管理伺服器的環境。</p>
+<p>GreyNoise 從外部蒐集的 telemetry 亦顯示——但未能證明——部分受影響的管理伺服器可從互聯網直接連線。這推論不應被視為 Check Point 部署的普遍情況——唯一的確認方法，是審計自身的暴露面。</p>
+<p><strong>管理員現在應檢查什麼</strong></p>
+<p>實際的啟示很直接：守護你防線的設備，理應獲得與防線本身同等程度的審視。對於運行 Check Point 管理伺服器的團隊，以下是按優先次序排列的起步點：</p>
+<ol>
+<li><strong>確認管理伺服器無法從互聯網連線。</strong> 審計防火牆規則、jump host 及遠端存取工具，查找任何將 management plane 暴露於外部的路徑。</li>
+<li><strong>檢視管理帳戶及認證記錄。</strong> 留意陌生的登入、新建立的帳戶，或未按既定程序進行的政策改動。</li>
+<li><strong>確認軟件版本為最新。</strong> 確保設備運行於獲支援的版本並已套用最新 hotfix，並持續關注 Check Point 的通告渠道——若針對此行動發出 advisory，應將其納入你的修補計劃。</li>
+<li><strong>審計近期的政策及物件改動</strong>，比對已知良好的基線，並調查無法解釋的偏差。</li>
+<li><strong>記錄及監察 management plane 本身</strong>，而不只是經由它所控制的 gateway 的流量。</li>
+</ol>
+<p><strong>仍未解決的問題</strong></p>
+<p>兩個問題仍未有定論：GT13 尚未確認來源，而 AI 的歸因亦未獲證實。若 GreyNoise 日後就其中任何一點公布更多細節，便值得跟進報道；在那之前，上述帶保留的評估仍然成立。管理員亦應就 24 台被入侵伺服器的數字，核對 GreyNoise 的原始公告，因為該數字已透過二手報道被廣泛轉載。</p>
+<p>對 IT 社群而言，更廣泛的教訓涉及架構層面：management plane 已日益成為獨立的攻擊面，而且往往是一道原本防禦嚴密的周邊系統中，監察最少的組件。</p>
+<p><a href="https://thehackernews.com/2026/11/hackers-compromise-24-check-point.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
