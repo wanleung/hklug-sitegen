@@ -1,0 +1,32 @@
+Date: 2026-11-25 19:27:00
+Author: HKLUG Team
+Title: OpenVDL and the Case for Traceable Validation Rules
+Content:
+<p>Validation logic tends to get treated as a solved problem the moment a check passes its first test. A post on Linux.com, published 25 November, argues that the harder question starts after the check is written: what happens when the rule outlives the context in which it made sense.</p>
+<p>Drawing on the excerpt available at publication, the post describes a familiar progression. A validation rule looks straightforward inside a single application. The trouble begins once several services depend on their own versions of it. A small change then raises larger questions — who else relies on this assumption, and will they all interpret it the same way?</p>
+<p>The post, titled "OpenVDL: Making Validation Rules Readable and Traceable," uses that divergence as its starting point to introduce OpenVDL, a project it presents under the banner of readable, traceable validation rules. Validation rules, the post argues, should be legible as named, traceable artefacts rather than scattered code.</p>
+<h4>Why divergence goes unnoticed</h4>
+<p>The pattern the post describes is a familiar one for anyone who has maintained shared libraries or duplicated business logic across services. A rule that is unambiguous in one repository becomes ambiguous once teams maintain divergent copies. There is no obvious breakage at first — each copy still passes its own tests. The inconsistency surfaces later, often during an incident review or an audit, when someone asks where a particular constraint came from and who approved its current form.</p>
+<p>That gap between "the check works" and "we can explain the check" may be where governance, rather than tooling, carries most of the weight. Validation rules function as institutional policy expressed in code, yet most teams have no equivalent of a change log for them. Decisions are embedded in expressions and conditions whose rationale lives in a commit message or, more often, nowhere at all.</p>
+<h4>Why AI-generated code raises the stakes</h4>
+<p>The pressure is amplified by the growing volume of machine-generated validation scaffolding. When a significant share of a project's checks is produced by a model rather than written by a developer who remembers the reasoning, the traceability question shifts from useful to essential. Generated code can be syntactically correct and still encode assumptions nobody on the team can articulate. Teams working under audit-heavy regimes may find that this is precisely where traceability stops being a convenience.</p>
+<p>Any organisation operating under a compliance regime — whether in finance, healthcare, or public-sector procurement — eventually needs to demonstrate not just that validation exists, but that it means what the organisation thinks it means. Rules that cannot be traced to an owner, a rationale, and a revision history are difficult to defend in that setting, regardless of how well they perform in testing.</p>
+<h4>What to take from it</h4>
+<p>The Linux.com post does not present OpenVDL as a silver bullet, and the excerpt available at publication does not detail the project's mechanics in depth. What it does offer is a useful reframing: validation should be treated as a maintained, documented artefact with a history, not as disposable code that happens to run on every request.</p>
+<p>For development teams, the practical takeaway is less about adopting a specific project than about asking a question of existing codebases: if a validation rule were challenged six months from now, could the team reconstruct why it exists and what has changed since?</p>
+<p>Linux.com posts may be community- or vendor-authored; authorship was not confirmed at publication.</p>
+<hr>
+<p>驗證邏輯往往一旦通過首個測試，便被視為已解決的問題。Linux.com 於 11 月 25 日發表的文章指出，更棘手的問題其實在編寫驗證檢查之後才開始：當規則超出了它原本有意義的脈絡時，會發生甚麼事。</p>
+<p>文章根據發佈時可見的節錄內容，描述了一個熟悉的演變過程。驗證規則在單一應用程式之內看似直接明瞭，麻煩則始於多個服務各自依賴其自身版本的規則。此後一個小改動便會引出更大的問題——還有誰依賴這項假設？他們是否會以同樣方式理解它？</p>
+<p>這篇題為〈OpenVDL：讓驗證規則可讀且可追溯〉的文章，以這種分歧作為出發點介紹 OpenVDL——一個以可讀、可追溯的驗證規則為旗號的專案。文章主張，驗證規則應當成為具名、可追溯的 artifact（工件），而非散落各處的代碼。</p>
+<h4>分歧為何難以察覺</h4>
+<p>文章描述的模式，對任何維護過共享函式庫或在多個服務間重複業務邏輯的人而言都不陌生。在一個 repository（代碼庫）中毫無歧義的規則，一旦團隊各自維護出現分歧的副本，便會變得含糊不清。起初並無明顯的故障——每個副本仍然通過各自的測試。不一致往往在日後才浮現，通常是在事故事後檢討或審計期間，有人追問某項限制從何而來、其現行形式由誰批准。</p>
+<p>「檢查能運作」與「我們能解釋這項檢查」之間的鴻溝，可能是治理而非工具承擔大部分重量之處。驗證規則實質上是以代碼表達的機構政策，然而大多數團隊並沒有與之對應的 change log（變更記錄）。決策被嵌入各種 expression（表達式）與 condition（條件）之中，其理據只存在於 commit message（提交訊息）裡，更常見的情況是根本無處可尋。</p>
+<h4>AI 生成代碼為何令形勢更趨關鍵</h4>
+<p>機器生成的驗證腳手架日益增多，加劇了壓力。當一個專案相當大比例的檢查由模型產生，而非由記得背後推理的開發者親手編寫時，可追溯性的問題便由「有用」轉變為「不可或缺」。生成的代碼在語法上可以完全正確，卻可能編碼了團隊中無人能夠清楚說明的假設。在審計要求繁重的環境下運作的團隊，往往會發現可追溯性正是在這裡不再是便利、而是必需。</p>
+<p>任何在合規體系下運作的機構——無論涉及金融、醫療還是公共部門採購——最終都需要證明的，不僅是驗證機制存在，更是它確實如機構所理解的那樣運作。無法追溯至負責人、理據及修訂歷史的規則，在這種環境下難以辯護，不論其測試表現有多好。</p>
+<h4>可借鑒之處</h4>
+<p>Linux.com 的文章並未將 OpenVDL 描述為萬靈丹，發佈時可見的節錄亦未深入詳述該專案的運作機制。文章提供的是一個有用的重新框定：驗證應被視為一份有歷史記錄、持續維護並有文件記錄的 artifact，而非恰好在每次 request（請求）時執行的一次性代碼。</p>
+<p>對開發團隊而言，實際上的啟示與其說是採用某個特定專案，不如說是向現有代碼庫提出一個問題：如果半年後某條驗證規則受到質疑，團隊能否重建它存在的原因，以及它自那時以來有何改動？</p>
+<p>Linux.com 的文章可能由社群或供應商撰寫；發佈時作者身份未經證實。</p>
+<p><a href="https://www.linux.com/news/openvdl-making-validation-rules-readable-and-traceable/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
