@@ -1,0 +1,34 @@
+Date: 2026-11-24 22:26:00
+Author: HKLUG Team
+Title: Linus Torvalds Slams 41,000-Line EXT4 'Fixes' Flooded With AI-Generated Patches
+Content:
+<p><em>"Tell Your AI Companion To Get Its Act Together"</em> — Linus Torvalds, on an EXT4 pull request aimed at Linux 7.4-rc5</p>
+<p>A single EXT4 pull request destined for the Linux 7.4-rc5 merge window has drawn a sharp rebuke from kernel maintainer Linus Torvalds, who took issue with more than 41,000 lines of new code filed under the "fixes" label — much of it machine-written and much of the rest written by machine to check the machine-written code.</p>
+<p>According to Phoronix, which reported the exchange, the bulk of the submission consisted of new KUnit test coverage intended to make validation of AI-generated patches safer, alongside a large volume of AI-generated patches themselves targeting the EXT4 file system. Torvalds' response, quoted by Phoronix, was blunt: "Tell your AI companion to get its act together."</p>
+<h4>The label, not just the volume</h4>
+<p>The sticking point was less the raw line count than where the code was filed. In the kernel's release-candidate cycle, "fixes" carries a specific meaning: narrowly scoped corrections to problems already identified, not sweeping additions of new functionality or infrastructure. Dumping tens of thousands of lines — including brand-new test scaffolding — into that category breaks with established rc-cycle etiquette, and Torvalds has reportedly warned contributors about this repeatedly in the same LKML thread.</p>
+<p>For balance, it is worth noting that the same mistake has been made plenty of times by humans; AI simply made it at scale.</p>
+<p>That distinction matters for anyone reviewing automated contributions. A patch that arrives labelled as a fix triggers a different, faster evaluation path than a feature patch: reviewers assume scope discipline and prioritise getting it into a stable branch. AI tooling that mass-produces changes and files them under whatever label the submitting developer selected exploits that assumption, whether intentionally or not.</p>
+<h4>Testing code that was itself generated</h4>
+<p>The most revealing detail in the submission is circularity. The KUnit coverage was written by AI specifically to validate other AI-generated patches — an automated guardrail checking automated work. In principle that is a sensible defensive measure, and the intent to ship tests alongside unfamiliar code is the constructive part of this story. In practice, a green test suite cannot substitute for the contextual and architectural judgement a maintainer applies: whether a change belongs in this cycle, whether it is scoped correctly, and whether it will still be maintainable years from now.</p>
+<h4>The economics of review</h4>
+<p>The incident also exposes a structural imbalance that development teams everywhere deploying AI coding tools will recognise. AI has sharply reduced the cost of <em>producing</em> a patch; it has done nothing to reduce the cost of <em>reviewing</em> one. Every line merged carries maintenance burden for years, and the responsibility for that burden still sits with human maintainers. Torvalds' reaction signals that the kernel project will not absorb the difference by lowering its standards — AI-assisted code is welcome only when it meets the same bar of discipline, purpose and reviewability expected of human contributors.</p>
+<h4>Disposition still open</h4>
+<p>As of Phoronix's reporting, the pull request's final status on LKML remains unresolved: whether it will be restructured into smaller, reviewable contributions or rejected outright has not been settled. Given the volume and the labelling problem, a split-and-resubmit outcome would be consistent with how the kernel process has historically handled oversized submissions.</p>
+<p>Either way, the exchange has become a reference point for a question the open-source community is only starting to answer: who is accountable for AI-generated code after the generator has moved on?</p>
+<hr>
+<p><em>「叫你的 AI 夥伴收拾好自己」</em> —— Linus Torvalds 就一個提交至 Linux 7.4-rc5 的 EXT4 pull request 所作的回應</p>
+<p>一個即將納入 Linux 7.4-rc5 merge window 的 EXT4 pull request，引來 kernel maintainer Linus Torvalds 的嚴厲批評。他不滿的是，當中以「fixes」（修復）標籤提交的新增代碼超過 41,000 行 —— 其中大部分由機器撰寫，而餘下部分同樣由機器撰寫，用以檢查機器所寫的代碼。</p>
+<p>據報道此事的 Phoronix 指出，是次提交的主要內容是全新的 KUnit 測試覆蓋，旨在令 AI 生成 patch 的驗證過程更為穩妥，同時亦包含大量針對 EXT4 檔案系統的 AI 生成 patch。Phoronix 引述 Torvalds 的回應，措辭直接：「叫你的 AI 夥伴收拾好自己。」</p>
+<h4>關鍵是標籤，而非數量</h4>
+<p>爭議焦點與其說在於代碼行數，不如說在於代碼歸入了哪個類別。在 kernel 的 release candidate 週期中，「fixes」一詞有特定含義：僅限針對已確認問題作範圍明確的修正，而非大規模新增功能或基建。把數萬行代碼 —— 包括全新的測試框架 —— 塞進該類別，違反了 rc 週期的既有慣例；據報 Torvalds 已在該 LKML 討論串中多次向貢獻者提出警告。</p>
+<p>持平而論，同樣的錯誤人類亦犯過不少次；AI 只不過將其規模化了。</p>
+<p>對於任何審核自動化貢獻的人而言，這一點相當重要。以 fix 標籤提交的 patch，與 feature patch 所觸發的評估流程不同，前者路徑更短、速度更快：審核者會假設其範圍受到嚴格控制，並優先將其併入穩定分支。AI 工具大量產出變更，再按提交開發者所選的任何標籤歸檔，正是利用了這種假設 —— 無論是有意還是無意。</p>
+<h4>測試代碼本身亦是生成出來的</h4>
+<p>是次提交中最耐人尋味的細節，在於其循環性。該 KUnit 覆蓋由 AI 專門撰寫，用以驗證其他 AI 生成的 patch —— 即一道自動化防護措施檢查自動化工作。原則上這是合理的防禦手段，而隨不熟悉的代碼一併交付測試的意圖，正是此事中具建設性的部分。然而在實踐中，全綠的測試套件並不能取代 maintainer 所需作出的脈絡及架構判斷：某項變更是否應納入本週期、範圍界定是否恰當，以及數年之後是否仍可維護。</p>
+<h4>審核的經濟學</h4>
+<p>事件同時暴露了一種結構性失衡，各處採用 AI 編程工具的開發團隊對此定必深有體會。AI 大幅降低了<em>產出</em> patch 的成本，卻絲毫沒有降低<em>審核</em> patch 的成本。每一行併入的代碼都承載著多年的維護負擔，而這份責任至今仍落在人類 maintainer 身上。Torvalds 的反應表明，kernel 項目不會以降低標準來消化這道落差 —— AI 輔助的代碼只有在符合對人類貢獻者同樣要求的紀律、目的性及可審核性標準時，才會受到歡迎。</p>
+<h4>處置仍未有定案</h4>
+<p>截至 Phoronix 報道時，該 pull request 在 LKML 上的最終狀態仍未解決：究竟會重組為數量較小、可供審核的貢獻，抑或直接被拒，尚未有定論。考慮到其規模及標籤問題，拆分後重新提交的結果，將與 kernel 流程歷來處理超大規模提交的方式一致。</p>
+<p>無論如何，這次交鋒已成為開源社群剛開始作答的一個問題的參照點：當生成者已經離開之後，AI 生成的代碼該由誰負責？</p>
+<p><a href="https://www.phoronix.com/news/Linus-Torvalds-EXT4-AI-Big" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
