@@ -1,0 +1,52 @@
+Date: 2026-11-25 14:09:00
+Author: HKLUG Team
+Title: Broadcom issues fixes for 23 VMware flaws, led by a critical vCenter authentication bypass and three ESX code-execution bugs
+Content:
+<p>Broadcom has released security updates covering 23 VMware product vulnerabilities, four of which are rated critical. The most prominent is a vCenter authentication bypass, alongside three flaws that permit code execution on ESX hosts. According to Security Affairs, the update spans several product lines: vCenter, ESX, Workstation, Fusion, VMware Tools and Avi Load Balancer.</p>
+<h4>What was patched</h4>
+<p><strong>The vCenter authentication bypass</strong> is the headline issue in this batch. vCenter serves as the management hub for the entire vSphere environment; once the authentication mechanism can be bypassed, an attacker reaches the control layer without valid credentials — effectively an open door into the management plane. A compromise at this point is rarely contained to a single host, and typically spreads across the wider virtualisation cluster.</p>
+<p><strong>The three ESX code-execution flaws</strong> sit at the hypervisor layer and are no less serious: once arbitrary code can be written into the hypervisor, the virtual machines running above it and the isolation boundaries between them are all affected, and remediation usually requires touching the hosts themselves.</p>
+<p>The remaining fixes cover Workstation, Fusion, VMware Tools and Avi Load Balancer. Not all of these are critical, but desktop virtualisation and load balancers appear on most common deployment checklists, so they should not be dismissed.</p>
+<h4>Operational considerations for administrators</h4>
+<p>Practitioners working through this batch typically encounter two sources of friction:</p>
+<ul>
+<li><strong>Patching ESX hosts</strong> normally means scheduling a maintenance window, evacuating and rebooting machines one by one — nothing like dropping in an application-level fix.</li>
+<li><strong>Upgrading vCenter</strong> requires checking the compatibility matrix first, including supported versions of the vSphere Client, plug-ins, backup agent software and monitoring tools.</li>
+</ul>
+<p>One further point of caution: whether a given affected version actually receives a fix must be checked line by line against the <em>Fixed Releases</em> column of the Broadcom advisory. Do not assume that an existing release train will receive a backport — some versions may only be remediated on a newer release line.</p>
+<h4>Recommended remediation sequence</h4>
+<p>The ordering below follows practical effort rather than CVE severity, because the first step requires no patch at all:</p>
+<ol>
+<li><strong>Assess network exposure first</strong>: if the vCenter or ESX management interfaces are exposed too broadly (for example, directly reachable from the internet or across an oversized internal range), narrow access to management network segments and jump hosts immediately. This step does not depend on any patch.</li>
+<li><strong>vCenter authentication bypass</strong>: cross-reference the affected versions listed in the Broadcom advisory, confirm the environment is in scope, then prioritise the upgrade.</li>
+<li><strong>The three ESX code-execution flaws</strong>: schedule them into the next maintenance window and patch host by host, maintaining HA capacity throughout.</li>
+<li><strong>Remaining critical and high flaws, then the batch as a whole</strong>: work through the rest by risk, dealing with the less urgent items last.</li>
+</ol>
+<h4>On exploit status and detail</h4>
+<p>Readers who need to verify individual CVE identifiers, CVSS scores, or affected and fixed versions should consult the official Broadcom advisory and the Security Affairs write-up directly rather than relying on a paraphrase.</p>
+<p>On exploit status: the source does not report evidence of active exploitation or in-the-wild use. That means the reporting is silent — which is not the same as confirmation that no exploitation is occurring. The sound course of action is therefore to schedule remediation proactively, rather than either dismissing the risk or waiting to react to incidents.</p>
+<hr>
+<p>Broadcom 已發布安全更新，涵蓋 23 個 VMware 產品漏洞，當中 4 個被評為嚴重級別（critical）。最受關注的是 vCenter 認證繞過，另有三個漏洞允許在 ESX 主機上執行代碼。據 Security Affairs 報導，本次更新涉及多條產品線，包括 vCenter、ESX、Workstation、Fusion、VMware Tools 及 Avi Load Balancer。</p>
+<h4>修補內容</h4>
+<p><strong>vCenter 認證繞過</strong>是本批更新的首要問題。vCenter 是整個 vSphere 環境的管理中樞；一旦認證機制可被繞過，攻擊者便無需有效憑證即可到達控制層——等同於管理平面的大門洞開。此處的失陷很少局限於單一主機，通常會蔓延至整個虛擬化叢集。</p>
+<p><strong>三個 ESX 代碼執行漏洞</strong>位於 hypervisor 層面，嚴重程度同樣不容忽視：一旦任意代碼可被寫入 hypervisor，其上運行的虛擬機以及它們之間的隔離邊界都會受影響，修復工作通常須直接處理主機本身。</p>
+<p>其餘修補涵蓋 Workstation、Fusion、VMware Tools 及 Avi Load Balancer。這些並非全部屬 critical，但桌面虛擬化及負載平衡器幾乎出現在所有常見部署清單上，不應忽視。</p>
+<h4>管理員的營運注意事項</h4>
+<p>處理這批更新時，實務上通常會遇到兩大困難：</p>
+<ul>
+<li><strong>修補 ESX 主機</strong>一般意味著要安排維護時窗、逐台遷出（evacuate）及重新啟動——與直接套用應用程式層面的修補完全不同。</li>
+<li><strong>升級 vCenter</strong> 須先核對相容性矩陣，包括 vSphere Client、外掛程式、備份代理程式及監控工具的支援版本。</li>
+</ul>
+<p>另有一點須留意：某個受影響版本是否確實收到修補，須逐項對照 Broadcom advisory 的 <em>Fixed Releases</em> 欄位核實。不應假設現有 release train 一定會收到 backport 修補——部分版本可能只會在較新的版本線上得到修復。</p>
+<h4>建議的修復次序</h4>
+<p>以下排序按實際工作量而非 CVE 嚴重性編排，因為第一步完全無須等待任何修補程式：</p>
+<ol>
+<li><strong>先評估網絡暴露面</strong>：若 vCenter 或 ESX 管理介面對外開放過廣（例如可從互聯網直接存取，或開放至過大的內部網段範圍），應即時將存取收窄至管理網段及 jump host。此步不依賴任何修補程式。</li>
+<li><strong>vCenter 認證繞過</strong>：對照 Broadcom advisory 所列的受影響版本，確認環境在適用範圍內後，優先安排升級。</li>
+<li><strong>三個 ESX 代碼執行漏洞</strong>：排入下一個維護時窗，逐台修補，期間維持 HA 容量。</li>
+<li><strong>其餘 critical 及 high 漏洞，再到整批更新</strong>：按風險逐項處理，較不迫切的項目留待最後處理。</li>
+</ol>
+<h4>關於 exploit 狀態及細節</h4>
+<p>如需核實個別 CVE 編號、CVSS 評分，或受影響及已修復版本的讀者，應直接查閱 Broadcom 官方 advisory 及 Security Affairs 的原文，不應依賴轉述。</p>
+<p>關於 exploit 狀態：來源並未報導任何活躍利用（active exploitation）或野外（in-the-wild）使用的證據。這表示報導對此保持沉默——並不等同於確認沒有利用正在發生。因此，合理的做法是主動排程修復，既不輕視風險，也不被動等待事故發生才作回應。</p>
+<p><a href="https://securityaffairs.com/203931/security/vmware-patches-critical-vcenter-authentication-bypass-and-esx-flaws.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
