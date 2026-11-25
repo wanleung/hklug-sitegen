@@ -1,0 +1,34 @@
+Date: 2026-11-24 23:27:00
+Author: HKLUG Team
+Title: Radware: Exposed Cloud WAF Management API Leaked Customer Access Keys
+Content:
+<p>Cybersecurity vendor Radware has disclosed a breach in which attackers obtained account details and cloud access keys belonging to some of its customers, after an internal Cloud WAF management API was left reachable from the internet with inadequate protection.</p>
+<p>According to BleepingComputer, which reported the disclosure, the entry point was not a flaw in Radware's Web Application Firewall product itself but an administrative interface — a management API intended for internal use that was exposed online. The distinction matters: the enforcement layer that customers deploy to filter traffic was not defeated. A poorly protected control-plane endpoint was, and control-plane endpoints hold the credentials that let an attacker act on a customer's behalf.</p>
+<p>That is why the leaked material is cloud access keys rather than, say, a set of login credentials. Long-lived, machine-readable, and often broadly scoped, cloud keys blend into ordinary API traffic and do not trip the interactive-login anomaly alerts that would flag a stolen password. Leaked account details are a phishing problem; leaked keys are a direct cloud-access problem.</p>
+<p>The BleepingComputer report does not state how long the API was exposed, how many customers are affected, or whether the stolen keys have been observed in downstream abuse. Absence of detail on scope should not be read as evidence of a limited incident. The prudent assumption for any organisation that stores keys in the Radware Cloud WAF console is that those keys should be treated as compromised — and rotated — until proven otherwise.</p>
+<p>Security providers occupy a particular position in an attacker's calculus: they are bridges into customer environments. Credentials a customer entrusts to a vendor become a stepping stone back into an environment the attacker never directly breached. The repeated exposure of customer-adjacent data in incidents at security vendors is a recurring pattern, which makes a provider's own attack surface a legitimate procurement consideration rather than an afterthought. The failure here was attack-surface hygiene, not a product vulnerability requiring a patch: an internal interface that should never have been reachable from the internet still was.</p>
+<p>The incident is a pattern relevant to any organisation that relies on managed security or WAF services, wherever it runs its infrastructure.</p>
+<h4>What affected customers should do</h4>
+<ul>
+<li><strong>Rotate keys stored in the affected console</strong>, and audit other cloud credentials for unnecessary scope, applying least-privilege trimming as you go.</li>
+<li><strong>Review IAM and administrative exposure</strong>: inventory internal management APIs and confirm each one is authenticated and not reachable from outside the intended network boundary.</li>
+<li><strong>Enable detection for key misuse</strong>, including anomalous API-call patterns from long-lived credentials.</li>
+</ul>
+<p>Supporting those three, consider shortening credential lifetimes through short-lived or dynamically issued tokens where the platform allows it, and keep an inventory of secrets held by third parties so rotation can be executed quickly when a vendor discloses an incident.</p>
+<p>The report does not include further detail on scope, attribution, or the exposure window. Until those answers arrive, the burden of caution sits with customers.</p>
+<hr>
+<p>網絡安全供應商 Radware 已披露一宗安全事故：由於一個內部 Cloud WAF 管理 API 在保護不足的情況下仍可從互聯網訪問，攻擊者藉此取得其部分客戶的帳戶資料及雲端存取金鑰。</p>
+<p>據率先報道此次披露的 BleepingComputer 指出，事件的入口點並非 Radware 的 Web Application Firewall 產品本身存在漏洞，而是一個管理介面——一個原供內部使用的 management API 暴露於網上。這一點至關重要：客戶部署用以過濾流量的執行（enforcement）層並未被攻破，被攻破的是一個保護不周的 control-plane 端點，而 control-plane 端點正是儲存可讓攻擊者冒充客戶行事的憑證。</p>
+<p>這就是為何外洩的資料是雲端存取金鑰，而非一般登入憑證。雲端金鑰壽命長、機器可讀，且往往權限範圍廣闊，容易混入一般 API 流量之中，不會觸發本應標記被盜密碼的互動式登入異常警報。外洩帳戶資料是釣魚問題；外洩金鑰則是直接的雲端存取問題。</p>
+<p>BleepingComputer 的報道並未說明該 API 暴露了多久、受影響的客戶數目，亦未提及被盜金鑰是否已在後續攻擊中被濫用。缺乏範圍細節不應被解讀為事故規模有限的證據。任何在 Radware Cloud WAF 主控台儲存金鑰的機構，審慎的做法是假設這些金鑰已遭洩露——並在證明並非如此之前先行輪換（rotate）。</p>
+<p>安全供應商在攻擊者的盤算中佔有特殊位置：它們是進入客戶環境的橋樑。客戶交予供應商的憑證，會成為攻擊者返回一個他們從未直接攻破的環境的踏腳石。安全供應商事故中屢次外洩客戶相關資料，已成為反覆出現的模式，這令供應商本身的 attack surface 成為合理的採購考慮因素，而非事後才補上的考量。今次的失誤是 attack surface 衛生問題，而非需要修補程式（patch）修復的產品漏洞：一個本不應從互聯網訪問得到的內部介面，卻仍然可以訪問。</p>
+<p>是次事故的模式，對任何依賴託管安全服務或 WAF 服務的機構均有參考價值，不論其基建設於何處。</p>
+<h4>受影響客戶應採取的行動</h4>
+<ul>
+<li><strong>輪換受影響主控台內儲存的金鑰</strong>，並審核其他雲端憑證的權限範圍是否過大，同時按最小權限（least-privilege）原則逐一收緊。</li>
+<li><strong>檢視 IAM 及管理層面的暴露情況</strong>：盤點內部 management API，確認每一個均設有身份驗證，且不能從預定網絡邊界以外訪問。</li>
+<li><strong>啟用金鑰濫用偵測</strong>，包括針對長壽命憑證的異常 API 呼叫模式。</li>
+</ul>
+<p>在以上三項之外，可考慮在平台允許的情況下，透過短壽命或動態簽發的 token 縮短憑證有效期，並維護一份由第三方持有的機密清單，以便供應商披露事故時能迅速執行輪換。</p>
+<p>該報告未提供有關範圍、攻擊歸因或暴露時間窗的進一步細節。在這些答案出現之前，審慎行事的責任仍在客戶一方。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/radware-discloses-breach-exposing-customer-cloud-access-keys/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
