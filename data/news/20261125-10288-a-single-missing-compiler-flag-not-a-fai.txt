@@ -1,0 +1,40 @@
+Date: 2026-11-25 09:22:00
+Author: HKLUG Team
+Title: A Single Missing Compiler Flag, Not a Failing GPU, Crashed btop on Fedora
+Content:
+<p>In July 2026, a Fedora 44 user went to launch the terminal system monitor btop and the program died before it could draw a single frame. The terminal offered one clue instead of a dashboard:</p>
+<p><code>btop: src/rocm_smi.cc:136: uint64_t get_multiplier_from_str(char): Assertion 'false' failed. Aborted (core dumped)</code></p>
+<p>It looks like a hardware problem. It behaves like a driver problem. According to a write-up published by Fedora Magazine, it was neither — the culprit was a compile-time option that was never set, a defect that compiles silently and only detonates at run time on a particular combination of hardware and packaging. The case is a compact lesson in how modern Linux packages break, and how much information a single assertion line is already handing you.</p>
+<h5>Reading the assertion</h5>
+<p>The first thing to notice is that the crash message is a map. It names a source file — <code>rocm_smi.cc</code>, part of AMD's ROCm System Management Interface library, the layer that queries GPU telemetry. It names a function, <code>get_multiplier_from_str</code>, which parses a string into a numeric multiplier. And it names the mechanism: an <code>assert</code>, which by definition means the code reached a branch the developer believed should be unreachable.</p>
+<p>That pattern is worth internalising. When a core dump points at a specific file and function, the file usually tells you which subsystem failed, and the function tells you what it was doing when it gave up. Debugging often starts not with a debugger, but with reading the last sentence the program said out loud.</p>
+<p>Here, <code>assert(false)</code> is doing the work of a contract: "if you ever arrive at this line, something upstream was configured wrong." Fedora Magazine traces that contract back to a build flag that was missing from the package build — an option that, when absent, lets the offending code path compile cleanly while remaining broken in practice. The write-up does not name the flag itself, and nothing in the crash output reveals it; what the assertion exposes is the shape of the defect, not its identity.</p>
+<h5>The flag that wasn't there</h5>
+<p>This is the bug class that frustrates users most: silent at build time, loud at run time. A missing or incorrect compile option does not produce a warning, does not fail the package build, and does not show up in the dependency graph. It survives review and testing on machines that happen not to trigger the path — then asserts on a machine that does.</p>
+<p>According to Fedora Magazine, the remedy is a rebuild with the correct flags, delivered through normal package updates. The detail matters less than the shape of the failure: nothing in the installed package visibly signalled that its build configuration was incomplete.</p>
+<h5>Two conditions, one broken tool</h5>
+<p>The crash required two things to line up. One was the misconfigured build — btop as packaged. The other was the hardware path that exercised it: an AMD GPU with ROCm telemetry in play. Users on other configurations could run the same binary indefinitely without incident, which is precisely why such bugs are easy to dismiss as flaky drivers or failing cards before the real cause surfaces.</p>
+<p>That combination is why hardware-adjacent crashes deserve a second look before anyone re-plugs a GPU. If the failure is an assertion in a library source file, the library's build is a suspect.</p>
+<h5>The takeaway for packagers and users</h5>
+<p>For packagers, the argument Fedora Magazine's story makes implicitly is that build flags are part of a package's public behavioural contract. An <code>assert(false)</code> guard in third-party source code is documentation that the upstream expects a particular compile-time configuration; trusting it to hold without enforcing it in the build system simply moves the failure to the user's desktop. Build systems should encode these preconditions, not assume them.</p>
+<p>For users, the takeaway is smaller and immediate: read assertion text literally. The file name, the function, the line number — they are a starting point, not noise. Anyone running an AMD GPU workstation — whether for AI training, media production, or engineering workloads — should verify the package's build and update state before re-plugging cards or reverting to an earlier kernel, and check the normal update channel for a corrected build first.</p>
+<p>The full analysis is available from <a href="https://fedoramagazine.org/how-a-missing-build-flag-made-btop-crash-on-fedora-with-amd-gpus/">Fedora Magazine</a>.</p>
+<hr>
+<p>2026 年 7 月，一名 Fedora 44 用戶啟動終端系統監察工具 btop，程式尚未繪出任何一幀畫面便即崩潰。終端只提供了一條線索，而非完整的儀表板：</p>
+<p><code>btop: src/rocm_smi.cc:136: uint64_t get_multiplier_from_str(char): Assertion 'false' failed. Aborted (core dumped)</code></p>
+<p>表面上看像硬體問題，行為上又像驅動程式問題。根據 Fedora Magazine 刊發的分析文章，兩者皆非——元兇是一個從未設定的 compile-time 選項：此缺陷在編譯階段悄無聲息，只會在特定硬體與套件組合下於執行階段引爆。此案例精簡地示範了現代 Linux 套件如何出錯，以及一行 assertion 已經向你透露了多少資訊。</p>
+<h5>閱讀 assertion 訊息</h5>
+<p>首先要留意的是，崩潰訊息本身就是一張地圖。它指名了原始檔案 <code>rocm_smi.cc</code>——AMD ROCm System Management Interface 函式庫的一部分，即負責查詢 GPU telemetry 的那一層。它指名了函式 <code>get_multiplier_from_str</code>，該函式負責將字串解析為數值倍數。它亦指名了機制：一個 <code>assert</code>，按其定義，代表程式抵達了一條開發者認為不可能到達的分支。</p>
+<p>這個模式值得牢記。當 core dump 指向特定檔案與函式時，檔案通常告訴你哪個 subsystem 出了問題，函式則告訴你它在放棄當下正在做什麼。偵錯往往並非始於 debugger，而是始於閱讀程式最後一句「說出口」的話。</p>
+<p>在此，<code>assert(false)</code> 執行著一份合約的功能：「如果你抵達這一行，代表上游某處配置錯誤。」Fedora Magazine 將這份合約追溯至套件 build 時欠缺的一個 build flag——該選項缺席時，令有問題的 code path 得以順利編譯，實際上卻仍然損壞。分析文章並未指名該旗標，崩潰輸出亦無任何內容揭示它；assertion 暴露的是缺陷的形態，而非其身份。</p>
+<h5>那個不在場的旗標</h5>
+<p>這正是最令用戶頭痛的一類 bug：build 階段沉默，執行階段喧鬧。欠缺或錯誤的 compile 選項不會產生 warning，不會令套件 build 失敗，亦不會在 dependency graph 中現身。它順利通過審查與測試——只要測試機器碰巧不觸發該路徑——然後在一台會觸發的機器上觸發 assert。</p>
+<p>根據 Fedora Magazine，補救方法是以正確的旗標重新編譯，並透過正常套件更新發佈。具體細節不如失敗的形態重要：已安裝的套件中，沒有任何顯眼的跡象顯示其 build configuration 並不完整。</p>
+<h5>兩個條件，一個壞掉的工具</h5>
+<p>此次崩潰需要兩個條件同時成立。其一是配置錯誤的 build——即套件形式的 btop。其二是觸發它的硬體路徑：一塊 AMD GPU，涉及 ROCm telemetry。其他配置的用戶可以無限期執行同一 binary 而不出意外，正因如此，這類 bug 往往在真正原因浮現之前，被輕易歸咎於驅動程式不穩或顯示卡故障。</p>
+<p>正因為這種組合，凡涉及硬體的崩潰，在有人重新插拔 GPU 之前都值得再看一眼。如果失敗是函式庫原始檔案中的一個 assertion，那麼該函式庫的 build 就是嫌疑對象。</p>
+<h5>對打包者與用戶的啟示</h5>
+<p>對打包者而言，Fedora Magazine 故事隱含的論點是：build flag 屬於套件公開行為合約的一部分。第三方原始程式碼中的 <code>assert(false)</code> 防線，本身即是文件，表明上游預期某種特定的 compile-time configuration；若信任它必然成立，卻不在 build system 中加以強制執行，只不過是把失敗轉移到用戶的桌面上。Build system 應當編碼這些 preconditions，而非假設它們成立。</p>
+<p>對用戶而言，啟示更為簡單直接：字面閱讀 assertion 文字。檔案名、函式名、行號——它們是起點，不是噪音。任何運作 AMD GPU 工作站的人——不論用於 AI 訓練、媒體製作抑或工程工作負載——在重新插拔顯示卡或回退 kernel 之前，應先核實套件的 build 與更新狀態，並先到正常更新渠道檢查是否已有修正版本。</p>
+<p>完整分析可參閱 <a href="https://fedoramagazine.org/how-a-missing-build-flag-made-btop-crash-on-fedora-with-amd-gpus/">Fedora Magazine</a>。</p>
+<p><a href="https://fedoramagazine.org/how-a-missing-build-flag-made-btop-crash-on-fedora-with-amd-gpus/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
