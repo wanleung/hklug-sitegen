@@ -1,0 +1,38 @@
+Date: 2026-11-26 19:11:00
+Author: HKLUG Team
+Title: DXVK 3.2 Adds Present Timing to Fix Frame-Pacing Feedback in D3D-to-Vulkan Translation
+Content:
+<p>```</p>
+<p>DXVK, the Vulkan-based translation layer that reimplements Direct3D 8 through Direct3D 11 on top of Vulkan, has shipped version 3.2, with present timing support as the headline addition. Phoronix reported on the release. While a translation-layer point release rarely makes headlines, this one targets a class of problem — frame pacing — that is notoriously difficult to diagnose in a stacked graphics pipeline.</p>
+<h4>What present timing actually does</h4>
+<p>To understand the change, it helps to know how a layer like DXVK sits in the stack. An application issues Direct3D calls; DXVK translates them into Vulkan commands; a Vulkan driver then submits that work to the GPU. The application assumes its <code>Present</code> calls tell it something meaningful about when frames land on screen — but in a translation layer, that feedback loop is an approximation. Without accurate data, the calling application is pacing its workload against estimates derived from submission order rather than against the real intervals at which frames reach the display.</p>
+<p>Present timing appears intended to give DXVK real feedback on that delivery, so that CPU-side pacing can be driven by observed present intervals rather than inference. In practice, that would mean the game engine's frame scheduler is working from measurements instead of guesses. The result is correctness in pacing rather than a raw throughput gain — a distinction worth making, because the release is easy to misread as a performance benchmark win. It is not; it is a fix for stutter and inconsistent frame delivery that originates in timing feedback, not in shader throughput.</p>
+<p>Frame-pacing bugs are hard to chase in this kind of architecture precisely because the symptom appears far from the cause. A hitch observed by the application may originate in the Vulkan driver, in the layer's own command submission, or in the window system's presentation path. Centralizing presentation timing within DXVK narrows the search space: the layer becomes the authority on when presents happen, rather than inferring it. That consolidation should also make future diagnosis of related issues more tractable for maintainers.</p>
+<p>The benefit would likely be most visible on hardware where CPU headroom is tight and every scheduling decision matters — systems relying on integrated graphics or entry-level discrete parts, where a poorly paced frame loop is likelier to translate into visible stutter than on a fast desktop GPU that can absorb the slack. That is an interpretation of where the change matters most, not a claim made by the release itself.</p>
+<h4>Why it matters beyond one release</h4>
+<p>DXVK is not a niche component. It underpins Valve's Steam Play / Proton, the compatibility layer that lets Windows-only games run on Linux and on the Steam Deck. It also has a sibling relationship with the Direct3D 12 side of the stack: VKD3D-Proton handles D3D12-to-Vulkan translation, while DXVK covers the older D3D8-to-11 range — collectively covering the vast majority of Windows game titles that flow through Proton. Philip Rebohle is the project's primary author, and both layers share lineage in the broader VKD3D project.</p>
+<p>For the Linux desktop and open-source graphics community, the release is a reminder of where much of the day-to-day work in gaming on Linux actually happens: not in kernel drivers or in the compositor, but in the translation layers that reconcile two very different graphics APIs. Presentation timing is an unglamorous piece of plumbing, but it is the kind of plumbing that determines whether a translated game feels smooth or subtly wrong.</p>
+<p>Full release notes accompany the project's announcement, with Phoronix's coverage of the release available for additional context.</p>
+<hr>
+<pre><code>
+DXVK 是一個基於 Vulkan 的轉譯層（translation layer），在 Vulkan 之上重新實現 Direct3D 8 至 Direct3D 11，現已發布 3.2 版本，主要新增功能為 present timing 支援。Phoronix 已報道此次發布。轉譯層的點版本更新很少成為新聞，但這次針對的是一類問題——frame pacing——在堆疊式圖形管線中，此類問題出了名地難以診斷。
+
+## Present timing 實際上做了什麼
+
+要理解這項改動，先要知道 DXVK 這類層在堆疊架構中的位置。應用程式發出 Direct3D 呼叫；DXVK 將其轉換為 Vulkan 命令；Vulkan 驅動程式再把這些工作提交給 GPU。應用程式假設其 `Present` 呼叫能告訴它畫面幀何時真正到達螢幕——但在轉譯層中，這個回饋循環只是一個近似值。沒有準確的資料，呼叫端應用程式便會依據提交順序推算出來的估計值來調節其工作節奏，而非依據畫面幀到達顯示器的真實間隔。
+
+Present timing 的設計看來是為了讓 DXVK 獲得關於投遞過程的真實回饋，使 CPU 端的節奏控制可以根據觀察到的 present 間隔來驅動，而非依賴推斷。在實務上，這意味著遊戲引擎的幀調度器（frame scheduler）將基於測量數據而非猜測來運作。其結果是節奏上的正確性，而非原始吞吐量（throughput）的提升——這個區別值得注意，因為此次發布很容易被誤讀為性能基準測試的勝利。它不是；它是針對源自時序回饋（而非 shader 吞吐量）所造成的畫面停頓（stutter）及幀投遞不一致問題的修復。
+
+在這種架構中，frame-pacing 缺陷之所以難以追查，正是因為症狀離成因很遠。應用程式觀察到的一次停頓，可能源自 Vulkan 驅動程式、該層自身的命令提交，或視窗系統的呈現路徑（presentation path）。將呈現時序的處理集中在 DXVK 內部，縮小了搜尋範圍：該層成為何時發生 present 的權威來源，而非靠推斷得出。這種整合亦應使維護者日後診斷相關問題變得更容易。
+
+此項改動最明顯的效益，很可能出現在 CPU 餘裕緊張、每個調度決策都至關重要的硬件上——即依賴整合圖形（integrated graphics）或入門級獨立顯示卡的系統，在這些系統中，節奏不佳的幀循環比能吸收餘量的高速桌面 GPU 更容易轉化為可見的畫面停頓。這是對改動影響最大場景的一種解讀，並非發布本身所作出的聲明。
+
+## 為何其重要性超越單次發布
+
+DXVK 並非小眾組件。它是 Valve 的 Steam Play / Proton 的基礎，後者是相容層（compatibility layer），讓僅限 Windows 的遊戲得以在 Linux 及 Steam Deck 上運行。它在架構上亦與 Direct3D 12 一側的組件有姊妹關係：VKD3D-Proton 負責 D3D12 轉譯至 Vulkan，而 DXVK 覆蓋較舊的 D3D8 至 D3D11 範圍——兩者合計涵蓋了經由 Proton 運行的絕大多數 Windows 遊戲標題。Philip Rebohle 是該項目主要作者，兩個轉譯層在更廣泛的 VKD3D 項目中有共同淵源。
+
+對 Linux 桌面及開源圖形社群而言，此次發布提醒了大家 Linux 遊戲的日常工作究竟發生在何處：不是在核心驅動程式或合成器（compositor）中，而是在調和兩種截然不同的圖形 API 的轉譯層之中。呈現時序是一段不起眼的底層管線（plumbing），但正是這類管線，決定了經轉譯的遊戲玩起來是流暢，還是隱隱不對勁。
+
+項目公告附有完整的 release notes，Phoronix 對此次發布的報道亦可供進一步參考。
+</code></pre>
+<p><a href="https://www.phoronix.com/news/DXVK-3.2-Released" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
