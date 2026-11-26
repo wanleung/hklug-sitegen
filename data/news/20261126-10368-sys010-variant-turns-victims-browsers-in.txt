@@ -1,0 +1,46 @@
+Date: 2026-11-26 12:22:00
+Author: HKLUG Team
+Title: SYS010 variant turns victims' browsers into managed endpoints to harvest Gmail and Outlook
+Content:
+<p>A new variant of the SYS01 infostealer — dubbed SYS010 — is taking an unusual route to persistence: rather than relying on conventional autorun tricks, it enrols the victim's browser into enterprise-style management, using legitimate policy enforcement to install a malicious extension that exfiltrates Gmail and Outlook data. The technique was detailed by BleepingComputer.</p>
+<h4>How the enrolment works</h4>
+<p>According to BleepingComputer, SYS010 writes browser-management registry keys onto the infected machine, effectively promoting itself to an administrator of Chrome or Edge. Once the enrolment is in place, the attacker-pushed extension is installed and locked down by policy — so a user who spots it and clicks "remove" accomplishes nothing. The policy simply reinstates it. Clearing the underlying enrolment is the only real remediation step, and that is the step most users would not think to take.</p>
+<p>The practical effect is that an ordinary workstation starts behaving like a corporate-managed endpoint — with the management authority sitting with the attacker.</p>
+<h4>Mailbox access raises the stakes</h4>
+<p>SYS010 shifts the malware's focus to personal and work email: Gmail and Outlook inboxes, harvested through the compromised extension.</p>
+<p>That escalation matters. Mailbox access enables password-reset abuse, invoice and payment-fraud lures, and convincing impersonation of suppliers or colleagues. The extension also rides sessions that are already authenticated on the machine, so it captures live cookies and tokens rather than prompting for credentials — sidestepping multi-factor authentication without ever defeating it. In security terms, MFA is never defeated; it is simply never triggered.</p>
+<p>Delivery remains unchanged: the malware is distributed through malicious Meta advertisements, a resilient vector that borrows credibility from a trusted platform and rotates across geographies quickly enough that takedowns rarely catch the first wave.</p>
+<h4>A detection gap</h4>
+<p>Endpoint security tools typically inventory processes, registry modifications, and network traffic. Browser-level management state is rarely on that list. The result is a machine that can pass a conventional scan while quietly streaming mailbox contents outward — the malware is not running an unauthorised binary; it is operating through a feature Microsoft and Google ship deliberately.</p>
+<p>For administrators running managed Chrome or Edge estates alongside Microsoft 365 or Google Workspace, the incident suggests a short audit:</p>
+<ul>
+<li><strong>Check enrolment sources.</strong> Review browser policy registry keys for entries that did not originate from your mobile device management or group policy.</li>
+<li><strong>Inspect the policy pages.</strong> Unexpected entries at <code>chrome://policy</code> or <code>edge://policy</code> — particularly ones with no matching internal policy source — warrant immediate investigation.</li>
+<li><strong>Flag suspicious extension provenance.</strong> An extension marked "installed by administrator" on a machine that is not domain-joined or MDM-enrolled is a red flag.</li>
+<li><strong>Correlate with mail activity.</strong> Review sign-in and OAuth token activity for mailboxes on endpoints showing anomalous browser policy state.</li>
+<li><strong>Remediate at the policy layer.</strong> Removing the extension alone will not hold; the malicious enrolment must be cleared first, or the extension returns.</li>
+</ul>
+<h4>Perspective</h4>
+<p>Browsers have quietly become managed endpoints in their own right — a policy surface that most security monitoring still treats as out of scope, and one adversaries are starting to exploit as a persistence primitive precisely because it is legitimate, durable, and largely unwatched. For mixed browser estates and shared workstations, browser policy deserves to be inventoried alongside the registry keys and services teams already track. The technique does not require novel code; it requires only that defenders are not looking where the attacker is writing — leaving ad-level takedowns and infrastructure blocking as the only realistic controls at the initial hand-off, with everything after that happening inside a feature the platform vendors intended to be trusted.</p>
+<hr>
+<p>新型 SYS01 infostealer 變種——代號 SYS010——採取了不尋常的持久化路徑：它沒有依賴傳統的自動執行（autorun）手法，而是將受害者的瀏覽器納入企業式的管理機制，利用正當的 policy enforcement 安裝惡意 extension，竊取 Gmail 及 Outlook 資料。有關技術詳情由 BleepingComputer 披露。</p>
+<h4>納入機制如何運作</h4>
+<p>據 BleepingComputer 報導，SYS010 會在受感染的電腦上寫入瀏覽器管理 registry key，實質上將自身提升為 Chrome 或 Edge 的管理員。一旦納入程序完成，攻擊者推送的 extension 便會安裝並由 policy 鎖定——即使用戶察覺並按下「移除」，亦徒勞無功，policy 會即時重新安裝該 extension。清除底層的納入設定是唯一真正的補救步驟，但大多數用戶並不會想到這樣做。</p>
+<p>實際效果是一部普通工作站開始以受企業管理的端點方式運作——而管理權則落在攻擊者手中。</p>
+<h4>電郵存取令風險升級</h4>
+<p>SYS010 將惡意軟件的焦點轉移至個人及工作電郵：透過被入侵的 extension 收集 Gmail 及 Outlook 收件匣資料。</p>
+<p>這一升級舉足輕重。電郵存取可令密碼重設濫用、發票及付款詐騙誘餌，以及冒充供應商或同事的逼真手段得以實施。該 extension 還會沿用電腦上已通過驗證的 session，因此它擷取的是實時 cookie 及 token，而非提示用戶輸入憑證——完全繞過 multi-factor authentication，卻從未真正破解它。從安全角度而言，MFA 從未被擊破；它只是一直沒有被觸發。</p>
+<p>傳播途徑維持不變：惡意軟件透過惡意 Meta 廣告散布，這一強韌的向量借助受信任平台的公信力，並以足夠快的速度跨地域輪換，令取締行動很少能趕上第一波攻勢。</p>
+<h4>偵測缺口</h4>
+<p>端點安全工具通常會盤點 process、registry 修改及網絡流量，但瀏覽器層面的管理狀態鮮少列入其中。結果是，一部電腦可以通過傳統掃描，卻同時靜靜地將收件匣內容向外傳送——惡意軟件並非運行未經授權的 binary；它是透過 Microsoft 及 Google 有意提供的功能來運作。</p>
+<p>對於同時管理 Chrome 或 Edge 環境以及 Microsoft 365 或 Google Workspace 的管理員而言，此事件提示了一次簡短的審計：</p>
+<ul>
+<li><strong>檢查納入來源。</strong>檢視瀏覽器 policy registry key，找出並非源自貴機構流動裝置管理（MDM）或 group policy 的項目。</li>
+<li><strong>檢查 policy 頁面。</strong>在 <code>chrome://policy</code> 或 <code>edge://policy</code> 出現的異常項目——尤其是沒有對應內部 policy 來源的項目——值得即時調查。</li>
+<li><strong>標記可疑的 extension 出處。</strong>在一部沒有加入網域或未經 MDM 註冊的電腦上，extension 顯示「由管理員安裝」，屬危險訊號。</li>
+<li><strong>與電郵活動關聯分析。</strong>對於顯示異常瀏覽器 policy 狀態的端點，檢視其信箱的登入及 OAuth token 活動。</li>
+<li><strong>在 policy 層面補救。</strong>單純移除 extension 無法根治；必須先清除惡意的納入設定，否則 extension 會再次出現。</li>
+</ul>
+<h4>觀點</h4>
+<p>瀏覽器已悄然成為獨立的受管理端點——這一個政策介面層，多數安全監控至今仍視之為範圍之外，而攻擊者正開始將其作為持久化原始手段加以利用，正是因為它正當、持久且基本上無人監察。對於混合瀏覽器環境及共用工作站而言，browser policy 應與團隊現有的 registry key 及服務一同納入盤點。此技術不需要新穎的代碼；它只需要防禦者沒有注視攻擊者正在書寫的地方——令廣告層面的取締及基礎設施封鎖成為初始投放階段唯一現實可行的控制手段，而此後的一切，都在平台供應商有意讓人信任的功能之內發生。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/sys010-malware-abuses-browser-management-to-spy-on-gmail-outlook/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
