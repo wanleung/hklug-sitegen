@@ -1,0 +1,58 @@
+Date: 2026-11-26 19:06:00
+Author: HKLUG Team
+Title: Gentoo Issues GLSA 202611-17 Warning: ImageMagick Flaws Include Arbitrary Code Execution
+Content:
+<p>Gentoo Linux has published security advisory <strong>GLSA 202611-17</strong>, warning that multiple vulnerabilities have been disclosed in ImageMagick, the open-source image conversion and processing toolkit. According to Gentoo's security team, the most severe of the flaws could allow an attacker to achieve <strong>arbitrary code execution</strong> — a remote code execution (RCE) impact in an internet-facing or untrusted-input environment. Gentoo classifies the advisory itself as <strong>Severity: normal (Exploitable: remote)</strong>, so operators should weigh it against their own exposure rather than assume a critical rating — but for any host that parses untrusted images, the patch is a clear action item.</p>
+<p>Operators running Gentoo should treat remediation as the immediate action item:</p>
+<ol>
+<li>Run <code>emerge --sync</code> to pull the latest Gentoo security metadata.</li>
+<li>Upgrade <code>media-gfx/imagemagick</code> to version <strong>7.1.2.36</strong> or later — the GLSA lists versions <code>&lt; 7.1.2.36</code> as affected and <code>&gt;= 7.1.2.36</code> as unaffected.</li>
+</ol>
+<p>Two further steps are widely considered best practice after a library upgrade (and are <strong>not</strong> spelled out in the GLSA itself):</p>
+<ol>
+<li>Rebuild reverse dependencies with <code>revdep-rebuild</code> where required by your local setup.</li>
+<li>Restart any long-running services, web workers, or image-pipeline daemons that link against or invoke ImageMagick, so they pick up the corrected binaries.</li>
+</ol>
+<h4>What the advisory says</h4>
+<p>The GLSA's summary confirms that multiple vulnerabilities exist in ImageMagick and that the worst-case impact is arbitrary code execution. The advisory points readers to a set of <strong>28 GHSA (GitHub Security Advisory) references</strong> as the upstream source material for the individual flaws; operators wanting the full per-CVE identifiers and descriptions should follow those references from the advisory at the source URL above. In short: the <em>existence</em>, <em>severity class</em>, and <em>fixed version</em> are confirmed in the GLSA, while the fine-grained CVE narratives live in the linked GHSA entries.</p>
+<h4>Why this matters beyond Gentoo</h4>
+<p>ImageMagick sits at a trust boundary in almost any public-facing upload pipeline. It is invoked by web applications, content management systems, thumbnailers, and mail scanners to parse files that users supply — often without authentication and without a human ever previewing the file first. A single crafted image that reaches a vulnerable parser is frequently enough to trigger the flaw, which is precisely why ImageMagick RCEs are repeatedly flagged as urgent by distros and application vendors alike.</p>
+<p>The history here is instructive. In 2016, ImageMagick was rocked by <strong>ImageTragick (CVE-2016-3714)</strong> — a separate, earlier issue, unrelated to the flaws now under discussion — a set of flaws in the tool's delegate and shell-command handling that let a malicious image file smuggle arbitrary commands into the host shell. The episode forced wholesale reconfiguration of ImageMagick deployments worldwide and turned <code>policy.xml</code> hardening into a standard checklist item. Every subsequent batch of ImageMagick advisories is read against that precedent: parsing untrusted images has always been a high-risk operation, and the fixes rarely make the tool safe for hostile input by default.</p>
+<h4>General hardening (not part of this advisory)</h4>
+<p>Worth stating clearly: the following are widely recommended defensive practices, <strong>not</strong> measures named in GLSA 202611-17 specifically.</p>
+<ul>
+<li>Restrict or disable dangerous coder and delegate handlers you do not need.</li>
+<li>Maintain an explicit <code>policy.xml</code> allowlist for permitted formats, sizes, and resources.</li>
+<li>Run image processing inside a sandbox or container with minimal privileges, no network egress, and read-only input mounts.</li>
+</ul>
+<h4>Non-Gentoo users</h4>
+<p>The underlying flaws are upstream issues in ImageMagick itself, not Gentoo packaging quirks, so other distributions and packaged builds of ImageMagick are likely to require equivalent updates. Administrators on Debian, Ubuntu, RHEL, Fedora, Alpine, or container images bundling ImageMagick should check their own vendor advisories and base-image tags rather than assuming this GLSA covers them.</p>
+<p>Gentoo users can track the advisory at https://security.gentoo.org/glsa/202611-17.</p>
+<hr>
+<p>Gentoo Linux 已發布安全公告 <strong>GLSA 202611-17</strong>，警告開源圖像轉換及處理工具 ImageMagick 存在多項已披露的漏洞。根據 Gentoo 安全團隊的說法，其中最嚴重的漏洞可令攻擊者實現<strong>任意代碼執行（arbitrary code execution）</strong>——在針對互聯網或處理不可信輸入的環境中屬遠端代碼執行（RCE）影響。Gentoo 將該公告本身列為 <strong>Severity: normal（Exploitable: remote）</strong>，因此維運人員應按自身暴露面權衡處理，不應假設其為 critical 級別；但對於任何解析不可信圖片的主機而言，套用補丁仍是明確的應辦事項。</p>
+<p>正在運行 Gentoo 的維運人員應立即採取以下補救措施：</p>
+<ol>
+<li>執行 <code>emerge --sync</code>，同步取得最新的 Gentoo 安全 metadata。</li>
+<li>將 <code>media-gfx/imagemagick</code> 升級至 <strong>7.1.2.36</strong> 或以上版本——GLSA 列明 <code>&lt; 7.1.2.36</code> 為受影響版本，<code>&gt;= 7.1.2.36</code> 為不受影響版本。</li>
+</ol>
+<p>以下兩個步驟屬函式庫升級後普遍建議採用的最佳做法（<strong>並非</strong> GLSA 本身所列明的內容）：</p>
+<ol>
+<li>如本地環境需要，使用 <code>revdep-rebuild</code> 編譯建置反向依賴。</li>
+<li>重啟所有連結或呼叫 ImageMagick 的長時間運行服務、web worker 或 image-pipeline daemon，使其載入經修復的二進位檔案。</li>
+</ol>
+<h4>公告內容</h4>
+<p>GLSA 摘要確認 ImageMagick 存在多項漏洞，且最嚴重後果為任意代碼執行。公告指引讀者查閱一批 <strong>28 項 GHSA（GitHub Security Advisory）參考條目</strong>，作為各別漏洞的上游素材；如維運人員需要完整的 per-CVE 編號及描述，應從上方來源 URL 的公告循此等參考條目查閱。簡而言之：問題的<em>存在</em>、<em>嚴重程度類別</em>及<em>已修復版本</em>均已在 GLSA 中確認，而細緻的 CVE 敘述則載於所連結的 GHSA 條目。</p>
+<h4>為何此事不限於 Gentoo</h4>
+<p>ImageMagick 幾乎位於任何公開上載 pipeline 的信任邊界（trust boundary）之上。Web 應用程式、內容管理系統、縮圖生成工具及郵件掃描器都會呼叫它來解析用戶提供的檔案——通常既無需身份驗證，亦從未有人事先預覽該檔案。一張經過精心構造的圖片只要抵達有漏洞的解析器，往往便足以觸發缺陷，這正是各大發行版及應用供應商屢屢將 ImageMagick RCE 列為緊急事項的原因。</p>
+<p>這段歷史頗具參考價值。2016 年，ImageMagick 曾因 <strong>ImageTragick（CVE-2016-3714）</strong>而遭受重創——那是另一個較早期的問題，與目前討論的漏洞無關——涉及該工具的 delegate 及 shell command 處理機制的一系列缺陷，令惡意圖片檔案得以將任意命令走私至主機 shell。該事件迫使全球 ImageMagick 部署全面重新配置，並使 <code>policy.xml</code> 加固成為標準清單項目。此後每一批 ImageMagick 公告都會被對照這先例來解讀：解析不可信圖片向來屬高風險操作，而修補措施很少能使該工具在預設情況下安全處理惡意輸入。</p>
+<h4>一般加固措施（不屬本次公告範圍）</h4>
+<p>有必要清楚說明：以下為廣泛建議的防禦性做法，<strong>並非</strong> GLSA 202611-17 特別指明的措施。</p>
+<ul>
+<li>限制或停用你不需要的危險 coder 及 delegate handler。</li>
+<li>維護一份明確的 <code>policy.xml</code> allowlist，規範許可的格式、尺寸及資源。</li>
+<li>在權限最小化、無網絡 egress、輸入掛載為唯讀的 sandbox 或 container 內運行圖像處理。</li>
+</ul>
+<h4>非 Gentoo 用戶</h4>
+<p>相關漏洞根源在於 ImageMagick 本身的上游問題，而非 Gentoo 打包上的特有情況，因此其他發行版及採用打包版本的 ImageMagick 亦很可能需要相應更新。Debian、Ubuntu、RHEL、Fedora、Alpine 管理員，或使用內建 ImageMagick 的 container image 的用戶，應查閱自身供應商公告及 base image 標籤，而不應假設此 GLSA 已涵蓋他們。</p>
+<p>Gentoo 用戶可於 https://security.gentoo.org/glsa/202611-17 追蹤該公告。</p>
+<p><a href="https://security.gentoo.org/glsa/202611-17" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
