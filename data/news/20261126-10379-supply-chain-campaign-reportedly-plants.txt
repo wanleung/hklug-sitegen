@@ -1,0 +1,87 @@
+Date: 2026-11-26 16:26:00
+Author: HKLUG Team
+Title: Supply-Chain Campaign Reportedly Plants Python Loaders Across 7,600 GitHub Repositories
+Content:
+<p>A campaign attributed to North Korea-linked operators and tracked as PolinRider has planted a Python loader in more than 7,600 GitHub repositories, with evidence pointing to activity that may have begun as far back as February 2025 — nearly two years of exposure before detection. The Hacker News reported the findings on 26 November, relaying analysis published this week by supply-chain security firm SafeDep. The attribution rests solely on SafeDep's assessment and has not been independently corroborated.</p>
+<h4>Scale and attribution</h4>
+<p>The headline figures — over 7,600 poisoned repositories and a February 2025 start date — come from SafeDep and remain unverified by outside parties at the time of writing. Should the North Korean linkage hold, it would place PolinRider inside a well-documented pattern of DPRK-affiliated activity aimed at developers, which has previously leaned on typosquatted packages and repositories with artificially inflated star counts to manufacture credibility.</p>
+<p>What separates PolinRider from that established playbook is the delivery model: bulk-seeding repositories that are then discovered passively by unsuspecting users, rather than luring targets onto attacker-controlled infrastructure.</p>
+<h4>A deliberately boring hiding place</h4>
+<p>The loader's placement is notable precisely because it is unremarkable. According to SafeDep, as quoted by The Hacker News, it tucks into a small <code>utils</code> package or into <code>conftest.py</code> — a file that pytest imports automatically before running tests, meaning it executes without any explicit instruction from the developer.</p>
+<p>"When Python imports the file, the loader reads the newest transaction that an…" — SafeDep's report, as excerpted, cuts off mid-sentence at that point. The excerpt suggests the loader reads the newest transaction tied to an embedded reference, which it then uses to fetch updated instructions.</p>
+<p>The security implication of that design is significant: because the loader reads a remote reference at runtime, operators can re-task already-deployed copies without pushing a new version or touching any file on disk. There is no version bump to spot, no commit to review, and no diff to flag — the code a developer vetted at install time is not necessarily the code that runs later. Standard code review, in other words, is structurally blind to the switch.</p>
+<h4>Why 7,600 understates the exposure</h4>
+<p>The repository count, while striking, is more likely a floor than a ceiling. Forks, vendored mirrors, and dependency installs performed without pinned hashes carry a poisoned package far beyond the original repos. Compounding the problem, teams working from old checkouts see no fresh commits — and therefore no new diff — when they pull.</p>
+<p>The analysis flags both developer workstations and CI runners as environments where the imported code could execute; it does not confirm which was targeted. Either way, the trust boundary sits at the moment of import, which is invisible to most routine review processes.</p>
+<h4>A dependency-hygiene checklist for developers</h4>
+<p>For developers who pull dependencies daily — including those working in Hong Kong's finance, SaaS, and open-source communities — the campaign sharpens a familiar lesson. A tightened checklist:</p>
+<ol>
+<li><strong>Inspect auto-executed files.</strong> Treat <code>conftest.py</code>, <code>sitecustomize.py</code>, and setup hooks as executable code, not configuration. Read them before installing.</li>
+<li><strong>Pin hashes, not just versions.</strong> Use lockfiles with digest verification (<code>pip</code> hash-checking mode, <code>uv lock</code>, or equivalent) so installs cannot silently resolve to altered content.</li>
+<li><strong>Weight provenance over popularity.</strong> Star counts, fork numbers, and contributor lists are trivial to inflate; check maintainer history, release cadence, and issue responsiveness instead.</li>
+<li><strong>Sandbox install-time execution.</strong> Run <code>pip install</code>, <code>setup.py</code>, and post-install hooks in isolated environments — ideally offline — before granting anything network access.</li>
+<li><strong>Re-verify stale checkouts.</strong> Repos that haven't been updated locally can hide a poisoned upstream. Re-clone or diff against a trusted ref periodically.</li>
+<li><strong>Segment CI runners.</strong> Give pipelines scoped credentials and restricted network egress so a loader that phones home cannot reach secrets or production systems.</li>
+</ol>
+<h4>Verification pending</h4>
+<p>The key figures in this story — the 7,600-repository count, the February 2025 timeline, and the precise re-tasking mechanism — currently rest on SafeDep's report as relayed by The Hacker News, and the excerpted source text is incomplete. Verify against SafeDep's full report and any GitHub statement before treating the numbers as settled. Neither SafeDep nor GitHub has addressed whether developer workstations or CI runners were the intended execution target; both remain plausible on the available evidence.</p>
+<p>For the open-source community, the uncomfortable takeaway is that the most dangerous code in a repository may be the file that runs without anyone asking it to.</p>
+<hr />
+<h4>```yaml</h4>
+<p>title: "供應鏈據報在 7,600 個 GitHub 儲存庫植入 Python 載入器"
+date: 2026-11-26T16:26:00
+author: HKLUG Team
+source_url: https://thehackernews.com/2026/11/north-korea-linked-polinrider-poisons.html
+tags: [supply-chain, github, malware, python, north-korea, opsec]
+lang: zh-Hant</p>
+<hr />
+<p>一個被歸因於朝鮮（北韓）相關營運者、代號 PolinRider 的攻擊行動，已在超過 7,600 個 GitHub 儲存庫中植入 Python 載入器；證據顯示行動可能早在 2025 年 2 月就已展開——在被發現前已暴露接近兩年。《The Hacker News》於 11 月 26 日報導此事，引用供應鏈安全公司 SafeDep 本週發布的分析。該歸因僅建立在 SafeDep 的評估之上，尚未獲得獨立證實。</p>
+<h4>規模與歸因</h4>
+<p>核心數據——超過 7,600 個被植入惡意程式的儲存庫，以及 2025 年 2 月的起始時間——均來自 SafeDep，截至發稿時仍未經外部核實。若朝鮮關聯屬實，PolinRider 將歸入一組已有充分記錄的朝鮮相關開發者攻擊模式，過往手法包括仿冒域名套件，以及人為刷高 star 數的儲存庫，用以製造可信度。</p>
+<p>PolinRider 與既有手法的最大差別在於投放模式：批量植入儲存庫，再被毫無戒心的使用者被動發現，而非以釣魚方式把目標引到攻擊者控制的基礎設施。</p>
+<h4>一個刻意平淡無奇的藏身處</h4>
+<p>載入器的藏身位置之所以值得注意，正因為它毫不起眼。據 SafeDep 原文（由《The Hacker News》引述），它藏在一個小型 <code>utils</code> 套件或 <code>conftest.py</code> 之中——後者是 pytest 在執行測試前會自動匯入的檔案，因此無需開發者下達任何明確指令就會執行。</p>
+<p>「When Python imports the file, the loader reads the newest transaction that an…」——SafeDep 報告的摘錄到此中斷。摘錄顯示，載入器會讀取與一個內嵌參照綁定的最新交易，並藉此取得更新後的指令。</p>
+<p>這種設計的安全意涵極其重大：由於載入器在執行時期讀取遠端參照，營運者可在不推送新版本、不改動磁碟上任何檔案的情況下，重新調配已經部署的副本。沒有版本號變動可供察覺，沒有 commit 可供審查，也沒有 diff 可供標記——開發者在安裝時檢視過的程式碼，未必就是稍後實際執行的程式碼。換言之，常規程式碼審查在結構上對這次切換視而不見。</p>
+<h4>為什麼 7,600 只是冰山一角</h4>
+<p>儲存庫數字雖驚人，但更可能是下限而非上限。Fork、內嵌複本（vendored mirror），以及未固定雜湊值的依賴安裝，都會把受污染的套件帶到原始儲存庫之外。雪上加霜的是，團隊若沿用舊的本地檢出，pull 時看不到新的 commit，也就看不到新的 diff。</p>
+<p>該分析指出，開發者工作站與 CI 執行器都是被匯入的程式碼可能執行的環境，但未確認哪一方才是目標。無論如何，信任邊界位於匯入的一刻，而這對例行審查流程來說是不可見的。</p>
+<h4>給開發者的依賴衛生清單</h4>
+<p>對每天拉取依賴的開發者而言——包括香港金融、SaaS 及開源社群的從業者——這次行動把一個耳熟能詳的教訓又推前一步。一份更嚴謹的清單如下：</p>
+<ol>
+<li><strong>檢查自動執行的檔案。</strong> 把 <code>conftest.py</code>、<code>sitecustomize.py</code> 及 setup hooks 當作可執行程式碼而非設定檔，安裝前先讀一遍。</li>
+<li><strong>固定雜湊值，而不只固定版本。</strong> 使用帶摘要驗證的鎖定檔（<code>pip</code> 雜湊檢查模式、<code>uv lock</code> 或同等工具），讓安裝無法悄悄解析到被竄改的內容。</li>
+<li><strong>重視出處，而非人氣。</strong> star 數、fork 數與貢獻者名單都極易造假；改看維護者歷史、發布節奏與問題回應速度。</li>
+<li><strong>隔離安裝期執行。</strong> 在隔離環境中執行 <code>pip install</code>、<code>setup.py</code> 及安裝後 hooks——最好離線——之後才授予網路權限。</li>
+<li><strong>重新核對過期檢出。</strong> 本地長期未更新的儲存庫可能掩蓋了已被污染的上游。定期重新 clone，或比對可信的參照點。</li>
+<li><strong>切割 CI 執行器。</strong> 為管線配發範圍受限的憑證與網路出口，令會回傳訊息的載入器無法觸及機密或生產系統。</li>
+</ol>
+<h4>待核實</h4>
+<p>本文的關鍵數據——7,600 個儲存庫的數字、2025 年 2 月的時間線，以及確切的重新調配機制——目前均依賴 SafeDep 經《The Hacker News》轉述的報告，且摘錄原文並不完整。在將這些數字視為定案之前，應先對照 SafeDep 的完整報告，並取得 GitHub 的任何聲明作為先決條件。SafeDep 與 GitHub 均未說明開發者工作站或 CI 執行器是否為預定的執行目標；以現有證據而言，兩者皆屬可能。</p>
+<p>對開源社群而言，最令人不安的結論是：儲存庫中最危險的程式碼，可能就是那個沒有人叫它執行、它卻自行運行的檔案。</p>
+<hr>
+<p>一個被歸因於朝鮮（北韓）相關營運者、代號 PolinRider 的攻擊行動，已在超過 7,600 個 GitHub 儲存庫中植入 Python 載入器；證據顯示行動可能早在 2025 年 2 月就已展開——在被發現前已暴露接近兩年。《The Hacker News》於 11 月 26 日報道此事，轉述供應鏈安全公司 SafeDep 本周發布的分析。該歸因僅建立在 SafeDep 的評估之上，尚未獲得獨立證實。</p>
+<h4>規模與歸因</h4>
+<p>核心數據——超過 7,600 個被植入惡意程式的儲存庫，以及 2025 年 2 月的起始時間——均來自 SafeDep，截至發稿時仍未經外部核實。若朝鮮關聯屬實，PolinRider 將歸入一組已有充分記錄的朝鮮相關開發者攻擊模式，過往手法包括仿冒域名套件（typosquatted packages），以及人為刷高 star 數的儲存庫，用以製造可信度。</p>
+<p>PolinRider 與既有手法的最大差別在於投放模式：批量植入儲存庫，再被毫無戒心的用戶被動發現，而非以釣魚方式把目標引到攻擊者控制的基礎設施。</p>
+<h4>一個刻意平淡無奇的藏身處</h4>
+<p>載入器的藏身位置之所以值得注意，正因為它毫不起眼。據 SafeDep 所述（由《The Hacker News》引述），它藏在一個小型 <code>utils</code> 套件或 <code>conftest.py</code> 之中——後者是 pytest 在執行測試前會自動 import 的檔案，因此無需開發人員下達任何明確指令就會執行。</p>
+<p>「When Python imports the file, the loader reads the newest transaction that an…」——SafeDep 報告的節錄到此中斷。節錄顯示，載入器會讀取與一個內嵌參照（embedded reference）綁定的最新交易，並藉此取得更新後的指令。</p>
+<p>這種設計的保安意涵極其深遠：由於載入器在 runtime 讀取遠端參照，營運者可在不推送新版本、不改動磁碟上任何檔案的情況下，重新調配（re-task）已經部署的副本。沒有版本號變動可供偵測，沒有 commit 待審閱，也沒有 diff 需要標記——開發人員在安裝時審查過的程式碼，未必就是稍後實際執行的程式碼。換言之，標準 code review 在結構上對這次切換是盲目的。</p>
+<h4>為什麼 7,600 低估了暴露範圍</h4>
+<p>儲存庫數字雖驚人，但更可能是下限而非上限。Fork、vendored mirrors（內嵌式鏡像），以及未固定雜湊值（pinned hashes）的依賴安裝，都會把受污染的套件帶到原始儲存庫之外。雪上加霜的是，沿用舊有 checkout 的團隊，pull 時看不到新的 commit，也就看不到新的 diff。</p>
+<p>該分析指出，開發人員工作站與 CI runner 都是被匯入的程式碼可能執行的環境，但未確認哪一方才是目標。無論如何，信任邊界（trust boundary）位於 import 的一刻，而這對大多數例行審查流程來說是不可見的。</p>
+<h4>給開發人員的依賴衛生清單</h4>
+<p>對每天拉取依賴的開發人員而言——包括香港金融、SaaS 及開源社群的從業者——這次行動深化了一個耳熟能詳的教訓。一份更嚴謹的清單如下：</p>
+<ol>
+<li><strong>檢查自動執行的檔案。</strong> 把 <code>conftest.py</code>、<code>sitecustomize.py</code> 及 setup hooks 當作可執行程式碼而非設定，安裝前先讀一遍。</li>
+<li><strong>固定雜湊值，而不只固定版本。</strong> 使用帶摘要驗證的 lockfile（<code>pip</code> 雜湊檢查模式、<code>uv lock</code> 或同等工具），令安裝無法悄然解析到被篡改的內容。</li>
+<li><strong>重視出處，而非人氣。</strong> star 數、fork 數與貢獻者名單都極易刷高；改看維護者歷史、發布節奏與 issue 回應速度。</li>
+<li><strong>將安裝時的執行沙箱化。</strong> 在隔離環境中執行 <code>pip install</code>、<code>setup.py</code> 及安裝後 hooks——最好離線——之後才授予任何網絡權限。</li>
+<li><strong>重新核對過期的 checkout。</strong> 本地長期未更新的儲存庫可能掩蓋了已被污染的上游。定期重新 clone，或與可信的 ref 進行 diff 比對。</li>
+<li><strong>劃分 CI runner。</strong> 為 pipeline 配發範圍受限的憑證與受限的網絡出口（network egress），令會向外回連的載入器無法觸及機密或生產系統。</li>
+</ol>
+<h4>有待核實</h4>
+<p>本文的關鍵數據——7,600 個儲存庫的數字、2025 年 2 月的時間線，以及確切的重新調配機制——目前均倚賴 SafeDep 經《The Hacker News》轉述的報告，而節錄的原文並不完整。在將這些數字視為定案之前，應先對照 SafeDep 的完整報告，並取得 GitHub 的任何聲明作為先決條件。SafeDep 與 GitHub 均未說明開發人員工作站或 CI runner 是否為預定的執行目標；以現有證據而言，兩者皆屬可能。</p>
+<p>對開源社群而言，最令人不安的結論是：儲存庫中最危險的程式碼，可能就是那個沒有人叫它執行、它卻自行運行的檔案。</p>
+<p><a href="https://thehackernews.com/2026/11/north-korea-linked-polinrider-poisons.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
