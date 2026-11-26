@@ -1,0 +1,54 @@
+Date: 2026-11-26 16:23:00
+Author: HKLUG Team
+Title: Remus Stealer Reads Gmail Inboxes With Extension Permissions, Not a Google Zero-Day
+Content:
+<h3>Remus Stealer Reads Gmail Inboxes With Extension Permissions, Not a Google Zero-Day</h3>
+<p>An infostealer tracked as Remus is reading Gmail inboxes directly out of victims' browsers through a malicious Chrome extension dressed up as a Google Sheets add-on, BleepingComputer reported. Its operators have been offering the inbox-reading capability to other attackers as a "zero-day" against Google's email service — a label that deserves considerably more scepticism than it has received so far.</p>
+<h4>The permissions, not a Google bug</h4>
+<p>Read closely, the "zero-day" framing is seller marketing, not a verified technical finding. Nothing in the reporting indicates that Remus exploits an unpatched flaw in Gmail, in Chrome, or anywhere in Google's infrastructure. The extension rides on the consent a user grants at the "Add to Chrome" prompt: once installed, it operates inside the victim's authenticated browser session and can read mail continuously.</p>
+<p>That distinction is the one defenders need. There is no Google patch to wait for and no stolen password to rotate. What has been abused is the trust the browser extension model is built to extend — trust that, once granted, is difficult to see from the administrator's side. The failure occurs at installation time, not at exploitation time.</p>
+<p>The source material leaves several points open. It does not explain how victims are persuaded to install the extension in the first place — phishing, lures, bundled downloads or something else — and it describes no takedown or disruption, so the campaign's current status is unconfirmed. The researcher attributions and technical analysis behind the zero-day claim are not laid out in detail either, which is a further reason not to repeat the marketing line as fact.</p>
+<p>Remus does fit a wider shift among stealers, away from harvesting saved password databases and toward collecting live application data — mail, documents, sessions — that is far less likely to trigger login alerts, unfamiliar-location warnings or repeated authentication prompts.</p>
+<h4>What Workspace administrators can actually check</h4>
+<p>Browser add-ons are among the most permissive software on a typical managed device, yet they are usually installed by end users rather than pushed by IT, reviewed once at install time and rarely revisited afterwards. Impersonating a high-trust tool such as Google Sheets lowers the chance that a user pauses at the permissions prompt — or that a helpdesk questions the request. For any organisation running Google Workspace, this is a browser-hygiene problem before it is an identity problem.</p>
+<p><strong>Extension allowlisting</strong></p>
+<ul>
+<li>Set Chrome Enterprise to permit only approved extensions, blocking unsanctioned user installs.</li>
+<li>Export and audit the installed base regularly, flagging items that hold "read Gmail" or broad data-access permissions without a business need.</li>
+<li>Check publisher identity and official distribution channels for any add-on imitating a Google-branded tool.</li>
+<li>Train users to treat the permissions prompt itself as the checkpoint: an unknown add-on requesting mailbox access should be stopped and verified, not clicked through.</li>
+</ul>
+<p><strong>OAuth grant review</strong></p>
+<ul>
+<li>Audit third-party app access in the Workspace admin console, revoking grants that are stale or from unknown publishers.</li>
+<li>Require approval and periodic re-review for anything requesting <code>gmail.readonly</code>-style message scopes.</li>
+<li>Confirm whether alerts can fire when scopes are abused, because this class of campaign triggers no login anomaly.</li>
+</ul>
+<p>Mailbox access is the gateway to password resets, MFA prompts and supplier impersonation, so the downstream risk typically outweighs the initial data loss. Remus is not the first malware to wear a legitimate-looking extension's coat, and it will not be the last — the durable weakness is that extensions abuse a trust the platform is designed to extend.</p>
+<p><em>Source: BleepingComputer, "Remus malware steals Gmail messages via fake Google Sheets extension."</em></p>
+<hr>
+<h3>Remus Stealer 透過擴充功能權限讀取 Gmail 收件匣，並非 Google zero-day 漏洞</h3>
+<p>據 BleepingComputer 報道，被追蹤為 Remus 的信息竊取器（infostealer）正透過一款偽裝成 Google Sheets 附加元件的惡意 Chrome 擴充功能，直接從受害者的瀏覽器讀取 Gmail 收件匣。其營運者一直向其他攻擊者提供此收件匣讀取能力，並聲稱是針對 Google 電郵服務的「zero-day」漏洞——此標籤所獲的信譽，遠遠超出它應得的程度，值得相當程度的質疑。</p>
+<h4>關鍵在權限，而非 Google 漏洞</h4>
+<p>仔細閱讀可知，所謂「zero-day」的說法只是賣家的市場宣傳，並非經核實的技術發現。現有報道並無任何跡象顯示 Remus 利用了 Gmail、Chrome 或 Google 任何基建中未修補的漏洞。該擴充功能是藉助用戶在「加入 Chrome」提示中授予的同意運作：一旦安裝，它便在受害者已認證的瀏覽器 session 內運作，可持續讀取郵件。</p>
+<p>這正是防禦者需要理解的區別：沒有 Google 補丁可以等待，也沒有被竊取的密碼需要更換。遭到濫用的，是瀏覽器擴充功能模式本來就要延伸的那份信任——而這份信任一旦授予，管理員一方很難察覺。問題出現在安裝時刻，而非漏洞利用時刻。</p>
+<p>原始材料仍有數點未有交代：它沒有說明受害者最初如何被說服安裝該擴充功能——釣魚攻擊、誘導手段、捆綁下載還是其他方式——也沒有描述任何取締或搗毀行動，因此該攻勢的現時狀態未獲確認。支撐 zero-day 聲稱的研究員歸因及技術分析亦未有詳列，這是不應將市場宣傳語當作事實重複的進一步理由。</p>
+<p>Remus 的做法確實符合信息竊取器的整體轉變方向：不再收割已儲存的密碼資料庫，轉而收集即時應用程式數據——電郵、文件、session——這類數據遠較不易觸發登入警報、陌生位置警告或重複認證要求。</p>
+<h4>Workspace 管理員實際可以檢查什麼</h4>
+<p>瀏覽器附加元件是典型受管設備上權限最寬鬆的軟件之一，但它們通常由最終用戶自行安裝，而非由 IT 部門推送，僅在安裝時審核一次，事後鮮有覆檢。冒充 Google Sheets 這類高信任工具，會降低用戶在權限提示前停步的機會，亦令服務台較少質疑該請求。對任何使用 Google Workspace 的機構而言，這首先是瀏覽器衛生問題，其次才是身份驗證問題。</p>
+<p><strong>擴充功能允許清單（allowlisting）</strong></p>
+<ul>
+<li>將 Chrome Enterprise 設定為只允許已核准的擴充功能，阻止未經授權的用戶安裝。</li>
+<li>定期匯出及審核已安裝的擴充功能清單，標記持有「讀取 Gmail」或廣泛數據存取權限但沒有業務需要的項目。</li>
+<li>對任何仿冒 Google 品牌工具的附加元件，核查發布者身份及官方分發渠道。</li>
+<li>培訓用戶將權限提示本身視為關卡：未知附加元件要求存取郵匣時，應停止並核實，而非直接點擊通過。</li>
+</ul>
+<p><strong>OAuth 授予審核</strong></p>
+<ul>
+<li>在 Workspace 管理員控制台審核第三方應用程式存取權限，撤銷過期或來自不明發布者的授權。</li>
+<li>對任何要求 <code>gmail.readonly</code> 類訊息 scope 的申請，須經核准並定期重新覆核。</li>
+<li>確認 scope 遭濫用時能否觸發警報，因為此類攻勢不會產生登入異常。</li>
+</ul>
+<p>郵匣存取是通往密碼重設、MFA 提示及冒充供應商的入口，因此後續風險通常遠超最初的數據損失。Remus 並非第一款披上合法外表擴充功能外衣的惡意軟件，也不會是最後一款——長久以來的弱點在於：擴充功能濫用了平台本來設計用來延伸的那份信任。</p>
+<p><em>來源：BleepingComputer，〈Remus malware steals Gmail messages via fake Google Sheets extension〉</em></p>
+<p><a href="https://www.bleepingcomputer.com/news/security/remus-malware-steals-gmail-messages-via-fake-google-sheets-extension/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
