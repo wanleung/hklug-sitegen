@@ -1,0 +1,36 @@
+Date: 2026-11-26 13:25:00
+Author: HKLUG Team
+Title: Function-Level Reset Lands in Intel's Xe Graphics Driver for Linux 7.5
+Content:
+<p>The Intel Xe kernel graphics driver is set to gain PCIe Function Level Reset (FLR) support in Linux 7.5, according to Phoronix, which reported on the feature arriving through a recent drm-xe-next pull request of new Xe driver material from Intel.</p>
+<p>The addition matters most to operators running multi-accelerator servers and virtualised GPU workloads: FLR gives the kernel a clean, spec-defined way to reset an individual PCIe function — in this case an Intel graphics device — without bouncing the entire slot or the host machine.</p>
+<h5>What Function Level Reset actually does</h5>
+<p>FLR is a capability defined by the PCI Express specification. When a downstream device advertises FLR support, the PCIe fabric can reset just that one function's internal state — configuration space, DMA engines, pending transactions — while leaving sibling devices on the same slot or root port untouched. In practice, a stuck or wedged GPU can be brought back to a known-good state instead of requiring a full platform reboot.</p>
+<p>For the Xe driver specifically, the reset path has previously leaned on heavier mechanisms when a device became unresponsive. Function-level reset offers a faster, more surgical recovery path, and it is the reset flavour that user-space recovery tooling and management daemons typically expect to be able to invoke.</p>
+<h5>Why it matters for recovery and passthrough</h5>
+<p>Two operational scenarios stand out.</p>
+<p>First, in-device recovery. Graphics and compute accelerators in production do occasionally hang — a bad command submission, a firmware glitch, a thermal or power event. With FLR exposed through the driver, an operator or a monitoring stack can attempt to reset a single card in a multi-GPU host and return it to service, rather than scheduling downtime for the whole node. The practical benefit is reduced blast radius: one card resets, the other workloads on the same machine keep running.</p>
+<p>Second, virtualisation and PCIe passthrough. Guest operating systems — or the hypervisor layer managing device assignment — rely on FLR as a clean handover mechanism between virtual machines. Without it, unassigning and reassigning a passed-through device often falls back to coarser reset types, or fails outright, leaving the device in an inconsistent state when the next VM claims it. FLR support in the host driver removes a common source of passthrough instability and makes live migration-style device handovers more predictable.</p>
+<p>There is an important caveat: FLR is a software-enabled path to a hardware capability. The reset only works end-to-end if the platform firmware, the PCIe link, and the device itself correctly honour the function-level reset request. Kernel drivers typically escalate to broader reset strategies — slot reset, bus reset, or, as a last resort, a documented failure to userspace — when the targeted reset does not take. In heterogeneous fleet environments, that escalation behaviour is worth testing rather than assuming, since a silent fallback to a heavier reset changes the recovery time and blast radius an operator has planned for.</p>
+<h5>Where it lands</h5>
+<p>The work arrived via the drm-xe-next tree, the staging branch used to queue Xe driver changes ahead of a mainline merge window. Linux 7.5 is the target cycle. As with all drm-xe-next material, the code is subject to the normal merge process and could still be adjusted before it reaches a released kernel.</p>
+<p>For teams tracking Intel graphics on Linux, the timing is worth noting against Xe's broader trajectory: Xe has been developing as the successor to the long-serving i915 stack, and its reset, virtualisation, and multi-tenant story is one of the boxes that needs ticking before it can stand in for i915 in production deployments. On that reading, FLR support closes a gap that would otherwise sit on the list of reasons operators give for holding back from retiring i915 in favour of the newer driver.</p>
+<p>Validation of reset behaviour across specific firmware and hypervisor combinations remains a separate exercise for teams running Intel GPUs in virtualised or passthrough configurations, and one that will only be meaningful once 7.5 ships.</p>
+<p>Source: <a href="https://www.phoronix.com/news/Intel-Xe-PCIe-FLR-Linux-7.5">Phoronix</a></p>
+<hr>
+<p>據 Phoronix 報道，Intel Xe kernel 圖像驅動程式將於 Linux 7.5 加入 PCIe Function Level Reset（FLR）支援；相關功能是透過 Intel 最近一次 drm-xe-next pull request、提交新一代 Xe 驅動程式材料而引入。</p>
+<p>此項改動對運行多加速器伺服器及虛擬化 GPU 工作負載的營運者尤為重要：FLR 為 kernel 提供了一個符合規格的簡潔途徑，用以重設個別 PCIe function——在此指 Intel 圖像設備——而無須重啟整個 slot 或主機系統。</p>
+<h5>Function Level Reset 的實際運作</h5>
+<p>FLR 是 PCI Express 規格所定義的一項功能。當下游裝置宣告支援 FLR 時，fabric 可以僅重設該 function 的內部狀態——包括 configuration space、DMA engine、pending transactions——而同一 slot 或 root port 上的其他裝置則不受影響。在實務上，一張卡住或失靈的 GPU 可以恢復至已知良好狀態，毋須整機重新開機。</p>
+<p>就 Xe 驅動程式而言，以往設備失去回應時，重設路徑傾向依賴較為重型的機制。Function-level reset 提供更快、更精準的復原路徑，而且這正是用戶空間復原工具及管理 daemon 通常預期可以調用的重設方式。</p>
+<h5>對復原及 passthrough 為何重要</h5>
+<p>兩個運作場景尤為突出。</p>
+<p>第一是設備內復原。生產環境中的圖像及運算加速器偶爾的確會停頓——可能是 command submission 錯誤、firmware 故障、散熱或供電事件。透過驅動程式暴露 FLR，營運者或監控系統便可在多 GPU 主機中嘗試重設單張顯示卡並讓其回復服務，而非為整個節點安排停機時間。實際好處是縮小影響範圍（blast radius）：一張卡重設，同一部機器上的其他工作負載繼續運行。</p>
+<p>第二是虛擬化及 PCIe passthrough。Guest 作業系統——或負責設備分派的 hypervisor 層——依賴 FLR 作為虛擬機之間的簡潔交接機制。若缺乏此功能，解除及重新分派一經 passthrough 的設備往往要退而求助較粗疏的重設類型，甚至直接失敗，令設備在下一個 VM 接手時處於不一致狀態。主機驅動程式的 FLR 支援消除了常見的 passthrough 不穩定因素，令 live migration 式的設備交接更可預測。</p>
+<p>須注意一項重要 caveat：FLR 是通往硬件功能的軟件啟用路徑。只有當平台 firmware、PCIe link 及設備本身正確遵從 function-level reset 請求時，重設才能全程生效。當針對性重設未生效時，kernel 驅動程式通常會升級至更廣泛的重設策略——slot reset、bus reset，或作為最後手段向用戶空間報告一項有記錄的失敗。在異構 fleet 環境中，該升級行為值得實測而非假設，因為一旦靜默回退至較重型的重設，營運者原定的復原時間及影響範圍便會改變。</p>
+<h5>何時落地</h5>
+<p>相關工作是透過 drm-xe-next tree 引入的；該 tree 是在 mainline merge window 之前排隊 Xe 驅動程式改動的 staging 分支。Linux 7.5 是目標週期。一如所有 drm-xe-next 材料，代碼須經正常 merge 流程，在抵達正式 kernel 之前仍可能有所調整。</p>
+<p>對追蹤 Linux 上 Intel 圖像發展的團隊而言，此時間點須對照 Xe 的整體發展路向來理解：Xe 一直作為服役已久的 i915 stack 之接班人進行開發，而其重設、虛擬化及多租戶方案，正是它要在生產部署中取代 i915 之前必須補完的項目之一。就此而言，FLR 支援填補了一項空缺——否則它會留在營運者推遲淘汰 i915、改用新驅動程式的理由清單上。</p>
+<p>針對特定 firmware 與 hypervisor 組合的重設行為驗證，對於在虛擬化或 passthrough 配置下運行 Intel GPU 的團隊而言仍是一項獨立工作，而且只有在 7.5 正式推出後才具意義。</p>
+<p>來源：<a href="https://www.phoronix.com/news/Intel-Xe-PCIe-FLR-Linux-7.5">Phoronix</a></p>
+<p><a href="https://www.phoronix.com/news/Intel-Xe-PCIe-FLR-Linux-7.5" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
