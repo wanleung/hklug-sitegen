@@ -1,0 +1,32 @@
+Date: 2026-11-26 16:28:00
+Author: HKLUG Team
+Title: Brush 0.5 Clears 96% of Bash's Own Test Suite — Is a Rust Shell Ready for Prime Time?
+Content:
+<p><strong>Brush 0.5, the Rust-built Bash-compatible shell, now passes more than 96% of Bash's upstream bash-completion test suite — a milestone that puts it on the shortlist for interactive and dev-container use, while production scripts still warrant a proper vetting pass.</strong></p>
+<p>The result, reported by Phoronix, carries unusual weight because the score comes from running Bash's <em>own</em> test suite rather than a self-authored checklist. Compatibility claims are easy to make and hard to verify, but an upstream suite written to police drift in a different implementation is an unforgiving yardstick. Clearing 96%+ of it means most everyday Bash scripts should run unchanged under Brush.</p>
+<p>One caveat worth stating plainly: the suite in question targets bash-completion behaviour, and a strong pass rate there is not the same claim as full runtime parity across every corner of the shell.</p>
+<h4>What Brush is, and where it comes from</h4>
+<p>Brush is an open-source, MIT-licensed project developed in the open on GitHub, written in Rust with the goal of offering a Bash/POSIX-compatible shell that inherits Rust's memory-safety guarantees — no buffer overflows or use-after-free bugs of the kind that have historically surfaced in long-lived C codebases like Bash itself. It follows earlier 0.x releases that already targeted broad script compatibility, with 0.5 described as the cycle where test-suite coverage jumped past the 96% mark thanks to a batch of fixes and improvements.</p>
+<p>For a shell, that lineage matters more than feature checklists. A shell sits underneath every build script, provisioning job, and container entrypoint; the question is never "does it demo well" but "does it behave identically when nobody is watching."</p>
+<h4>The honest part: what still fails</h4>
+<p>The unpassed remainder — roughly 4% — is where the risk lives. Phoronix's report doesn't enumerate the failing cases, but the tail of a Bash test suite is exactly where the nasty behaviour hides: obscure parameter-expansion corner cases, job-control and interactive edge conditions, completion hooks that lean on Bash internals, and signal-handling quirks. Percentage points on a test suite translate directly into scripts: a 96% pass rate still leaves dozens of individual test cases failing, and any script touching one of those paths will silently do the wrong thing rather than throw an obvious error. That is the classic failure mode for drop-in replacements — not a crash, but a divergence.</p>
+<p>The practical verdict is therefore split. For interactive shells, dev containers, and day-to-day terminal work, Brush 0.5's compatibility level is high enough to trial now. For production CI jobs and base images, treat it as a candidate to validate against your own script suite before you commit.</p>
+<h4>Who should trial it now</h4>
+<p>Brush is most interesting where a small, memory-safe, statically distributed shell simplifies the stack — minimal Alpine-style images, hermetic build environments, and ephemeral runners where you'd rather not ship a full Bash and its CVE history. Platform and DevOps engineers responsible for image hygiene, plus anyone scripting against POSIX/Bash in security-sensitive pipelines, are the natural early adopters. The low-cost experiment is straightforward: point your existing shell test suite at Brush 0.5 and read the diff.</p>
+<p>Whether you'd actually switch your daily shell today probably comes down to how much of your work lives in the interactive 96% versus the scripted long tail. The Bash-to-Brush gap has shifted from an architectural question to a shrinking bug list — moving Brush from "interesting experiment" to "plausible default candidate" for specific workloads.</p>
+<p><em>Source: <a href="https://www.phoronix.com/news/Brush-0.5-Released">Phoronix — Brush 0.5 Passing 96+% Of Upstream Test Suite For Bash Shell Written In Rust</a></em></p>
+<hr>
+<p><strong>以 Rust 實作、相容 Bash 的 shell「Brush 0.5」如今通過超過 96% 的 Bash 上游 bash-completion 測試套件 — 這座里程碑令它進入互動式操作與 dev-container 應用的候選名單，至於正式環境的腳本，仍值得先做一輪驗證。</strong></p>
+<p>根據 Phoronix 的報導，這個成績分量特別重，因為它是執行 Bash <em>自己</em>的測試套件得來的，而不是專案自備的清單。相容性宣稱說起來容易、驗證起來難；一套為「另一個實作」撰寫、專門用來揪出差異的上游套件，是毫不留情的量尺。能通過其中 96% 以上，代表多數日常 Bash 腳本在 Brush 下應可原樣執行。</p>
+<p>有一點值得先講清楚：這套測試針對的是 bash-completion 行為，這部分通過率再高，並不等同於聲稱 shell 所有角落都達到完整的 runtime parity。</p>
+<h4>Brush 是什麼，又從何而來</h4>
+<p>Brush 是一個開放源碼、採 MIT 授權、在 GitHub 公開開發的專案，以 Rust 撰寫，目標是提供一個相容 Bash/POSIX 的 shell，同時繼承 Rust 的記憶體安全保證 — 不會出現困擾 Bash 這類長期維護的 C 代碼庫的 buffer overflow 或 use-after-free 缺陷。它延續了先前數個 0.x 版本對廣泛腳本相容性的追求，0.5 則被描述為憑藉一批修正與改善，令測試套件涵蓋率一舉跨過 96% 門檻的一輪。</p>
+<p>對 shell 來說，這樣的血統比功能清單更重要。shell 坐在每支 build script、provisioning job 與 container entrypoint 之下；該問的從來不是「它 demo 好不好看」，而是「沒人盯著的時候，它是否行為一致」。</p>
+<h4>必須坦白的部分：仍有哪些會失敗</h4>
+<p>未通過的殘餘 — 約 4% — 正是風險所在。Phoronix 的報導沒有逐一列出失敗案例，但 Bash 測試套件的長尾恰恰是麻煩藏身之處：冷僻的 parameter expansion 角落案例、job control 與互動式邊界條件、依賴 Bash 內部實作的 completion hooks，以及信號處理的怪癖。測試套件上的百分點會直接落到腳本上：96% 的通過率仍代表數十個個別測試案例失敗，任何碰到這些路徑的腳本會安靜地做出錯誤行為，而不是明顯地報錯。這正是 drop-in replacement 最典型的失敗模式 — 不是 crash，而是悄悄走樣。</p>
+<p>因此，實際的建議是視用途而定。對互動式 shell、dev container 與日常終端工作而言，Brush 0.5 的相容程度已足以現在就試用；對生產環境的 CI 作業與 base image，則把它當成候選方案，先用你自己的腳本套件驗證過再說。</p>
+<h4>誰適合現在就試用</h4>
+<p>Brush 最吸引人的地方，在於一個小巧、具記憶體安全、以靜態方式散發的 shell 能令整套 stack 更單純 — 精簡的 Alpine 風格 image、hermetic build 環境，以及你不希望額外搭載完整 Bash 及其 CVE 歷史的 ephemeral runner。負責 image hygiene 的平台與 DevOps 工程師，以及在安全性敏感的 pipeline 中撰寫 POSIX/Bash 腳本的人，是最自然的早期採用者。成本最低的實驗很直接：把你現有的 shell 測試套件指向 Brush 0.5，然後讀 diff。</p>
+<p>你今天是否真的會換掉日常使用的 shell，大概取決於你的工作有多少落在互動式的 96%，又有多少落在腳本化的長尾。Bash 與 Brush 之間的差距，已從架構問題轉變成一份逐漸縮短的 bug 清單 — Brush 也從「有趣的實驗」晉身為特定工作負載下「合理的預設候選」。</p>
+<p><em>來源：<a href="https://www.phoronix.com/news/Brush-0.5-Released">Phoronix — Brush 0.5 Passing 96+% Of Upstream Test Suite For Bash Shell Written In Rust</a></em></p>
+<p><a href="https://www.phoronix.com/news/Brush-0.5-Released" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
