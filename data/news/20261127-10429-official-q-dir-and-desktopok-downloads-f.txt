@@ -1,0 +1,36 @@
+Date: 2026-11-27 12:32:00
+Author: HKLUG Team
+Title: Official Q-Dir and DesktopOK Downloads Found Bundled With Remote Access Malware
+Content:
+<h4>Official Q-Dir and DesktopOK Downloads Found Bundled With Remote Access Malware</h4>
+<p>Attackers have trojanized installation files for the Windows utilities Q-Dir and DesktopOK, and the tampered builds were served through the programs' own official download pages, according to research disclosed by The Hacker News — turning a vendor's own website into a delivery mechanism for remote access malware.</p>
+<p>What makes the incident notable for IT teams is not the profile of the two utilities, but the vector. The researchers found that malicious files were served not only to users who downloaded the installers directly from the official SoftwareOK site, but also through the update process on machines that already had the software installed. In other words, a host that had previously been vetted, installed cleanly, and allowed to auto-update could receive a poisoned build without any user initiating a fresh download. That also undercuts the standard download-hygiene rule: "only download from the vendor's site" offers no protection when the trusted source is the compromised asset, and organisations that block third-party download domains or restrict installs to a curated catalogue may still have waved these updates through on the assumption the source was trustworthy.</p>
+<p>That distinction is the supply-chain lesson. Initial-install checks — hash comparison, reputation scoring, user confirmation prompts — do nothing for a package that arrives later through a trusted updater. The update channel itself becomes the compromised asset, and it sits entirely outside the administrator's visibility. The wider pattern is familiar: small, single-maintainer utilities with self-updaters are widely deployed, lightly scrutinised, and rarely inventoried, yet they function as distribution channels running on desktops across the estate.</p>
+<h5>What administrators should do</h5>
+<ul>
+<li><strong>Inventory first.</strong> Establish whether Q-Dir, DesktopOK, or any other SoftwareOK utility is present across the Windows fleet, including versions and last-update timestamps. Small utilities are frequently overlooked in asset registers precisely because they seem harmless.</li>
+<li><strong>Suspend trust in the vendor channel.</strong> Block or defer updates from the affected vendor's endpoints until the vendor publishes a clear remediation status and clean, verifiable artifacts. Treat the site's download and update paths as untrusted until confirmed otherwise.</li>
+<li><strong>Verify before you trust.</strong> Where installers or updates are still being obtained, compare published hashes and check for authentic code-signing signatures rather than relying on HTTPS or domain reputation alone.</li>
+<li><strong>Scope exposure as an incident, not a cleanup.</strong> Where a machine may have pulled an update during the affected period, treat that host as potential incident scope. Rebuilding from a known-good image is the safer path where the possibility of payload execution cannot be ruled out.</li>
+<li><strong>Monitor update endpoints.</strong> Review proxy, DNS, and EDR telemetry for connections to the vendor's update infrastructure, and watch for the remote access behaviour the trojanized builds are designed to deliver.</li>
+<li><strong>Reassess updater trust generally.</strong> Consider which other small utilities in the estate carry silent self-update capability, and whether those channels are inventoried, allow-listed, and monitored with the same rigour as the mainstream software estate.</li>
+</ul>
+<p>The researchers' full findings, including payload family details and attribution, were reported by The Hacker News; administrators evaluating exposure should consult the original disclosure and any vendor advisory for the specifics of the malicious builds and current remediation status.</p>
+<p>For Windows desktop and security administrators, the uncomfortable takeaway is straightforward: the official download page is not a guarantee, and an updater that once passed scrutiny can silently become the weakest link in the software supply chain.</p>
+<hr>
+<h4>官方 Q-Dir 及 DesktopOK 下載被發現夾帶遠端存取惡意軟件</h4>
+<p>據 The Hacker News 披露的研究顯示，攻擊者已將 Windows 工具 Q-Dir 及 DesktopOK 的安裝檔案改造成木馬程式，而被竄改的建置版本正是透過相關程式的官方下載頁面散佈——令廠商自身網站淪為遠端存取惡意軟件的投放渠道。</p>
+<p>是次事件令 IT 團隊關注的重點，並非這兩款工具的性質，而是其攻擊途徑。研究人員發現，惡意檔案不但會提供予直接從 SoftwareOK 官方網站下載安裝程式的用戶，亦會透過已安裝該軟件的電腦的更新程序進行投放。換言之，一台曾經通過審查、乾淨安裝並獲准自動更新的電腦，可能在用戶毫無察覺、未曾重新下載的情況下，收到被動了手腳的版本。這同時動搖了標準的下載安全守則：「只從廠商網站下載」在可信來源本身已遭入侵時無法提供任何保護；而一些封鎖第三方下載網域、或只允許從經審核目錄安裝的機構，亦可能基於來源可信的假設而放行了這些更新。</p>
+<p>這個區別正是供應鏈問題的教訓。首次安裝時的檢查——雜湊值比對、信譽評分、用戶確認提示——對於事後透過可信更新程序送達的套件完全失效。更新渠道本身成為被入侵的資產，而且完全不在管理員的視野之內。背後的模式並不陌生：由單一維護者開發、具備自動更新功能的小型工具，部署廣泛卻甚少受到審查，通常亦不會納入資產清單，但它們實質上是在整個環境的桌面上運行的散佈渠道。</p>
+<h5>管理員應採取的措施</h5>
+<ul>
+<li><strong>先進行資產盤點。</strong> 確定 Windows 系統中是否存在 Q-Dir、DesktopOK 或其他任何 SoftwareOK 工具，包括版本及最後更新時間戳記。小型工具往往因為看似無害，而在資產登記冊中被忽略。</li>
+<li><strong>暫停對廠商渠道的信任。</strong> 在廠商發布清晰的補救狀態及乾淨、可驗證的建置產物之前，封鎖或延遲來自受影響廠商端點的更新。在另行確認之前，應將網站的下載及更新路徑視為不可信。</li>
+<li><strong>先驗證，後信任。</strong> 如仍需獲取安裝程式或更新，應比對已公布的雜湊值並檢查真實的 code signing 簽章，而非僅依賴 HTTPS 或網域信譽。</li>
+<li><strong>將影響範圍界定為安全事故，而非一般清理。</strong> 如某部電腦可能在受影響期間下載過更新，應將該主機視為潛在事故範圍。在無法排除惡意負載已被執行的可能性時，從已知良好的映像重新建置是較安全的途徑。</li>
+<li><strong>監察更新端點。</strong> 檢視 proxy、DNS 及 EDR 的遙測數據，找出連接廠商更新基礎設施的記錄，並留意被改裝版本旨在投放的遠端存取行為。</li>
+<li><strong>整體重新評估更新程序的信任。</strong> 思考環境中還有哪些小型工具具備靜默自動更新功能，以及這些渠道是否已與主流軟件環境同等嚴格地納入資產清單、允許清單及監察範圍。</li>
+</ul>
+<p>研究人員的完整發現，包括 payload 類型細節及歸因分析，已由 The Hacker News 報道；正在評估影響範圍的管理員應查閱原始披露及任何廠商公告，以了解惡意建置版本的具體情況及最新補救狀態。</p>
+<p>對 Windows 桌面及保安管理員而言，令人不安的結論十分直接：官方下載頁面並非保證，而一個曾經通過審查的更新程序，隨時可能悄然成為軟件供應鏈中最薄弱的一環。</p>
+<p><a href="https://thehackernews.com/2026/11/hackers-trojanize-official-q-dir-and.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
