@@ -1,0 +1,46 @@
+Date: 2026-11-27 08:02:00
+Author: HKLUG Team
+Title: Four HTTP Requests Straight to Server Control: Unpatched Cacti Zero-Day Turns Guest Access into a Server Entry Point
+Content:
+<p>```</p>
+<h3>Four HTTP Requests Straight to Server Control: Unpatched Cacti Zero-Day Turns Guest Access into a Server Entry Point</h3>
+<p>A new zero-day has surfaced in the open-source network monitoring tool Cacti: an attacker needs only <strong>four HTTP requests</strong> to move from a fresh, unauthenticated session to remote code execution (RCE), with no credentials required at any point — and the entry point is the system's Guest access feature. According to The Hacker News's November report, the flaw has <strong>still not been assigned a CVE</strong>, and no patched version has been released — meaning internet-exposed Cacti deployments currently have no patch to fall back on.</p>
+<h4>Four Requests, Zero Authentication</h4>
+<p>The researcher has named the proof-of-concept (PoC) exploits <strong>4HTTP2SHELL</strong> and <strong>4HTTP2ROOT</strong>, and has described the full path from an unauthenticated HTTP connection to command execution as the Cacti server. As the researcher puts it, the path lets an attacker run commands with privileges equivalent to the service account that executes Cacti — that is, an intruder gains control of the host, but not necessarily root.</p>
+<p>What makes this chain worth attention is how low the barrier is: four requests, zero authentication, no prior foothold. This is not a theoretical research scenario — it is a practical warning for every operations team that exposes Cacti to the public internet.</p>
+<p>Another key point is the nature of the entry point. Guest access is typically treated as a "read-only, convenient, low-risk" convenience feature rather than a trust boundary; this case shows that such add-on features on highly visible infrastructure tools are systematically underestimated. As long as the Guest entry point is available, four requests are enough to turn "view charts only" into "execute commands on the host."</p>
+<h4>Blast Radius: More Than a Single Host</h4>
+<p>RCE is serious enough on its own, but Cacti's role amplifies the consequences. To carry out monitoring, Cacti generally holds a range of credentials within the system over the long term: stored database credentials, SNMP community strings, and API tokens used to log into monitored devices. Once an attacker obtains command execution, this material is likely to be exfiltrated as well, extending the blast radius from a single server to the monitored network devices and backend databases.</p>
+<h4>Mitigation Checklist (Priority Order Without a Patch)</h4>
+<p>Until a CVE and an official fix are in place, defence relies on compensating controls. Recommended order of action:</p>
+<ol>
+<li><strong>Tighten network exposure</strong>: Place Cacti behind a VPN, reverse proxy, or firewall, and avoid exposing it directly to the public internet wherever possible.</li>
+<li><strong>Disable or strictly restrict Guest access</strong>: Since it is a known entry point, remove it immediately or restrict it to necessary sources only.</li>
+<li><strong>Monitor for short request sequences</strong>: Watch for patterns where a newly established session sends roughly four HTTP requests in rapid succession.</li>
+<li><strong>Inventory and rotate credentials</strong>: Review the stored database, SNMP, and device API credentials held by Cacti, and schedule rotation.</li>
+<li><strong>Subscribe to Cacti release notifications</strong>: Keep close watch for CVE assignment and patch releases so you can upgrade as soon as a fix appears; until then, the "unpatched" judgement should be continually re-verified against official sources.</li>
+</ol>
+<h4>What a Public PoC Means</h4>
+<p>There is currently no public data indicating whether the flaw has been exploited in the wild, but the PoC is public — <strong>an exposed PoC means defenders should assume exploit code will spread quickly</strong>. It is worth noting that the name 4HTTP2ROOT in the PoC's title is simply the researcher's naming; the privileges actually obtained depend on how the Cacti service account is configured and do not necessarily mean root. For IT teams operating in Hong Kong and elsewhere that rely on Cacti for network monitoring, this is a broadly relevant reminder: a convenience feature is not a security boundary, and while no patch exists, reducing exposure and restricting entry points is the only defence.</p>
+<hr>
+<p>```</p>
+<h3>四個 HTTP 請求直取伺服器控制權：未修補 Cacti Zero-Day 讓 Guest access 淪為伺服器入口</h3>
+<p>開源網絡監控工具 Cacti 出現新的 zero-day：攻擊者只需發出<strong>四個 HTTP 請求</strong>，就能從一個全新、未經驗證的 session 取得遠端程式碼執行（RCE），全程無需任何認證憑證，而入口正是系統的 Guest access 功能。據 The Hacker News 於 11 月的報導，漏洞到目前<strong>仍未獲分配 CVE</strong>，官方亦未推出修補版本——意即互聯網上直接暴露的 Cacti 部署此刻沒有補丁可依賴。</p>
+<h4>四個請求、零認證</h4>
+<p>研究者把相關 proof-of-concept（PoC）命名為 <strong>4HTTP2SHELL</strong> 與 <strong>4HTTP2ROOT</strong>，並描述了由未經驗證的 HTTP 連線一路走到以 Cacti server 身份執行指令的完整路徑。按研究者自己的描述，這條路徑讓攻擊者得以執行指令，其權限等同於負責執行 Cacti 的那個服務帳戶——即入侵者取得的是主機控制權，而非必然取得 root。</p>
+<p>這條鏈之所以值得重視，在於其門檻極低：四個 request、零認證、零預先植入。這並非理論性的研究情境，而是給所有對公網開放 Cacti 的營運團隊的實際警示。</p>
+<p>另一個關鍵在於入口點的性質。Guest access 通常被視為「唯讀、方便、低風險」的便利功能，而非信任邊界；這個案例說明，高可見度的基礎設施工具上這類附加功能，往往被系統性低估。只要 Guest 入口可用，四個 request 便足以把「只能看圖表」變成「在主機上執行指令」。</p>
+<h4>影響範圍：不止一台主機</h4>
+<p>RCE 本身已足夠嚴重，但 Cacti 的角色放大了後果。為了執行監控，Cacti 一般會在系統內長期保存各類憑證：資料庫的 stored credentials、SNMP community strings，以及用來登入被監控設備的 API tokens。一旦攻擊者取得指令執行，這些資料很可能一併外洩，影響範圍隨即由單一伺服器擴展至被監控的網絡設備與後端資料庫。</p>
+<h4>緩解清單（無補丁情況下的優先次序）</h4>
+<p>在 CVE 與官方修補到位之前，防禦只能依靠補償性控制（compensating controls）。建議按以下次序處理：</p>
+<ol>
+<li><strong>收緊網絡暴露</strong>：把 Cacti 置於 VPN、reverse proxy 或 firewall 之後，盡量避免直接對公網開放。</li>
+<li><strong>停用或嚴格限制 Guest access</strong>：既然它是已知入口，應即時移除或限制至必要來源。</li>
+<li><strong>監測短序列請求</strong>：留意由新建立的 session 在極短時間內連續發出約四個 HTTP request 的模式。</li>
+<li><strong>盤點並輪替憑證</strong>：檢視 Cacti 內 stored 的資料庫、SNMP 與設備 API credentials，並安排 rotation。</li>
+<li><strong>訂閱 Cacti release 通知</strong>：密切留意 CVE 分配與修補發布，以便在補丁出現後盡快升級；在此之前，「未修補」的判斷亦應以官方資訊持續覆核。</li>
+</ol>
+<h4>公開 PoC 意味著什麼</h4>
+<p>目前沒有公開資料可以判斷漏洞是否已遭在野利用，但 PoC 已公開——<strong>公開的 PoC 意味著防禦者應假設 exploit 程式碼會很快流傳開來</strong>。值得留意的是，PoC 名稱中的 4HTTP2ROOT 只是研究者的命名，實際能取得的權限取決於 Cacti 服務帳戶的設定，並不代表必然取得 root。對任何在香港等地營運、依賴 Cacti 進行網絡監控的 IT 團隊而言，這都是一則普遍相關的提醒：便利功能不等於安全邊界，而當補丁尚未出現時，減少暴露面與限制入口，就是僅有的防線。</p>
+<p><a href="https://thehackernews.com/2026/11/unpatched-cacti-zero-day-enables-rce-in.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
