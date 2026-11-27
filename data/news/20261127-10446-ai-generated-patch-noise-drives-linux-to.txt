@@ -1,0 +1,32 @@
+Date: 2026-11-27 16:21:00
+Author: HKLUG Team
+Title: AI-Generated Patch Noise Drives Linux to Drop 1980s VME Bus Code
+Content:
+<p>```</p>
+<p>The Linux kernel is preparing to strip out the last of its VersaModular Eurocard (VME) bus support, and the stated reason says more about the present of kernel development than about the hardware of the 1980s: AI and large language models are generating an increasing volume of low-value patches against old, unused code.</p>
+<p>As Phoronix reports, the VME bus drivers represent the latest in a line of vintage subsystems being retired from the source tree. Older rounds of cleanup have already removed obsolete ISA and PCMCIA drivers, ham radio code, ISDN support, and other legacy network code. VME — a modular bus standard that dates back to the 1980s and found use in industrial, scientific, and embedded systems — is next in the queue.</p>
+<p>The underlying dynamic is a shift in who has trouble, not who can write code. AI tools have sharply lowered the cost of authoring a patch: a contributor or an automated agent can produce plausible-looking changes to a dormant driver in seconds. For kernel maintainers, however, review capacity — not authoring capacity — has long been the bottleneck. Every patch against an unmaintained subsystem still consumes maintainer attention, whether it ends up being useful or not. Deleting dead code does not stop the flood of generated submissions, but it closes off one of the targets that attracts them.</p>
+<p>That framing matters for anyone watching how open-source governance adapts to generative AI. The kernel community has historically been willing to accept trade-offs when a subsystem loses its maintainer: either someone forks the code, or vendors carry a downstream patch set. The VME code is effectively unused and obsolete, and Linux has generally treated that as sufficient grounds for removal rather than as a reason to preserve unmaintained code indefinitely.</p>
+<p>There is a fair counterpoint worth keeping in view. VME hardware has not vanished entirely — variants remain in use in some niche industrial and defence settings, and those users typically rely on vendor-maintained kernels rather than mainline support. The removal, on that reading, is less a declaration that VME is extinct than an acknowledgement that mainline Linux was never the place its remaining users were getting support anyway.</p>
+<p>In our own analysis, the practical implication for Hong Kong IT teams running long-lived enterprise Linux distributions is that the upstream kernel's appetite for retaining unmaintained legacy drivers will keep shrinking — so hardware refresh or vendor-support paths should be planned proactively, rather than assuming a driver's presence in an older kernel implies it will survive future major versions.</p>
+<p>The episode also illustrates an emerging asymmetry that extends well beyond the kernel. AI lowers the cost of producing contributions everywhere, which means the burden shifts onto whoever must evaluate them. In volunteer-driven projects with finite reviewer attention, the practical response to an AI-driven spike in submissions is increasingly to reduce the surface area under review — by deleting code that no longer carries its maintenance weight.</p>
+<p>Phoronix reports the VME removal is proceeding through the normal kernel mailing-list process. The wider question — how much more legacy code gets judged not by its users but by the noise it attracts — is likely to recur as generative tools are pointed at more of the tree.</p>
+<hr>
+<pre><code>
+Linux kernel 正準備移除最後一批 VersaModular Eurocard（VME）匯流排支援代碼，而官方所述的理由，與其說反映 1980 年代的硬件，不如說更凸顯當前 kernel 開發的現狀：AI 及大型語言模型（LLM）正針對舊有、已無人使用的代碼，源源不絕地產生大量低價值補丁。
+
+據 Phoronix 報道，VME 匯流排驅動程式是又一個遭從 source tree 中退役的古舊 subsystem。早前數輪清理已先後移除過時的 ISA 及 PCMCIA 驅動程式、業餘無線電（ham radio）代碼、ISDN 支援以及其他舊有網絡代碼。VME 這個可追溯至 1980 年代、曾應用於工業、科學及嵌入式系統的模組化匯流排標準，即將排隊清場。
+
+此舉背後的關鍵在於：痛點已轉移至「誰來審核」，而非「誰能寫代碼」。AI 工具大幅降低了撰寫補丁的成本——貢獻者或自動化 agent 只需數秒，便能針對休眠已久的驅動程式製造出貌似合理的改動。然而對 kernel 維護者而言，長期以來的瓶頸向來是 review 能力，而非撰寫能力。每一份針對無人維護 subsystem 的補丁，不論最終是否有價值，都同樣消耗維護者的注意力。刪除死代碼固然無法阻擋生成式提交的洪流，但至少關閉了吸引這些提交的其中一個目標。
+
+對於任何關注 open source 治理如何適應生成式 AI 的人來說，上述這個角度頗具意義。kernel 社群歷來當某個 subsystem 失去維護者時，往往願意接受取捨：或者有人 fork 代碼自行延續，或者由廠商另行維護下游 patch set。VME 代碼實質上已無人使用且過時，Linux 一直以來的處理方式是：這已足以構成移除的理由，而非無限期保留無人維護代碼的藉口。
+
+不過，亦有一個值得留意的相反的合理觀點。VME 硬件並未完全消失——部分變體仍應用於少數利基工業及國防場合，而這些用戶通常依賴廠商維護的 kernel，而非 mainline 支援。從這個角度觀之，今次移除與其說是宣告 VME 已絕跡，不如說是承認：mainline Linux 從來就不是這些殘餘用戶取得支援的地方。
+
+就本刊分析，對於運行長壽命企業級 Linux distribution 的香港 IT 團隊而言，實際影響在於：上游 kernel 保留無人維護舊有驅動程式的意願將持續收窄——因此硬件更新或廠商支援路徑應及早規劃，而不應假設某個驅動程式存在於較舊的 kernel 之中，便意味著它能存活於未來的主要版本。
+
+這宗事件亦凸顯了一種新興的不對稱現象，其影響遠超 kernel 範疇。AI 降低各處產生貢獻的成本，意味著負擔轉移到必須評估這些貢獻的人身上。在 reviewer 注意力有限的志願者主導項目中，面對 AI 驅動的提交激增，越來越常見的務實應對方式是縮小 review 範圍——透過刪除那些已無法承擔自身維護成本的代碼。
+
+Phoronix 報道，VME 移除正循正常 kernel mailing-list 程序進行。至於更廣泛的問題——越來越多舊有代碼的去留，將不再由其用戶、而是由它所招惹的噪音來決定——隨著生成式工具指向 source tree 的更多範圍，這一情景勢必反覆出現。
+</code></pre>
+<p><a href="https://www.phoronix.com/news/Linux-Drops-VME-Bus-User" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
