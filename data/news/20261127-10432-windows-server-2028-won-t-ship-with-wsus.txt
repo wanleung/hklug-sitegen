@@ -1,0 +1,44 @@
+Date: 2026-11-27 13:02:00
+Author: HKLUG Team
+Title: Windows Server 2028 Won't Ship With WSUS — And That Changes When You Plan Your Migration
+Content:
+<p>Microsoft is cutting the Windows Server Update Services (WSUS) role out of Windows Server 2028 entirely — administrators will have no way to install it on the next major release of the server platform. BleepingComputer reported the change on 27 November 2026, and the practical consequence is sharper than an earlier deprecation notice reported in 2024: that notice flagged WSUS as feature-frozen but left the role supported, whereas Windows Server 2028 simply won't offer it as an installable component.</p>
+<p>The distinction between "no longer developed" and "no longer available" matters for anyone running Windows estates. Existing WSUS servers aren't being switched off, but the moment an organisation commits to a Server 2028 upgrade, the tooling it has relied on will not follow it across. Update-management strategy therefore becomes a prerequisite for the migration conversation rather than a loose end to tidy up afterwards.</p>
+<h4>What changes</h4>
+<p>WSUS has long been the default answer for organisations that want to approve, stage, and distribute Windows updates on their own terms — testing patches against a ring of machines before pushing them broadly, and keeping servers off Microsoft's update servers when policy or network conditions demand it. That workflow disappears as a built-in capability in Windows Server 2028.</p>
+<p>Critically, the deadline is driven by migration plans, not a calendar date. Deployments running on Windows Server 2025 and earlier long-term servicing releases are not affected by the removal itself. The forcing function is any organisation planning a move to the 2028 release: update-management strategy needs to be settled before the migration, not after it, because the new platform will have no WSUS role to fall back on.</p>
+<p>Microsoft has not, at the time of reporting, published a firm general-availability date for Windows Server 2028. Administrators should verify the "Windows Server 2028" version label against Microsoft's official documentation and channels before committing procurement or migration plans to it.</p>
+<h4>The likely successors — and their trade-offs</h4>
+<p>The replacement options most commonly pointed to each carry a distinct cost profile:</p>
+<ul>
+<li><strong>Windows Update for Business / Microsoft Autopatch</strong> and <strong>Intune</strong> assume cloud connectivity. For on-prem-only shops, this introduces a dependency on outbound connectivity to Microsoft endpoints and, in Intune's case, additional licensing.</li>
+<li><strong>Configuration Manager (MECM)</strong> preserves much of the approval-and-staging workflow admins know, but adds licensing and infrastructure overhead — a significant consideration for small and mid-sized teams running lean.</li>
+<li><strong>Group Policy-based update configuration</strong> remains available but forfeits the ring-based approval and staged-rollout process, leaving administrators with cruder control over rollout timing.</li>
+</ul>
+<p>The environments hardest hit are air-gapped networks, metered-bandwidth links, and compliance-driven estates where updates must be reviewed and staged locally before deployment. For these organisations, the removal is not a tooling inconvenience but a change to how they demonstrate patch control.</p>
+<h4>The broader picture</h4>
+<p>The retirement of WSUS fits a longer pattern in which Microsoft steers Windows lifecycle management toward cloud-managed services. For the open-source and self-hosted community, the shift echoes one they have watched before: a long-standing local capability, once the sensible default for administrators who preferred to keep management traffic on their own infrastructure, gives way to a commercially managed alternative.</p>
+<p>That context is also a prompt to revisit what else exists. Linux administrators have had tools such as Landscape, Uyuni, or simple mirror-and-tooling setups for offline patching for years; Windows-only estates have fewer equivalent free, self-hosted options, which is precisely why WSUS's removal matters beyond a single vendor's product roadmap.</p>
+<p>For Windows admins, the practical takeaway is straightforward: treat update-management replacement as a prerequisite for any Windows Server 2028 migration plan, estimate each candidate's licensing and infrastructure costs at this stage, and confirm version details against Microsoft's official documentation before acting.</p>
+<p><em>Source: BleepingComputer</em></p>
+<hr>
+<p>微軟將在 Windows Server 2028 中徹底移除 Windows Server Update Services（WSUS）伺服器角色，管理員在下一代伺服器平台上將完全無法安裝該角色。BleepingComputer 已於 2026 年 11 月 27 日報道此事，其實際影響比 2024 年傳出的棄用通知更為嚴重：當年的通知只是停止新功能開發，角色本身仍受支援；而 Windows Server 2028 將索性不再提供這個可安裝的元件。</p>
+<p>「不再開發」與「不再提供」之間的差別，對任何運行 Windows 環境的機構都至關重要。現有 WSUS 伺服器並不會被強制停用，但機構一旦決定升級至 Server 2028，一直依賴的工具便無法跟隨遷移。因此，更新管理方案必須在規劃升級時一併敲定，而不是事後才補救的收尾工作。</p>
+<h4>有何改變</h4>
+<p>WSUS 一直是機構按自身節奏審批、暫存及分發 Windows 更新的首選方案 — 先在一組機器上測試修補程式，再推廣至大範圍，並在政策或網絡條件需要時，讓伺服器完全不連線至微軟更新伺服器。這套工作流程將在 Windows Server 2028 中不再以內建功能形式存在。</p>
+<p>關鍵在於，限期來自遷移計劃，而非某個日曆日期。運行於 Windows Server 2025 及更早長期服務版本（LTSC）的部署，本身不會因這次移除而受影響。真正的觸發點是任何計劃遷移至 2028 版本的機構：更新管理方案必須在遷移之前確定，而非遷移之後，因為新平台將沒有 WSUS 角色可供回退。</p>
+<p>截至報道時為止，微軟尚未公布 Windows Server 2028 的正式發售日期。管理員應先在微軟官方文件及渠道核實「Windows Server 2028」這一版本標籤，然後才為採購或遷移計劃落實預算。</p>
+<h4>可能的替代方案 — 及各自的代價</h4>
+<p>常被提及的替代選項，各有不同的成本結構：</p>
+<ul>
+<li><strong>Windows Update for Business／Microsoft Autopatch</strong> 及 <strong>Intune</strong> 依賴雲端連線。對於只用本地部署的團隊，這意味著必須連線至微軟端點；就 Intune 而言，還涉及額外授權費用。</li>
+<li><strong>Configuration Manager（MECM）</strong> 較能保留管理員熟悉的審批與暫存流程，但會帶來授權與基建開支 — 對於精簡運作的中小型團隊而言，這是重要考量。</li>
+<li><strong>群組原則（Group Policy）更新設定</strong> 仍然可用，但失去了分環審批及分階段推出的能力，管理員對推出時機的控制會變得粗疏。</li>
+</ul>
+<p>最受影響的是氣隙隔離網絡、按量計費的帶寬鏈路，以及必須先在本地審核及暫存修補程式、才允許部署的合規環境。對這些機構來說，移除不單是工具上的不便，而是如何證明修補程式受控的方式要改寫。</p>
+<h4>更大的圖景</h4>
+<p>WSUS 的退役延續了一條既有的路線：微軟正把 Windows 生命週期管理推向雲端管理服務。對開源自託管社群而言，這個轉變並不陌生 — 一項長久以來的本地功能，曾是希望管理流量留在自家基礎設施上的管理員的合理首選，如今讓位於商業化的管理方案。</p>
+<p>這個背景同樣是重新審視其他選擇的契機。多年來，Linux 管理員一直有 Landscape、Uyuni，或簡單的鏡像與工具方案來處理離線修補；純 Windows 環境的免費自託管選擇卻少得多 — 這正是 WSUS 移除的影響超出單一廠商產品路線圖的原因。</p>
+<p>對 Windows 管理員而言，實際結論很直接：把更新管理方案的替換視為任何 Windows Server 2028 遷移計劃的前置條件，現階段先估算每個候選方案的授權及基建成本，並在行動前核對微軟官方文件中的版本細節。</p>
+<p><em>Source: BleepingComputer</em></p>
+<p><a href="https://www.bleepingcomputer.com/news/microsoft/microsoft-removes-wsus-server-role-in-windows-server-2028/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
