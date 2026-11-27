@@ -1,0 +1,36 @@
+Date: 2026-11-27 10:30:00
+Author: HKLUG Team
+Title: Twelve-Year-Old Linux NFS Bug Opens a Remote Path to Root on Unpatched Hosts
+Content:
+<p>A flaw believed to have lingered in the Linux kernel for roughly twelve years gives remote attackers a path to root privileges through the kernel's Network File System (NFS) server, according to a report from BleepingComputer. The bug is tracked as CVE-2026-99362.</p>
+<p>Three characteristics together make this more than a routine kernel privilege-escalation ticket. First, it is remote: an attacker needs no existing foothold on the target machine, only network reachability to an exposed NFS service. Second, the outcome is direct — root on the affected host, not a sandbox escape or a chained step. Third, the vulnerability has lain latent for roughly twelve years, meaning a large number of deployed kernels carry it without any distinctive indicator that would have drawn attention during routine review.</p>
+<h5>Affected surface</h5>
+<p>The flaw lives in the kernel's NFS server component (<code>nfsd</code>), so the practical exposure is any host that exports a filesystem over NFS and is reachable by an untrusted network. That is a common configuration in labs, media and backup appliances, storage controllers, and internal file-sharing setups — and an uncommon one to be deliberately exposed to the internet, though misconfigured cloud instances and flat internal networks routinely blur that line.</p>
+<p>Anyone who can reach an exposed NFS port is in range. NFS authentication behaviour varies considerably from deployment to deployment, so reachability alone is the reliable way to think about exposure rather than assuming a credential check stands in the way.</p>
+<p>One operational complication deserves emphasis: for many hosts, the fix path does not run through <code>apt</code> or <code>yum</code> at all. NAS boxes, storage appliances, and bundled-kernel products inherit their kernel from a vendor, and firmware updates often lag behind upstream kernel fixes by weeks or months. Inventorying NFS exporters and checking vendor advisories — not just distro repositories — is the practical first step.</p>
+<h5>Immediate mitigations</h5>
+<p>Until patched builds are available, defenders have a straightforward set of network-level compensating controls:</p>
+<ul>
+<li><strong>Firewall port 2049.</strong> Restrict NFS (TCP/UDP 2049) and the rpcbind service to explicitly trusted source addresses. On hosts with no legitimate NFS consumers, block the ports outright at the host firewall and at the network perimeter.</li>
+<li><strong>Get NFS out of the open.</strong> While tightening exposure, review export options: avoid <code>no_root_squash</code>, which maps remote root requests to root on the server and compounds the impact of a server-side privilege bug. Also drop world-writable or anonymous exports (<code>*</code>/<code>no_root_squash</code>-style configurations) in favour of least-privilege, IP-restricted entries.</li>
+<li><strong>Disable <code>nfsd</code> where it is not needed.</strong> If a host does not serve files, stop and disable the NFS server service so the vulnerable code path is never entered.</li>
+<li><strong>Patch.</strong> Apply kernel updates as soon as your distribution or hardware vendor ships them. Where a vendor build is pending, treat network isolation as the interim control and re-check advisories.</li>
+</ul>
+<p>For IT teams across the region, the takeaway is to treat NFS exports as an asset-inventory item with a security owner, not just a storage convenience — and to confirm with each distribution and appliance vendor how their patch stream maps to CVE-2026-99362. A flaw that remained undetected for roughly twelve years is a reminder that long-dormant bugs in widely deployed kernel components can still carry direct, remote-to-root impact when they surface.</p>
+<hr>
+<p>據 BleepingComputer 報道，一個估計在 Linux 核心中潛伏約十二年的漏洞，令遠端攻擊者可透過核心的 Network File System（NFS）伺服器取得 root 權限。該漏洞編號為 CVE-2026-99362。</p>
+<p>三項特徵令此漏洞絕非一般核心權限提升問題。第一，它是遠端的：攻擊者毋須在目標機器上已有立足點，只需網絡能連線至對外開放的 NFS 服務即可。第二，後果直接——在受影響主機上取得 root，而非 sandbox 逃逸或多步驟鏈式利用。第三，漏洞已潛伏約十二年，意味大量已部署的核心版本均帶有此缺陷，卻沒有任何顯著特徵會在例行檢查中引起注意。</p>
+<h5>受影響範圍</h5>
+<p>漏洞位於核心的 NFS 伺服器組件（<code>nfsd</code>）之中，因此實際風險範圍為任何透過 NFS 匯出檔案系統、且可被不受信任網絡連線的主機。這種配置在實驗室、媒體及備份裝置、儲存控制器及內部檔案分享系統中十分常見；至於刻意對互聯網開放則屬罕見，不過設定錯誤的雲端實例及扁平化內部網絡往往令這條界線變得模糊。</p>
+<p>任何能連線至對外開放 NFS port 的人均在風險範圍內。NFS 認證行為因部署環境而異，差異頗大，因此評估風險時應以「能否連線」為可靠依據，而非假定必有憑證驗證阻擋。</p>
+<p>有一項維護保養上的難點值得強調：對許多主機而言，修補途徑根本不經 <code>apt</code> 或 <code>yum</code>。NAS 裝置、儲存設備及內建核心的產品，其核心由供應商提供，韌體更新往往比上游核心修正遲數週甚至數月。盤點 NFS 匯出服務並查閱供應商公告——而非只看發行版軟件庫——才是務實的第一步。</p>
+<h5>即時緩解措施</h5>
+<p>在修補版本推出之前，防禦方可採用以下一組直截了當的網絡層面補償性控制：</p>
+<ul>
+<li><strong>防火牆封鎖 port 2049。</strong> 將 NFS（TCP/UDP 2049）及 rpcbind 服務限制為只允許明確信任的來源地址。對於沒有合法 NFS 使用者的主機，應在主機防火牆及網絡邊界直接封鎖相關 ports。</li>
+<li><strong>切勿將 NFS 公開。</strong> 在收緊暴露面的同時，檢視匯出選項：避免使用 <code>no_root_squash</code>，此選項會將遠端 root 請求映射為伺服器上的 root，加劇伺服器端權限漏洞的影響。亦應捨棄任何人可寫入或匿名匯出（<code>*</code>／<code>no_root_squash</code> 一類配置），改用最小權限、限定了 IP 的匯出條目。</li>
+<li><strong>毋須使用時停用 <code>nfsd</code>。</strong> 若主機不提供檔案服務，應停止並停用 NFS 伺服器服務，令有漏洞的程式碼路徑永不被觸發。</li>
+<li><strong>修補。</strong> 一旦發行版或硬件供應商推出核心更新，應盡快套用。若供應商版本仍在等候，則以網絡隔離作為臨時控制措施，並持續追蹤公告。</li>
+</ul>
+<p>對本港及區內 IT 團隊而言，要點在於應將 NFS 匯出視為需要指定安全責任人的資產盤點項目，而非僅僅是儲存上的便利——並須向各發行版及裝置供應商確認，其修補更新流程如何對應 CVE-2026-99362。一個約十二年來未被偵測出的漏洞提醒我們，廣泛部署的核心組件中長期潛伏的缺陷，一旦浮現，仍可能帶來直接的遠端取得 root 影響。</p>
+<p><a href="https://www.bleepingcomputer.com/news/security/new-nfs2root-linux-flaw-can-let-attackers-gain-root-privileges/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
