@@ -1,0 +1,42 @@
+Date: 2026-11-27 12:22:00
+Author: HKLUG Team
+Title: SAP Acknowledges IT Security Incident as Press Reports Point to Stolen GitHub Tokens
+Content:
+<p>SAP has acknowledged a security incident involving suspicious activity detected in its IT systems, but the most damaging specifics — reportedly stolen GitHub tokens and changes to source code — come from press investigations rather than from the company itself. No data breach has been confirmed.</p>
+<p>According to Security Affairs, which covered the story, SAP confirmed that it found suspicious activity in its internal environment. The granular allegations, however, came from the press: DER SPIEGEL reported that attackers obtained GitHub tokens, while other reporting on the incident described changes to source code. SAP's own statement, as relayed by Security Affairs, stops short of characterising the nature of the incident or corroborating the press account.</p>
+<p>That gap between what the company has said and what has been reported is where the real story lies. The disclosure sequence has run in an unusual order: specifics that would materially change how customers assess their risk reached the public through journalism before the vendor's own account, and the vendor's confirmation remains deliberately unspecific. For enterprise risk teams, this creates a credibility problem in both directions. The company's statement is authoritative but thin; the press reporting is detailed but unconfirmed by SAP. Until SAP issues a fuller statement that either corroborates or rebuts the DER SPIEGEL claims, customers are being asked to act on a picture that neither side has fully painted.</p>
+<p><strong>Why stolen tokens matter most</strong></p>
+<p>Of the reported elements, stolen GitHub tokens carry the highest consequence. Credentials of that kind are persistent — they do not expire with a single session — and, critically, they blend into legitimate developer activity. A token used by an attacker looks, in most audit trails, like a routine authenticated commit or pull request. That characteristic converts a code-hosting account into a potential supply-chain pivot point: rather than exfiltrating code outright, an adversary in that position can inject changes into a repository that flow downstream through automated build pipelines into shipped products.</p>
+<p>The pattern echoes well-known precedents in the open-source and enterprise ecosystem, including the SolarWinds build-system compromise and the xz Utils backdoor, in each of which the trust boundary that failed was not a firewall but the integrity of the code path itself.</p>
+<p>Two caveats must stay attached to this analysis. First, no source has established that any altered code reached shipped products. Second, source-code access and source-code modification are different things with different remediation requirements — the former is largely a confidentiality problem, the latter an integrity problem. If the situation turns out to be limited to read access, secret rotation is the priority; if modification occurred, build-pipeline and artefact audits escalate accordingly. At the time of writing, it is not publicly settled which of these occurred.</p>
+<p><strong>What SAP customers can do now</strong></p>
+<p>Practical steps do not require waiting for breach confirmation. The following checklist is justified by what is already known:</p>
+<ol>
+<li><strong>Inventory credentials with SAP-side reach.</strong> Enumerate API keys, service accounts, tokens, and integrations connected to SAP environments and any adjacent code repositories.</li>
+<li><strong>Baseline commits and build artefacts.</strong> Compare recent commit history and build outputs against a known-good baseline, looking specifically for changes authored by privileged or recently used tokens.</li>
+<li><strong>Rotate any credential that may have been exposed.</strong> Treat these as compromised — including secrets that appear only indirectly related to SAP — rather than waiting for confirmation of misuse.</li>
+<li><strong>Treat SAP status channels as provisional.</strong> The company's public statements have so far declined to characterise the incident; monitor official channels for updates, and do not treat the current confirmation as the final scope.</li>
+</ol>
+<p>For Hong Kong enterprises with SAP environments in place, these steps are broadly relevant as a general observation about supply-chain exposure — though any organisation's specific response should be calibrated to its own deployment and the incident's eventual confirmed scope.</p>
+<p>Two questions remain open: whether any modified code reached shipped products and what the entry vector was, and whether SAP will issue a fuller statement that corroborates or rebuts the DER SPIEGEL reporting. The disclosure picture may still move; status should be re-checked against SAP's official channels before acting on any fixed assumption.</p>
+<p><em>This article is based on reporting by Security Affairs and DER SPIEGEL. The above account reflects the source material available at the time of writing; readers should consult the linked source and SAP's official channels for the latest confirmed details.</em></p>
+<hr>
+<p>SAP 已承認其 IT 系統偵測到可疑活動，涉及一宗安全事故，然而最具殺傷力的細節——據報 GitHub token 遭竊取以及源代碼被修改——均來自新聞調查，而非來自該公司本身。目前尚未確認有數據外洩。</p>
+<p>據報道此事的 Security Affairs 稱，SAP 證實在其內部環境中發現可疑活動。不過，具體指控則來自新聞報道：DER SPIEGEL 報道攻擊者取得了 GitHub token，而其他有關事故的報道則指源代碼遭修改。SAP 自身的聲明（經 Security Affairs 轉述）並未界定事故性質，亦未佐證新聞報道的說法。</p>
+<p>公司說法與新聞報道之間的落差，正是值得報道之處。是次披露的次序異常：那些會實質改變客戶評估自身風險程度的細節，在廠商自身的說法出現之前已透過新聞報道流入公眾視野，而廠商的確認則刻意保持含糊。對企業風險團隊而言，這在兩個方向上都造成可信度問題。公司的聲明具權威性但內容單薄；新聞報道詳盡但未獲 SAP 確認。在 SAP 發出更完整的聲明、佐證或反駁 DER SPIEGEL 的指控之前，客戶被要求根據一幅雙方均未完整描繪的圖景採取行動。</p>
+<p><strong>為何遭竊的 token 影響最大</strong></p>
+<p>在所有報道的元素之中，遭竊的 GitHub token 後果最為嚴重。這類憑證具有持續性——不會隨單次會話而失效——而且關鍵在於，它們會混入合法的開發者活動之中。攻擊者使用的 token，在大多數審計記錄中看來與例行的已驗證 commit 或 pull request 無異。這一特性令一個代碼託管帳戶轉化為潛在的供應鏈樞紐點：身處此位置的攻擊者毋須直接外洩代碼，而是可以將改動注入儲存庫，再透過自動化 build pipeline 向下流傳至已出貨的產品。</p>
+<p>此模式令人聯想起開源及企業生態系統中一些廣為人知的先例，包括 SolarWinds build 系統入侵事件以及 xz Utils 後門事件，兩者之中失效的信任邊界並非防火牆，而是代碼路徑本身的完整性。</p>
+<p>此分析必須附帶兩項保留條件。第一，目前沒有消息來源證實有任何被改動的源代碼已進入出貨產品。第二，讀取源代碼權限與修改源代碼是兩回事，所需的補救措施亦不同——前者主要是保密性問題，後者則是完整性問題。若事態最終僅限於讀取權限，則輪換 secrets 是首要任務；若確曾發生修改，build pipeline 及 artefact 審計則須相應升級。截至撰稿時，究竟發生了哪一種情況，公開層面仍未有定論。</p>
+<p><strong>SAP 客戶現時可以做些什麼</strong></p>
+<p>實際步驟毋須等待數據外洩確認方可執行。以下清單乃基於目前已知情況而訂立：</p>
+<ol>
+<li><strong>盤點可接觸 SAP 端的憑證。</strong> 列舉所有連接至 SAP 環境以及任何相鄰源代碼儲存庫的 API key、服務帳戶、token 及 integrations。</li>
+<li><strong>建立 commit 及 build artefact 基線。</strong> 將近期 commit 歷史及 build 輸出與已知的良好基線作比對，特別留意由高權限或近期曾使用的 token 所產生的改動。</li>
+<li><strong>輪換任何可能已外洩的憑證。</strong> 將這些憑證視為已被入侵——包括表面上與 SAP 僅屬間接相關的 secrets——而非等待濫用情況獲確認。</li>
+<li><strong>將 SAP 狀態渠道視為暫定資訊。</strong> 該公司至今的公開聲明均未界定事故性質；密切監察官方渠道的更新，切勿將現時的確認視為最終範圍。</li>
+</ol>
+<p>對已部署 SAP 環境的香港企業而言，上述步驟作為對供應鏈暴露風險的一般性觀察大致適用——不過各機構的具體應對措施，應按自身部署情況及事故最終確認的範圍加以調整。</p>
+<p>仍有兩個問題懸而未決：是否有任何被修改的源代碼進入出貨產品、入侵途徑為何，以及 SAP 是否會發出更完整的聲明，佐證或反駁 DER SPIEGEL 的報道。披露形勢仍可能出現變化；在根據任何既定假設採取行動之前，應先循 SAP 官方渠道重新核實最新狀態。</p>
+<p><em>本文依據 Security Affairs 及 DER SPIEGEL 的報道撰寫。上述敍述反映撰稿時所能取得的原始資料；讀者請參閱文末所連結的原始出處及 SAP 官方渠道，以查證最新的已確認細節。</em></p>
+<p><a href="https://securityaffairs.com/204121/data-breach/sap-security-incident-stolen-tokens-raise-supply-chain-concerns.html" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
