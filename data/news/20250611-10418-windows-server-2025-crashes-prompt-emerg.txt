@@ -1,0 +1,48 @@
+Date: 2025-06-11 10:00:00
+Author: HKLUG Team
+Title: Windows Server 2025 crashes prompt emergency out-of-band hotpatch from Microsoft
+Content:
+<p>Microsoft has shipped an emergency hotpatch through its out-of-band (OOB) pipeline to address crashes on Windows Server 2025 systems that installed this month's security update, <strong>KB5131077</strong>. In short, a patch broke patches: the very update meant to harden these servers became the source of the fault, forcing Microsoft to break from its normal monthly cadence and deliver a fix separately. According to BleepingComputer, the OOB hotpatch was released for exactly this purpose and is already rolling out to affected machines.</p>
+<p>For enterprise IT teams and managed service providers (MSPs), an out-of-band release is itself a warning sign. It signals a problem severe enough to interrupt a scheduled patch cycle rather than wait for the next Patch Tuesday.</p>
+<h4>Where the failures show up</h4>
+<p>The issue primarily hits Windows Server 2025 environments that rely on the hotpatch mechanism — updates applied to running systems without a reboot. Common exposure patterns include:</p>
+<ul>
+<li><strong>Fixed monthly validation windows in automated orchestration</strong>: patch pipelines that only run on a preset schedule will not pick up an out-of-band update, leaving servers sitting on the defective build until the next window opens.</li>
+<li><strong>Pilot and canary ring deployments</strong>: if KB5131077 was rolled out to a small set of nodes first, and the OOB fix was not folded into the same ring rules, production batches may still be following the stale logic.</li>
+<li><strong>Multi-tenant environments under unified MSP management</strong>: a service provider applying one baseline image and update policy to Windows Server 2025 hosts across many customers from a single console can expose every client simultaneously if that policy is still pinned to KB5131077 — and because triage tends to proceed tenant by tenant, recovery times stretch out.</li>
+</ul>
+<p>Administrators who deferred KB5131077 are, for the moment, spared the crash. That deferral should not become the default: continuing to hold out trades a known, fixable problem for open-ended security exposure. Once the OOB fix is broadly available, there is no longer a defensible reason to delay.</p>
+<h4>Verification and recovery</h4>
+<ol>
+<li><strong>Confirm what applied</strong>: check Settings → Windows Update → Update history to verify whether KB5131077 installed and whether the OOB hotpatch has appeared in the list.</li>
+<li><strong>Look for crash evidence</strong>: review Event Viewer for critical errors and WHEA/Kernel-Power entries, and compare crash timestamps against update installation times.</li>
+<li><strong>Check that your tooling is actually detecting the fix</strong>: trigger a manual scan to confirm that your orchestration tool, WSUS, or Configuration Manager will retrieve the out-of-band update rather than idling until the next scheduled window.</li>
+</ol>
+<p>If rollback becomes necessary, use a system restore point or uninstall KB5131077 via Update history → Uninstall updates, then pause automatic pushing of that update until the OOB fix is confirmed as broadly available.</p>
+<p>One open question remains: whether the OOB hotpatch fully supersedes, partially supersedes, or runs alongside KB5131077. Microsoft's KB documentation and the Update Catalog should settle it. <strong>Microsoft has not stated that KB5131077's underlying security content needs to be reapplied separately</strong> — until the company says otherwise, treat that as unresolved.</p>
+<h4>The lesson: hotpatching moves risk, it does not remove it</h4>
+<p>Hotpatching was designed to reduce disruption: no reboots, faster delivery to running systems. But speed trades against depth. The same mechanism that shrinks the pause caused by a single update also compresses the validation window, giving regressions a path into production roughly as fast as the patches themselves. That is the point worth remembering: patching built for speed will carry risk into production at the same pace.</p>
+<p>Source: BleepingComputer</p>
+<hr>
+<p>微軟已透過帶外（out-of-band, OOB）管線發布緊急熱修復更新，用於處理安裝了本月安全更新 <strong>KB5131077</strong> 的 Windows Server 2025 系統所出現的崩潰問題。簡言之，這是一次「修補程式弄壞了修補程式」——本應用來強化伺服器的更新反而成為故障源，迫使微軟脫離正常月度節奏，另行交付修正。根據 BleepingComputer 的報導，這輪 OOB 熱修復正是為此而設，並已開始向受影響的機器推送。</p>
+<p>對企業 IT 團隊與託管服務供應商（MSP）而言，帶外發布本身已是警訊：它代表問題嚴重到足以打斷既定的修補週期，而非等待下一個 Patch Tuesday 才處理。</p>
+<h4>故障主要出現在哪裏</h4>
+<p>問題主要影響依賴熱修復（hotpatch）機制的 Windows Server 2025 環境，即更新直接套用到執行中的系統、無需重啟便可生效。常見的暴露情境包括：</p>
+<ul>
+<li><strong>自動化編排中的固定月度驗證窗口</strong>：修補管線只按預設排程執行，不會擷取帶外更新，伺服器因而一直停留在有缺陷的版本，直至下一個窗口開啟。</li>
+<li><strong>試驗與金絲雀分批部署</strong>：若 KB5131077 先推廣至少量節點，而 OOB 修正未納入同一分批規則，正式批次仍可能沿用舊有邏輯。</li>
+<li><strong>MSP 統一管理下的多租戶環境</strong>：服務商以單一控制台為多個客戶的 Windows Server 2025 主機套用同一份基準映像與更新政策；一旦該政策仍固定於 KB5131077，所有客戶主機便會同時暴露於崩潰風險，而排查工作往往按租戶逐一進行，令回復時間不斷延長。</li>
+</ul>
+<p>已延後安裝 KB5131077 的管理員暫時避開了這次崩潰，但不應將延後變成慣常做法：持續觀望，等於以一個已知且可修復的問題，換取未有盡頭的安全風險。待 OOB 修正廣泛可用後，便再沒有合理理由繼續拖延。</p>
+<h4>驗證與回復步驟</h4>
+<ol>
+<li><strong>確認套用狀態</strong>：在「設定 → Windows Update → 更新歷史記錄」核對 KB5131077 是否已安裝，以及帶外熱修復是否已出現在清單中。</li>
+<li><strong>查找崩潰跡象</strong>：查閱事件檢視器中的嚴重錯誤及 WHEA／Kernel-Power 記錄，比對崩潰的 timestamp 與更新安裝時間。</li>
+<li><strong>確認工具確實偵測得到修正</strong>：手動觸發一次掃描，驗證編排工具、WSUS 或 Configuration Manager 會否實際取得帶外更新，而非閒置至下一個排程窗口。</li>
+</ol>
+<p>如有需要回退，可使用系統還原點，或在「更新歷史記錄 → 解除安裝更新」中解除安裝 KB5131077，隨後暫停該更新的自動推送，直至 OOB 修正確認已廣泛可用。</p>
+<p>尚有一個問題未有定論：OOB 熱修復究竟是完全取代、部分取代，抑或與 KB5131077 並行運作。微軟的 KB 文件及 Update Catalog 應可釐清這一點。<strong>微軟並未表示 KB5131077 底層的安全性內容需要另行重新套用</strong>——在微軟作出澄清之前，此事仍屬未有定論。</p>
+<h4>教訓：熱修復只會轉移風險，而非消除風險</h4>
+<p>熱修復的設計初衷是減少干擾：毋須重啟，更快把更新送達執行中的系統。然而，速度與深度之間存在取捨。同一機制在縮短單次更新造成的停頓之餘，亦壓縮了驗證窗口，使回歸問題有機會以與修補程式相近的速度流入生產環境。這一點才是最值得記住的：為速度而生的修補方式，會以同樣的速度把風險帶進生產環境。</p>
+<p>資料來源：BleepingComputer</p>
+<p><a href="https://www.bleepingcomputer.com/news/microsoft/new-out-of-band-oob-emergency-hotpatch-fixes-windows-server-2025-crashes/" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
