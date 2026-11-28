@@ -1,0 +1,34 @@
+Date: 2026-11-28 13:04:00
+Author: HKLUG Team
+Title: Claude Code Helped Crack Open Microsoft's ReFS for Linux
+Content:
+<p>```</p>
+<p>Administrators who have ever pulled a ReFS-formatted drive out of a Windows Server and stared at it from a Linux box now have a working option: a new FUSE-based driver that mounts Microsoft's Resilient File System in read-only mode, according to Phoronix.</p>
+<p>ReFS has shipped since Windows Server 2012 as Microsoft's intended successor to NTFS, but more than a decade on, Linux still has no mainstream way to read it. For anyone working a mixed estate, the practical implications are mundane but real — recovering data from a failed Windows server, inspecting a volume during an incident, verifying backups, or triaging a disk handed over by a user. Each of those workflows has, until now, meant booting Windows or feeding the image through a specialist tool.</p>
+<p><strong>Reverse engineering, with an AI assist</strong></p>
+<p>Microsoft has never published a complete on-disk specification for ReFS. The new driver's developers therefore reconstructed the format through reverse engineering — and, per Phoronix's report, with assistance from Anthropic's Claude Code, which was used to help analyse the format and generate parts of the implementation code.</p>
+<p>That detail is worth treating carefully. The attribution comes from Phoronix's coverage rather than an independently verified project statement, and it matters less as a marketing claim than as a signal about how interoperability work is being done now: an AI assistant embedded in the loop, chewing through undocumented binary layouts and emitting candidate parsing code that a human then validates against real volumes. If the workflow holds up, it is a repeatable pattern for the long tail of proprietary formats that nobody has reverse engineered yet simply because the effort never paid for itself.</p>
+<p>It is also a reminder of what the open-source community has historically had to do when vendors decline to document their own formats — only the labour is being amortised differently.</p>
+<p><strong>Read-only, and by design</strong></p>
+<p>The driver's limitations are straightforward and should be understood before anyone builds a process on it. It is FUSE-based, which means filesystem operations travel through userspace rather than the kernel — expect a performance penalty against a native kernel filesystem, particularly on metadata-heavy workloads. On the other hand, FUSE means no kernel-tree inclusion, no kernel patching, and no elevated privileges for ordinary read access, which keeps deployment friction close to zero. It can be installed, tested, and iterated on without waiting for a maintainer's blessing.</p>
+<p>For now the driver is read-only — the right posture at this stage: filesystem code that corrupts data tends to fail silently rather than visibly, and an undocumented format offers no specification to fall back on. In its current state this is a recovery, forensic, and inspection tool — a milestone rather than a daily driver.</p>
+<p><strong>Worth watching</strong></p>
+<p>The gap this fills is genuine. Backup operators, forensic analysts, and anyone doing cross-platform data recovery have lacked a native Linux path to ReFS for the entire lifetime of the filesystem. The project also offers a small, concrete case study in AI-assisted reverse engineering producing working, interoperable code rather than a demo.</p>
+<p>Two things would move the story forward. The first is write support, which would change the driver from an inspection utility into a general-purpose tool. The second is provenance: the source repository for the driver deserves to be linked directly alongside the Phoronix report so that readers can audit the code, judge the AI contribution first-hand, and contribute fixes. Until then, the coverage at Phoronix remains the starting point for anyone wanting to try it.</p>
+<p>This development is broadly of interest to IT professionals running heterogeneous environments, though its practical relevance will vary by organisation depending on how much ReFS media they actually encounter.</p>
+<hr>
+<p>```</p>
+<p>管理員以往把 ReFS 格式的硬碟從 Windows Server 抽出，再接到 Linux 機器上，往往只能束手無策；如今終於有了可行方案：一款全新的 FUSE 驅動程式，可將 Microsoft 的 Resilient File System 以唯讀模式掛載，據 Phoronix 報導。</p>
+<p>ReFS 自 Windows Server 2012 起便作為 NTFS 的接班人出貨，但十多年過去，Linux 仍未有主流途徑讀取它。對於運作混合環境的人來說，實際影響看似平凡卻實在——從故障的 Windows 伺服器搶救資料、事故期間檢查磁碟區、核對備份，或檢查使用者交來的磁碟。上述每一項工作流程，至今不是要開機進入 Windows，就是要把映像檔交給專門工具處理。</p>
+<p><strong>逆向工程，加上 AI 助攻</strong></p>
+<p>Microsoft 從未公開 ReFS 完整的磁碟上格式規格。因此新驅動程式的開發者改以逆向工程重構該格式——按 Phoronix 報導，過程中並借助 Anthropic 的 Claude Code，用以分析格式及產生部分實作代碼。</p>
+<p>這一點值得謹慎看待。有關說法來自 Phoronix 的報導，而非經獨立核實的專案聲明；與其當作市場宣傳，不如視為觀察當今互通性工作模式的信號：AI 助手嵌入工作流程之中，處理未有技術文件記載的二進位結構，輸出候選解析代碼，再由真人以實際磁碟區驗證。若此工作流程成立，它將成為一種可重複的模式，應用於大量專有格式——這些格式之所以仍未被逆向工程，只因投入從來不成正比。</p>
+<p>這同時提醒大眾，當廠商拒絕為自家格式提供文件時，開源社群歷來就只能自己動手——只是如今這份勞動的分攤方式有所不同。</p>
+<p><strong>唯讀，而且是有意為之</strong></p>
+<p>驅動程式的限制一目了然，任何打算據此建立流程的人應先了解。它基於 FUSE，意思是檔案系統操作須經使用者空間而非核心——相較原生核心檔案系統，預期會有效能損耗，於中繼資料密集的負載下尤其明顯。反過來說，FUSE 意味著毋須併入核心源碼樹、毋須修改核心，一般唯讀存取也毋須提權，部署摩擦幾乎為零。它可以安裝、測試及迭代，無須等待維護者點頭。</p>
+<p>目前該驅動程式僅供唯讀——這在現階段是恰當的姿態：檔案系統代碼若寫入出錯，往往不會顯性失敗，而是靜默損壞，加上未有公開文件的格式本身沒有規格可作依託。以現況而言，它是一款復原、鑑證及檢查工具——是里程碑，而非日常主力。</p>
+<p><strong>值得持續關注</strong></p>
+<p>它填補的缺口是真實的。備份操作員、鑑證分析師，以及任何從事跨平台資料復原的人，在 ReFS 的整個壽命裡一直欠缺原生 Linux 途徑。這個專案同時提供了一個具體的小型案例，說明 AI 輔助的逆向工程能產出可運作、可互通的代碼，而非僅僅是示範。</p>
+<p>有兩件事會推動故事向前。其一是寫入支援，它將把驅動程式從檢查工具升級為通用工具。其二是溯源：驅動程式的原始碼倉庫應與 Phoronix 報導並列直接連結，讓讀者得以審核代碼、親自判斷 AI 的貢獻，並提交修正。在此之前，想試用的人仍須從 Phoronix 的報導入手。</p>
+<p>這項發展對營運異質環境的 IT 專業人士普遍有參考價值，惟實際影響因組織而異，取決於他們接觸 ReFS 媒體的多寡。</p>
+<p><a href="https://www.phoronix.com/news/New-ReFS-FUSE-Driver-2026" target="_blank" rel="noopener">新聞來源 / Original News Source</a></p>
